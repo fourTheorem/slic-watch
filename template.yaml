@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Automatic CloudWatch metrics, alarms and dashboards
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: slic-watch
+    Description: Automatic CloudWatch metrics, alarms and dashboards
+    Author: fourTheorem
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['cloudwatch', 'lambda', 'kinesis', 'dynamodb']
+    HomePageUrl: https://github.com/fourTheorem/slic-watch
+    SemanticVersion: 1.0.0
+    SourceCodeUrl: https://github.com/fourTheorem/slic-watch
+
+Parameters:
+  WatchServices:
+    Type: String
+    Description: >
+      A comma-separated list of AWS services to watch.
+      All supported services are included by default
+      (`lambda,kinesis,sqs,dynamodb`).
+    Default: 'lambda,kinesis,sqs,dynamodb'
+  TagFilter:
+    Type: String
+    Description: >
+      A filter pattern used to match deployed services to be watched,
+      e.g. '(KEY1=VALUE or KEY1=VALUE) and KEY2!=VALUE'
+
+Globals:
+  Function:
+    Environment:
+      Variables:
+        POWERTOOLS_LOGGER_LOG_EVENT: true
+        POWERTOOLS_TRACE_DISABLED: true
+        POWERTOOLS_SERVICE_NAME: slicwatch
+        LOG_LEVEL: INFO
+
+Resources:
+  WatchExistingResources:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Find existing resources and create or update CloudWatch alarms, metrics and dashboards
+      CodeUri: watch/
+      Handler: watch_handler.watch_existing
+      Runtime: python3.8
+      Timeout: 900
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action: lambda:AddPermission
+            Resource: '*'
+
+  LambdaInvocationCustomResource:
+    # This SAR application allows us to invoke Lambda functions
+    # on CloudFormation create/update/delete
+    # See https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:374852340823:applications/lambda-invocation-cfn-custom-resource
+        SemanticVersion: 1.4.0
+
+  InvokeWatchExisting:
+    Type: Custom::LambdaInvocation
+    DependsOn:
+      - WatchExistingResources
+      - LambdaInvocationCustomResource
+    Properties:
+      ServiceToken: !GetAtt LambdaInvocationCustomResource.Outputs.FunctionArn
+      FunctionName: !Ref WatchExistingResources
+      InvocationType: Event
+      Payload:
+        WatchServices: !Ref WatchServices
+        TagFilter: !Ref TagFilter
+
