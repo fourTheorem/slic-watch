@@ -54,6 +54,12 @@ Resources:
             Action: lambda:AddPermission
             Resource: '*'
 
+  WatchExistingResourcesLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${WatchExistingResources}
+      RetentionInDays: 7
+
   LambdaInvocationCustomResource:
     # This SAR application allows us to invoke Lambda functions
     # on CloudFormation create/update/delete
