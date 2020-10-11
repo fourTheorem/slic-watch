@@ -47,11 +47,11 @@ Resources:
       CodeUri: watch/
       Handler: watch_handler.watch_existing
       Runtime: python3.8
-      Timeout: 900
+      Timeout: 30
       Policies:
         - Statement:
             Effect: Allow
-            Action: lambda:AddPermission
+            Action: cloudwatch:PutDashboard
             Resource: '*'
 
   WatchExistingResourcesLogGroup:
