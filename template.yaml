@@ -59,6 +59,21 @@ Resources:
               - lambda:GetFunction
               - lambda:ListFunctions
             Resource: '*'
+      Events:
+        CloudTrailTrigger:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.lambda
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - lambda.amazonaws.com
+                eventName:
+                  - prefix: CreateFunction
+                  - prefix: DeleteFunction
 
   WatchExistingResourcesLogGroup:
     Type: AWS::Logs::LogGroup
