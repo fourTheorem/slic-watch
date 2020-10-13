@@ -53,6 +53,12 @@ Resources:
             Effect: Allow
             Action: cloudwatch:PutDashboard
             Resource: '*'
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:GetFunction
+              - lambda:ListFunctions
+            Resource: '*'
 
   WatchExistingResourcesLogGroup:
     Type: AWS::Logs::LogGroup
