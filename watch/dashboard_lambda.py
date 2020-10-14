@@ -26,7 +26,6 @@ def create_all_functions_widget():
 def create_function_widgets(lambda_functions: list):
     """ Create metric widgets for relevant function metrics.
         Each widget has a line for each function """
-    lambda_functions = []
     widgets = [
         create_metric_widget(title=f'{metric} {stat} per Function',
                              metrics=[['AWS/Lambda', metric, 'FunctionName', func, {'stat': stat}] for func in lambda_functions])
