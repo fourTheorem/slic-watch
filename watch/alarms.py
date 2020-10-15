@@ -5,8 +5,6 @@ from aws_lambda_powertools import Logger
 from concurrent import futures
 from lambdas import get_applicable_lambdas
 
-LAMBDA_ERRORS_ALARM_NAME = 'LambdaErrosAlarm'
-
 LOG = Logger()
 
 cloudwatch_client = boto3.client('cloudwatch')
@@ -23,7 +21,7 @@ def create_lambda_alarm(func_name, threshold, period):
         ComparisonOperator='GreaterThanThreshold',
         Threshold=threshold,
         ActionsEnabled=True,
-        AlarmDescription='Alarm for lambda function errors',
+        AlarmDescription=f'Alarm for lambda {func_name} errors',
         Dimensions=[{
             'Name': 'FunctionName',
             'Value': func_name
