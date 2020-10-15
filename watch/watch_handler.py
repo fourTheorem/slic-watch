@@ -20,5 +20,8 @@ def watch_existing(event, _):
     # tag_filter = event['TagFilter']
 
     update_dashboard()
-    update_alarms()
+    update_alarms(
+        errors_threshold=float(event.get('LambdaErrorsThreshold')),
+        errors_period=int(event.get('LambdaErrorsPeriod'))
+    )
     return {}

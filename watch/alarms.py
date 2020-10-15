@@ -11,17 +11,17 @@ LOG = Logger()
 
 cloudwatch_client = boto3.client('cloudwatch')
 
-def create_lambda_alarm(func_name):
+def create_lambda_alarm(func_name, threshold, period):
     """ Create an alarm for lambda errors """
     return cloudwatch_client.put_metric_alarm(
         AlarmName=f'LambdaError_{func_name}',
-        Period=60,
+        Period=period,
         EvaluationPeriods=1,
         MetricName='Errors',
         Namespace='AWS/Lambda',
         Statistic='Sum',
         ComparisonOperator='GreaterThanThreshold',
-        Threshold=1.0,
+        Threshold=threshold,
         ActionsEnabled=True,
         AlarmDescription='Alarm for lambda function errors',
         Dimensions=[{
@@ -33,12 +33,16 @@ def create_lambda_alarm(func_name):
         ]
     )
 
-def update_alarms():
+def update_alarms(errors_threshold=1.0, errors_period=60):
     lambda_functions = get_applicable_lambdas()
 
     with futures.ThreadPoolExecutor(max_workers=10) as executor:
         wait_for = [
-            executor.submit(create_lambda_alarm, func_name)
+            executor.submit(create_lambda_alarm,
+                func_name=func_name,
+                threshold=errors_threshold,
+                period=errors_period
+            )
             for func_name in lambda_functions.keys()
         ]
 
