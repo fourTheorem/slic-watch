@@ -6,6 +6,7 @@ from aws_lambda_powertools import Logger
 import boto3
 
 from dashboard import update_dashboard
+from alarms import update_alarms
 
 LOG = Logger()
 
@@ -19,4 +20,5 @@ def watch_existing(event, _):
     # tag_filter = event['TagFilter']
 
     update_dashboard()
+    update_alarms()
     return {}
