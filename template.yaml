@@ -101,7 +101,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Description: Remove existing alarms and metrics linked to a deleted resource
-      CodeUri: delete/
+      CodeUri: watch/
       Handler: delete_handler.delete_resources
       Runtime: python3.8
       Timeout: 30
