@@ -3,7 +3,8 @@ from widget import create_metric_widget
 
 LAMBDA_FUNCTION_METRICS = [('Duration', 'Average'), ('Duration', 'p95'),
                            ('Duration', 'Maximum'), ('Invocations', 'Sum'),
-                           ('ConcurrentExecutions', 'Maximum')]
+                           ('ConcurrentExecutions', 'Maximum'),
+                           ('Throttles', 'Sum'), ('Errors', 'Sum')]
 
 
 def create_all_functions_widget():
