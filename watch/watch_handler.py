@@ -1,5 +1,5 @@
 """
-Lambda handler module invoked during stack create/update/delete.
+Lambda handler module invoked during stack create and update.
 Adds monitoring and alarms for new/updated resouces
 """
 from aws_lambda_powertools import Logger
