@@ -29,6 +29,17 @@ Parameters:
     Description: >
       A filter pattern used to match deployed services to be watched,
       e.g. '(KEY1=VALUE or KEY1=VALUE) and KEY2!=VALUE'
+  LambdaErrorsThreshold:
+    Type: Number
+    Description: >
+      The value against which the statistic is compared.
+    Default: 1
+  LambdaErrorsPeriod:
+    Type: Number
+    Description: >
+      The length, in seconds, used each time the metric is evaluated.
+      Valid values are 10, 30, and any multiple of 60.
+    Default: 60
 
 Globals:
   Function:
@@ -38,6 +49,7 @@ Globals:
         POWERTOOLS_TRACE_DISABLED: true
         POWERTOOLS_SERVICE_NAME: slicwatch
         LOG_LEVEL: INFO
+        SNS_ALARMS_TOPIC: !Ref SNSAlarmsTopic
 
 Resources:
   WatchExistingResources:
@@ -51,7 +63,11 @@ Resources:
       Policies:
         - Statement:
             Effect: Allow
-            Action: cloudwatch:PutDashboard
+            Action:
+              - cloudwatch:ListMetrics
+              - cloudwatch:PutDashboard
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:PutMetricData
             Resource: '*'
         - Statement:
             Effect: Allow
@@ -103,4 +119,10 @@ Resources:
       Payload:
         WatchServices: !Ref WatchServices
         TagFilter: !Ref TagFilter
+        LambdaErrorsThreshold: !Ref LambdaErrorsThreshold
+        LambdaErrorsPeriod: !Ref LambdaErrorsPeriod
 
+  SNSAlarmsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: SLICWatchAlarms
