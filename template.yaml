@@ -32,14 +32,19 @@ Parameters:
   LambdaErrorsThreshold:
     Type: Number
     Description: >
-      The value against which the statistic is compared.
+      The number of errors required to trigger a Lambda errors alarm
     Default: 1
   LambdaErrorsPeriod:
     Type: Number
     Description: >
-      The length, in seconds, used each time the metric is evaluated.
+      The length, in seconds, used each time the Lambda errors metric is evaluated.
       Valid values are 10, 30, and any multiple of 60.
     Default: 60
+  LambdaThrottlesRateThreshold:
+    Type: Number
+    Description: >
+      The minimum percentage rate of throttles against invocations to trigger a throttles alarm
+    Default: 1
 
 Globals:
   Function:
