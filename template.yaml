@@ -97,6 +97,47 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${WatchExistingResources}
       RetentionInDays: 7
 
+  DeleteResources:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Remove existing alarms and metrics linked to a deleted resource
+      CodeUri: watch/
+      Handler: delete_handler.delete_resources
+      Runtime: python3.8
+      Timeout: 30
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - cloudwatch:DeleteAlarms
+              - cloudwatch:DescribeAlarms
+            Resource: '*'
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:GetFunction
+            Resource: '*'
+      Events:
+        CloudTrailTrigger:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.lambda
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - lambda.amazonaws.com
+                eventName:
+                  - prefix: DeleteFunction
+
+  DeleteResourcesLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${DeleteResources}
+      RetentionInDays: 7
+
   LambdaInvocationCustomResource:
     # This SAR application allows us to invoke Lambda functions
     # on CloudFormation create/update/delete
