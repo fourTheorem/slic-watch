@@ -243,3 +243,6 @@ $RECYCLE.BIN/
 
 .aws-sam/
 *.sw?
+
+.idea/
+src/
