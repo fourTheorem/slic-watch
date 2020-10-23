@@ -1,0 +1,14 @@
+language: python
+sudo: false
+python:
+  - 3.8
+env:
+  - PYTHONPATH=watch/
+install:
+  - travis_retry pip install -r requirements.txt
+  - travis_retry pip install -r requirements-dev.txt
+script:
+  - python -m pytest tests/
+after_success:
+  - coverage run -m pytest tests/
+  - coveralls
