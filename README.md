@@ -1,5 +1,8 @@
 # slic-watch
 
+[![Build Status](https://travis-ci.org/fourTheorem/slic-watch.svg?branch=master)](https://travis-ci.org/fourTheorem/slic-watch)
+[![Coverage Status](https://coveralls.io/repos/github/fourTheorem/slic-watch/badge.svg?branch=master)](https://coveralls.io/github/fourTheorem/slic-watch?branch=master)
+
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
 - hello_world - Code for the application's Lambda function.
