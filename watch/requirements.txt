@@ -1,1 +1,1 @@
-aws-lambda-powertools
+aws-lambda-powertools>=1.6,<2

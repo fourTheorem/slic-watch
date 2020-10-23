@@ -2,6 +2,7 @@ import boto3
 
 lambda_client = boto3.client('lambda')
 
+
 def get_applicable_lambdas():
     """ Find all Lambdas and group them by tag so we can do tag filtering """
     tags_per_func = {}
