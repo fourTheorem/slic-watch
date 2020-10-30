@@ -21,7 +21,8 @@ jobs:
           name: Test
           command: |
             PYTHONPATH=watch coverage run -m pytest tests
-      - coveralls/upload
+      - coveralls/upload:
+          path_to_lcov: ./.coverage
 
 workflows:
   main:
