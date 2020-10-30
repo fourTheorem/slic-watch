@@ -1,13 +1,14 @@
 import io
 import os
-from typing import Dict
 import zipfile
+from typing import Mapping
 
-from botocore.exceptions import ClientError
 import boto3
-from moto import mock_iam, mock_lambda
 import pytest
+from botocore.exceptions import ClientError
+from moto import mock_iam, mock_lambda
 
+from lambda_function import LambdaFunction
 
 AWS_DEFAULT_REGION = 'eu-west-1'
 
@@ -64,21 +65,31 @@ def lambda_role_name() -> str:
 
 
 @pytest.fixture(scope="session")
-def lambda_functions(lambda_zip_file, lambda_role_name) -> Dict[str, Dict]:
+def lambda_functions(lambda_zip_file, lambda_role_name) -> Mapping[str,LambdaFunction]:
     """
     Returns a dict of function name to tags
     """
     with mock_lambda():
-        functions = {f'TestFunction{n}': {} for n in range(1, 51)}
+        functions = {
+            f'TestFunction{n}': LambdaFunction(
+                name=f'TestFunction{n}',
+                runtime='nodejs12.x',
+                memory_size=3008,
+                timeout=30,
+                tags={},
+            ) for n in range(1, 51)
+        }
         client = boto3.client('lambda')
-        for fn, tags in functions.items():
+        for fn in functions.values():
             client.create_function(
-                FunctionName=fn,
-                Runtime='python3.8',
+                FunctionName=fn.name,
+                Runtime=fn.runtime,
                 Handler='handler.handle_event',
+                MemorySize=fn.memory_size,
+                Timeout=fn.timeout,
                 Role=lambda_role_name,
                 Code={'ZipFile': lambda_zip_file},
-                Tags=tags,
+                Tags=fn.tags,
                 Publish=True
             )
         yield functions
