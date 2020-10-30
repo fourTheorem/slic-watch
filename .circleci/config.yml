@@ -9,7 +9,6 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
       - run:
           name: Install Dependencies
           command: |
@@ -19,7 +18,6 @@ jobs:
           name: Test
           command: |
             PYTHONPATH=watch coverage run -m pytest tests
-      - coveralls/upload
 
 workflows:
   main:
