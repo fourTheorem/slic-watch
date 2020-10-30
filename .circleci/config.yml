@@ -14,13 +14,10 @@ jobs:
           version: 19.03.13
       - run:
           name: Install Dependencies
-          command: |
-            pip install -r watch/requirements.txt
-            pip install -r watch/requirements-dev.txt
+          command: make deps
       - run:
           name: Test
-          command: |
-            PYTHONPATH=watch coverage run -m pytest tests
+          command: make test lint
       - coveralls/upload:
           path_to_lcov: ./.coverage
 
