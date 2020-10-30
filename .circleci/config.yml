@@ -9,6 +9,8 @@ jobs:
     executor: python/default
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: Install Dependencies
           command: |
