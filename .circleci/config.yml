@@ -6,7 +6,8 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default
+    docker:
+      - image: circleci/python:3.8-node
     steps:
       - checkout
       - setup_remote_docker:
