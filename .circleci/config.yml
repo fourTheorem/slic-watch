@@ -11,15 +11,15 @@ jobs:
       - checkout
       - python/load-cache
       - run:
-					name: Install Dependencies
-					command: |
-						pip install -r watch/requirements.txt
-					  pip install -r watch/requirements-dev.txt
+          name: Install Dependencies
+          command: |
+            pip install -r watch/requirements.txt
+            pip install -r watch/requirements-dev.txt
       - run:
           name: Test
-					command: |
-						PYTHONPATH=watch coverage run -m pytest tests
-			- coveralls/upload
+          command: |
+            PYTHONPATH=watch coverage run -m pytest tests
+      - coveralls/upload
 
 workflows:
   main:
