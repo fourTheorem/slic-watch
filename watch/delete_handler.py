@@ -10,6 +10,7 @@ from aws_lambda_powertools import Logger
 LOG = Logger()
 cw_client = boto3.client('cloudwatch')
 
+
 @LOG.inject_lambda_context
 def delete_resources(event, _):
     """ Handle delete of CloudFormation stacks """

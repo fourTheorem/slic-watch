@@ -32,6 +32,7 @@ def create_function_widgets(lambda_functions: list):
 
     return widgets
 
+
 def get_widgets():
     lambda_functions = get_applicable_lambdas()
     return [create_all_functions_widget()] + create_function_widgets(lambda_functions)
