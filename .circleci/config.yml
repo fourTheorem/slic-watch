@@ -20,6 +20,7 @@ jobs:
           name: Test
           command: |
             PYTHONPATH=watch coverage run -m pytest tests
+      - coveralls/upload
 
 workflows:
   main:
