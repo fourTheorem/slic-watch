@@ -14,6 +14,7 @@ cw_client = boto3.client('cloudwatch')
 @LOG.inject_lambda_context
 def delete_resources(event, _):
     """ Handle delete of CloudFormation stacks """
+    LOG.info({'event': event})
     parameters = event.get('detail', {})['requestParameters']
 
     if 'functionName' in parameters:

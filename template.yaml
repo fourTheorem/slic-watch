@@ -98,6 +98,7 @@ Resources:
 
   WatchExistingResourcesLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
     Properties:
       LogGroupName: !Sub /aws/lambda/${WatchExistingResources}
       RetentionInDays: 7
@@ -139,6 +140,7 @@ Resources:
 
   DeleteResourcesLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
     Properties:
       LogGroupName: !Sub /aws/lambda/${DeleteResources}
       RetentionInDays: 7
@@ -162,6 +164,9 @@ Resources:
       ServiceToken: !GetAtt LambdaInvocationCustomResource.Outputs.FunctionArn
       FunctionName: !Ref WatchExistingResources
       InvocationType: Event
+      When:
+        - Create
+        - Update
       Payload:
         WatchServices: !Ref WatchServices
         TagFilter: !Ref TagFilter

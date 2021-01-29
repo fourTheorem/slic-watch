@@ -66,7 +66,7 @@ def lambda_role_name() -> str:
             )["Role"]["Arn"]
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def lambda_functions(lambda_zip_file, lambda_role_name) -> Mapping[str, LambdaFunction]:
     """
     Returns a dict of function name to tags

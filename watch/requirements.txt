@@ -1,1 +1,2 @@
-aws-lambda-powertools>=1.6,<2
+stringcase>=1.2,<2
+aws-lambda-powertools==1.10.1,<2
