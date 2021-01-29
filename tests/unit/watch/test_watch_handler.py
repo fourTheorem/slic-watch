@@ -3,8 +3,6 @@ import os
 import boto3
 from moto import mock_cloudwatch
 
-from alarm_config import LambdaAlarmsConfig
-
 
 class DummyContext:
 
@@ -43,7 +41,3 @@ def test_handle_event(lambda_functions):
         AlarmNames=['LambdaDuration_TestFunction1']
     )['MetricAlarms'][0]
     assert f1_lambda_duration_alarm['Period'] == 99
-
-
-
-
