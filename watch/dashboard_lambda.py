@@ -1,4 +1,6 @@
-from lambdas import get_applicable_lambdas
+from typing import Mapping
+
+from lambda_function import LambdaFunction
 from widget import create_metric_widget
 
 LAMBDA_FUNCTION_METRICS = [('Duration', 'Average'), ('Duration', 'p95'),
@@ -33,6 +35,5 @@ def create_function_widgets(lambda_functions: list):
     return widgets
 
 
-def get_widgets():
-    lambda_functions = get_applicable_lambdas()
+def get_widgets(lambda_functions: Mapping[str, LambdaFunction]):
     return [create_all_functions_widget()] + create_function_widgets(lambda_functions)

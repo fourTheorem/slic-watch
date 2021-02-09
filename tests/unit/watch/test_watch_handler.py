@@ -15,14 +15,14 @@ class DummyContext:
 
 @mock_cloudwatch
 def test_handle_event(lambda_functions):
-    os.environ["SNS_ALARMS_TOPIC"] = "TestAlarmsTopic"
-    event = {
-        'Period': 99,
-        'DurationPercentTimeoutThreshold': 47.3
-    }
+    os.environ.update({
+        'SNS_ALARMS_TOPIC': 'TestAlarmsTopic',
+        'PERIOD': '99',
+        'DURATION_PERCENT_TIMEOUT_THRESHOLD': '47.3',
+    })
 
-    from watch_handler import watch_existing
-    watch_existing(event, DummyContext())
+    from watch_handler import handle_stack
+    handle_stack({}, DummyContext())
 
     cw_client = boto3.client('cloudwatch')
     f1_lambda_errors_alarm = cw_client.describe_alarms(AlarmNames=['LambdaErrors_TestFunction1'])['MetricAlarms'][0]

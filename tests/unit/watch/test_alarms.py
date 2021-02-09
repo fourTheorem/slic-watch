@@ -26,7 +26,7 @@ def test_update_alarms(lambda_functions):
         throttles_percent_threshold=0.0,
         duration_percent_timeout_threshold=90.0,
     )
-    update_alarms(config)
+    update_alarms(config, lambda_functions)
 
     cw = boto3.client("cloudwatch")
     alarms_response = cw.describe_alarms()
@@ -85,7 +85,7 @@ def test_delete_alarm(lambda_functions):
         throttles_percent_threshold=0.0,
         duration_percent_timeout_threshold=90.0,
     )
-    update_alarms(config)
+    update_alarms(config, lambda_functions)
 
     fn_name = list(lambda_functions.keys())[-1]  # Pick a function for which alarms are to be deleted
     delete_alarms(fn_name)

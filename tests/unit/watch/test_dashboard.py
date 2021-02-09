@@ -7,7 +7,7 @@ from moto import mock_cloudwatch
 def test_dashboard(lambda_functions):
     from dashboard import update_dashboard
 
-    update_dashboard()
+    update_dashboard(lambda_functions)
 
     cw = boto3.client("cloudwatch")
     dash = json.loads(cw.get_dashboard(DashboardName="SLICWatch")["DashboardBody"])

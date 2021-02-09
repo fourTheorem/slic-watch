@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
+  slic-watch
+
   Automatic CloudWatch metrics, alarms and dashboards
 
 Metadata:
@@ -21,9 +23,8 @@ Parameters:
     Type: String
     Description: >
       A comma-separated list of AWS services to watch.
-      All supported services are included by default
-      (`lambda,kinesis,sqs,dynamodb`).
-    Default: 'lambda,kinesis,sqs,dynamodb'
+      All supported services are included by default (`lambda`).
+    Default: 'lambda'
   TagFilter:
     Type: String
     Description: >
@@ -55,14 +56,50 @@ Globals:
         POWERTOOLS_SERVICE_NAME: slicwatch
         LOG_LEVEL: INFO
         SNS_ALARMS_TOPIC: !Ref SNSAlarmsTopic
+        LAMBDA_THROTTLES_RATE_THRESHOLD: !Ref LambdaThrottlesRateThreshold
+        LAMBDA_ERRORS_PERIOD: !Ref LambdaErrorsPeriod
+        LAMBDA_ERRORS_THRESHOLD: !Ref LambdaErrorsThreshold
+        TAG_FILTER: !Ref TagFilter
+        WATCH_SERVICES: !Ref WatchServices
 
 Resources:
-  WatchExistingResources:
+  HandleStack:
     Type: AWS::Serverless::Function
     Properties:
-      Description: Find existing resources and create or update CloudWatch alarms, metrics and dashboards
+      Description: Create CloudWatch alarms and dashboards in response to CloudFormation update of this stack
       CodeUri: watch/
-      Handler: watch_handler.watch_existing
+      Handler: watch_handler.handle_stack
+      Runtime: python3.8
+      Timeout: 30
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - cloudwatch:ListMetrics
+              - cloudwatch:PutDashboard
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:PutMetricData
+            Resource: '*'
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:GetFunction
+              - lambda:ListFunctions
+            Resource: '*'
+
+  HandleStackLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${HandleStack}
+      RetentionInDays: 7
+
+  HandleFunctionCreateUpdate:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Create CloudWatch alarms and dashboards in response to Lambda function create or update
+      CodeUri: watch/
+      Handler: watch_handler.handle_function_create_updates
       Runtime: python3.8
       Timeout: 30
       Policies:
@@ -94,13 +131,53 @@ Resources:
                   - lambda.amazonaws.com
                 eventName:
                   - prefix: CreateFunction
-                  - prefix: DeleteFunction
+                  - prefix: UpdateFunctionConfiguration
 
-  WatchExistingResourcesLogGroup:
+  HandleFunctionCreateUpdateLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     Properties:
-      LogGroupName: !Sub /aws/lambda/${WatchExistingResources}
+      LogGroupName: !Sub /aws/lambda/${HandleFunctionCreateUpdate}
+      RetentionInDays: 7
+
+  HandleFunctionDelete:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Delete CloudWatch alarms and dashboards in response to Lambda function delete
+      CodeUri: watch/
+      Handler: watch_handler.handle_function_delete
+      Runtime: python3.8
+      Timeout: 30
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - cloudwatch:ListMetrics
+              - cloudwatch:PutDashboard
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:PutMetricData
+            Resource: '*'
+      Events:
+        CloudTrailTrigger:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.lambda
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - lambda.amazonaws.com
+                eventName:
+                  - prefix: DeleteFunction
+                  - prefix: UpdateFunctionConfiguration
+
+  HandleFunctionDeleteLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${HandleFunctionDelete}
       RetentionInDays: 7
 
   DeleteResources:
@@ -155,23 +232,33 @@ Resources:
         ApplicationId: arn:aws:serverlessrepo:us-east-1:374852340823:applications/lambda-invocation-cfn-custom-resource
         SemanticVersion: 1.4.0
 
-  InvokeWatchExisting:
+  HandleStackCreate:
     Type: Custom::LambdaInvocation
     DependsOn:
-      - WatchExistingResources
+      - HandleStack
       - LambdaInvocationCustomResource
     Properties:
       ServiceToken: !GetAtt LambdaInvocationCustomResource.Outputs.FunctionArn
-      FunctionName: !Ref WatchExistingResources
+      FunctionName: !Ref HandleStack
       InvocationType: Event
       When:
         - Create
-        - Update
       Payload:
-        WatchServices: !Ref WatchServices
-        TagFilter: !Ref TagFilter
-        LambdaErrorsThreshold: !Ref LambdaErrorsThreshold
-        LambdaErrorsPeriod: !Ref LambdaErrorsPeriod
+        Action: Create
+
+  HandleStackDelete:
+    Type: Custom::LambdaInvocation
+    DependsOn:
+      - HandleStack
+      - LambdaInvocationCustomResource
+    Properties:
+      ServiceToken: !GetAtt LambdaInvocationCustomResource.Outputs.FunctionArn
+      FunctionName: !Ref HandleStack
+      InvocationType: Event
+      When:
+        - Delete
+      Payload:
+        Action: Delete
 
   SNSAlarmsTopic:
     Type: AWS::SNS::Topic

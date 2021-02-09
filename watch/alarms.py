@@ -1,12 +1,14 @@
+from typing import Iterable, Mapping
+
 import boto3
 import os
+from functools import partial
 
 from aws_lambda_powertools import Logger
 from concurrent import futures
 
 from alarm_config import LambdaAlarmsConfig
 from lambda_function import LambdaFunction
-from lambdas import get_applicable_lambdas
 
 SNS_ALARMS_TOPIC = os.getenv('SNS_ALARMS_TOPIC')
 MAX_PUT_ALARM_CONCURRENCY = 3
@@ -15,11 +17,15 @@ LOG = Logger()
 cloudwatch_client = boto3.client('cloudwatch')
 
 
-def _create_lambda_errors_alarm(func: LambdaFunction, config: LambdaAlarmsConfig):
-    """ Create an alarm for Lambda errors """
+def _create_lambda_errors_alarm(func: LambdaFunction, config: LambdaAlarmsConfig) -> str:
+    """ Create an alarm for Lambda errors
+        :param func The Lambda function for which error alarms are to be created
+        :param config The alarm configuration
+        :return The alarm name
+    """
     alarm_name = f'LambdaErrors_{func.name}'
-    LOG.info(f'Creating alarm {alarm_name}')
-    return cloudwatch_client.put_metric_alarm(
+    LOG.info('Creating errors alarm', extra={'AlarmName': alarm_name})
+    cloudwatch_client.put_metric_alarm(
         AlarmName=alarm_name,
         Period=config.period,
         EvaluationPeriods=1,
@@ -33,18 +39,19 @@ def _create_lambda_errors_alarm(func: LambdaFunction, config: LambdaAlarmsConfig
         Dimensions=[{'Name': 'FunctionName', 'Value': func.name}],
         AlarmActions=[SNS_ALARMS_TOPIC]
     )
+    return alarm_name
 
 
-def _create_lambda_throttles_alarm(func: LambdaFunction, config: LambdaAlarmsConfig):
+def _create_lambda_throttles_alarm(func: LambdaFunction, config: LambdaAlarmsConfig) -> str:
     """ Create an alarm on the number of throttles as a percentage
         of invocations for a given period
 
-        :func_name The Lambda function name
-        :threshold The minimum percentage of throttles to invocations to raise the alarm
-        :period The period for evaluation in seconds """
+        :param func The Lambda function for which error alarms are to be created
+        :param config The alarm configuration
+        :return The alarm name """
     alarm_name = f'LambdaThrottles_{func.name}'
-    LOG.info(f'Creating alarm {alarm_name}')
-    return cloudwatch_client.put_metric_alarm(
+    LOG.info('Creating throttles alarm', extra={'AlarmName': alarm_name})
+    cloudwatch_client.put_metric_alarm(
         AlarmName=alarm_name,
         EvaluationPeriods=1,
         DatapointsToAlarm=1,
@@ -88,13 +95,18 @@ def _create_lambda_throttles_alarm(func: LambdaFunction, config: LambdaAlarmsCon
         AlarmDescription=f'Alarm for Lambda {func.name} throttles/invocations',
         AlarmActions=[SNS_ALARMS_TOPIC]
     )
+    return alarm_name
 
 
 def _create_lambda_duration_alarms(func: LambdaFunction, config: LambdaAlarmsConfig):
-    """ Create an alarm for Lambda duration when it reaches a percentage threshold of the function timeout """
+    """ Create an alarm for Lambda duration when it reaches a percentage threshold of the function timeout
+
+        :param func The Lambda function for which error alarms are to be created
+        :param config The alarm configuration
+        :return The alarm name """
     alarm_name = f'LambdaDuration_{func.name}'
-    LOG.info(f'Creating alarm {alarm_name}')
-    return cloudwatch_client.put_metric_alarm(
+    LOG.info('Creating duration alarm', extra={'AlarmName': alarm_name})
+    cloudwatch_client.put_metric_alarm(
         AlarmName=alarm_name,
         Period=config.period,
         EvaluationPeriods=1,
@@ -108,41 +120,47 @@ def _create_lambda_duration_alarms(func: LambdaFunction, config: LambdaAlarmsCon
         Dimensions=[{'Name': 'FunctionName', 'Value': func.name}],
         AlarmActions=[SNS_ALARMS_TOPIC]
     )
+    return alarm_name
 
 
-def _create_lambda_alarms(func: LambdaFunction, config: LambdaAlarmsConfig):
-    _create_lambda_errors_alarm(func, config)
-    _create_lambda_throttles_alarm(func, config)
-    _create_lambda_duration_alarms(func, config)
+def create_lambda_alarms(func: LambdaFunction, config: LambdaAlarmsConfig):
+    return [
+        _create_lambda_errors_alarm(func, config),
+        _create_lambda_throttles_alarm(func, config),
+        _create_lambda_duration_alarms(func, config),
+    ]
 
 
-def update_alarms(config: LambdaAlarmsConfig):
+def update_alarms(config: LambdaAlarmsConfig, lambda_functions: Mapping[str, LambdaFunction]) -> Iterable[str]:
     """ Create or update alarms for Lambda functions
 
     :param config: The alarm configuration parameters for Lambda functions
+    :param lambda_functions: The set of Lambda functions for which alarms are to be created
+
+    :return Alarm names
     """
-    lambda_functions = get_applicable_lambdas()
-    LOG.info(f'Creating alarms for {lambda_functions}')
+    LOG.info('Creating alarms', extra={'Functions': lambda_functions, 'Count': len(lambda_functions)})
 
     with futures.ThreadPoolExecutor(max_workers=MAX_PUT_ALARM_CONCURRENCY) as executor:
-        wait_for = [
-            executor.submit(_create_lambda_alarms, func, config)
-            for func in lambda_functions.values()
-        ]
-
-        for future in futures.as_completed(wait_for):
-            LOG.info(future.result())
+        alarm_names = executor.map(
+            partial(create_lambda_alarms, config=config),
+            lambda_functions.values()
+        )
+        return list(alarm_names)
 
 
-def delete_alarms(func_name: str):
+def delete_alarms(func_name: str) -> Iterable[str]:
     """ Delete alarms created by this stack for a specified Lambda function
 
     :param func_name: Lambda function name
+    :return The deleted alarm names
     """
-    # DeleteAlarms fails silently if the alarms with any
-    response = cloudwatch_client.delete_alarms(AlarmNames=[
+    # TODO - include SLIC Watch indicator in Alarm names to avoid collision
+    alarm_names = [
         f'LambdaErrors_{func_name}',
         f'LambdaThrottles_{func_name}',
-        f'LambdaDuration_{func_name}',
-    ])
-    LOG.info(response)
+        f'LambdaDuration_{func_name}'
+    ]
+    # DeleteAlarms fails silently if the alarms with any
+    cloudwatch_client.delete_alarms(AlarmNames=alarm_names)
+    return alarm_names

@@ -1,9 +1,11 @@
 import json
+from typing import Mapping
 
 from aws_lambda_powertools import Logger
 import boto3
 
 import dashboard_lambda
+from lambda_function import LambdaFunction
 
 DASHBOARD_PERIOD = '-PT3H'
 WIDGET_WIDTH = 24
@@ -15,8 +17,8 @@ LOG = Logger()
 cw_client = boto3.client('cloudwatch')
 
 
-def update_dashboard():
-    widgets = dashboard_lambda.get_widgets()
+def update_dashboard(lambda_functions: Mapping[str, LambdaFunction]):
+    widgets = dashboard_lambda.get_widgets(lambda_functions)
     lay_out_widgets(widgets)
     dash = {
         'start': DASHBOARD_PERIOD,
