@@ -246,3 +246,7 @@ $RECYCLE.BIN/
 
 .idea/
 src/
+
+node_modules/
+.nyc_output/
+.serverless/
