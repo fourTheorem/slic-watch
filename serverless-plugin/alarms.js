@@ -9,8 +9,49 @@ const DURATION_PERCENT_TIMEOUT_THRESHOLD = 0
 const DEFAULT_SLS_LAMBDA_TIMEOUT = 3
 
 module.exports = function alarms(serverless, config) {
+
   return {
     addAlarms,
+  }
+
+  /**
+   * Add all required AWS Lambda alarms to the provided CloudFormation template
+   * based on the Function resources found within
+   *
+   * @param cfTemplate A CloudFormation template object
+   */
+  function addAlarms(cfTemplate) {
+    const lambdaResources = filterObject(
+      cfTemplate.Resources,
+      (resource) => resource.Type == 'AWS::Lambda::Function'
+    )
+
+    const alarmResources = []
+    for (const [funcResourceName, funcResource] of Object.entries(
+      lambdaResources
+    )) {
+      const errAlarm = createLambdaErrorsAlarm(funcResourceName, funcResource)
+      cfTemplate.Resources[errAlarm.resourceName] = errAlarm.resource
+      const throttlesAlarm = createLambdaThrottlesAlarm(
+        funcResourceName,
+        funcResource
+      )
+      cfTemplate.Resources[throttlesAlarm.resourceName] =
+        throttlesAlarm.resource
+      const durationAlarm = createLambdaDurationAlarm(
+        funcResourceName,
+        funcResource
+      )
+      cfTemplate.Resources[durationAlarm.resourceName] = durationAlarm.resource
+
+      if (config.invocationsThreshold) {
+        const invocationsAlarm = createLambdaInvocationsAlarm(
+          funcResourceName,
+          funcResource
+        )
+        cfTemplate.Resources[invocationsAlarm.resourceName] = invocationsAlarm.resource
+      }
+    }
   }
 
   function createLambdaAlarm(
@@ -152,37 +193,4 @@ module.exports = function alarms(serverless, config) {
     }
   }
 
-  function addAlarms(cfTemplate) {
-    const lambdaResources = filterObject(
-      cfTemplate.Resources,
-      (resource) => resource.Type == 'AWS::Lambda::Function'
-    )
-
-    const alarmResources = []
-    for (const [funcResourceName, funcResource] of Object.entries(
-      lambdaResources
-    )) {
-      const errAlarm = createLambdaErrorsAlarm(funcResourceName, funcResource)
-      cfTemplate.Resources[errAlarm.resourceName] = errAlarm.resource
-      const throttlesAlarm = createLambdaThrottlesAlarm(
-        funcResourceName,
-        funcResource
-      )
-      cfTemplate.Resources[throttlesAlarm.resourceName] =
-        throttlesAlarm.resource
-      const durationAlarm = createLambdaDurationAlarm(
-        funcResourceName,
-        funcResource
-      )
-      cfTemplate.Resources[durationAlarm.resourceName] = durationAlarm.resource
-
-      if (config.invocationsThreshold) {
-        const invocationsAlarm = createLambdaInvocationsAlarm(
-          funcResourceName,
-          funcResource
-        )
-        cfTemplate.Resources[invocationsAlarm.resourceName] = invocationsAlarm.resource
-      }
-    }
-  }
 }

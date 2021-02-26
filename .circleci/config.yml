@@ -1,27 +1,15 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.2.1
-  coveralls: coveralls/coveralls@1.0.6
-
-jobs:
-  build-and-test:
-    docker:
-      - image: circleci/python:3.8-node
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 19.03.13
-      - run:
-          name: Install Dependencies
-          command: make deps
-      - run:
-          name: Test
-          command: make test lint
-      - coveralls/upload:
-          path_to_lcov: ./.coverage
+  node: circleci/node@2.0.2
 
 workflows:
-  main:
+  matrix-tests:
+    app-dir: serverless-plugin
     jobs:
-      - build-and-test
+      - node/test:
+          version: '12'
+      - node/test:
+          version: '14'
+      - node/test:
+          version: '10'
