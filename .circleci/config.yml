@@ -4,12 +4,10 @@ orbs:
   node: circleci/node@2.0.2
 
 workflows:
-  matrix-tests:
-    app-dir: serverless-plugin
+  workflow:
     jobs:
       - node/test:
-          version: '12'
-      - node/test:
-          version: '14'
-      - node/test:
-          version: '10'
+          matrix:
+            parameters:
+              version: ['10.24.0', '12.21.0', '14.6.0']
+              app-dir: ['serverless-plugin']

@@ -6,10 +6,8 @@ const PERIOD = 60
 const ERRORS_THRESHOLD = 0
 const THROTTLES_PERCENT_THRESHOLD = 0
 const DURATION_PERCENT_TIMEOUT_THRESHOLD = 0
-const DEFAULT_SLS_LAMBDA_TIMEOUT = 3
 
 module.exports = function alarms(serverless, config) {
-
   return {
     addAlarms,
   }
@@ -49,7 +47,8 @@ module.exports = function alarms(serverless, config) {
           funcResourceName,
           funcResource
         )
-        cfTemplate.Resources[invocationsAlarm.resourceName] = invocationsAlarm.resource
+        cfTemplate.Resources[invocationsAlarm.resourceName] =
+          invocationsAlarm.resource
       }
     }
   }
@@ -159,8 +158,7 @@ module.exports = function alarms(serverless, config) {
 
   function createLambdaDurationAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
-    const funcTimeout =
-      funcResource.Properties.Timeout || DEFAULT_SLS_LAMBDA_TIMEOUT
+    const funcTimeout = funcResource.Properties.Timeout
     return {
       resourceName: `slicWatchLambdaDurationAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
@@ -192,5 +190,4 @@ module.exports = function alarms(serverless, config) {
       ),
     }
   }
-
 }

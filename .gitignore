@@ -250,3 +250,4 @@ src/
 node_modules/
 .nyc_output/
 .serverless/
+coverage/

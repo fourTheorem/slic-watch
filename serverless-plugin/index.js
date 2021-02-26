@@ -12,6 +12,7 @@ const DEFAULT_PLUGIN_CONFIG = {
 
 class ServerlessPlugin {
   constructor(serverless, options) {
+  debugger
     this.serverless = serverless
     this.options = options
     this.providerNaming = serverless.providers.aws.naming

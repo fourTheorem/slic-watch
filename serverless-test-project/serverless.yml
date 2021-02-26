@@ -6,7 +6,7 @@ plugins:
 
 custom:
   slicWatch:
-    topicArn: !Ref alarmTopic
+    topicArn: {'Fn::Ref': alarmTopic}
     invocationsThreshold: 10
 
 provider:
