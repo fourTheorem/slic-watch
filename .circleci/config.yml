@@ -1,13 +1,31 @@
 version: 2.1
 
+
 orbs:
   node: circleci/node@2.0.2
+  coveralls: coveralls/coveralls@1.0.6
 
+jobs:
+  test:
+    parameters:
+      node-version:
+        type: string
+    executor: node/default
+    working_directory: ~/slic-watch/serverless-plugin
+    steps:
+      - checkout:
+          path: ~/slic-watch
+      - node/install:
+          node-version: << parameters.node-version >>
+      - node/install-packages:
+          app-dir: ~/slic-watch/serverless-plugin
+      - run: npm run cov
+      - coveralls/upload:
+          flag_name: << parameters.node-version >>
 workflows:
   workflow:
     jobs:
-      - node/test:
+      - test:
           matrix:
             parameters:
-              version: ['10.24.0', '12.21.0', '14.6.0']
-              app-dir: ['serverless-plugin']
+              node-version: ['10.24.0', '12.21.0', '14.6.0']
