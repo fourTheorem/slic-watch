@@ -16,8 +16,6 @@ const testCfTemplate = {
   Resources: {},
 }
 
-debugger
-
 const testState = {}
 
 const ServerlessPlugin = proxyrequire('../index', {
@@ -60,7 +58,7 @@ const mockServerless = {
 
 test('The plugin generates dashboards and alarms', (t) => {
   const plugin = new ServerlessPlugin(mockServerless, {})
-
+  t.ok(plugin)
   t.ok(testState.dashboardCalled)
   t.ok(testState.alarmsCalled)
   t.end()

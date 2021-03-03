@@ -27,7 +27,7 @@ test('filterObject filters on value', (t) => {
 
 test('filterObject filters on value and key', (t) => {
   const obj = { a: 1, b: 2, c: 3 }
-  const res = filterObject(obj, (val, key) => key == 'b')
+  const res = filterObject(obj, (val, key) => key === 'b')
   t.same(res, { b: 2 })
   t.end()
 })

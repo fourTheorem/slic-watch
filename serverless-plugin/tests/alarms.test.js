@@ -28,7 +28,7 @@ test('AWS Lambda alarms are created', (t) => {
 
   const alarmResources = filterObject(
     cfTemplate.Resources,
-    (res) => res.Type == 'AWS::CloudWatch::Alarm'
+    (res) => res.Type === 'AWS::CloudWatch::Alarm'
   )
 
   const alarmsByType = {}
@@ -90,7 +90,7 @@ test('AWS Lambda alarms are created', (t) => {
 test('Invocation alarms are created if configured', (t) => {
   const iConfig = {
     ...config,
-    invocationsThreshold: 900
+    invocationsThreshold: 900,
   }
   const dash = alarms(sls, iConfig)
   const cfTemplate = require('./resources/cloudformation-template-stack.json')
@@ -98,12 +98,11 @@ test('Invocation alarms are created if configured', (t) => {
 
   const alarmResources = filterObject(
     cfTemplate.Resources,
-    (res) => res.Type == 'AWS::CloudWatch::Alarm'
+    (res) => res.Type === 'AWS::CloudWatch::Alarm'
   )
   t.equal(Object.keys(alarmResources).length, 12)
-  const invocAlarmResources = filterObject(
-    alarmResources,
-    (res) => res.Properties.AlarmName.startsWith('LambdaInvocations')
+  const invocAlarmResources = filterObject(alarmResources, (res) =>
+    res.Properties.AlarmName.startsWith('LambdaInvocations')
   )
   t.equal(Object.keys(invocAlarmResources).length, 3)
   for (const res of Object.values(invocAlarmResources)) {

@@ -13,13 +13,12 @@ const config = {
 
 test('A dashboard includes Lambda metrics', (t) => {
   const dash = dashboard(sls, config)
-  debugger
   const cfTemplate = require('./resources/cloudformation-template-stack.json')
   dash.addDashboard(cfTemplate)
 
   const dashResources = filterObject(
     cfTemplate.Resources,
-    (res) => res.Type == 'AWS::CloudWatch::Dashboard'
+    (res) => res.Type === 'AWS::CloudWatch::Dashboard'
   )
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
@@ -37,7 +36,7 @@ test('A dashboard includes Lambda metrics', (t) => {
     'Throttles Sum per Function',
     'Errors Sum per Function',
   ].sort()
-  const actualTitles = widgets.map(widget => widget.properties.title).sort()
+  const actualTitles = widgets.map((widget) => widget.properties.title).sort()
   t.same(expectedTitles, actualTitles)
   t.end()
 })

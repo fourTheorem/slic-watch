@@ -2,11 +2,6 @@
 
 const { filterObject } = require('./util')
 
-const PERIOD = 60
-const ERRORS_THRESHOLD = 0
-const THROTTLES_PERCENT_THRESHOLD = 0
-const DURATION_PERCENT_TIMEOUT_THRESHOLD = 0
-
 module.exports = function alarms(serverless, config) {
   return {
     addAlarms,
@@ -21,10 +16,9 @@ module.exports = function alarms(serverless, config) {
   function addAlarms(cfTemplate) {
     const lambdaResources = filterObject(
       cfTemplate.Resources,
-      (resource) => resource.Type == 'AWS::Lambda::Function'
+      (resource) => resource.Type === 'AWS::Lambda::Function'
     )
 
-    const alarmResources = []
     for (const [funcResourceName, funcResource] of Object.entries(
       lambdaResources
     )) {

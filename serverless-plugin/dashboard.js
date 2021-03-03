@@ -17,9 +17,8 @@ const LAMBDA_FUNCTION_METRICS = {
 }
 
 module.exports = function dashboard(serverless, config) {
-
   return {
-    addDashboard
+    addDashboard,
   }
 
   /**
@@ -31,7 +30,7 @@ module.exports = function dashboard(serverless, config) {
   function addDashboard(cfTemplate) {
     const lambdaResources = filterObject(
       cfTemplate.Resources,
-      (resource) => resource.Type == 'AWS::Lambda::Function'
+      (resource) => resource.Type === 'AWS::Lambda::Function'
     )
     const widgets = createLambdaWidgets(lambdaResources)
     const positionedWidgets = layOutWidgets(widgets)
@@ -53,12 +52,17 @@ module.exports = function dashboard(serverless, config) {
    * @param {Array.<object>} metrics The metric definitions to render
    */
   function createMetricWidget(title, metricDefs) {
-    const metrics = metricDefs.map(({ namespace, metric, dimensions, stat }) => [
-      namespace,
-      metric,
-      ...Object.entries(dimensions).reduce((acc, [name, value]) => [...acc, name, value], []),
-      [{ stat }],
-    ])
+    const metrics = metricDefs.map(
+      ({ namespace, metric, dimensions, stat }) => [
+        namespace,
+        metric,
+        ...Object.entries(dimensions).reduce(
+          (acc, [name, value]) => [...acc, name, value],
+          []
+        ),
+        [{ stat }],
+      ]
+    )
 
     return {
       type: 'metric',
@@ -88,9 +92,9 @@ module.exports = function dashboard(serverless, config) {
             namespace: 'AWS/Lambda',
             metric,
             dimensions: {
-               FunctionName: res.Properties.FunctionName,
+              FunctionName: res.Properties.FunctionName,
             },
-            stat
+            stat,
           }))
         )
         lambdaWidgets.push(metricStatWidget)
