@@ -1,0 +1,62 @@
+service: serverless-test-project
+frameworkVersion: '2'
+
+plugins:
+  - serverless-slic-watch-plugin
+
+custom:
+  slicWatch:
+    topicArn: {'Fn::Ref': alarmTopic}
+    invocationsThreshold: 10
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-1
+
+functions:
+  hello:
+    handler: handler.hello
+
+  ping:
+    handler: handler.hello
+
+  throttler:
+    handler: handler.hello
+    reservedConcurrency: 0
+
+resources:
+  Resources:
+    alarmTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: TestProjAlarms
+
+    stream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: awesome-savage-stream
+        ShardCount: 1
+
+    bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: awesome-savage-bucket
+
+    dataTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        TableName: DataTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE

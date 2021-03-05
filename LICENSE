@@ -177,7 +177,7 @@
 
    slic-watch Automatic CloudWatch metrics, alarms and dashboards for AWS applications
 
-   Copyright 2020 fourTheorem Ltd.
+   Copyright 2020-2021 fourTheorem Ltd.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
