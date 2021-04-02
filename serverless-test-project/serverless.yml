@@ -17,14 +17,22 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: basic-handler.hello
 
   ping:
-    handler: handler.hello
+    handler: basic-handler.hello
 
   throttler:
-    handler: handler.hello
+    handler: basic-handler.hello
     reservedConcurrency: 0
+
+  streamProcessor:
+    handler: stream_handler.handle
+    events:
+      - stream:
+          arn: !Ref stream
+          startingPosition: LATEST
+          maximumRetryAttempts: 0
 
 resources:
   Resources:
