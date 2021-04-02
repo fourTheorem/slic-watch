@@ -6,7 +6,7 @@ plugins:
 
 custom:
   slicWatch:
-    topicArn: {'Fn::Ref': alarmTopic}
+    topicArn: !Ref alarmTopic
     invocationsThreshold: 10
 
 provider:
@@ -30,7 +30,8 @@ functions:
     handler: stream_handler.handle
     events:
       - stream:
-          arn: !Ref stream
+          type: kinesis
+          arn: !GetAtt stream.Arn
           startingPosition: LATEST
           maximumRetryAttempts: 0
 

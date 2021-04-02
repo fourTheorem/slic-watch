@@ -1,7 +1,5 @@
 'use strict'
 
-const { filterObject } = require('./util')
-
 module.exports = function alarms(serverless, config) {
   return {
     addAlarms,
@@ -11,39 +9,56 @@ module.exports = function alarms(serverless, config) {
    * Add all required AWS Lambda alarms to the provided CloudFormation template
    * based on the Function resources found within
    *
-   * @param cfTemplate A CloudFormation template object
+   * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
   function addAlarms(cfTemplate) {
-    const lambdaResources = filterObject(
-      cfTemplate.Resources,
-      (resource) => resource.Type === 'AWS::Lambda::Function'
+    const lambdaResources = cfTemplate.getResourcesByType(
+      'AWS::Lambda::Function'
     )
 
     for (const [funcResourceName, funcResource] of Object.entries(
       lambdaResources
     )) {
       const errAlarm = createLambdaErrorsAlarm(funcResourceName, funcResource)
-      cfTemplate.Resources[errAlarm.resourceName] = errAlarm.resource
+      cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       const throttlesAlarm = createLambdaThrottlesAlarm(
         funcResourceName,
         funcResource
       )
-      cfTemplate.Resources[throttlesAlarm.resourceName] =
+      cfTemplate.addResource(
+        throttlesAlarm.resourceName,
         throttlesAlarm.resource
+      )
       const durationAlarm = createLambdaDurationAlarm(
         funcResourceName,
         funcResource
       )
-      cfTemplate.Resources[durationAlarm.resourceName] = durationAlarm.resource
+      cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
 
       if (config.invocationsThreshold) {
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource
         )
-        cfTemplate.Resources[invocationsAlarm.resourceName] =
+        cfTemplate.addResource(
+          invocationsAlarm.resourceName,
           invocationsAlarm.resource
+        )
       }
+    }
+
+    for (const [funcResourceName, funcResource] of Object.entries(
+      cfTemplate.getEventSourceMappingFunctions()
+    )) {
+      // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
+      const iteratorAgeAlarm = createIteratorAgeAlarm(
+        funcResourceName,
+        funcResource
+      )
+      cfTemplate.addResource(
+        iteratorAgeAlarm.resourceName,
+        iteratorAgeAlarm.resource
+      )
     }
   }
 
@@ -80,6 +95,27 @@ module.exports = function alarms(serverless, config) {
         TreatMissingData: 'notBreaching',
         ...metricProperties,
       },
+    }
+  }
+
+  /**
+   * Create alarms for Iterator Age on a Lambda EventSourceMapping
+   * @param {(string|Object)} func The Lambda function name
+   */
+  function createIteratorAgeAlarm(funcResourceName, funcResource) {
+    const funcName = funcResource.Properties.FunctionName
+    return {
+      resourceName: `slicWatchLambdaIteratorAgeAlarm${funcResourceName}`,
+      resource: createLambdaAlarm(
+        `LambdaIteratorAge_${funcName}`,
+        `Iterator Age for ${funcName} exceeds ${config.iteratorAgeThreshold}`,
+        funcName,
+        'GreaterThanThreshold',
+        config.iteratorAgeThreshold,
+        null,
+        'IteratorAge',
+        'Maximum'
+      ),
     }
   }
 

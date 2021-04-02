@@ -1,7 +1,5 @@
 'use strict'
 
-const { filterObject } = require('./util')
-
 const DASHBOARD_PERIOD = '-PT3H'
 const METRIC_PERIOD = 60
 const WIDGET_WIDTH = 24
@@ -28,11 +26,14 @@ module.exports = function dashboard(serverless, config) {
    * @param {object} cfTemplate A CloudFormation template
    */
   function addDashboard(cfTemplate) {
-    const lambdaResources = filterObject(
-      cfTemplate.Resources,
-      (resource) => resource.Type === 'AWS::Lambda::Function'
+    const lambdaResources = cfTemplate.getResourcesByType(
+      'AWS::Lambda::Function'
     )
-    const widgets = createLambdaWidgets(lambdaResources)
+    const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
+    const widgets = createLambdaWidgets(
+      lambdaResources,
+      Object.keys(eventSourceMappingFunctions)
+    )
     const positionedWidgets = layOutWidgets(widgets)
     const dash = { start: DASHBOARD_PERIOD, widgets: positionedWidgets }
     const dashboardResource = {
@@ -42,7 +43,7 @@ module.exports = function dashboard(serverless, config) {
         DashboardBody: JSON.stringify(dash),
       },
     }
-    cfTemplate.Resources.slicWatchDashboard = dashboardResource
+    cfTemplate.addResource('slicWatchDashboard', dashboardResource)
   }
 
   /**
@@ -81,8 +82,12 @@ module.exports = function dashboard(serverless, config) {
    * CloudFormation resources provided
    *
    * @param {Array.<object>} functionResources List of CloudFormation Lambda Function resources
+   * @param {Array.<string>} eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
-  function createLambdaWidgets(functionResources) {
+  function createLambdaWidgets(
+    functionResources,
+    eventSourceMappingFunctionResourceNames
+  ) {
     const lambdaWidgets = []
     Object.entries(LAMBDA_FUNCTION_METRICS).forEach(([metric, stats]) => {
       stats.forEach((stat) => {
@@ -100,6 +105,24 @@ module.exports = function dashboard(serverless, config) {
         lambdaWidgets.push(metricStatWidget)
       })
     })
+    if (eventSourceMappingFunctionResourceNames.length > 0) {
+      const iteratorAgeWidget = createMetricWidget(
+        `IteratorAge Maximum per Function`,
+        Object.keys(functionResources)
+          .filter((resName) =>
+            eventSourceMappingFunctionResourceNames.includes(resName)
+          )
+          .map((resName) => ({
+            namespace: 'AWS/Lambda',
+            metric: 'IteratorAge',
+            dimensions: {
+              FunctionName: functionResources[resName].Properties.FunctionName,
+            },
+            stat: 'Maximum',
+          }))
+      )
+      lambdaWidgets.push(iteratorAgeWidget)
+    }
 
     return lambdaWidgets
   }

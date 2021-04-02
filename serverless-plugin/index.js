@@ -2,12 +2,14 @@
 
 const dashboard = require('./dashboard')
 const alarms = require('./alarms')
+const CloudFormationTemplate = require('./cf-template')
 
 const DEFAULT_PLUGIN_CONFIG = {
   alarmPeriod: 60,
   durationPercentTimeoutThreshold: 95,
   errorsThreshold: 0,
   throttlesPercentThreshold: 0,
+  iteratorAgeThreshold: 10000,
 }
 
 class ServerlessPlugin {
@@ -37,8 +39,9 @@ class ServerlessPlugin {
   }
 
   compileEvents() {
-    const cfTemplate = this.serverless.service.provider
-      .compiledCloudFormationTemplate
+    const cfTemplate = CloudFormationTemplate(
+      this.serverless.service.provider.compiledCloudFormationTemplate
+    )
     this.dashboard.addDashboard(cfTemplate)
     this.alarms.addAlarms(cfTemplate)
   }

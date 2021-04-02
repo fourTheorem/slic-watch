@@ -1,9 +1,18 @@
+'use strict'
+
 const alarms = require('../alarms')
+const CloudFormationTemplate = require('../cf-template')
+
 const { filterObject } = require('../util')
 
 const { test } = require('tap')
 
-const sls = {}
+const sls = {
+  cli: {
+    log: () => {},
+  },
+}
+
 const config = {
   stackName: 'testStack',
   region: 'eu-west-1',
@@ -11,6 +20,7 @@ const config = {
   durationPercentTimeoutThreshold: 95,
   errorsThreshold: 0,
   throttlesPercentThreshold: 0,
+  iteratorAgeThreshold: 10000,
 }
 
 function assertCommonAlarmProperties(t, al) {
@@ -21,22 +31,26 @@ function assertCommonAlarmProperties(t, al) {
   t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
 }
 
-test('AWS Lambda alarms are created', (t) => {
-  const dash = alarms(sls, config)
-  const cfTemplate = require('./resources/cloudformation-template-stack.json')
-  dash.addAlarms(cfTemplate)
+function alarmNameToType(alarmName) {
+  return alarmName.split('_')[0]
+}
 
-  const alarmResources = filterObject(
-    cfTemplate.Resources,
-    (res) => res.Type === 'AWS::CloudWatch::Alarm'
+test('AWS Lambda alarms are created', (t) => {
+  const alarmsInstance = alarms(sls, config)
+  const cfTemplate = CloudFormationTemplate(
+    require('./resources/cloudformation-template-stack.json'),
+    sls
   )
+  alarmsInstance.addAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 9)
+  t.equal(Object.keys(alarmResources).length, 13)
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
-    const alarmType = al.AlarmName.split('_')[0]
+    const alarmType = alarmNameToType(al.AlarmName)
     alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
     alarmsByType[alarmType].add(al)
   }
@@ -44,6 +58,7 @@ test('AWS Lambda alarms are created', (t) => {
   t.same(Object.keys(alarmsByType).sort(), [
     'LambdaDuration',
     'LambdaErrors',
+    'LambdaIteratorAge',
     'LambdaThrottles',
   ])
 
@@ -84,6 +99,23 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(metricsById.invocations.MetricStat.Period, 60)
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
+
+  t.equal(alarmsByType.LambdaIteratorAge.size, 1)
+  for (const al of alarmsByType.LambdaIteratorAge) {
+    t.equal(al.MetricName, 'IteratorAge')
+    t.equal(al.Statistic, 'Maximum')
+    t.ok(al.Threshold)
+    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.Namespace, 'AWS/Lambda')
+    t.equal(al.Period, config.alarmPeriod)
+    t.same(al.Dimensions, [
+      {
+        Name: 'FunctionName',
+        Value: 'serverless-test-project-dev-streamProcessor',
+      },
+    ])
+  }
+
   t.end()
 })
 
@@ -92,19 +124,21 @@ test('Invocation alarms are created if configured', (t) => {
     ...config,
     invocationsThreshold: 900,
   }
-  const dash = alarms(sls, iConfig)
-  const cfTemplate = require('./resources/cloudformation-template-stack.json')
-  dash.addAlarms(cfTemplate)
+  const a = alarms(sls, iConfig)
+  const cfTemplate = CloudFormationTemplate(
+    require('./resources/cloudformation-template-stack.json'),
+    sls
+  )
+  a.addAlarms(cfTemplate)
 
-  const alarmResources = filterObject(
-    cfTemplate.Resources,
-    (res) => res.Type === 'AWS::CloudWatch::Alarm'
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const invocAlarmResources = filterObject(
+    alarmResources,
+    (res) =>
+      typeof res.Properties.AlarmName === 'string' &&
+      res.Properties.AlarmName.startsWith('LambdaInvocations')
   )
-  t.equal(Object.keys(alarmResources).length, 12)
-  const invocAlarmResources = filterObject(alarmResources, (res) =>
-    res.Properties.AlarmName.startsWith('LambdaInvocations')
-  )
-  t.equal(Object.keys(invocAlarmResources).length, 3)
+  t.equal(Object.keys(invocAlarmResources).length, 4)
   for (const res of Object.values(invocAlarmResources)) {
     const al = res.Properties
     t.equal(al.MetricName, 'Invocations')
@@ -116,3 +150,36 @@ test('Invocation alarms are created if configured', (t) => {
   }
   t.end()
 })
+;[
+  {
+    functionName: { 'Fn::GetAtt': ['nonExistent', 'Arn'] },
+    reason: 'unresolved resource in GetAtt',
+  },
+  {
+    functionName: {},
+    reason: 'unexpected reference format',
+  },
+].forEach(({ functionName, reason }) =>
+  test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
+    const cfTemplate = CloudFormationTemplate(
+      {
+        Resources: {
+          esm: {
+            Type: 'AWS::Lambda::EventSourceMapping',
+            Properties: {
+              FunctionName: functionName,
+            },
+          },
+        },
+      },
+      sls
+    )
+    const a = alarms(sls, config)
+    a.addAlarms(cfTemplate)
+    const alarmResources = cfTemplate.getResourcesByType(
+      'AWS::CloudWatch::Alarm'
+    )
+    t.equal(Object.keys(alarmResources).length, 0)
+    t.end()
+  })
+)
