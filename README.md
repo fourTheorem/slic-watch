@@ -21,18 +21,26 @@ npm install serverless-slic-watch-plugin --save-dev
 
 ## Configuration
 
-At a minimum, you are required to specify an SNS Topic. This topic is the destination for all alarms.
+
+The `topic` configuration must be configured with the ARN of an SNS Topic.
+Alarm configuration values may also be specified. These variables along with their defaults are shown in this sample configuration:
+
 
 ```yaml
 ...
 
 custom:
   slicWatch:
-    topicArn: <YOUR_TOPIC_ARN>
+    topic: SNS_TOPIC_ARN
+    alarmPeriod: 60,                      # The period in seconds in which metrics are evaluated
+    durationPercentTimeoutThreshold: 95,  # The % of the function's timeout at which to alarm on function duration
+    errorsThreshold: 0,                   # The number of errors to allow without alarming on function errors
+    throttlesPercentThreshold: 0,         # The % of throttled function invocations to allow before alarming
+    iteratorAgeThreshold: 10000,          # The stream iterator age in milliseconds beyond which to alarm
 ```
 
-An example project is provided for reference: [serverless-test-project](../serverless-test-project)
+An example project is provided for reference: [serverless-test-project](./serverless-test-project)
 
 ## LICENSE
 
-Apache - [LICENSE](../LICENSE)
+Apache - [LICENSE](./LICENSE)
