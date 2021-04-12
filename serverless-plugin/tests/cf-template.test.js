@@ -16,7 +16,7 @@ const emptyTemplate = {
 
 test('Source is returned', (t) => {
   const template = CloudFormationTemplate(emptyTemplate, sls)
-  t.same(template.getSourceObject(), template)
+  t.same(template.getSourceObject(), emptyTemplate)
   t.end()
 })
 
