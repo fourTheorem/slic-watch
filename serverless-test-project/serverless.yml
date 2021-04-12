@@ -6,7 +6,7 @@ plugins:
 
 custom:
   slicWatch:
-    topicArn: {'Fn::Ref': alarmTopic}
+    topicArn: {Ref: alarmTopic}
     invocationsThreshold: 10
 
 provider:
@@ -17,14 +17,23 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: basic-handler.hello
 
   ping:
-    handler: handler.hello
+    handler: basic-handler.hello
 
   throttler:
-    handler: handler.hello
+    handler: basic-handler.hello
     reservedConcurrency: 0
+
+  streamProcessor:
+    handler: stream_handler.handle
+    events:
+      - stream:
+          type: kinesis
+          arn: {'Fn::GetAtt': [stream, Arn]}
+          startingPosition: LATEST
+          maximumRetryAttempts: 0
 
 resources:
   Resources:

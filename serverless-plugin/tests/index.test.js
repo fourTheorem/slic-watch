@@ -68,8 +68,8 @@ test('compileEvents adds dashboard and alarms', (t) => {
   const plugin = new ServerlessPlugin(mockServerless, {})
   plugin.compileEvents()
 
-  t.equal(testState.addDashboardCfTemplate, testCfTemplate)
-  t.equal(testState.addAlarmsCfTemplate, testCfTemplate)
+  t.equal(testState.addDashboardCfTemplate.getSourceObject(), testCfTemplate)
+  t.equal(testState.addAlarmsCfTemplate.getSourceObject(), testCfTemplate)
   t.end()
 })
 
