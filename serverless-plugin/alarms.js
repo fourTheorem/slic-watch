@@ -5,13 +5,10 @@ const { cascade } = require('./cascading-config')
 const lambdaAlarms = require('./alarms-lambda')
 const apiGatewayAlarms = require('./alarms-api-gateway')
 
-module.exports = function alarms(serverless, config, context) {
-  const alarmConfig = cascade(config.alarms)
-  const { createLambdaAlarms } = lambdaAlarms(alarmConfig.Lambda, context)
-  const { createApiGatewayAlarms } = apiGatewayAlarms(
-    alarmConfig.ApiGateway,
-    context
-  )
+module.exports = function alarms(serverless, alarmConfig, context) {
+  const { Lambda: lambdaConfig, ApiGateway: apiGwConfig } = cascade(alarmConfig)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, context)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
 
   return {
     addAlarms,

@@ -8,7 +8,10 @@ const _ = require('lodash')
 
 const defaultConfig = require('../default-config')
 const { cascade } = require('../cascading-config')
-const { assertCommonAlarmProperties, alarmNameToType } = require('./test-utils')
+const {
+  assertCommonAlarmProperties,
+  alarmNameToType,
+} = require('./testing-utils')
 
 const sls = {
   cli: {

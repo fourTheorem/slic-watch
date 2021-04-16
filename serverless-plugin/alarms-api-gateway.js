@@ -9,8 +9,8 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
   }
 
   /**
-   * Add all required AWS Lambda alarms to the provided CloudFormation template
-   * based on the Function resources found within
+   * Add all required API Gateway alarms to the provided CloudFormation template
+   * based on the resources found within
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
@@ -50,22 +50,19 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
     apiName,
     comparisonOperator,
     threshold,
-    metrics,
     metricName,
     statistic,
     period,
     extendedStatistic
   ) {
-    const metricProperties = metrics
-      ? { Metrics: metrics }
-      : {
-          Dimensions: [{ Name: 'ApiName', Value: apiName }],
-          MetricName: metricName,
-          Namespace: 'AWS/ApiGateway',
-          Period: period,
-          Statistic: statistic,
-          ExtendedStatistic: extendedStatistic,
-        }
+    const metricProperties = {
+      Dimensions: [{ Name: 'ApiName', Value: apiName }],
+      MetricName: metricName,
+      Namespace: 'AWS/ApiGateway',
+      Period: period,
+      Statistic: statistic,
+      ExtendedStatistic: extendedStatistic,
+    }
 
     return {
       Type: 'AWS::CloudWatch::Alarm',
@@ -94,7 +91,6 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         apiName,
         config.ComparisonOperator,
         threshold,
-        null,
         '5XXErrors',
         config.Statistic,
         config.Period,
@@ -114,7 +110,6 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         apiName,
         config.ComparisonOperator,
         threshold,
-        null,
         '4XXErrors',
         config.Statistic,
         config.Period,
@@ -134,7 +129,6 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         apiName,
         config.ComparisonOperator,
         threshold,
-        null,
         'Latency',
         config.Statistic,
         config.Period,
