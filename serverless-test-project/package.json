@@ -6,5 +6,8 @@
   "license": "ISC",
   "devDependencies": {
     "serverless-slic-watch-plugin": "^1.0.0-alpha.0"
+  },
+  "scripts": {
+    "build": "sls package"
   }
 }
