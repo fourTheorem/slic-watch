@@ -22,7 +22,7 @@ jobs:
       - coveralls/upload:
           flag_name: << parameters.node-version >>
       - run: |
-          cd serverless-test-project
+          cd ~/slic-watch/serverless-test-project
           npm install
           npm run build
 workflows:
