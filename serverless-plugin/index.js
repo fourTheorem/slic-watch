@@ -12,23 +12,25 @@ class ServerlessPlugin {
     this.options = options
     this.providerNaming = serverless.providers.aws.naming
 
-    this.config = _.merge(
-      defaultConfig,
-      (serverless.service.custom || {}).slicWatch,
-      {
-        region: serverless.service.provider.region,
-        stackName: this.providerNaming.getStackName(),
-      }
-    )
-
-    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(this.config)}`)
-
-    if (!this.config.topicArn) {
+    const { topicArn, ...pluginConfig } = (
+      serverless.service.custom || {}
+    ).slicWatch
+    if (!topicArn) {
       throw new Error('topicArn not specified in custom.slicWatch')
     }
 
-    this.dashboard = dashboard(serverless, this.config)
-    this.alarms = alarms(serverless, this.config)
+    const context = {
+      region: serverless.service.provider.region,
+      stackName: this.providerNaming.getStackName(),
+      topicArn,
+    }
+
+    const config = _.merge(defaultConfig, pluginConfig)
+
+    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(config)}`)
+
+    this.dashboard = dashboard(serverless, config, context)
+    this.alarms = alarms(serverless, config, context)
 
     this.hooks = {
       'package:compileEvents': this.compileEvents.bind(this),

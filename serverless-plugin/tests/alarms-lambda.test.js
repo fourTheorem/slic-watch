@@ -1,6 +1,6 @@
 'use strict'
 
-const alarms = require('../alarms')
+const lambdaAlarms = require('../alarms-lambda')
 const CloudFormationTemplate = require('../cf-template')
 
 const { test } = require('tap')
@@ -8,6 +8,7 @@ const _ = require('lodash')
 
 const { filterObject } = require('../util')
 const defaultConfig = require('../default-config')
+const { cascade } = require('../cascading-config')
 
 const sls = {
   cli: {
@@ -15,12 +16,16 @@ const sls = {
   },
 }
 
-const config = _.merge(defaultConfig, {
+const context = {
+  topicArn: 'dummy-arn',
   stackName: 'testStack',
   region: 'eu-west-1',
-  alarms: {
-    Period: 60,
+}
+
+const alarmConfig = cascade(
+  _.merge(defaultConfig.alarms, {
     Lambda: {
+      Period: 60,
       Errors: {
         Threshold: 0,
       },
@@ -38,6 +43,7 @@ const config = _.merge(defaultConfig, {
       },
     },
     APIGateway: {
+      Period: 60,
       '5XXErrors': {
         Threshold: 0.0,
       },
@@ -48,8 +54,10 @@ const config = _.merge(defaultConfig, {
         Threshold: 5000,
       },
     },
-  },
-})
+  })
+)
+
+const lambdaAlarmConfig = alarmConfig.Lambda
 
 function assertCommonAlarmProperties(t, al) {
   t.ok(al.AlarmDescription.length > 0)
@@ -64,12 +72,12 @@ function alarmNameToType(alarmName) {
 }
 
 test('AWS Lambda alarms are created', (t) => {
-  const alarmsInstance = alarms(sls, config)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
   const cfTemplate = CloudFormationTemplate(
     require('./resources/cloudformation-template-stack.json'),
     sls
   )
-  alarmsInstance.addAlarms(cfTemplate)
+  createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
@@ -88,18 +96,15 @@ test('AWS Lambda alarms are created', (t) => {
     'LambdaErrors',
     'LambdaIteratorAge',
     'LambdaThrottles',
-    'ApiAvailabilty',
-    'Api4xxErrors',
-    'ApiLatency',
   ])
 
   for (const al of alarmsByType.LambdaErrors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    t.equal(al.Threshold, config.alarms.Lambda.Errors.Threshold)
+    t.equal(al.Threshold, lambdaAlarmConfig.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarms.Period)
+    t.equal(al.Period, lambdaAlarmConfig.Period)
     t.equal(al.Dimensions.length, 1)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
   }
@@ -110,7 +115,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(al.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarms.Period)
+    t.equal(al.Period, lambdaAlarmConfig.Period)
   }
 
   for (const al of alarmsByType.LambdaThrottles) {
@@ -123,11 +128,11 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(metricsById.throttles_pc.Expression)
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    t.equal(metricsById.throttles.MetricStat.Period, config.alarms.Period)
+    t.equal(metricsById.throttles.MetricStat.Period, lambdaAlarmConfig.Period)
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    t.equal(metricsById.invocations.MetricStat.Period, config.alarms.Period)
+    t.equal(metricsById.invocations.MetricStat.Period, lambdaAlarmConfig.Period)
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
@@ -138,7 +143,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(al.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarms.Period)
+    t.equal(al.Period, lambdaAlarmConfig.Period)
     t.same(al.Dimensions, [
       {
         Name: 'FunctionName',
@@ -147,67 +152,18 @@ test('AWS Lambda alarms are created', (t) => {
     ])
   }
 
-  t.equal(alarmsByType.ApiAvailability.size, 1)
-  for (const al of alarmsByType.ApiAvailability) {
-    t.equal(al.MetricName, '5XXErrors')
-    t.equal(al.Statistic, 'Average')
-    t.equal(al.Threshold, config.alarms.ApiGateway['5XXErrors'].Threshold)
-    t.equal(al.EvaluationPeriods, 3)
-    t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, config.alarms.Period)
-    t.same(al.Dimensions, [
-      {
-        Name: 'ApiName',
-        Value: 'serverless-test-project-dev-get',
-      },
-    ])
-  }
-
-  for (const al of alarmsByType.Api4xxErrors) {
-    t.equal(al.MetricName, 'Latency')
-    t.equal(al.Statistic, '4XXErrors')
-    t.equal(al.ExtendedStatistic, 'p99')
-    t.equal(al.Threshold, config.alarms.ApiGateway['4XXErrors'].Threshold)
-    t.equal(al.EvaluationPeriods, 3)
-    t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, config.alarms.Period)
-    t.same(al.Dimensions, [
-      {
-        Name: 'ApiName',
-        Value: 'serverless-test-project-dev-get',
-      },
-    ])
-  }
-
-  for (const al of alarmsByType.ApiLatency) {
-    t.equal(al.MetricName, 'Latency')
-    t.equal(al.ExtendedStatistic, 'p99')
-    t.equal(al.Threshold, config.alarms.ApiGateway.Latency.Threshold)
-    t.equal(al.EvaluationPeriods, 5)
-    t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, config.alarms.Period)
-    t.same(al.Dimensions, [
-      {
-        Name: 'ApiName',
-        Value: 'serverless-test-project-dev-get',
-      },
-    ])
-  }
-
   t.end()
 })
 
 test('Invocation alarms are created if configured', (t) => {
-  const iConfig = {
-    ...config,
-    invocationsThreshold: 900,
-  }
-  const a = alarms(sls, iConfig)
+  const iConfig = { ...lambdaAlarmConfig }
+  iConfig.Invocations.Threshold = 900
+  const { createLambdaAlarms } = lambdaAlarms(iConfig, context)
   const cfTemplate = CloudFormationTemplate(
     require('./resources/cloudformation-template-stack.json'),
     sls
   )
-  a.addAlarms(cfTemplate)
+  createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   const invocAlarmResources = filterObject(
@@ -221,13 +177,16 @@ test('Invocation alarms are created if configured', (t) => {
     const al = res.Properties
     t.equal(al.MetricName, 'Invocations')
     t.equal(al.Statistic, 'Sum')
-    t.equal(al.Threshold, iConfig.invocationsThreshold)
+    t.equal(al.Threshold, 900)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarms.Period)
+    t.equal(al.Period, lambdaAlarmConfig.Period)
   }
   t.end()
 })
+/**
+ * Create tests that ensure no IteratorAge alarms are created if the FunctionName is unresolved
+ */
 ;[
   {
     functionName: { 'Fn::GetAtt': ['nonExistent', 'Arn'] },
@@ -252,8 +211,8 @@ test('Invocation alarms are created if configured', (t) => {
       },
       sls
     )
-    const a = alarms(sls, config)
-    a.addAlarms(cfTemplate)
+    const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
+    createLambdaAlarms(cfTemplate)
     const alarmResources = cfTemplate.getResourcesByType(
       'AWS::CloudWatch::Alarm'
     )

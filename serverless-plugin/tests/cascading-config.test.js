@@ -101,3 +101,23 @@ test('Circular dependencies cause an error', (t) => {
   t.throws(() => cascade(input))
   t.end()
 })
+
+test('Null property values are retained', (t) => {
+  const input = {
+    a: 1,
+    sub: {
+      b: null,
+    },
+  }
+  const expected = {
+    a: 1,
+    sub: {
+      a: 1,
+      b: null,
+    },
+  }
+
+  const cascaded = cascade(input)
+  t.same(cascaded, expected)
+  t.end()
+})
