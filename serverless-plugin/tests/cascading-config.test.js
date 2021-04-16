@@ -2,7 +2,7 @@
 
 const { test } = require('tap')
 
-const { compile } = require('../cascading-config')
+const { cascade } = require('../cascading-config')
 
 test('No overrides cascades everything down', (t) => {
   const input = {
@@ -38,8 +38,8 @@ test('No overrides cascades everything down', (t) => {
       c: 4,
     },
   }
-  const compiled = compile(input)
-  t.same(compiled, expected)
+  const cascaded = cascade(input)
+  t.same(cascaded, expected)
   t.end()
 })
 
@@ -78,8 +78,8 @@ test('Overrides prevent cascading', (t) => {
       c: 4,
     },
   }
-  const compiled = compile(input)
-  t.same(compiled, expected)
+  const cascaded = cascade(input)
+  t.same(cascaded, expected)
   t.end()
 })
 
@@ -98,6 +98,6 @@ test('Circular dependencies cause an error', (t) => {
   }
   input.sub1.sub2_1.sub_2_1_circ = input
 
-  t.throws(() => compile(input))
+  t.throws(() => cascade(input))
   t.end()
 })

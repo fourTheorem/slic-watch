@@ -3,9 +3,11 @@
 const alarms = require('../alarms')
 const CloudFormationTemplate = require('../cf-template')
 
-const { filterObject } = require('../util')
-
 const { test } = require('tap')
+const _ = require('lodash')
+
+const { filterObject } = require('../util')
+const defaultConfig = require('../default-config')
 
 const sls = {
   cli: {
@@ -13,15 +15,41 @@ const sls = {
   },
 }
 
-const config = {
+const config = _.merge(defaultConfig, {
   stackName: 'testStack',
   region: 'eu-west-1',
-  alarmPeriod: 60,
-  durationPercentTimeoutThreshold: 95,
-  errorsThreshold: 0,
-  throttlesPercentThreshold: 0,
-  iteratorAgeThreshold: 10000,
-}
+  alarms: {
+    Period: 60,
+    Lambda: {
+      Errors: {
+        Threshold: 0,
+      },
+      ThrottlesPc: {
+        Threshold: 0,
+      },
+      DurationPc: {
+        Threshold: 95,
+      },
+      Invocations: {
+        Threshold: null, // Disabled
+      },
+      IteratorAge: {
+        Threshold: 10000,
+      },
+    },
+    APIGateway: {
+      '5XXErrors': {
+        Threshold: 0.0,
+      },
+      '4XXErrors': {
+        Threshold: 0.05,
+      },
+      Latency: {
+        Threshold: 5000,
+      },
+    },
+  },
+})
 
 function assertCommonAlarmProperties(t, al) {
   t.ok(al.AlarmDescription.length > 0)
@@ -60,15 +88,18 @@ test('AWS Lambda alarms are created', (t) => {
     'LambdaErrors',
     'LambdaIteratorAge',
     'LambdaThrottles',
+    'ApiAvailabilty',
+    'Api4xxErrors',
+    'ApiLatency',
   ])
 
   for (const al of alarmsByType.LambdaErrors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    t.equal(al.Threshold, config.errorsThreshold)
+    t.equal(al.Threshold, config.alarms.Lambda.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarmPeriod)
+    t.equal(al.Period, config.alarms.Period)
     t.equal(al.Dimensions.length, 1)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
   }
@@ -79,7 +110,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(al.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarmPeriod)
+    t.equal(al.Period, config.alarms.Period)
   }
 
   for (const al of alarmsByType.LambdaThrottles) {
@@ -92,11 +123,11 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(metricsById.throttles_pc.Expression)
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    t.equal(metricsById.throttles.MetricStat.Period, 60)
+    t.equal(metricsById.throttles.MetricStat.Period, config.alarms.Period)
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    t.equal(metricsById.invocations.MetricStat.Period, 60)
+    t.equal(metricsById.invocations.MetricStat.Period, config.alarms.Period)
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
@@ -107,11 +138,58 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(al.Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarmPeriod)
+    t.equal(al.Period, config.alarms.Period)
     t.same(al.Dimensions, [
       {
         Name: 'FunctionName',
         Value: 'serverless-test-project-dev-streamProcessor',
+      },
+    ])
+  }
+
+  t.equal(alarmsByType.ApiAvailability.size, 1)
+  for (const al of alarmsByType.ApiAvailability) {
+    t.equal(al.MetricName, '5XXErrors')
+    t.equal(al.Statistic, 'Average')
+    t.equal(al.Threshold, config.alarms.ApiGateway['5XXErrors'].Threshold)
+    t.equal(al.EvaluationPeriods, 3)
+    t.equal(al.Namespace, 'AWS/ApiGateway')
+    t.equal(al.Period, config.alarms.Period)
+    t.same(al.Dimensions, [
+      {
+        Name: 'ApiName',
+        Value: 'serverless-test-project-dev-get',
+      },
+    ])
+  }
+
+  for (const al of alarmsByType.Api4xxErrors) {
+    t.equal(al.MetricName, 'Latency')
+    t.equal(al.Statistic, '4XXErrors')
+    t.equal(al.ExtendedStatistic, 'p99')
+    t.equal(al.Threshold, config.alarms.ApiGateway['4XXErrors'].Threshold)
+    t.equal(al.EvaluationPeriods, 3)
+    t.equal(al.Namespace, 'AWS/ApiGateway')
+    t.equal(al.Period, config.alarms.Period)
+    t.same(al.Dimensions, [
+      {
+        Name: 'ApiName',
+        Value: 'serverless-test-project-dev-get',
+      },
+    ])
+  }
+
+  for (const al of alarmsByType.ApiLatency) {
+    t.equal(al.MetricName, 'Latency')
+    t.equal(al.ExtendedStatistic, 'p99')
+    t.equal(al.Threshold, config.alarms.ApiGateway.Latency.Threshold)
+    t.equal(al.EvaluationPeriods, 5)
+    t.equal(al.Namespace, 'AWS/ApiGateway')
+    t.equal(al.Period, config.alarms.Period)
+    t.same(al.Dimensions, [
+      {
+        Name: 'ApiName',
+        Value: 'serverless-test-project-dev-get',
       },
     ])
   }
@@ -146,7 +224,7 @@ test('Invocation alarms are created if configured', (t) => {
     t.equal(al.Threshold, iConfig.invocationsThreshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, config.alarmPeriod)
+    t.equal(al.Period, config.alarms.Period)
   }
   t.end()
 })

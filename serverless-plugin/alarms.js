@@ -1,6 +1,10 @@
 'use strict'
 
+const { cascade } = require('./cascading-config')
+
 module.exports = function alarms(serverless, config) {
+  const alarmConfig = cascade(config.alarms)
+
   return {
     addAlarms,
   }
@@ -35,7 +39,7 @@ module.exports = function alarms(serverless, config) {
       )
       cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
 
-      if (config.invocationsThreshold) {
+      if (alarmConfig.Lambda.Invocations.threshold) {
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource
@@ -70,7 +74,8 @@ module.exports = function alarms(serverless, config) {
     threshold,
     metrics,
     metricName,
-    statistic
+    statistic,
+    period
   ) {
     const metricProperties = metrics
       ? { Metrics: metrics }
@@ -78,7 +83,7 @@ module.exports = function alarms(serverless, config) {
           Dimensions: [{ Name: 'FunctionName', Value: funcName }],
           MetricName: metricName,
           Namespace: 'AWS/Lambda',
-          Period: config.alarmPeriod,
+          Period: period,
           Statistic: statistic,
         }
 
@@ -104,40 +109,47 @@ module.exports = function alarms(serverless, config) {
    */
   function createIteratorAgeAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
+    const threshold = alarmConfig.Lambda.IteratorAge.Threshold
     return {
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaIteratorAge_${funcName}`,
-        `Iterator Age for ${funcName} exceeds ${config.iteratorAgeThreshold}`,
+        `Iterator Age for ${funcName} exceeds ${threshold}`,
         funcName,
-        'GreaterThanThreshold',
-        config.iteratorAgeThreshold,
+        alarmConfig.Lambda.IteratorAge.ComparisonOperator,
+        threshold,
         null,
         'IteratorAge',
-        'Maximum'
+        alarmConfig.Lambda.IteratorAge.Statistic,
+        alarmConfig.Lambda.IteratorAge.Period
       ),
     }
   }
 
   function createLambdaErrorsAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
+    const threshold = alarmConfig.Lambda.Errors.Threshold
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaErrors_${funcName}`,
-        `Error count for ${funcName} exceeds ${config.errorsThreshold}`,
-        funcName,
+        `Error count for ${funcName} exceeds ${threshold}`,
+        alarmConfig.Lambda.Errors.ComparisonOperator,
         'GreaterThanThreshold',
-        config.errorsThreshold,
+        threshold,
         null,
         'Errors',
-        'Sum'
+        alarmConfig.Lambda.Errors.Statistic,
+        alarmConfig.Lambda.Errors.Period
       ),
     }
   }
 
   function createLambdaThrottlesAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
+    const threshold = alarmConfig.Lambda.ThrottlesPc.Threshold
+    const period = alarmConfig.Lambda.ThrottlesPc.Period
+
     const metrics = [
       {
         Id: 'throttles_pc',
@@ -153,7 +165,7 @@ module.exports = function alarms(serverless, config) {
             MetricName: 'Throttles',
             Dimensions: [{ Name: 'FunctionName', Value: funcName }],
           },
-          Period: config.alarmPeriod,
+          Period: period,
           Stat: 'Sum',
         },
         ReturnData: false,
@@ -166,7 +178,7 @@ module.exports = function alarms(serverless, config) {
             MetricName: 'Invocations',
             Dimensions: [{ Name: 'FunctionName', Value: funcName }],
           },
-          Period: config.alarmPeriod,
+          Period: period,
           Stat: 'Sum',
         },
         ReturnData: false,
@@ -177,10 +189,10 @@ module.exports = function alarms(serverless, config) {
       resourceName: `slicWatchLambdaThrottlesAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaThrottles_${funcName}`,
-        `Throttles % for ${funcName} exceeds ${config.throttlesPercentThreshold}`,
+        `Throttles % for ${funcName} exceeds ${threshold}`,
         funcName,
-        'GreaterThanThreshold',
-        config.throttlesPercentThreshold,
+        alarmConfig.Lambda.ThrottlesPc.ComparisonOperator,
+        threshold,
         metrics
       ),
     }
@@ -189,34 +201,40 @@ module.exports = function alarms(serverless, config) {
   function createLambdaDurationAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
     const funcTimeout = funcResource.Properties.Timeout
+    const threshold = alarmConfig.Lambda.DurationPc.Threshold
+
     return {
       resourceName: `slicWatchLambdaDurationAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaDuration_${funcName}`,
-        `Max duration for ${funcName} exceeds ${config.durationPercentTimeoutThreshold}% of timeout (${funcTimeout})`,
+        `Max duration for ${funcName} exceeds ${threshold}% of timeout (${funcTimeout})`,
         funcName,
-        'GreaterThanThreshold',
-        (config.durationPercentTimeoutThreshold * funcTimeout) / 100,
+        alarmConfig.Lambda.DurationPc.ComparisonOperator,
+        (threshold * funcTimeout) / 100,
         null,
         'Duration',
-        'Maximum'
+        alarmConfig.Lambda.DurationPc.Statistic,
+        alarmConfig.Lambda.DurationPc.Period
       ),
     }
   }
 
   function createLambdaInvocationsAlarm(funcResourceName, funcResource) {
     const funcName = funcResource.Properties.FunctionName
+    const threshold = alarmConfig.Lambda.Invocations.Threshold
     return {
       resourceName: `slicWatchLambdaInvocationsAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaInvocations_${funcName}`,
-        `Total invocations for ${funcName} exceeds ${config.invocationsThreshold}`,
+        `Total invocations for ${funcName} exceeds ${threshold}`,
         funcName,
-        'GreaterThanThreshold',
+        'Invocations',
+        alarmConfig.Lambda.Invocations.ComparisonOperator,
         config.invocationsThreshold,
         null,
         'Invocations',
-        'Sum'
+        alarmConfig.Lambda.Invocations.Statistic,
+        alarmConfig.Lambda.Invocations.Period
       ),
     }
   }
