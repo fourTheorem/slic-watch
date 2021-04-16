@@ -1,20 +1,20 @@
 'use strict'
 
 /**
- * @param {object} lambdaAlarmConfig The fully resolved alarm configuration
+ * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
  */
-module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
+module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
   return {
-    createLambdaAlarms,
+    createApiGatewayAlarms,
   }
 
   /**
-   * Add all required AWS Lambda alarms to the provided CloudFormation template
-   * based on the Function resources found within
+   * Add all required API Gateway alarms to the provided CloudFormation template
+   * based on the API Gateway resources found within
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
-  function createLambdaAlarms(cfTemplate) {
+  function createApiGatewayAlarms(cfTemplate) {
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )
@@ -25,13 +25,13 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
       const errAlarm = createLambdaErrorsAlarm(
         funcResourceName,
         funcResource,
-        lambdaAlarmConfig.Errors
+        apiGwAlarmConfig.Errors
       )
       cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       const throttlesAlarm = createLambdaThrottlesAlarm(
         funcResourceName,
         funcResource,
-        lambdaAlarmConfig.ThrottlesPc
+        apiGwAlarmConfig.ThrottlesPc
       )
 
       cfTemplate.addResource(
@@ -41,15 +41,15 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
       const durationAlarm = createLambdaDurationAlarm(
         funcResourceName,
         funcResource,
-        lambdaAlarmConfig.DurationPc
+        apiGwAlarmConfig.DurationPc
       )
       cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
 
-      if (lambdaAlarmConfig.Invocations.Threshold) {
+      if (apiGwAlarmConfig.Invocations.Threshold) {
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.Invocations
+          apiGwAlarmConfig.Invocations
         )
         cfTemplate.addResource(
           invocationsAlarm.resourceName,
@@ -65,7 +65,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
       const iteratorAgeAlarm = createIteratorAgeAlarm(
         funcResourceName,
         funcResource,
-        lambdaAlarmConfig.IteratorAge
+        apiGwAlarmConfig.IteratorAge
       )
       cfTemplate.addResource(
         iteratorAgeAlarm.resourceName,

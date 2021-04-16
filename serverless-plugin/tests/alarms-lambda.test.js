@@ -9,6 +9,7 @@ const _ = require('lodash')
 const { filterObject } = require('../util')
 const defaultConfig = require('../default-config')
 const { cascade } = require('../cascading-config')
+const { assertCommonAlarmProperties, alarmNameToType } = require('./test-utils')
 
 const sls = {
   cli: {
@@ -42,34 +43,10 @@ const alarmConfig = cascade(
         Threshold: 10000,
       },
     },
-    APIGateway: {
-      Period: 60,
-      '5XXErrors': {
-        Threshold: 0.0,
-      },
-      '4XXErrors': {
-        Threshold: 0.05,
-      },
-      Latency: {
-        Threshold: 5000,
-      },
-    },
   })
 )
 
 const lambdaAlarmConfig = alarmConfig.Lambda
-
-function assertCommonAlarmProperties(t, al) {
-  t.ok(al.AlarmDescription.length > 0)
-  t.ok(al.ActionsEnabled)
-  t.equal(al.AlarmActions.length, 1)
-  t.ok(al.AlarmActions)
-  t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
-}
-
-function alarmNameToType(alarmName) {
-  return alarmName.split('_')[0]
-}
 
 test('AWS Lambda alarms are created', (t) => {
   const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)

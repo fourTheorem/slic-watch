@@ -30,13 +30,13 @@ module.exports = {
         Statistic: 'Maximum',
       },
     },
-    APIGateway: {
+    ApiGateway: {
       '5XXErrors': {
         Statistic: 'Average',
         Threshold: 0.0,
       },
       '4XXErrors': {
-        ExtendedStatistic: 'p99',
+        Statistic: 'Average',
         Threshold: 0.05,
       },
       Latency: {

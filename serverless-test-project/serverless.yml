@@ -1,8 +1,8 @@
 service: serverless-test-project
 frameworkVersion: '2'
 
-plugins:
-  - serverless-slic-watch-plugin
+# plugins:
+#   - serverless-slic-watch-plugin
 
 custom:
   slicWatch:
@@ -37,6 +37,13 @@ functions:
           arn: {'Fn::GetAtt': [stream, Arn]}
           startingPosition: LATEST
           maximumRetryAttempts: 0
+
+  httpGetter:
+    handler: apigw-handler.handle_get
+    events:
+      - http:
+          method: get
+          path: 'item'
 
 resources:
   Resources:

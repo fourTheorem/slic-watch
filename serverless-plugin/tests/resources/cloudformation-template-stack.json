@@ -95,6 +95,12 @@
         "LogGroupName": "/aws/lambda/serverless-test-project-dev-streamProcessor"
       }
     },
+    "HttpGetterLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-test-project-dev-httpGetter"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -196,7 +202,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1617362144878-2021-04-02T11:15:44.878Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1618572333774-2021-04-16T11:25:33.774Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -221,7 +227,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1617362144878-2021-04-02T11:15:44.878Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1618572333774-2021-04-16T11:25:33.774Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -246,7 +252,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1617362144878-2021-04-02T11:15:44.878Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1618572333774-2021-04-16T11:25:33.774Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -272,7 +278,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1617362144878-2021-04-02T11:15:44.878Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1618572333774-2021-04-16T11:25:33.774Z/serverless-test-project.zip"
         },
         "Handler": "stream_handler.handle",
         "Runtime": "nodejs12.x",
@@ -290,44 +296,198 @@
         "StreamProcessorLogGroup"
       ]
     },
-    "HelloLambdaVersion5lOPrbkYxElidjsMSlkt7IgjhUuuyTIvV1w817Csqo": {
+    "HttpGetterLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-test-project/dev/1618572333774-2021-04-16T11:25:33.774Z/serverless-test-project.zip"
+        },
+        "Handler": "apigw-handler.handle_get",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-test-project-dev-httpGetter",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "HttpGetterLogGroup"
+      ]
+    },
+    "HelloLambdaVersionQSFkeuGaDXuDGP2AOlErYfIz1bj83Pnw83LpO6BTMrw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "BlyXnnrQyl+MnsH5tSeLA9xgE4jmxssBVR+AP7Al9TI="
+        "CodeSha256": "jM5HLimz9vujjNug144qDrQBJcux2sKF+fLnyza2vEE="
       }
     },
-    "PingLambdaVersionENvKAMRPPHG7Jy7m2dh2nJFK1kq3oc8EpiBrGRJLs": {
+    "PingLambdaVersionzRQrRtBNsfrhqDuCvmaAZruxl6NvZ5uFaiJOjVI5A": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "PingLambdaFunction"
         },
-        "CodeSha256": "BlyXnnrQyl+MnsH5tSeLA9xgE4jmxssBVR+AP7Al9TI="
+        "CodeSha256": "jM5HLimz9vujjNug144qDrQBJcux2sKF+fLnyza2vEE="
       }
     },
-    "ThrottlerLambdaVersioneiMvYZAAcPlqKjylZFSkOFS8YrCebtttXEaI3LrBro0": {
+    "ThrottlerLambdaVersionSteOyfuyn1rDynzLN50GTT1DD2E9ROp0qr4DUApSA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ThrottlerLambdaFunction"
         },
-        "CodeSha256": "BlyXnnrQyl+MnsH5tSeLA9xgE4jmxssBVR+AP7Al9TI="
+        "CodeSha256": "jM5HLimz9vujjNug144qDrQBJcux2sKF+fLnyza2vEE="
       }
     },
-    "StreamProcessorLambdaVersionxB5pB0nqqryOB8jmuUhgVhAmXPKdLenBoubp5Eii0": {
+    "StreamProcessorLambdaVersionDYhuwbz4sd3IlILevT2hIlijlbV37rS3qrVvMZ7k": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StreamProcessorLambdaFunction"
         },
-        "CodeSha256": "BlyXnnrQyl+MnsH5tSeLA9xgE4jmxssBVR+AP7Al9TI="
+        "CodeSha256": "jM5HLimz9vujjNug144qDrQBJcux2sKF+fLnyza2vEE="
+      }
+    },
+    "HttpGetterLambdaVersion6TEBy8a1lz2nqCd2uWnp9RrwOVgEIGlvCj38Q9LI7I": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "HttpGetterLambdaFunction"
+        },
+        "CodeSha256": "jM5HLimz9vujjNug144qDrQBJcux2sKF+fLnyza2vEE="
+      }
+    },
+    "ApiGatewayRestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "dev-serverless-test-project",
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ]
+        },
+        "Policy": ""
+      }
+    },
+    "ApiGatewayResourceItem": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "item",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodItemGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceItem"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "HttpGetterLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      }
+    },
+    "ApiGatewayDeployment1618572316122": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "StageName": "dev"
+      },
+      "DependsOn": [
+        "ApiGatewayMethodItemGet"
+      ]
+    },
+    "HttpGetterLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "HttpGetterLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
       }
     },
     "StreamProcessorEventSourceMappingKinesisStream": {
@@ -411,25 +571,54 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersion5lOPrbkYxElidjsMSlkt7IgjhUuuyTIvV1w817Csqo"
+        "Ref": "HelloLambdaVersionQSFkeuGaDXuDGP2AOlErYfIz1bj83Pnw83LpO6BTMrw"
       }
     },
     "PingLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "PingLambdaVersionENvKAMRPPHG7Jy7m2dh2nJFK1kq3oc8EpiBrGRJLs"
+        "Ref": "PingLambdaVersionzRQrRtBNsfrhqDuCvmaAZruxl6NvZ5uFaiJOjVI5A"
       }
     },
     "ThrottlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ThrottlerLambdaVersioneiMvYZAAcPlqKjylZFSkOFS8YrCebtttXEaI3LrBro0"
+        "Ref": "ThrottlerLambdaVersionSteOyfuyn1rDynzLN50GTT1DD2E9ROp0qr4DUApSA"
       }
     },
     "StreamProcessorLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StreamProcessorLambdaVersionxB5pB0nqqryOB8jmuUhgVhAmXPKdLenBoubp5Eii0"
+        "Ref": "StreamProcessorLambdaVersionDYhuwbz4sd3IlILevT2hIlijlbV37rS3qrVvMZ7k"
+      }
+    },
+    "HttpGetterLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "HttpGetterLambdaVersion6TEBy8a1lz2nqCd2uWnp9RrwOVgEIGlvCj38Q9LI7I"
+      }
+    },
+    "ServiceEndpoint": {
+      "Description": "URL of the service endpoint",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "ApiGatewayRestApi"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/dev"
+          ]
+        ]
       }
     }
   }
