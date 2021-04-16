@@ -218,7 +218,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         `Max duration for ${funcName} exceeds ${threshold}% of timeout (${funcTimeout})`,
         funcName,
         config.ComparisonOperator,
-        (threshold * funcTimeout) / 100,
+        (threshold * funcTimeout * 1000) / 100,
         null,
         'Duration',
         config.Statistic,

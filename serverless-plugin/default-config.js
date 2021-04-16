@@ -1,6 +1,7 @@
 'use strict'
 
 module.exports = {
+  dashboard: {},
   alarms: {
     Period: 60,
     EvaluationPeriods: 1,
@@ -31,11 +32,11 @@ module.exports = {
       },
     },
     ApiGateway: {
-      '5XXErrors': {
+      '5XXError': {
         Statistic: 'Average',
         Threshold: 0.0,
       },
-      '4XXErrors': {
+      '4XXError': {
         Statistic: 'Average',
         Threshold: 0.05,
       },

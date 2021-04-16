@@ -20,6 +20,7 @@
   },
   "license": "Apache",
   "dependencies": {
+    "case": "^1.6.3",
     "lodash": "^4.17.21"
   }
 }

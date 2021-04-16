@@ -29,8 +29,8 @@ class ServerlessPlugin {
 
     this.serverless.cli.log(`slicWatch config: ${JSON.stringify(config)}`)
 
-    this.dashboard = dashboard(serverless, config, context)
-    this.alarms = alarms(serverless, config, context)
+    this.dashboard = dashboard(serverless, config.dashboard, context)
+    this.alarms = alarms(serverless, config.alarms, context)
 
     this.hooks = {
       'package:compileEvents': this.compileEvents.bind(this),

@@ -1,12 +1,12 @@
 service: serverless-test-project
 frameworkVersion: '2'
 
-# plugins:
-#   - serverless-slic-watch-plugin
+plugins:
+  - serverless-slic-watch-plugin
 
 custom:
   slicWatch:
-    topicArn: {Ref: alarmTopic}
+    topicArn: ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:
@@ -17,6 +17,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
+  endpointType: REGIONAL
 
 functions:
   hello:
@@ -39,7 +40,8 @@ functions:
           maximumRetryAttempts: 0
 
   httpGetter:
-    handler: apigw-handler.handle_get
+    handler: apigw-handler.handleGet
+    timeout: 30
     events:
       - http:
           method: get
@@ -47,11 +49,6 @@ functions:
 
 resources:
   Resources:
-    alarmTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: TestProjAlarms
-
     stream:
       Type: AWS::Kinesis::Stream
       Properties:

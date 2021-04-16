@@ -92,7 +92,7 @@ test('AWS Lambda alarms are created', (t) => {
   for (const al of alarmsByType.LambdaDuration) {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
-    t.ok(al.Threshold)
+    t.ok(al.Threshold > 1000) // Ensure threshold is in milliseconds
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, lambdaAlarmConfig.Period)

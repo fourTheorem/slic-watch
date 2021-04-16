@@ -1,5 +1,7 @@
 'use strict'
 
+const stringcase = require('case')
+
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
  */
@@ -24,12 +26,12 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         createAvailabilityAlarm(
           apiResourceName,
           apiResource,
-          apiGwAlarmConfig['5XXErrors']
+          apiGwAlarmConfig['5XXError']
         ),
         create4XXAlarm(
           apiResourceName,
           apiResource,
-          apiGwAlarmConfig['4XXErrors']
+          apiGwAlarmConfig['4XXError']
         ),
         createLatencyAlarm(
           apiResourceName,
@@ -80,18 +82,23 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
     }
   }
 
+  function makeApiAlarmResourceName(apiName, alarm) {
+    const normalisedName = stringcase.pascal(apiName)
+    return `slicWatchApi${alarm}Alarm${normalisedName}`
+  }
+
   function createAvailabilityAlarm(apiResourceName, apiResource, config) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchApiAvailabilityAlarm${apiName}`,
+      resourceName: makeApiAlarmResourceName(apiName, 'Availability'),
       resource: createApiAlarm(
         `ApiAvailability_${apiName}`,
-        `API 5XXErrors ${config.Statistic} for ${apiName} breaches ${threshold}`,
+        `API 5XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
         apiName,
         config.ComparisonOperator,
         threshold,
-        '5XXErrors',
+        '5XXError',
         config.Statistic,
         config.Period,
         config.ExtendedStatistic
@@ -103,14 +110,14 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchApi4XXAlarm${apiName}`,
+      resourceName: makeApiAlarmResourceName(apiName, '4XXError'),
       resource: createApiAlarm(
-        `Api4XXErrors_${apiName}`,
-        `API 4XXErrors ${config.Statistic} for ${apiName} breaches ${threshold}`,
+        `Api4XXError_${apiName}`,
+        `API 4XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
         apiName,
         config.ComparisonOperator,
         threshold,
-        '4XXErrors',
+        '4XXError',
         config.Statistic,
         config.Period,
         config.ExtendedStatistic
@@ -122,7 +129,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchApiLatencyAlarm${apiName}`,
+      resourceName: makeApiAlarmResourceName(apiName, 'Latency'),
       resource: createApiAlarm(
         `ApiLatency_${apiName}`,
         `API Latency ${config.Statistic} for ${apiName} breaches ${threshold}`,

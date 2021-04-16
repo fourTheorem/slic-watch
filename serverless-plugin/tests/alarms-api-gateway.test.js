@@ -29,10 +29,10 @@ const alarmConfig = cascade(
   _.merge(defaultConfig.alarms, {
     ApiGateway: {
       Period: 60,
-      '5XXErrors': {
+      '5XXError': {
         Threshold: 0.0,
       },
-      '4XXErrors': {
+      '4XXError': {
         Threshold: 0.05,
       },
       Latency: {
@@ -65,16 +65,16 @@ test('AWS Lambda alarms are created', (t) => {
   }
 
   t.same(Object.keys(alarmsByType).sort(), [
-    'Api4XXErrors',
+    'Api4XXError',
     'ApiAvailability',
     'ApiLatency',
   ])
 
   t.equal(alarmsByType.ApiAvailability.size, 1)
   for (const al of alarmsByType.ApiAvailability) {
-    t.equal(al.MetricName, '5XXErrors')
+    t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
-    t.equal(al.Threshold, apiGwAlarmConfig['5XXErrors'].Threshold)
+    t.equal(al.Threshold, apiGwAlarmConfig['5XXError'].Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/ApiGateway')
     t.equal(al.Period, apiGwAlarmConfig.Period)
@@ -86,10 +86,10 @@ test('AWS Lambda alarms are created', (t) => {
     ])
   }
 
-  for (const al of alarmsByType.Api4XXErrors) {
-    t.equal(al.MetricName, '4XXErrors')
+  for (const al of alarmsByType.Api4XXError) {
+    t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
-    t.equal(al.Threshold, apiGwAlarmConfig['4XXErrors'].Threshold)
+    t.equal(al.Threshold, apiGwAlarmConfig['4XXError'].Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/ApiGateway')
     t.equal(al.Period, apiGwAlarmConfig.Period)

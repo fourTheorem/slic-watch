@@ -6,15 +6,22 @@ const WIDGET_WIDTH = 24
 const WIDGET_HEIGHT = 6
 const MAX_WIDTH = 24
 
-const LAMBDA_FUNCTION_METRICS = {
+const LAMBDA_METRICS = {
+  Errors: ['Sum'],
+  Throttles: ['Sum'],
   Duration: ['Average', 'p95', 'Maximum'],
   Invocations: ['Sum'],
   ConcurrentExecutions: ['Maximum'],
-  Throttles: ['Sum'],
-  Errors: ['Sum'],
 }
 
-module.exports = function dashboard(serverless, config) {
+const API_METRICS = {
+  '5XXError': ['Sum'],
+  '4XXError': ['Sum'],
+  Latency: ['Average', 'p95'],
+  Count: ['Sum'],
+}
+
+module.exports = function dashboard(serverless, config, context) {
   return {
     addDashboard,
   }
@@ -26,20 +33,24 @@ module.exports = function dashboard(serverless, config) {
    * @param {object} cfTemplate A CloudFormation template
    */
   function addDashboard(cfTemplate) {
+    const apiResources = cfTemplate.getResourcesByType(
+      'AWS::ApiGateway::RestApi'
+    )
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
-    const widgets = createLambdaWidgets(
+    const apiWidgets = createApiWidgets(apiResources)
+    const lambdaWidgets = createLambdaWidgets(
       lambdaResources,
       Object.keys(eventSourceMappingFunctions)
     )
-    const positionedWidgets = layOutWidgets(widgets)
+    const positionedWidgets = layOutWidgets([...apiWidgets, ...lambdaWidgets])
     const dash = { start: DASHBOARD_PERIOD, widgets: positionedWidgets }
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
-        DashboardName: `${config.stackName}Dashboard`,
+        DashboardName: `${context.stackName}Dashboard`,
         DashboardBody: JSON.stringify(dash),
       },
     }
@@ -71,7 +82,7 @@ module.exports = function dashboard(serverless, config) {
         metrics,
         title,
         view: 'timeSeries',
-        region: config.region,
+        region: context.region,
         period: METRIC_PERIOD,
       },
     }
@@ -81,7 +92,7 @@ module.exports = function dashboard(serverless, config) {
    * Create a set of CloudWatch Dashboard widgets for the Lambda
    * CloudFormation resources provided
    *
-   * @param {Array.<object>} functionResources List of CloudFormation Lambda Function resources
+   * @param {object} functionResources Object with of CloudFormation Lambda Function resources by resource name
    * @param {Array.<string>} eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
   function createLambdaWidgets(
@@ -89,8 +100,8 @@ module.exports = function dashboard(serverless, config) {
     eventSourceMappingFunctionResourceNames
   ) {
     const lambdaWidgets = []
-    Object.entries(LAMBDA_FUNCTION_METRICS).forEach(([metric, stats]) => {
-      stats.forEach((stat) => {
+    for (const [metric, stats] of Object.entries(LAMBDA_METRICS)) {
+      for (const stat of stats) {
         const metricStatWidget = createMetricWidget(
           `${metric} ${stat} per Function`,
           Object.values(functionResources).map((res) => ({
@@ -103,8 +114,8 @@ module.exports = function dashboard(serverless, config) {
           }))
         )
         lambdaWidgets.push(metricStatWidget)
-      })
-    })
+      }
+    }
     if (eventSourceMappingFunctionResourceNames.length > 0) {
       const iteratorAgeWidget = createMetricWidget(
         `IteratorAge Maximum per Function`,
@@ -125,6 +136,34 @@ module.exports = function dashboard(serverless, config) {
     }
 
     return lambdaWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for the API Gateway REST API
+   * CloudFormation resources provided
+   *
+   * @param {object} apiResources Object of CloudFormation RestApi resources by resource name
+   */
+  function createApiWidgets(apiResources) {
+    const apiWidgets = []
+    for (const res of Object.values(apiResources)) {
+      const apiName = res.Properties.Name // TODO: Allow for Ref usage in resource names
+      for (const [metric, stats] of Object.entries(API_METRICS)) {
+        const metricStatWidget = createMetricWidget(
+          `${metric} for ${apiName} API`,
+          Object.values(stats).map((stat) => ({
+            namespace: 'AWS/ApiGateway',
+            metric,
+            dimensions: {
+              ApiName: apiName,
+            },
+            stat,
+          }))
+        )
+        apiWidgets.push(metricStatWidget)
+      }
+    }
+    return apiWidgets
   }
 
   /**
