@@ -44,6 +44,18 @@ module.exports = {
         ExtendedStatistic: 'p99',
         Threshold: 5000
       }
+    },
+    States: {
+      Statistic: 'Sum',
+      ExecutionsThrottled: {
+        Threshold: 0
+      },
+      ExecutionsFailed: {
+        Threshold: 0
+      },
+      ExecutionsTimedOut: {
+        Threshold: 0
+      }
     }
   }
 }

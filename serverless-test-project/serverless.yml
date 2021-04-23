@@ -2,6 +2,7 @@ service: serverless-test-project
 frameworkVersion: '2'
 
 plugins:
+  - serverless-step-functions
   - serverless-slic-watch-plugin
 
 custom:
@@ -76,3 +77,14 @@ resources:
             KeyType: HASH
           - AttributeName: sk
             KeyType: RANGE
+
+stepFunctions:
+  stateMachines:
+    workflow:
+      name: Workflow
+      definition:
+        StartAt: Go
+        States:
+          Go:
+            Type: Pass
+            End: true

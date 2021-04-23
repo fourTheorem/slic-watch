@@ -44,7 +44,7 @@ const alarmConfig = cascade(
 
 const apiGwAlarmConfig = alarmConfig.ApiGateway
 
-test('AWS Lambda alarms are created', (t) => {
+test('API Gateway alarms are created', (t) => {
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
   const cfTemplate = CloudFormationTemplate(
     require('./resources/cloudformation-template-stack.json'),
