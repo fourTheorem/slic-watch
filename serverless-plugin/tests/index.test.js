@@ -13,7 +13,7 @@ const slsYamlPath = path.resolve(
 )
 const slsYaml = yaml.load(fs.readFileSync(slsYamlPath, 'utf8'))
 const testCfTemplate = {
-  Resources: {},
+  Resources: {}
 }
 
 const testState = {}
@@ -24,7 +24,7 @@ const ServerlessPlugin = proxyrequire('../index', {
     return {
       addDashboard: (cfTemplate) => {
         testState.addDashboardCfTemplate = cfTemplate
-      },
+      }
     }
   },
   './alarms': () => {
@@ -32,28 +32,28 @@ const ServerlessPlugin = proxyrequire('../index', {
     return {
       addAlarms: (cfTemplate) => {
         testState.addAlarmsCfTemplate = cfTemplate
-      },
+      }
     }
-  },
+  }
 })
 
 const mockServerless = {
   cli: {
-    log: () => {},
+    log: () => {}
   },
   providers: {
     aws: {
       naming: {
-        getStackName: () => 'MockStack',
-      },
-    },
+        getStackName: () => 'MockStack'
+      }
+    }
   },
   service: {
     ...slsYaml,
     provider: {
-      compiledCloudFormationTemplate: testCfTemplate,
-    },
-  },
+      compiledCloudFormationTemplate: testCfTemplate
+    }
+  }
 }
 
 test('The plugin generates dashboards and alarms', (t) => {
@@ -80,8 +80,8 @@ test('Plugin loads with no custom section', (t) => {
         ...mockServerless,
         service: {
           ...mockServerless.service,
-          custom: undefined,
-        },
+          custom: undefined
+        }
       })
   )
   t.end()
@@ -94,8 +94,8 @@ test('Plugin load fails with no slicWatch config', (t) => {
         ...mockServerless,
         service: {
           ...mockServerless.service,
-          custom: {},
-        },
+          custom: {}
+        }
       })
   )
   t.end()
@@ -106,15 +106,15 @@ test('Plugin load fails if no SNS Topic is provided', (t) => {
     ...slsYaml,
     custom: {
       ...slsYaml.custom,
-      slicWatch: {},
-    },
+      slicWatch: {}
+    }
   }
   t.throws(
     () =>
       new ServerlessPlugin(
         {
           ...mockServerless,
-          service: serviceYmlWithoutTopic,
+          service: serviceYmlWithoutTopic
         },
         {}
       )

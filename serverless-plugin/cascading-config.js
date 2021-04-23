@@ -3,7 +3,7 @@
 const MAX_DEPTH = 10
 
 module.exports = {
-  cascade,
+  cascade
 }
 
 /**
@@ -13,7 +13,7 @@ module.exports = {
  * @param {object} node hierarchical configuration
  * @param {object} parentConfig The configuration key-values from the parent node to be applied to the current node where no conflict occurs
  */
-function cascade(node, parentNode = {}, depth = 0) {
+function cascade (node, parentNode = {}, depth = 0) {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }
@@ -33,6 +33,6 @@ function cascade(node, parentNode = {}, depth = 0) {
   }
   return {
     ...compiledNode,
-    ...compiledChildren,
+    ...compiledChildren
   }
 }

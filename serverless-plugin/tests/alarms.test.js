@@ -9,14 +9,14 @@ const CloudFormationTemplate = require('../cf-template')
 test('Alarms create all service alarms', (t) => {
   const sls = {
     cli: {
-      log: () => {},
-    },
+      log: () => {}
+    }
   }
 
   const context = {
     topicArn: 'dummy-arn',
     stackName: 'testStack',
-    region: 'eu-west-1',
+    region: 'eu-west-1'
   }
 
   const { addAlarms } = alarms(sls, defaultConfig.alarms, context)

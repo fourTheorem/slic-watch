@@ -5,9 +5,9 @@ const stringcase = require('case')
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
  */
-module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
+module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
   return {
-    createApiGatewayAlarms,
+    createApiGatewayAlarms
   }
 
   /**
@@ -16,7 +16,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
-  function createApiGatewayAlarms(cfTemplate) {
+  function createApiGatewayAlarms (cfTemplate) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )
@@ -37,7 +37,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
           apiResourceName,
           apiResource,
           apiGwAlarmConfig.Latency
-        ),
+        )
       ]
 
       for (const alarm of alarms) {
@@ -46,7 +46,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
     }
   }
 
-  function createApiAlarm(
+  function createApiAlarm (
     alarmName,
     alarmDescription,
     apiName,
@@ -63,7 +63,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
       Namespace: 'AWS/ApiGateway',
       Period: period,
       Statistic: statistic,
-      ExtendedStatistic: extendedStatistic,
+      ExtendedStatistic: extendedStatistic
     }
 
     return {
@@ -77,17 +77,17 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
         TreatMissingData: 'notBreaching',
-        ...metricProperties,
-      },
+        ...metricProperties
+      }
     }
   }
 
-  function makeApiAlarmResourceName(apiName, alarm) {
+  function makeApiAlarmResourceName (apiName, alarm) {
     const normalisedName = stringcase.pascal(apiName)
     return `slicWatchApi${alarm}Alarm${normalisedName}`
   }
 
-  function createAvailabilityAlarm(apiResourceName, apiResource, config) {
+  function createAvailabilityAlarm (apiResourceName, apiResource, config) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
@@ -102,11 +102,11 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         config.Statistic,
         config.Period,
         config.ExtendedStatistic
-      ),
+      )
     }
   }
 
-  function create4XXAlarm(apiResourceName, apiResource, config) {
+  function create4XXAlarm (apiResourceName, apiResource, config) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
@@ -121,11 +121,11 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         config.Statistic,
         config.Period,
         config.ExtendedStatistic
-      ),
+      )
     }
   }
 
-  function createLatencyAlarm(apiResourceName, apiResource, config) {
+  function createLatencyAlarm (apiResourceName, apiResource, config) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
@@ -140,7 +140,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
         config.Statistic,
         config.Period,
         config.ExtendedStatistic
-      ),
+      )
     }
   }
 }

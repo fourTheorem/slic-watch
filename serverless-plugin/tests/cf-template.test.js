@@ -6,12 +6,12 @@ const { test } = require('tap')
 
 const sls = {
   cli: {
-    log: () => {},
-  },
+    log: () => {}
+  }
 }
 
 const emptyTemplate = {
-  Resources: {},
+  Resources: {}
 }
 
 test('Source is returned', (t) => {
@@ -37,7 +37,7 @@ test('Function resource name can be resolved using name', (t) => {
 test('Function resource name can be resolved using GetAtt', (t) => {
   const template = CloudFormationTemplate(emptyTemplate, sls)
   const resName = template.resolveFunctionResourceName({
-    'Fn::GetAtt': ['resName2', 'Arn'],
+    'Fn::GetAtt': ['resName2', 'Arn']
   })
   t.equal(resName, 'resName2')
   t.end()

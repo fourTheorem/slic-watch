@@ -11,19 +11,19 @@ const LAMBDA_METRICS = {
   Throttles: ['Sum'],
   Duration: ['Average', 'p95', 'Maximum'],
   Invocations: ['Sum'],
-  ConcurrentExecutions: ['Maximum'],
+  ConcurrentExecutions: ['Maximum']
 }
 
 const API_METRICS = {
   '5XXError': ['Sum'],
   '4XXError': ['Sum'],
   Latency: ['Average', 'p95'],
-  Count: ['Sum'],
+  Count: ['Sum']
 }
 
-module.exports = function dashboard(serverless, config, context) {
+module.exports = function dashboard (serverless, config, context) {
   return {
-    addDashboard,
+    addDashboard
   }
 
   /**
@@ -32,7 +32,7 @@ module.exports = function dashboard(serverless, config, context) {
    *
    * @param {object} cfTemplate A CloudFormation template
    */
-  function addDashboard(cfTemplate) {
+  function addDashboard (cfTemplate) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )
@@ -51,8 +51,8 @@ module.exports = function dashboard(serverless, config, context) {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
         DashboardName: `${context.stackName}Dashboard`,
-        DashboardBody: JSON.stringify(dash),
-      },
+        DashboardBody: JSON.stringify(dash)
+      }
     }
     cfTemplate.addResource('slicWatchDashboard', dashboardResource)
   }
@@ -63,7 +63,7 @@ module.exports = function dashboard(serverless, config, context) {
    * @param {string} title The metric title
    * @param {Array.<object>} metrics The metric definitions to render
    */
-  function createMetricWidget(title, metricDefs) {
+  function createMetricWidget (title, metricDefs) {
     const metrics = metricDefs.map(
       ({ namespace, metric, dimensions, stat }) => [
         namespace,
@@ -72,7 +72,7 @@ module.exports = function dashboard(serverless, config, context) {
           (acc, [name, value]) => [...acc, name, value],
           []
         ),
-        [{ stat }],
+        [{ stat }]
       ]
     )
 
@@ -83,8 +83,8 @@ module.exports = function dashboard(serverless, config, context) {
         title,
         view: 'timeSeries',
         region: context.region,
-        period: METRIC_PERIOD,
-      },
+        period: METRIC_PERIOD
+      }
     }
   }
 
@@ -95,7 +95,7 @@ module.exports = function dashboard(serverless, config, context) {
    * @param {object} functionResources Object with of CloudFormation Lambda Function resources by resource name
    * @param {Array.<string>} eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
-  function createLambdaWidgets(
+  function createLambdaWidgets (
     functionResources,
     eventSourceMappingFunctionResourceNames
   ) {
@@ -108,9 +108,9 @@ module.exports = function dashboard(serverless, config, context) {
             namespace: 'AWS/Lambda',
             metric,
             dimensions: {
-              FunctionName: res.Properties.FunctionName,
+              FunctionName: res.Properties.FunctionName
             },
-            stat,
+            stat
           }))
         )
         lambdaWidgets.push(metricStatWidget)
@@ -118,7 +118,7 @@ module.exports = function dashboard(serverless, config, context) {
     }
     if (eventSourceMappingFunctionResourceNames.length > 0) {
       const iteratorAgeWidget = createMetricWidget(
-        `IteratorAge Maximum per Function`,
+        'IteratorAge Maximum per Function',
         Object.keys(functionResources)
           .filter((resName) =>
             eventSourceMappingFunctionResourceNames.includes(resName)
@@ -127,9 +127,9 @@ module.exports = function dashboard(serverless, config, context) {
             namespace: 'AWS/Lambda',
             metric: 'IteratorAge',
             dimensions: {
-              FunctionName: functionResources[resName].Properties.FunctionName,
+              FunctionName: functionResources[resName].Properties.FunctionName
             },
-            stat: 'Maximum',
+            stat: 'Maximum'
           }))
       )
       lambdaWidgets.push(iteratorAgeWidget)
@@ -144,7 +144,7 @@ module.exports = function dashboard(serverless, config, context) {
    *
    * @param {object} apiResources Object of CloudFormation RestApi resources by resource name
    */
-  function createApiWidgets(apiResources) {
+  function createApiWidgets (apiResources) {
     const apiWidgets = []
     for (const res of Object.values(apiResources)) {
       const apiName = res.Properties.Name // TODO: Allow for Ref usage in resource names
@@ -155,9 +155,9 @@ module.exports = function dashboard(serverless, config, context) {
             namespace: 'AWS/ApiGateway',
             metric,
             dimensions: {
-              ApiName: apiName,
+              ApiName: apiName
             },
-            stat,
+            stat
           }))
         )
         apiWidgets.push(metricStatWidget)
@@ -172,7 +172,7 @@ module.exports = function dashboard(serverless, config, context) {
    * @param {Array.<object>} widgets A set of dashboard widgets
    * @return {Array.<object>} A set of dashboard widgets with layout properties set
    */
-  function layOutWidgets(widgets) {
+  function layOutWidgets (widgets) {
     let x = 0
     let y = 0
 
@@ -186,7 +186,7 @@ module.exports = function dashboard(serverless, config, context) {
         x,
         y,
         width: WIDGET_WIDTH,
-        height: WIDGET_HEIGHT,
+        height: WIDGET_HEIGHT
       }
       x += WIDGET_WIDTH
       return positionedWidget

@@ -11,19 +11,19 @@ const defaultConfig = require('../default-config')
 const { cascade } = require('../cascading-config')
 const {
   assertCommonAlarmProperties,
-  alarmNameToType,
+  alarmNameToType
 } = require('./testing-utils')
 
 const sls = {
   cli: {
-    log: () => {},
-  },
+    log: () => {}
+  }
 }
 
 const context = {
   topicArn: 'dummy-arn',
   stackName: 'testStack',
-  region: 'eu-west-1',
+  region: 'eu-west-1'
 }
 
 const alarmConfig = cascade(
@@ -31,21 +31,21 @@ const alarmConfig = cascade(
     Lambda: {
       Period: 60,
       Errors: {
-        Threshold: 0,
+        Threshold: 0
       },
       ThrottlesPc: {
-        Threshold: 0,
+        Threshold: 0
       },
       DurationPc: {
-        Threshold: 95,
+        Threshold: 95
       },
       Invocations: {
-        Threshold: null, // Disabled
+        Threshold: null // Disabled
       },
       IteratorAge: {
-        Threshold: 10000,
-      },
-    },
+        Threshold: 10000
+      }
+    }
   })
 )
 
@@ -75,7 +75,7 @@ test('AWS Lambda alarms are created', (t) => {
     'LambdaDuration',
     'LambdaErrors',
     'LambdaIteratorAge',
-    'LambdaThrottles',
+    'LambdaThrottles'
   ])
 
   for (const al of alarmsByType.LambdaErrors) {
@@ -127,8 +127,8 @@ test('AWS Lambda alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'FunctionName',
-        Value: 'serverless-test-project-dev-streamProcessor',
-      },
+        Value: 'serverless-test-project-dev-streamProcessor'
+      }
     ])
   }
 
@@ -170,12 +170,12 @@ test('Invocation alarms are created if configured', (t) => {
 ;[
   {
     functionName: { 'Fn::GetAtt': ['nonExistent', 'Arn'] },
-    reason: 'unresolved resource in GetAtt',
+    reason: 'unresolved resource in GetAtt'
   },
   {
     functionName: {},
-    reason: 'unexpected reference format',
-  },
+    reason: 'unexpected reference format'
+  }
 ].forEach(({ functionName, reason }) =>
   test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
     const cfTemplate = CloudFormationTemplate(
@@ -184,10 +184,10 @@ test('Invocation alarms are created if configured', (t) => {
           esm: {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
-              FunctionName: functionName,
-            },
-          },
-        },
+              FunctionName: functionName
+            }
+          }
+        }
       },
       sls
     )

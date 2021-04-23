@@ -3,9 +3,9 @@
 /**
  * @param {object} lambdaAlarmConfig The fully resolved alarm configuration
  */
-module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
+module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
   return {
-    createLambdaAlarms,
+    createLambdaAlarms
   }
 
   /**
@@ -14,7 +14,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
-  function createLambdaAlarms(cfTemplate) {
+  function createLambdaAlarms (cfTemplate) {
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )
@@ -74,7 +74,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
     }
   }
 
-  function createLambdaAlarm(
+  function createLambdaAlarm (
     alarmName,
     alarmDescription,
     funcName,
@@ -92,7 +92,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
           MetricName: metricName,
           Namespace: 'AWS/Lambda',
           Period: period,
-          Statistic: statistic,
+          Statistic: statistic
         }
 
     return {
@@ -106,8 +106,8 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
         TreatMissingData: 'notBreaching',
-        ...metricProperties,
-      },
+        ...metricProperties
+      }
     }
   }
 
@@ -115,7 +115,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
    * @param {(string|Object)} func The Lambda function name
    */
-  function createIteratorAgeAlarm(funcResourceName, funcResource, config) {
+  function createIteratorAgeAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
     const threshold = config.Threshold
     return {
@@ -130,11 +130,11 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         'IteratorAge',
         config.Statistic,
         config.Period
-      ),
+      )
     }
   }
 
-  function createLambdaErrorsAlarm(funcResourceName, funcResource, config) {
+  function createLambdaErrorsAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
     const threshold = config.Threshold
     return {
@@ -149,11 +149,11 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         'Errors',
         config.Statistic,
         config.Period
-      ),
+      )
     }
   }
 
-  function createLambdaThrottlesAlarm(funcResourceName, funcResource, config) {
+  function createLambdaThrottlesAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
     const threshold = config.Threshold
     const period = config.Period
@@ -163,7 +163,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         Id: 'throttles_pc',
         Expression: '(throttles / throttles + invocations) * 100',
         Label: '% Throttles',
-        ReturnData: true,
+        ReturnData: true
       },
       {
         Id: 'throttles',
@@ -171,12 +171,12 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
           Metric: {
             Namespace: 'AWS/Lambda',
             MetricName: 'Throttles',
-            Dimensions: [{ Name: 'FunctionName', Value: funcName }],
+            Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum',
+          Stat: 'Sum'
         },
-        ReturnData: false,
+        ReturnData: false
       },
       {
         Id: 'invocations',
@@ -184,13 +184,13 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
           Metric: {
             Namespace: 'AWS/Lambda',
             MetricName: 'Invocations',
-            Dimensions: [{ Name: 'FunctionName', Value: funcName }],
+            Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum',
+          Stat: 'Sum'
         },
-        ReturnData: false,
-      },
+        ReturnData: false
+      }
     ]
 
     return {
@@ -202,11 +202,11 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         config.ComparisonOperator,
         threshold,
         metrics
-      ),
+      )
     }
   }
 
-  function createLambdaDurationAlarm(funcResourceName, funcResource, config) {
+  function createLambdaDurationAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
     const funcTimeout = funcResource.Properties.Timeout
     const threshold = config.Threshold
@@ -223,11 +223,11 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         'Duration',
         config.Statistic,
         config.Period
-      ),
+      )
     }
   }
 
-  function createLambdaInvocationsAlarm(
+  function createLambdaInvocationsAlarm (
     funcResourceName,
     funcResource,
     config
@@ -246,7 +246,7 @@ module.exports = function LambdaAlarms(lambdaAlarmConfig, context) {
         'Invocations',
         config.Statistic,
         config.Period
-      ),
+      )
     }
   }
 }

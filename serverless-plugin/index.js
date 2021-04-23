@@ -7,7 +7,7 @@ const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
 
 class ServerlessPlugin {
-  constructor(serverless, options) {
+  constructor (serverless, options) {
     this.serverless = serverless
     this.options = options
     this.providerNaming = serverless.providers.aws.naming
@@ -22,7 +22,7 @@ class ServerlessPlugin {
     const context = {
       region: serverless.service.provider.region,
       stackName: this.providerNaming.getStackName(),
-      topicArn,
+      topicArn
     }
 
     const config = _.merge(defaultConfig, pluginConfig)
@@ -33,11 +33,11 @@ class ServerlessPlugin {
     this.alarms = alarms(serverless, config.alarms, context)
 
     this.hooks = {
-      'package:compileEvents': this.compileEvents.bind(this),
+      'package:compileEvents': this.compileEvents.bind(this)
     }
   }
 
-  compileEvents() {
+  compileEvents () {
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate
     )

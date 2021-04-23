@@ -5,13 +5,13 @@ const { cascade } = require('./cascading-config')
 const lambdaAlarms = require('./alarms-lambda')
 const apiGatewayAlarms = require('./alarms-api-gateway')
 
-module.exports = function alarms(serverless, alarmConfig, context) {
+module.exports = function alarms (serverless, alarmConfig, context) {
   const { Lambda: lambdaConfig, ApiGateway: apiGwConfig } = cascade(alarmConfig)
   const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
 
   return {
-    addAlarms,
+    addAlarms
   }
 
   /**
@@ -20,7 +20,7 @@ module.exports = function alarms(serverless, alarmConfig, context) {
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
-  function addAlarms(cfTemplate) {
+  function addAlarms (cfTemplate) {
     createLambdaAlarms(cfTemplate)
     createApiGatewayAlarms(cfTemplate)
   }

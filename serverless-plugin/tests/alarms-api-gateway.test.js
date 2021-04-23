@@ -10,19 +10,19 @@ const defaultConfig = require('../default-config')
 const { cascade } = require('../cascading-config')
 const {
   assertCommonAlarmProperties,
-  alarmNameToType,
+  alarmNameToType
 } = require('./testing-utils')
 
 const sls = {
   cli: {
-    log: () => {},
-  },
+    log: () => {}
+  }
 }
 
 const context = {
   topicArn: 'dummy-arn',
   stackName: 'testStack',
-  region: 'eu-west-1',
+  region: 'eu-west-1'
 }
 
 const alarmConfig = cascade(
@@ -30,15 +30,15 @@ const alarmConfig = cascade(
     ApiGateway: {
       Period: 60,
       '5XXError': {
-        Threshold: 0.0,
+        Threshold: 0.0
       },
       '4XXError': {
-        Threshold: 0.05,
+        Threshold: 0.05
       },
       Latency: {
-        Threshold: 5000,
-      },
-    },
+        Threshold: 5000
+      }
+    }
   })
 )
 
@@ -67,7 +67,7 @@ test('AWS Lambda alarms are created', (t) => {
   t.same(Object.keys(alarmsByType).sort(), [
     'Api4XXError',
     'ApiAvailability',
-    'ApiLatency',
+    'ApiLatency'
   ])
 
   t.equal(alarmsByType.ApiAvailability.size, 1)
@@ -81,8 +81,8 @@ test('AWS Lambda alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',
-        Value: 'dev-serverless-test-project',
-      },
+        Value: 'dev-serverless-test-project'
+      }
     ])
   }
 
@@ -96,8 +96,8 @@ test('AWS Lambda alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',
-        Value: 'dev-serverless-test-project',
-      },
+        Value: 'dev-serverless-test-project'
+      }
     ])
   }
 
@@ -111,8 +111,8 @@ test('AWS Lambda alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',
-        Value: 'dev-serverless-test-project',
-      },
+        Value: 'dev-serverless-test-project'
+      }
     ])
   }
 

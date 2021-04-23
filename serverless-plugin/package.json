@@ -4,8 +4,7 @@
   "description": "Serverless plugin for automatic alarms and dashboards",
   "main": "index.js",
   "scripts": {
-    "test": "tap tests/**/*.test.js",
-    "cov": "npm t -- --coverage-report=html"
+    "test": "tap --coverage-report=html --no-browser tests/**/*.test.js"
   },
   "devDependencies": {
     "js-yaml": "^4.0.0",
