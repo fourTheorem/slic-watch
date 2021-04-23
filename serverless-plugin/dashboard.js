@@ -189,7 +189,7 @@ module.exports = function dashboard (serverless, config, context) {
   function createStateMachineWidgets (smResources) {
     const smWidgets = []
     for (const res of Object.values(smResources)) {
-      const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names
+      const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names (see #14)
       const widgetMetrics = []
       for (const [metric, stats] of Object.entries(STATES_METRICS)) {
         for (const stat of stats) {
