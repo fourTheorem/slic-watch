@@ -1,7 +1,7 @@
 # slic-watch
 
-[![CircleCI Build Status](https://circleci.com/gh/fourTheorem/slic-watch.svg?style=shield)](https://app.circleci.com/pipelines/github/fourTheorem/slic-watch)
-[![Coverage Status](https://coveralls.io/repos/github/fourTheorem/slic-watch/badge.svg?branch=master)](https://coveralls.io/github/fourTheorem/slic-watch?branch=master)
+[![Build](https://github.com/fourTheorem/slic-watch/actions/workflows/build.yml/badge.svg)](https://github.com/fourTheorem/slic-watch/actions/workflows/build.yml)
+[![Coverage Status](https://coveralls.io/repos/github/fourTheorem/slic-watch/badge.svg?branch=main)](https://coveralls.io/github/fourTheorem/slic-watch?branch=main)
 
 SLIC Watch provides a CloudWatch Dashboard and Alarms for:
 
