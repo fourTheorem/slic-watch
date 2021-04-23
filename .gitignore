@@ -253,3 +253,4 @@ node_modules/
 coverage/
 .vscode/
 .eslintcache
+lerna-debug*
