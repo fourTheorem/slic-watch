@@ -23,7 +23,7 @@ npm install serverless-slic-watch-plugin --save-dev
 
 
 The `topic` configuration must be configured with the ARN of an SNS Topic.
-Alarm configuration is _cascading_. This means any property is applied to lower levels where no override is present.
+Alarm configuration is _cascading_. This means that configuration properties are automatically propagated from parent to children nodes (unless an override is present at the given node).
 Supported options along with their defaults are shown below.
 
 
