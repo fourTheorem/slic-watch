@@ -9,14 +9,14 @@ const sls = {}
 const config = {}
 const context = {
   stackName: 'testStack',
-  region: 'eu-west-1',
+  region: 'eu-west-1'
 }
 
 test('An empty template creates a dashboard', (t) => {
   const dash = dashboard(sls, config, context)
   const cfTemplate = CloudFormationTemplate(
     {
-      Resources: [],
+      Resources: []
     },
     sls
   )
@@ -71,7 +71,7 @@ test('A dashboard includes metrics', (t) => {
       'IteratorAge Maximum per Function',
       'ConcurrentExecutions Maximum per Function',
       'Throttles Sum per Function',
-      'Errors Sum per Function',
+      'Errors Sum per Function'
     ])
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
@@ -104,7 +104,7 @@ test('A dashboard includes metrics', (t) => {
       '4XXError for dev-serverless-test-project API',
       '5XXError for dev-serverless-test-project API',
       'Count for dev-serverless-test-project API',
-      'Latency for dev-serverless-test-project API',
+      'Latency for dev-serverless-test-project API'
     ])
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)

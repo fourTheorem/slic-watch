@@ -2,7 +2,7 @@
 
 const { filterObject } = require('./util')
 
-module.exports = function CloudFormationTemplate(sourceObject, serverless) {
+module.exports = function CloudFormationTemplate (sourceObject, serverless) {
   const template = sourceObject
 
   /**
@@ -10,7 +10,7 @@ module.exports = function CloudFormationTemplate(sourceObject, serverless) {
    *
    * @param {(string|Object)} func The function or CloudFormation intrinsic resolving a function
    */
-  function resolveFunctionResourceName(func, funcResources) {
+  function resolveFunctionResourceName (func, funcResources) {
     if (typeof func === 'string') {
       return func
     }
@@ -27,18 +27,18 @@ module.exports = function CloudFormationTemplate(sourceObject, serverless) {
     )
   }
 
-  function addResource(resourceName, resource) {
+  function addResource (resourceName, resource) {
     template.Resources[resourceName] = resource
   }
 
-  function getResourcesByType(type) {
+  function getResourcesByType (type) {
     return filterObject(
       template.Resources,
       (resource) => resource.Type === type
     )
   }
 
-  function getEventSourceMappingFunctions() {
+  function getEventSourceMappingFunctions () {
     const eventSourceMappings = getResourcesByType(
       'AWS::Lambda::EventSourceMapping'
     )
@@ -58,7 +58,7 @@ module.exports = function CloudFormationTemplate(sourceObject, serverless) {
     return eventSourceMappingFunctions
   }
 
-  function getSourceObject() {
+  function getSourceObject () {
     return sourceObject
   }
 
@@ -67,6 +67,6 @@ module.exports = function CloudFormationTemplate(sourceObject, serverless) {
     getResourcesByType,
     getSourceObject,
     getEventSourceMappingFunctions,
-    resolveFunctionResourceName,
+    resolveFunctionResourceName
   }
 }

@@ -2,10 +2,10 @@
 
 module.exports = {
   assertCommonAlarmProperties,
-  alarmNameToType,
+  alarmNameToType
 }
 
-function assertCommonAlarmProperties(t, al) {
+function assertCommonAlarmProperties (t, al) {
   t.ok(al.AlarmDescription.length > 0)
   t.ok(al.ActionsEnabled)
   t.equal(al.AlarmActions.length, 1)
@@ -13,6 +13,6 @@ function assertCommonAlarmProperties(t, al) {
   t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
 }
 
-function alarmNameToType(alarmName) {
+function alarmNameToType (alarmName) {
   return alarmName.split('_')[0]
 }

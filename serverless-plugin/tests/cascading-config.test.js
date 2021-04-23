@@ -11,12 +11,12 @@ test('No overrides cascades everything down', (t) => {
     sub1: {
       c: 3,
       sub2_1: {
-        d: 100,
-      },
+        d: 100
+      }
     },
     sub2: {
-      c: 4,
-    },
+      c: 4
+    }
   }
   const expected = {
     a: 1,
@@ -29,14 +29,14 @@ test('No overrides cascades everything down', (t) => {
         a: 1,
         b: 2,
         c: 3,
-        d: 100,
-      },
+        d: 100
+      }
     },
     sub2: {
       a: 1,
       b: 2,
-      c: 4,
-    },
+      c: 4
+    }
   }
   const cascaded = cascade(input)
   t.same(cascaded, expected)
@@ -51,12 +51,12 @@ test('Overrides prevent cascading', (t) => {
     sub1: {
       c: 3,
       sub2_1: {
-        c: 100,
-      },
+        c: 100
+      }
     },
     sub2: {
-      c: 4,
-    },
+      c: 4
+    }
   }
   const expected = {
     a: 1,
@@ -69,14 +69,14 @@ test('Overrides prevent cascading', (t) => {
       sub2_1: {
         a: 1,
         b: 2,
-        c: 100,
-      },
+        c: 100
+      }
     },
     sub2: {
       a: 1,
       b: 2,
-      c: 4,
-    },
+      c: 4
+    }
   }
   const cascaded = cascade(input)
   t.same(cascaded, expected)
@@ -90,11 +90,11 @@ test('Circular dependencies cause an error', (t) => {
     c: 7,
     sub1: {
       c: 3,
-      sub2_1: {},
+      sub2_1: {}
     },
     sub2: {
-      c: 4,
-    },
+      c: 4
+    }
   }
   input.sub1.sub2_1.sub_2_1_circ = input
 
@@ -106,15 +106,15 @@ test('Null property values are retained', (t) => {
   const input = {
     a: 1,
     sub: {
-      b: null,
-    },
+      b: null
+    }
   }
   const expected = {
     a: 1,
     sub: {
       a: 1,
-      b: null,
-    },
+      b: null
+    }
   }
 
   const cascaded = cascade(input)
