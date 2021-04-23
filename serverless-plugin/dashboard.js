@@ -42,11 +42,11 @@ module.exports = function dashboard (serverless, config, context) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )
-    const lambdaResources = cfTemplate.getResourcesByType(
-      'AWS::Lambda::Function'
-    )
     const stateMachineResources = cfTemplate.getResourcesByType(
       'AWS::StepFunctions::StateMachine'
+    )
+    const lambdaResources = cfTemplate.getResourcesByType(
+      'AWS::Lambda::Function'
     )
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -65,7 +65,7 @@ module.exports = function dashboard (serverless, config, context) {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
         DashboardName: `${context.stackName}Dashboard`,
-        DashboardBody: JSON.stringify(dash)
+        DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
       }
     }
     cfTemplate.addResource('slicWatchDashboard', dashboardResource)
@@ -190,18 +190,24 @@ module.exports = function dashboard (serverless, config, context) {
     const smWidgets = []
     for (const res of Object.values(smResources)) {
       const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names
+      const widgetMetrics = []
       for (const [metric, stats] of Object.entries(STATES_METRICS)) {
-        const metricStatWidget = createMetricWidget(
-          `${metric} for ${smName} Step Function`,
-          Object.values(stats).map((stat) => ({
+        for (const stat of stats) {
+          widgetMetrics.push({
             namespace: 'AWS/States',
             metric,
-            dimensions: { StateMachineArn: smName },
+            dimensions: {
+              StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:${smName}`
+            },
             stat
-          }))
-        )
-        smWidgets.push(metricStatWidget)
+          })
+        }
       }
+      const metricStatWidget = createMetricWidget(
+        `${smName} Step Function Executions`,
+        widgetMetrics
+      )
+      smWidgets.push(metricStatWidget)
     }
     return smWidgets
   }

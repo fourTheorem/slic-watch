@@ -70,7 +70,7 @@ test('Step Function alarms are created', (t) => {
     'ExecutionsTimedOut'
   ]
 
-  const stateMachineRef = { 'Fn::Ref': 'Workflow' }
+  const stateMachineRef = { Ref: 'Workflow' }
 
   t.same(new Set(Object.keys(alarmsByType)), new Set(executionMetrics))
 

@@ -94,7 +94,6 @@ stepFunctions:
             Default: Succeed
           Fail:
             Type: Fail
-            End: true
           Succeed:
             Type: Pass
             End: true

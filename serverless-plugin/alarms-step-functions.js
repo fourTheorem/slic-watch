@@ -25,7 +25,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
     ]
 
     for (const [smResourceName, smResource] of Object.entries(smResources)) {
-      const stateMachine = { 'Fn::Ref': smResourceName }
+      const stateMachine = { Ref: smResourceName }
 
       for (const metric of executionMetrics) {
         const config = sfAlarmConfig[metric]
