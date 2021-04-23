@@ -107,7 +107,7 @@ module.exports = function ApiGatewayAlarms(apiGwAlarmConfig, context) {
   }
 
   function create4XXAlarm(apiResourceName, apiResource, config) {
-    const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names
+    const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
       resourceName: makeApiAlarmResourceName(apiName, '4XXError'),
