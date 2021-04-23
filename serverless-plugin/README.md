@@ -6,8 +6,8 @@
 SLIC Watch provides a CloudWatch Dashboard and Alarms for:
 
  1. AWS Lambda
- 2. API Gateway (Coming soon)
- 3. Kinesis Data Streams (Coming soon - already available for Lambda consumers)
+ 2. API Gateway
+ 3. Kinesis Data Streams (available for Lambda consumers, more coming soon)
  4. DynamoDB Tables (Coming soon)
  5. SQS Queues (Coming soon)
 
@@ -23,7 +23,8 @@ npm install serverless-slic-watch-plugin --save-dev
 
 
 The `topic` configuration must be configured with the ARN of an SNS Topic.
-Alarm configuration values may also be specified. These variables along with their defaults are shown in this sample configuration:
+Alarm configuration is _cascading_. This means any property is applied to lower levels where no override is present.
+Supported options along with their defaults are shown below.
 
 
 ```yaml
@@ -32,11 +33,36 @@ Alarm configuration values may also be specified. These variables along with the
 custom:
   slicWatch:
     topic: SNS_TOPIC_ARN
-    alarmPeriod: 60,                      # The period in seconds in which metrics are evaluated
-    durationPercentTimeoutThreshold: 95,  # The % of the function's timeout at which to alarm on function duration
-    errorsThreshold: 0,                   # The number of errors to allow without alarming on function errors
-    throttlesPercentThreshold: 0,         # The % of throttled function invocations to allow before alarming
-    iteratorAgeThreshold: 10000,          # The stream iterator age in milliseconds beyond which to alarm
+    alarms:
+      Period: 60 
+      EvaluationPeriods: 1
+      TreatMissingData: notBreaching
+      ComparisonOperator: GreaterThanThreshold
+      Lambda:
+        Errors:
+          Threshold: 0
+          Statistic: Sum
+        ThrottlesPc:
+          Threshold: 0
+        DurationPc:
+          Threshold: 95
+          Statistic: Maximum
+        Invocations:
+          Threshold: null
+          Statistic: Sum
+        IteratorAge:
+          Threshold: 10000
+          Statistic: Maximum
+      ApiGateway:
+        5XXError:
+          Statistic: Average
+          Threshold: 0
+        4XXError:
+          Statistic: Average
+          Threshold: 0.05
+        Latency:
+          ExtendedStatistic: p99
+          Threshold: 5000
 ```
 
 An example project is provided for reference: [serverless-test-project](../serverless-test-project)

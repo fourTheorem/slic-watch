@@ -1,11 +1,11 @@
 {
   "name": "serverless-slic-watch-plugin",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Serverless plugin for automatic alarms and dashboards",
   "main": "index.js",
   "scripts": {
-    "test": "tap tests/",
-    "cov": "tap tests/ --coverage-report=html"
+    "test": "tap tests/**/*.test.js",
+    "cov": "npm t -- --coverage-report=html"
   },
   "devDependencies": {
     "js-yaml": "^4.0.0",
@@ -18,5 +18,9 @@
   "engines": {
     "node": ">=10.0"
   },
-  "license": "Apache"
+  "license": "Apache",
+  "dependencies": {
+    "case": "^1.6.3",
+    "lodash": "^4.17.21"
+  }
 }

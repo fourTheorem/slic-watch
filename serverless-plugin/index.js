@@ -1,16 +1,10 @@
 'use strict'
 
-const dashboard = require('./dashboard')
+const _ = require('lodash')
 const alarms = require('./alarms')
+const dashboard = require('./dashboard')
+const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
-
-const DEFAULT_PLUGIN_CONFIG = {
-  alarmPeriod: 60,
-  durationPercentTimeoutThreshold: 95,
-  errorsThreshold: 0,
-  throttlesPercentThreshold: 0,
-  iteratorAgeThreshold: 10000,
-}
 
 class ServerlessPlugin {
   constructor(serverless, options) {
@@ -18,20 +12,25 @@ class ServerlessPlugin {
     this.options = options
     this.providerNaming = serverless.providers.aws.naming
 
-    this.config = {
-      ...DEFAULT_PLUGIN_CONFIG,
-      ...((serverless.service.custom || {}).slicWatch || {}),
-      region: serverless.service.provider.region,
-      stackName: this.providerNaming.getStackName(),
-    }
-
-    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(this.config)}`)
-
-    if (!this.config.topicArn) {
+    const { topicArn, ...pluginConfig } = (
+      serverless.service.custom || {}
+    ).slicWatch
+    if (!topicArn) {
       throw new Error('topicArn not specified in custom.slicWatch')
     }
-    this.dashboard = dashboard(serverless, this.config)
-    this.alarms = alarms(serverless, this.config)
+
+    const context = {
+      region: serverless.service.provider.region,
+      stackName: this.providerNaming.getStackName(),
+      topicArn,
+    }
+
+    const config = _.merge(defaultConfig, pluginConfig)
+
+    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(config)}`)
+
+    this.dashboard = dashboard(serverless, config.dashboard, context)
+    this.alarms = alarms(serverless, config.alarms, context)
 
     this.hooks = {
       'package:compileEvents': this.compileEvents.bind(this),
