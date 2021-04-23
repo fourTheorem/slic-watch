@@ -1,6 +1,6 @@
 {
   "name": "serverless-slic-watch-plugin",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "Serverless plugin for automatic alarms and dashboards",
   "main": "index.js",
   "scripts": {
