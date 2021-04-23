@@ -28,7 +28,7 @@ test('An empty template creates a dashboard', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody)
+  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
   t.ok(dashBody.start)
   const widgets = dashBody.widgets
   t.equal(widgets.length, 7)
@@ -48,12 +48,13 @@ test('A dashboard includes metrics', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody)
+  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+
   t.ok(dashBody.start)
 
   t.test('dashboards includes Lambda metrics', (t) => {
     const widgets = dashBody.widgets.filter((widget) =>
-      widget.properties.title.endsWith('Function')
+      widget.properties.title.endsWith('per Function')
     )
     t.equal(widgets.length, 8)
     const namespaces = new Set()
@@ -81,14 +82,6 @@ test('A dashboard includes metrics', (t) => {
   })
 
   t.test('dashboards includes API metrics', (t) => {
-    const dashResources = cfTemplate.getResourcesByType(
-      'AWS::CloudWatch::Dashboard'
-    )
-    t.equal(Object.keys(dashResources).length, 1)
-    const [, dashResource] = Object.entries(dashResources)[0]
-    t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
-    const dashBody = JSON.parse(dashResource.Properties.DashboardBody)
-    t.ok(dashBody.start)
     const widgets = dashBody.widgets.filter((widget) =>
       widget.properties.title.endsWith('API')
     )
@@ -106,6 +99,27 @@ test('A dashboard includes metrics', (t) => {
       'Count for dev-serverless-test-project API',
       'Latency for dev-serverless-test-project API'
     ])
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(expectedTitles, actualTitles)
+    t.end()
+  })
+
+  t.test('dashboards includes Step Function metrics', (t) => {
+    const widgets = dashBody.widgets.filter((widget) =>
+      widget.properties.title.endsWith('Step Function Executions')
+    )
+    t.equal(widgets.length, 1)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/States']))
+    const expectedTitles = new Set(['Workflow Step Function Executions'])
+
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
     )

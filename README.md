@@ -7,9 +7,10 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
 
  1. AWS Lambda
  2. API Gateway
- 3. Kinesis Data Streams (available for Lambda consumers, more coming soon)
- 4. DynamoDB Tables (Coming soon)
- 5. SQS Queues (Coming soon)
+ 3. Step Functions
+ 4. Kinesis Data Streams (available for Lambda consumers, more coming soon)
+ 5. DynamoDB Tables (Coming soon)
+ 6. SQS Queues (Coming soon)
 
 Currently, SLIC Watch is available as a Serverless Framework plugin.
 
@@ -38,7 +39,7 @@ custom:
       EvaluationPeriods: 1
       TreatMissingData: notBreaching
       ComparisonOperator: GreaterThanThreshold
-      Lambda:
+      Lambda: # Lambda Functions
         Errors:
           Threshold: 0
           Statistic: Sum
@@ -53,7 +54,7 @@ custom:
         IteratorAge:
           Threshold: 10000
           Statistic: Maximum
-      ApiGateway:
+      ApiGateway: # API Gateway REST APIs
         5XXError:
           Statistic: Average
           Threshold: 0
@@ -63,6 +64,15 @@ custom:
         Latency:
           ExtendedStatistic: p99
           Threshold: 5000
+      States: # Step Functions
+        Statistic: Sum
+        ExecutionsThrottled:
+          Threshold: 0
+        ExecutionsFailed:
+          Threshold: 0
+        ExecutionsTimedOut:
+          Threshold: 0
+      
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)
