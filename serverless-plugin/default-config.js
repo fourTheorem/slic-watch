@@ -1,7 +1,16 @@
 'use strict'
 
 module.exports = {
-  dashboard: {},
+  dashboard: {
+    timeRange: {
+      start: '-PT3H'
+    },
+    metricPeriod: 300,
+    layout: {
+      widgetWidth: 8,
+      widgetHeight: 6
+    }
+  },
   alarms: {
     Period: 60,
     EvaluationPeriods: 1,

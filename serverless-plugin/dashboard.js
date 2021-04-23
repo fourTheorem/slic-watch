@@ -1,9 +1,5 @@
 'use strict'
 
-const DASHBOARD_PERIOD = '-PT3H'
-const METRIC_PERIOD = 60
-const WIDGET_WIDTH = 24
-const WIDGET_HEIGHT = 6
 const MAX_WIDTH = 24
 
 const LAMBDA_METRICS = {
@@ -27,7 +23,9 @@ const STATES_METRICS = {
   ExecutionsTimedOut: ['Sum']
 }
 
-module.exports = function dashboard (serverless, config, context) {
+module.exports = function dashboard (serverless, dashboardConfig, context) {
+  const config = dashboardConfig
+
   return {
     addDashboard
   }
@@ -60,7 +58,7 @@ module.exports = function dashboard (serverless, config, context) {
       ...stateMachineWidgets,
       ...lambdaWidgets
     ])
-    const dash = { start: DASHBOARD_PERIOD, widgets: positionedWidgets }
+    const dash = { start: config.timeRange, end: config.timeRange.end, widgets: positionedWidgets }
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
@@ -97,7 +95,7 @@ module.exports = function dashboard (serverless, config, context) {
         title,
         view: 'timeSeries',
         region: context.region,
-        period: METRIC_PERIOD
+        period: config.metricPeriod
       }
     }
   }
@@ -117,7 +115,7 @@ module.exports = function dashboard (serverless, config, context) {
     for (const [metric, stats] of Object.entries(LAMBDA_METRICS)) {
       for (const stat of stats) {
         const metricStatWidget = createMetricWidget(
-          `${metric} ${stat} per Function`,
+          `Lambda ${metric} ${stat} per Function`,
           Object.values(functionResources).map((res) => ({
             namespace: 'AWS/Lambda',
             metric,
@@ -132,7 +130,7 @@ module.exports = function dashboard (serverless, config, context) {
     }
     if (eventSourceMappingFunctionResourceNames.length > 0) {
       const iteratorAgeWidget = createMetricWidget(
-        'IteratorAge Maximum per Function',
+        'Lambda IteratorAge Maximum per Function',
         Object.keys(functionResources)
           .filter((resName) =>
             eventSourceMappingFunctionResourceNames.includes(resName)
@@ -222,19 +220,21 @@ module.exports = function dashboard (serverless, config, context) {
     let x = 0
     let y = 0
 
+    const { widgetHeight, widgetWidth } = config.layout
+
     return widgets.map((widget) => {
-      if (x + WIDGET_WIDTH > MAX_WIDTH) {
-        y += WIDGET_HEIGHT
+      if (x + widgetWidth > MAX_WIDTH) {
+        y += widgetHeight
         x = 0
       }
       const positionedWidget = {
         ...widget,
         x,
         y,
-        width: WIDGET_WIDTH,
-        height: WIDGET_HEIGHT
+        width: widgetWidth,
+        height: widgetHeight
       }
-      x += WIDGET_WIDTH
+      x += widgetWidth
       return positionedWidget
     })
   }

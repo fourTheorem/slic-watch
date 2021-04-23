@@ -34,6 +34,13 @@ Supported options along with their defaults are shown below.
 custom:
   slicWatch:
     topic: SNS_TOPIC_ARN
+    dashboard:
+      timeRange:
+        start: '-PT3H'
+      metricPeriod: 300
+      layout:
+        widgetWidth: 8
+        widgetHeight: 6
     alarms:
       Period: 60 
       EvaluationPeriods: 1
