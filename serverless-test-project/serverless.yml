@@ -83,8 +83,18 @@ stepFunctions:
     workflow:
       name: Workflow
       definition:
-        StartAt: Go
+        StartAt: Succeed or Fail?
         States:
-          Go:
+          Succeed or Fail?:
+            Type: Choice
+            Choices:
+              - Variable: $.shouldFail
+                BooleanEquals: true
+                Next: Fail
+            Default: Succeed
+          Fail:
+            Type: Fail
+            End: true
+          Succeed:
             Type: Pass
             End: true

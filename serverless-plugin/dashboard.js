@@ -21,6 +21,12 @@ const API_METRICS = {
   Count: ['Sum']
 }
 
+const STATES_METRICS = {
+  ExecutionsFailed: ['Sum'],
+  ExecutionsThrottled: ['Sum'],
+  ExecutionsTimedOut: ['Sum']
+}
+
 module.exports = function dashboard (serverless, config, context) {
   return {
     addDashboard
@@ -39,13 +45,21 @@ module.exports = function dashboard (serverless, config, context) {
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )
+    const stateMachineResources = cfTemplate.getResourcesByType(
+      'AWS::StepFunctions::StateMachine'
+    )
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
+    const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
     const lambdaWidgets = createLambdaWidgets(
       lambdaResources,
       Object.keys(eventSourceMappingFunctions)
     )
-    const positionedWidgets = layOutWidgets([...apiWidgets, ...lambdaWidgets])
+    const positionedWidgets = layOutWidgets([
+      ...apiWidgets,
+      ...stateMachineWidgets,
+      ...lambdaWidgets
+    ])
     const dash = { start: DASHBOARD_PERIOD, widgets: positionedWidgets }
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
@@ -164,6 +178,32 @@ module.exports = function dashboard (serverless, config, context) {
       }
     }
     return apiWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for the Step Function State Machines
+   * CloudFormation resources provided
+   *
+   * @param {object} smResources Object of Step Function State Machine resources by resource name
+   */
+  function createStateMachineWidgets (smResources) {
+    const smWidgets = []
+    for (const res of Object.values(smResources)) {
+      const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names
+      for (const [metric, stats] of Object.entries(STATES_METRICS)) {
+        const metricStatWidget = createMetricWidget(
+          `${metric} for ${smName} Step Function`,
+          Object.values(stats).map((stat) => ({
+            namespace: 'AWS/States',
+            metric,
+            dimensions: { StateMachineArn: smName },
+            stat
+          }))
+        )
+        smWidgets.push(metricStatWidget)
+      }
+    }
+    return smWidgets
   }
 
   /**

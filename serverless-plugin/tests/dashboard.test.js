@@ -53,7 +53,7 @@ test('A dashboard includes metrics', (t) => {
 
   t.test('dashboards includes Lambda metrics', (t) => {
     const widgets = dashBody.widgets.filter((widget) =>
-      widget.properties.title.endsWith('Function')
+      widget.properties.title.endsWith('per Function')
     )
     t.equal(widgets.length, 8)
     const namespaces = new Set()
@@ -106,6 +106,37 @@ test('A dashboard includes metrics', (t) => {
       'Count for dev-serverless-test-project API',
       'Latency for dev-serverless-test-project API'
     ])
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(expectedTitles, actualTitles)
+    t.end()
+  })
+
+  t.test('dashboards includes Step Function metrics', (t) => {
+    const dashResources = cfTemplate.getResourcesByType(
+      'AWS::CloudWatch::Dashboard'
+    )
+    t.equal(Object.keys(dashResources).length, 1)
+    const [, dashResource] = Object.entries(dashResources)[0]
+    const dashBody = JSON.parse(dashResource.Properties.DashboardBody)
+    const widgets = dashBody.widgets.filter((widget) =>
+      widget.properties.title.endsWith('Step Function')
+    )
+    t.equal(widgets.length, 3)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/States']))
+    const expectedTitles = new Set([
+      'ExecutionsFailed for Workflow Step Function',
+      'ExecutionsThrottled for Workflow Step Function',
+      'ExecutionsTimedOut for Workflow Step Function'
+    ])
+
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
     )
