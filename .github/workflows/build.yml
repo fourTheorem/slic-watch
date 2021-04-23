@@ -26,6 +26,7 @@ jobs:
           github-token: ${{ secrets.github_token }}
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
+          path-to-lcov: serverless-plugin/coverage/lcov.info
 
   finish:
     needs: build
