@@ -58,7 +58,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       ...stateMachineWidgets,
       ...lambdaWidgets
     ])
-    const dash = { start: config.timeRange, end: config.timeRange.end, widgets: positionedWidgets }
+    const dash = { start: config.timeRange.start, end: config.timeRange.end, widgets: positionedWidgets }
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
