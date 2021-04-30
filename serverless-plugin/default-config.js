@@ -12,11 +12,13 @@ module.exports = {
     }
   },
   alarms: {
+    enabled: true,
     Period: 60,
     EvaluationPeriods: 1,
     TreatMissingData: 'notBreaching',
     ComparisonOperator: 'GreaterThanThreshold',
     Lambda: {
+      enabled: true,
       Errors: {
         Threshold: 0,
         Statistic: 'Sum'
@@ -41,6 +43,7 @@ module.exports = {
       }
     },
     ApiGateway: {
+      enabled: true,
       '5XXError': {
         Statistic: 'Average',
         Threshold: 0.0
@@ -55,6 +58,7 @@ module.exports = {
       }
     },
     States: {
+      enabled: true,
       Statistic: 'Sum',
       ExecutionsThrottled: {
         Threshold: 0
