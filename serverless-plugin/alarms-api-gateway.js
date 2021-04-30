@@ -1,6 +1,6 @@
 'use strict'
 
-const stringcase = require('case')
+const { makeResourceName } = require('./util')
 
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
@@ -90,16 +90,11 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     }
   }
 
-  function makeApiAlarmResourceName (apiName, alarm) {
-    const normalisedName = stringcase.pascal(apiName)
-    return `slicWatchApi${alarm}Alarm${normalisedName}`
-  }
-
   function createAvailabilityAlarm (apiResourceName, apiResource, config) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
-      resourceName: makeApiAlarmResourceName(apiName, 'Availability'),
+      resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createApiAlarm(
         `ApiAvailability_${apiName}`,
         `API 5XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
@@ -118,7 +113,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
-      resourceName: makeApiAlarmResourceName(apiName, '4XXError'),
+      resourceName: makeResourceName('Api', apiName, '4XXError'),
       resource: createApiAlarm(
         `Api4XXError_${apiName}`,
         `API 4XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
@@ -137,7 +132,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
     const threshold = config.Threshold
     return {
-      resourceName: makeApiAlarmResourceName(apiName, 'Latency'),
+      resourceName: makeResourceName('Api', apiName, 'Latency'),
       resource: createApiAlarm(
         `ApiLatency_${apiName}`,
         `API Latency ${config.Statistic} for ${apiName} breaches ${threshold}`,

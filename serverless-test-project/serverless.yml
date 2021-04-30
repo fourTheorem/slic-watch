@@ -65,18 +65,46 @@ resources:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Delete
       Properties:
-        TableName: DataTable
+        TableName: MyTable
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: pk
             AttributeType: S
           - AttributeName: sk
             AttributeType: S
+          - AttributeName: gsi1pk
+            AttributeType: S
+          - AttributeName: gsi1sk
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
         KeySchema:
           - AttributeName: pk
             KeyType: HASH
           - AttributeName: sk
             KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+              - address
+              ProjectionType: INCLUDE
+        LocalSecondaryIndexes:
+          - IndexName: LSI1
+            KeySchema:
+            - AttributeName: pk
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+              - name
+              ProjectionType: INCLUDE
 
 stepFunctions:
   stateMachines:

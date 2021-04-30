@@ -1,12 +1,3 @@
-dashboard:
-  timeRange:
-    # For possible 'start' and 'end' values, see
-    # https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
-    start: -PT3H
-  metricPeriod: 300
-  layout:
-    widgetWidth: 8
-    widgetHeight: 6
 alarms:
   enabled: true
   Period: 60
@@ -14,7 +5,6 @@ alarms:
   TreatMissingData: notBreaching
   ComparisonOperator: GreaterThanThreshold
   Lambda: # Lambda Functions
-    enabled: true
     Errors:
       Threshold: 0
       Statistic: Sum
@@ -24,14 +14,13 @@ alarms:
       Threshold: 95
       Statistic: Maximum
     Invocations: # No invocation alarms are created by default. Override threshold to create alarms
-      enabled: false # Note: this one requires both `enabled: true` and `Threshould: someValue` to be effectively enabled
+      enabled: false # Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
       Threshold: null
       Statistic: Sum
     IteratorAge:
       Threshold: 10000
       Statistic: Maximum
   ApiGateway: # API Gateway REST APIs
-    enabled: true
     5XXError:
       Statistic: Average
       Threshold: 0
@@ -42,7 +31,6 @@ alarms:
       ExtendedStatistic: p99
       Threshold: 5000
   States: # Step Functions
-    enabled: true
     Statistic: Sum
     ExecutionsThrottled:
       Threshold: 0
@@ -50,3 +38,68 @@ alarms:
       Threshold: 0
     ExecutionsTimedOut:
       Threshold: 0
+  DynamoDB:
+    # Consumed read/write capacity units are not alarmed. These should either
+    # be part of an auto-scaling configuration for provisioned mode or should be automatically
+    # avoided for on-demand mode. Instead, we rely on persistent throttling
+    # to alert failures in these scenarios.
+    # Throttles can occur in normal operation and are handled with retries. Threshold should
+    # therefore be configured to provide meaningful alarms based on higher than average throttling.
+    Statistic: Sum
+    ReadThrottleEvents:
+      Threshold: 10
+    WriteThrottleEvents:
+      Threshold: 10
+    UserErrors:
+      Threshold: 0
+    SystemErrors:
+      Threshold: 0
+
+dashboard:
+  timeRange:
+    # For possible 'start' and 'end' values, see
+    # https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
+    start: -PT3H
+  metricPeriod: 300
+  widgets:
+    metricPeriod: 300
+    width: 8
+    height: 6
+    Lambda:
+      # Metrics per Lambda Function
+      Errors:
+        Statistic: ['Sum']
+      Throttles:
+        Statistic: ['Sum']
+      Duration:
+        Statistic: ['Average', 'p95', 'Maximum']
+      Invocations:
+        Statistic: ['Sum']
+      ConcurrentExecutions:
+        Statistic: ['Maximum']
+      IteratorAge:
+        Statistic: ['Maximum']
+    ApiGateway:
+      5XXError:
+        Statistic: ['Sum']
+      4XXError:
+        Statistic: ['Sum']
+      Latency:
+        Statistic: ['Average', 'p95']
+      Count:
+        Statistic: ['Sum']
+    States:
+      # Step Functions
+      ExecutionsFailed:
+        Statistic: ['Sum']
+      ExecutionsThrottled:
+        Statistic: ['Sum']
+      ExecutionsTimedOut:
+        Statistic: ['Sum']
+    DynamoDB:
+      # Tables and GSIs
+      ReadThrottleEvents:
+        Statistic: ['Sum']
+      WriteThrottleEvents:
+        Statistic: ['Sum']
+    

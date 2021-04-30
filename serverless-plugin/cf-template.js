@@ -2,9 +2,15 @@
 
 const { filterObject } = require('./util')
 
-module.exports = function CloudFormationTemplate (sourceObject, serverless) {
-  const template = sourceObject
-
+/**
+ * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
+ * and directly-specified CloudFormation resources
+ *
+ * @param {object} compiledTemplate The compiled CloudFormation template
+ * @param {object} serviceResources Directly-provided CloudFormation resources (from serverless.yml resources.Resources)
+ * @param {object} serverless The Serverless Framework instance
+ */
+module.exports = function CloudFormationTemplate (compiledTemplate, serviceResources, serverless) {
   /**
    * Take a function or resource name and resolve the function resource name in the current stack
    *
@@ -28,12 +34,15 @@ module.exports = function CloudFormationTemplate (sourceObject, serverless) {
   }
 
   function addResource (resourceName, resource) {
-    template.Resources[resourceName] = resource
+    compiledTemplate.Resources[resourceName] = resource
   }
 
   function getResourcesByType (type) {
     return filterObject(
-      template.Resources,
+      {
+        ...compiledTemplate.Resources,
+        ...serviceResources
+      },
       (resource) => resource.Type === type
     )
   }
@@ -59,7 +68,7 @@ module.exports = function CloudFormationTemplate (sourceObject, serverless) {
   }
 
   function getSourceObject () {
-    return sourceObject
+    return compiledTemplate
   }
 
   return {

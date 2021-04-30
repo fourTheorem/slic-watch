@@ -1,9 +1,9 @@
 'use strict'
 
 const _ = require('lodash')
-const sourceCFTemplate = require('./resources/cloudformation-template-stack.json')
 const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
+const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
 
 const slsMock = {
   cli: {
@@ -13,6 +13,7 @@ const slsMock = {
 
 module.exports = {
   slsMock,
+  defaultCfTemplate,
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
@@ -42,10 +43,11 @@ function createTestConfig (from, cascadingChanges) {
 }
 
 function createTestCloudFormationTemplate (stackDefinition = null) {
-  const data = stackDefinition || sourceCFTemplate
+  const data = stackDefinition || defaultCfTemplate
 
   return CloudFormationTemplate(
     _.cloneDeep(data),
+    {},
     slsMock
   )
 }

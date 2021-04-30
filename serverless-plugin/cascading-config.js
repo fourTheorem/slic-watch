@@ -20,7 +20,7 @@ function cascade (node, parentNode = {}, depth = 0) {
   const childNodes = {}
   const compiledNode = {}
   for (const [key, value] of Object.entries({ ...parentNode, ...node })) {
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
       childNodes[key] = value
     } else {
       compiledNode[key] = value
