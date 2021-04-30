@@ -36,6 +36,15 @@ Supported options along with their defaults are shown below.
 custom:
   slicWatch:
     topic: SNS_TOPIC_ARN
+    dashboard:
+      timeRange:
+        # For possible 'start' and 'end' values, see 
+        # https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
+        start: '-PT3H'
+      metricPeriod: 300
+      layout:
+        widgetWidth: 8
+        widgetHeight: 6
     alarms:
       Period: 60 
       EvaluationPeriods: 1

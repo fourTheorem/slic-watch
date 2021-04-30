@@ -6,7 +6,17 @@ const CloudFormationTemplate = require('../cf-template')
 const { test } = require('tap')
 
 const sls = {}
-const config = {}
+const config = {
+  timeRange: {
+    start: '-PT3H'
+  },
+  metricPeriod: 300,
+  layout: {
+    widgetWidth: 8,
+    widgetHeight: 6
+  }
+}
+
 const context = {
   stackName: 'testStack',
   region: 'eu-west-1'
@@ -65,14 +75,14 @@ test('A dashboard includes metrics', (t) => {
     }
     t.same(namespaces, new Set(['AWS/Lambda']))
     const expectedTitles = new Set([
-      'Duration Average per Function',
-      'Duration p95 per Function',
-      'Duration Maximum per Function',
-      'Invocations Sum per Function',
-      'IteratorAge Maximum per Function',
-      'ConcurrentExecutions Maximum per Function',
-      'Throttles Sum per Function',
-      'Errors Sum per Function'
+      'Lambda Duration Average per Function',
+      'Lambda Duration p95 per Function',
+      'Lambda Duration Maximum per Function',
+      'Lambda Invocations Sum per Function',
+      'Lambda IteratorAge Maximum per Function',
+      'Lambda ConcurrentExecutions Maximum per Function',
+      'Lambda Throttles Sum per Function',
+      'Lambda Errors Sum per Function'
     ])
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
