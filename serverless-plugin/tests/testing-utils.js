@@ -1,8 +1,22 @@
 'use strict'
 
+const _ = require('lodash')
+const sourceCFTemplate = require('./resources/cloudformation-template-stack.json')
+const { cascade } = require('../cascading-config')
+const CloudFormationTemplate = require('../cf-template')
+
+const slsMock = {
+  cli: {
+    log: () => {}
+  }
+}
+
 module.exports = {
+  slsMock,
   assertCommonAlarmProperties,
-  alarmNameToType
+  alarmNameToType,
+  createTestConfig,
+  createTestCloudFormationTemplate
 }
 
 function assertCommonAlarmProperties (t, al) {
@@ -15,4 +29,23 @@ function assertCommonAlarmProperties (t, al) {
 
 function alarmNameToType (alarmName) {
   return alarmName.split('_')[0]
+}
+
+function createTestConfig (from, cascadingChanges) {
+  return cascade(
+    _.merge(
+      {},
+      from,
+      cascadingChanges
+    )
+  )
+}
+
+function createTestCloudFormationTemplate (stackDefinition = null) {
+  const data = stackDefinition || sourceCFTemplate
+
+  return CloudFormationTemplate(
+    _.cloneDeep(data),
+    slsMock
+  )
 }

@@ -22,23 +22,31 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     )
 
     for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-      const alarms = [
-        createAvailabilityAlarm(
+      const alarms = []
+
+      if (apiGwAlarmConfig['5XXError'].enabled) {
+        alarms.push(createAvailabilityAlarm(
           apiResourceName,
           apiResource,
           apiGwAlarmConfig['5XXError']
-        ),
-        create4XXAlarm(
+        ))
+      }
+
+      if (apiGwAlarmConfig['4XXError'].enabled) {
+        alarms.push(create4XXAlarm(
           apiResourceName,
           apiResource,
           apiGwAlarmConfig['4XXError']
-        ),
-        createLatencyAlarm(
+        ))
+      }
+
+      if (apiGwAlarmConfig.Latency.enabled) {
+        alarms.push(createLatencyAlarm(
           apiResourceName,
           apiResource,
           apiGwAlarmConfig.Latency
-        )
-      ]
+        ))
+      }
 
       for (const alarm of alarms) {
         cfTemplate.addResource(alarm.resourceName, alarm.resource)

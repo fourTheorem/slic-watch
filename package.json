@@ -37,5 +37,8 @@
     "*.js": [
       "eslint --cache --fix"
     ]
+  },
+  "dependencies": {
+    "yaml": "^1.10.2"
   }
 }

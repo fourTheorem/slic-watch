@@ -1,5 +1,5 @@
 service: serverless-test-project
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-step-functions
@@ -36,7 +36,7 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn: {'Fn::GetAtt': [stream, Arn]}
+          arn: { "Fn::GetAtt": [stream, Arn] }
           startingPosition: LATEST
           maximumRetryAttempts: 0
 
@@ -46,7 +46,7 @@ functions:
     events:
       - http:
           method: get
-          path: 'item'
+          path: "item"
 
 resources:
   Resources:

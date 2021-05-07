@@ -31,41 +31,45 @@ Supported options along with their defaults are shown below.
 
 
 ```yaml
-...
+# ...
 
 custom:
   slicWatch:
     topic: SNS_TOPIC_ARN
     dashboard:
       timeRange:
-        # For possible 'start' and 'end' values, see 
+        # For possible 'start' and 'end' values, see
         # https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
-        start: '-PT3H'
+        start: -PT3H
       metricPeriod: 300
       layout:
         widgetWidth: 8
         widgetHeight: 6
     alarms:
-      Period: 60 
+      enabled: true
+      Period: 60
       EvaluationPeriods: 1
       TreatMissingData: notBreaching
       ComparisonOperator: GreaterThanThreshold
       Lambda: # Lambda Functions
+        enabled: true
         Errors:
           Threshold: 0
           Statistic: Sum
-        ThrottlesPc:
+        ThrottlesPc: # Throttles are evaluated as a percentage of invocations
           Threshold: 0
-        DurationPc:
+        DurationPc: # Duration is evaluated as a percentage of the function timeout
           Threshold: 95
           Statistic: Maximum
-        Invocations:
+        Invocations: # No invocation alarms are created by default. Override threshold to create alarms
+          enabled: false # Note: this one requires both `enabled: true` and `Threshould: someValue` to be effectively enabled
           Threshold: null
           Statistic: Sum
         IteratorAge:
           Threshold: 10000
           Statistic: Maximum
       ApiGateway: # API Gateway REST APIs
+        enabled: true
         5XXError:
           Statistic: Average
           Threshold: 0
@@ -76,14 +80,14 @@ custom:
           ExtendedStatistic: p99
           Threshold: 5000
       States: # Step Functions
+        enabled: true
         Statistic: Sum
         ExecutionsThrottled:
           Threshold: 0
         ExecutionsFailed:
           Threshold: 0
         ExecutionsTimedOut:
-          Threshold: 0
-      
+          Threshold: 0   
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)

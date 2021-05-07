@@ -28,21 +28,23 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
       const stateMachine = { Ref: smResourceName }
 
       for (const metric of executionMetrics) {
-        const config = sfAlarmConfig[metric]
-        const alarmResourceName = `slicWatchStates${metric}Alarm${smResourceName}`
-        const smName = smResource.Properties.StateMachineName
-        const alarmResource = createStateMachineAlarm(
-          `${metric}_${smName}`,
-          `${metric} ${config.Statistic} for ${smName} breaches ${config.Threshold}`,
-          stateMachine,
-          config.ComparisonOperator,
-          config.Threshold,
-          metric,
-          config.Statistic,
-          config.Period,
-          config.ExtendedStatistic
-        )
-        cfTemplate.addResource(alarmResourceName, alarmResource)
+        if (sfAlarmConfig[metric].enabled) {
+          const config = sfAlarmConfig[metric]
+          const alarmResourceName = `slicWatchStates${metric}Alarm${smResourceName}`
+          const smName = smResource.Properties.StateMachineName
+          const alarmResource = createStateMachineAlarm(
+            `${metric}_${smName}`,
+            `${metric} ${config.Statistic} for ${smName} breaches ${config.Threshold}`,
+            stateMachine,
+            config.ComparisonOperator,
+            config.Threshold,
+            metric,
+            config.Statistic,
+            config.Period,
+            config.ExtendedStatistic
+          )
+          cfTemplate.addResource(alarmResourceName, alarmResource)
+        }
       }
     }
   }

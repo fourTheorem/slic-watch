@@ -1,23 +1,14 @@
 'use strict'
 
 const apiGatewayAlarms = require('../alarms-api-gateway')
-const CloudFormationTemplate = require('../cf-template')
-
 const { test } = require('tap')
-const _ = require('lodash')
-
 const defaultConfig = require('../default-config')
-const { cascade } = require('../cascading-config')
 const {
   assertCommonAlarmProperties,
-  alarmNameToType
+  alarmNameToType,
+  createTestConfig,
+  createTestCloudFormationTemplate
 } = require('./testing-utils')
-
-const sls = {
-  cli: {
-    log: () => {}
-  }
-}
 
 const context = {
   topicArn: 'dummy-arn',
@@ -25,31 +16,29 @@ const context = {
   region: 'eu-west-1'
 }
 
-const alarmConfig = cascade(
-  _.merge(defaultConfig.alarms, {
-    ApiGateway: {
-      Period: 60,
-      '5XXError': {
-        Threshold: 0.0
-      },
-      '4XXError': {
-        Threshold: 0.05
-      },
-      Latency: {
-        Threshold: 5000
+test('API Gateway alarms are created', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      ApiGateway: {
+        Period: 60,
+        '5XXError': {
+          Threshold: 0.0
+        },
+        '4XXError': {
+          Threshold: 0.05
+        },
+        Latency: {
+          Threshold: 5000
+        }
       }
     }
-  })
-)
-
-const apiGwAlarmConfig = alarmConfig.ApiGateway
-
-test('API Gateway alarms are created', (t) => {
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
-  const cfTemplate = CloudFormationTemplate(
-    require('./resources/cloudformation-template-stack.json'),
-    sls
   )
+
+  const apiGwAlarmConfig = alarmConfig.ApiGateway
+
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -116,5 +105,74 @@ test('API Gateway alarms are created', (t) => {
     ])
   }
 
+  t.end()
+})
+
+test('API Gateway alarms are not created when disabled globally', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      ApiGateway: {
+        enabled: false, // disabled globally
+        Period: 60,
+        '5XXError': {
+          Threshold: 0.0
+        },
+        '4XXError': {
+          Threshold: 0.05
+        },
+        Latency: {
+          Threshold: 5000
+        }
+      }
+    }
+  )
+
+  const apiGwAlarmConfig = alarmConfig.ApiGateway
+
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+
+  const cfTemplate = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
+  t.end()
+})
+
+test('API Gateway alarms are not created when disabled individually', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      ApiGateway: {
+        enabled: true, // enabled globally
+        Period: 60,
+        '5XXError': {
+          enabled: false, // disabled locally
+          Threshold: 0.0
+        },
+        '4XXError': {
+          enabled: false, // disabled locally
+          Threshold: 0.05
+        },
+        Latency: {
+          enabled: false, // disabled locally
+          Threshold: 5000
+        }
+      }
+    }
+  )
+
+  const apiGwAlarmConfig = alarmConfig.ApiGateway
+
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+
+  const cfTemplate = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
   t.end()
 })

@@ -27,8 +27,10 @@ module.exports = function alarms (serverless, alarmConfig, context) {
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
   function addAlarms (cfTemplate) {
-    createLambdaAlarms(cfTemplate)
-    createApiGatewayAlarms(cfTemplate)
-    createStatesAlarms(cfTemplate)
+    if (alarmConfig.enabled) {
+      alarmConfig.Lambda.enabled && createLambdaAlarms(cfTemplate)
+      alarmConfig.ApiGateway.enabled && createApiGatewayAlarms(cfTemplate)
+      alarmConfig.States.enabled && createStatesAlarms(cfTemplate)
+    }
   }
 }

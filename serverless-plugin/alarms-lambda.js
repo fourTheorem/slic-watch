@@ -22,30 +22,42 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
     for (const [funcResourceName, funcResource] of Object.entries(
       lambdaResources
     )) {
-      const errAlarm = createLambdaErrorsAlarm(
-        funcResourceName,
-        funcResource,
-        lambdaAlarmConfig.Errors
-      )
-      cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
-      const throttlesAlarm = createLambdaThrottlesAlarm(
-        funcResourceName,
-        funcResource,
-        lambdaAlarmConfig.ThrottlesPc
-      )
+      if (lambdaAlarmConfig.Errors.enabled) {
+        const errAlarm = createLambdaErrorsAlarm(
+          funcResourceName,
+          funcResource,
+          lambdaAlarmConfig.Errors
+        )
+        cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
+      }
 
-      cfTemplate.addResource(
-        throttlesAlarm.resourceName,
-        throttlesAlarm.resource
-      )
-      const durationAlarm = createLambdaDurationAlarm(
-        funcResourceName,
-        funcResource,
-        lambdaAlarmConfig.DurationPc
-      )
-      cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
+      if (lambdaAlarmConfig.ThrottlesPc.enabled) {
+        const throttlesAlarm = createLambdaThrottlesAlarm(
+          funcResourceName,
+          funcResource,
+          lambdaAlarmConfig.ThrottlesPc
+        )
 
-      if (lambdaAlarmConfig.Invocations.Threshold) {
+        cfTemplate.addResource(
+          throttlesAlarm.resourceName,
+          throttlesAlarm.resource
+        )
+      }
+
+      if (lambdaAlarmConfig.DurationPc.enabled) {
+        const durationAlarm = createLambdaDurationAlarm(
+          funcResourceName,
+          funcResource,
+          lambdaAlarmConfig.DurationPc
+        )
+        cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
+      }
+
+      if (lambdaAlarmConfig.Invocations.enabled) {
+        if (lambdaAlarmConfig.Invocations.Threshold == null) {
+          throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
+        }
+
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource,
@@ -58,19 +70,21 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       }
     }
 
-    for (const [funcResourceName, funcResource] of Object.entries(
-      cfTemplate.getEventSourceMappingFunctions()
-    )) {
+    if (lambdaAlarmConfig.IteratorAge.enabled) {
+      for (const [funcResourceName, funcResource] of Object.entries(
+        cfTemplate.getEventSourceMappingFunctions()
+      )) {
       // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
-      const iteratorAgeAlarm = createIteratorAgeAlarm(
-        funcResourceName,
-        funcResource,
-        lambdaAlarmConfig.IteratorAge
-      )
-      cfTemplate.addResource(
-        iteratorAgeAlarm.resourceName,
-        iteratorAgeAlarm.resource
-      )
+        const iteratorAgeAlarm = createIteratorAgeAlarm(
+          funcResourceName,
+          funcResource,
+          lambdaAlarmConfig.IteratorAge
+        )
+        cfTemplate.addResource(
+          iteratorAgeAlarm.resourceName,
+          iteratorAgeAlarm.resource
+        )
+      }
     }
   }
 
