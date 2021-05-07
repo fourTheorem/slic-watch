@@ -5,17 +5,18 @@ const sourceCFTemplate = require('./resources/cloudformation-template-stack.json
 const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
 
-module.exports = {
-  assertCommonAlarmProperties,
-  alarmNameToType,
-  createTestConfig,
-  createTestCloudFormationTemplate
-}
-
 const slsMock = {
   cli: {
     log: () => {}
   }
+}
+
+module.exports = {
+  slsMock,
+  assertCommonAlarmProperties,
+  alarmNameToType,
+  createTestConfig,
+  createTestCloudFormationTemplate
 }
 
 function assertCommonAlarmProperties (t, al) {
