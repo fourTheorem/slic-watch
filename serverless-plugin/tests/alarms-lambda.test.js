@@ -134,6 +134,7 @@ test('Invocation alarms are created if configured', (t) => {
         Threshold: 95
       },
       Invocations: {
+        enabled: true,
         Threshold: 900 // Enabled
       },
       IteratorAge: {

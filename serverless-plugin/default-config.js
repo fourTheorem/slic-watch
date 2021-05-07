@@ -34,6 +34,7 @@ module.exports = {
       },
       Invocations: {
         /* No invocation alarms are created by default. Override threshold to create alarms */
+        enabled: false,
         Threshold: null,
         Statistic: 'Sum'
       },

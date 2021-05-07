@@ -53,7 +53,11 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
       }
 
-      if (lambdaAlarmConfig.Invocations.enabled && lambdaAlarmConfig.Invocations.Threshold) {
+      if (lambdaAlarmConfig.Invocations.enabled) {
+        if (lambdaAlarmConfig.Invocations.Threshold == null) {
+          throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
+        }
+
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource,

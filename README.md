@@ -59,7 +59,8 @@ custom:
         DurationPc:
           Threshold: 95
           Statistic: Maximum
-        Invocations:
+        Invocations: # Note that this one requires both `enabled: true` and `Threshould: someValue` to be enabled
+          enabled: false
           Threshold: null
           Statistic: Sum
         IteratorAge:
