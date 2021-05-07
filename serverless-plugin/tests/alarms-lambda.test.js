@@ -167,6 +167,37 @@ test('Invocation alarms are created if configured', (t) => {
   }
   t.end()
 })
+
+test('Invocation alarms throws if misconfigured (enabled but no threshold set)', (t) => {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+    Lambda: {
+      Period: 60,
+      Errors: {
+        Threshold: 0
+      },
+      ThrottlesPc: {
+        Threshold: 0
+      },
+      DurationPc: {
+        Threshold: 95
+      },
+      Invocations: {
+        enabled: true, // Enabled
+        Threshold: null // but, oh no,  NO THRESHOLD!
+      },
+      IteratorAge: {
+        Threshold: 10000
+      }
+    }
+  })
+  const lambdaAlarmConfig = alarmConfig.Lambda
+
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  t.throws(() => createLambdaAlarms(cfTemplate), { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  t.end()
+})
+
 /**
  * Create tests that ensure no IteratorAge alarms are created if the FunctionName is unresolved
  */
