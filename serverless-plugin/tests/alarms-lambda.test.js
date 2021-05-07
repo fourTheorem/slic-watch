@@ -1,24 +1,15 @@
 'use strict'
 
 const lambdaAlarms = require('../alarms-lambda')
-const CloudFormationTemplate = require('../cf-template')
-
 const { test } = require('tap')
-const _ = require('lodash')
-
 const { filterObject } = require('../util')
 const defaultConfig = require('../default-config')
-const { cascade } = require('../cascading-config')
 const {
   assertCommonAlarmProperties,
-  alarmNameToType
+  alarmNameToType,
+  createConfig,
+  createTestCloudFormationTemplate
 } = require('./testing-utils')
-
-const sls = {
-  cli: {
-    log: () => {}
-  }
-}
 
 const context = {
   topicArn: 'dummy-arn',
@@ -26,8 +17,8 @@ const context = {
   region: 'eu-west-1'
 }
 
-const alarmConfig = cascade(
-  _.merge(defaultConfig.alarms, {
+test('AWS Lambda alarms are created', (t) => {
+  const alarmConfig = createConfig(defaultConfig.alarms, {
     Lambda: {
       Period: 60,
       Errors: {
@@ -47,16 +38,10 @@ const alarmConfig = cascade(
       }
     }
   })
-)
 
-const lambdaAlarmConfig = alarmConfig.Lambda
-
-test('AWS Lambda alarms are created', (t) => {
+  const lambdaAlarmConfig = alarmConfig.Lambda
   const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
-  const cfTemplate = CloudFormationTemplate(
-    require('./resources/cloudformation-template-stack.json'),
-    sls
-  )
+  const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -136,13 +121,30 @@ test('AWS Lambda alarms are created', (t) => {
 })
 
 test('Invocation alarms are created if configured', (t) => {
-  const iConfig = { ...lambdaAlarmConfig }
-  iConfig.Invocations.Threshold = 900
-  const { createLambdaAlarms } = lambdaAlarms(iConfig, context)
-  const cfTemplate = CloudFormationTemplate(
-    require('./resources/cloudformation-template-stack.json'),
-    sls
-  )
+  const alarmConfig = createConfig(defaultConfig.alarms, {
+    Lambda: {
+      Period: 60,
+      Errors: {
+        Threshold: 0
+      },
+      ThrottlesPc: {
+        Threshold: 0
+      },
+      DurationPc: {
+        Threshold: 95
+      },
+      Invocations: {
+        Threshold: 900 // Enabled
+      },
+      IteratorAge: {
+        Threshold: 10000
+      }
+    }
+  })
+  const lambdaAlarmConfig = alarmConfig.Lambda
+
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -178,7 +180,30 @@ test('Invocation alarms are created if configured', (t) => {
   }
 ].forEach(({ functionName, reason }) =>
   test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
-    const cfTemplate = CloudFormationTemplate(
+    const alarmConfig = createConfig(defaultConfig.alarms, {
+      Lambda: {
+        Period: 60,
+        Errors: {
+          Threshold: 0
+        },
+        ThrottlesPc: {
+          Threshold: 0
+        },
+        DurationPc: {
+          Threshold: 95
+        },
+        Invocations: {
+          Threshold: null // Disabled
+        },
+        IteratorAge: {
+          Threshold: 10000
+        }
+      }
+    })
+
+    const lambdaAlarmConfig = alarmConfig.Lambda
+
+    const cfTemplate = createTestCloudFormationTemplate(
       {
         Resources: {
           esm: {
@@ -188,9 +213,9 @@ test('Invocation alarms are created if configured', (t) => {
             }
           }
         }
-      },
-      sls
+      }
     )
+
     const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
     createLambdaAlarms(cfTemplate)
     const alarmResources = cfTemplate.getResourcesByType(
@@ -200,3 +225,76 @@ test('Invocation alarms are created if configured', (t) => {
     t.end()
   })
 )
+
+test('Lambda alarms are not created when disabled globally', (t) => {
+  const alarmConfig = createConfig(defaultConfig.alarms, {
+    Lambda: {
+      enabled: false, // disabled globally
+      Period: 60,
+      Errors: {
+        Threshold: 0
+      },
+      ThrottlesPc: {
+        Threshold: 0
+      },
+      DurationPc: {
+        Threshold: 95
+      },
+      Invocations: {
+        Threshold: 900
+      },
+      IteratorAge: {
+        Threshold: 10000
+      }
+    }
+  })
+
+  const lambdaAlarmConfig = alarmConfig.Lambda
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  createLambdaAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
+  t.end()
+})
+
+test('Lambda alarms are not created when disabled individually', (t) => {
+  const alarmConfig = createConfig(defaultConfig.alarms, {
+    Lambda: {
+      enabled: true, // enabled globally
+      Period: 60,
+      Errors: {
+        enabled: false, // disabled locally
+        Threshold: 0
+      },
+      ThrottlesPc: {
+        enabled: false, // disabled locally
+        Threshold: 0
+      },
+      DurationPc: {
+        enabled: false, // disabled locally
+        Threshold: 95
+      },
+      Invocations: {
+        enabled: false, // disabled locally
+        Threshold: 900
+      },
+      IteratorAge: {
+        enabled: false, // disabled locally
+        Threshold: 10000
+      }
+    }
+  })
+
+  const lambdaAlarmConfig = alarmConfig.Lambda
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  createLambdaAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
+  t.end()
+})

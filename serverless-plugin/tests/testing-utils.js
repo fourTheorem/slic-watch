@@ -9,7 +9,7 @@ module.exports = {
   assertCommonAlarmProperties,
   alarmNameToType,
   createConfig,
-  createCloudFormationTemplate
+  createTestCloudFormationTemplate
 }
 
 const slsMock = {
@@ -40,9 +40,11 @@ function createConfig (from, cascadingChanges) {
   )
 }
 
-function createCloudFormationTemplate () {
+function createTestCloudFormationTemplate (stackDefinition = null) {
+  const data = stackDefinition || sourceCFTemplate
+
   return CloudFormationTemplate(
-    _.cloneDeep(sourceCFTemplate),
+    _.cloneDeep(data),
     slsMock
   )
 }
