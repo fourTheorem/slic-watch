@@ -8,7 +8,7 @@ const CloudFormationTemplate = require('../cf-template')
 module.exports = {
   assertCommonAlarmProperties,
   alarmNameToType,
-  createConfig,
+  createTestConfig,
   createTestCloudFormationTemplate
 }
 
@@ -30,7 +30,7 @@ function alarmNameToType (alarmName) {
   return alarmName.split('_')[0]
 }
 
-function createConfig (from, cascadingChanges) {
+function createTestConfig (from, cascadingChanges) {
   return cascade(
     _.merge(
       {},

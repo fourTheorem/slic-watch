@@ -7,7 +7,7 @@ const defaultConfig = require('../default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,
-  createConfig,
+  createTestConfig,
   createTestCloudFormationTemplate
 } = require('./testing-utils')
 
@@ -18,7 +18,7 @@ const context = {
 }
 
 test('AWS Lambda alarms are created', (t) => {
-  const alarmConfig = createConfig(defaultConfig.alarms, {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Period: 60,
       Errors: {
@@ -121,7 +121,7 @@ test('AWS Lambda alarms are created', (t) => {
 })
 
 test('Invocation alarms are created if configured', (t) => {
-  const alarmConfig = createConfig(defaultConfig.alarms, {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Period: 60,
       Errors: {
@@ -180,7 +180,7 @@ test('Invocation alarms are created if configured', (t) => {
   }
 ].forEach(({ functionName, reason }) =>
   test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
-    const alarmConfig = createConfig(defaultConfig.alarms, {
+    const alarmConfig = createTestConfig(defaultConfig.alarms, {
       Lambda: {
         Period: 60,
         Errors: {
@@ -227,7 +227,7 @@ test('Invocation alarms are created if configured', (t) => {
 )
 
 test('Lambda alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createConfig(defaultConfig.alarms, {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       enabled: false, // disabled globally
       Period: 60,
@@ -261,7 +261,7 @@ test('Lambda alarms are not created when disabled globally', (t) => {
 })
 
 test('Lambda alarms are not created when disabled individually', (t) => {
-  const alarmConfig = createConfig(defaultConfig.alarms, {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       enabled: true, // enabled globally
       Period: 60,

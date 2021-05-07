@@ -6,7 +6,7 @@ const defaultConfig = require('../default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,
-  createConfig,
+  createTestConfig,
   createTestCloudFormationTemplate
 } = require('./testing-utils')
 
@@ -17,7 +17,7 @@ const context = {
 }
 
 test('API Gateway alarms are created', (t) => {
-  const alarmConfig = createConfig(
+  const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ApiGateway: {
@@ -109,7 +109,7 @@ test('API Gateway alarms are created', (t) => {
 })
 
 test('API Gateway alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createConfig(
+  const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ApiGateway: {
@@ -142,7 +142,7 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
 })
 
 test('API Gateway alarms are not created when disabled individually', (t) => {
-  const alarmConfig = createConfig(
+  const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ApiGateway: {

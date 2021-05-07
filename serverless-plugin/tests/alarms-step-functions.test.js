@@ -1,23 +1,14 @@
 'use strict'
 
 const stepFunctionsAlarms = require('../alarms-step-functions')
-const CloudFormationTemplate = require('../cf-template')
-
 const { test } = require('tap')
-const _ = require('lodash')
-
 const defaultConfig = require('../default-config')
-const { cascade } = require('../cascading-config')
 const {
   assertCommonAlarmProperties,
-  alarmNameToType
+  alarmNameToType,
+  createTestConfig,
+  createTestCloudFormationTemplate
 } = require('./testing-utils')
-
-const sls = {
-  cli: {
-    log: () => {}
-  }
-}
 
 const context = {
   topicArn: 'dummy-arn',
@@ -25,31 +16,29 @@ const context = {
   region: 'eu-west-1'
 }
 
-const alarmConfig = cascade(
-  _.merge(defaultConfig.alarms, {
-    States: {
-      Period: 900,
-      ExecutionsThrottled: {
-        Threshold: 0
-      },
-      ExecutionsFailed: {
-        Threshold: 0
-      },
-      ExecutionsTimedOut: {
-        Threshold: 0
+test('Step Function alarms are created', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      States: {
+        Period: 900,
+        ExecutionsThrottled: {
+          Threshold: 0
+        },
+        ExecutionsFailed: {
+          Threshold: 0
+        },
+        ExecutionsTimedOut: {
+          Threshold: 0
+        }
       }
     }
-  })
-)
-
-const sfAlarmConfig = alarmConfig.States
-
-test('Step Function alarms are created', (t) => {
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
-  const cfTemplate = CloudFormationTemplate(
-    require('./resources/cloudformation-template-stack.json'),
-    sls
   )
+
+  const sfAlarmConfig = alarmConfig.States
+
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -91,5 +80,72 @@ test('Step Function alarms are created', (t) => {
     }
   }
 
+  t.end()
+})
+
+test('Step function alarms are not created when disabled globally', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      States: {
+        enabled: false, // disabled globally
+        Period: 900,
+        ExecutionsThrottled: {
+          Threshold: 0
+        },
+        ExecutionsFailed: {
+          Threshold: 0
+        },
+        ExecutionsTimedOut: {
+          Threshold: 0
+        }
+      }
+    }
+  )
+
+  const sfAlarmConfig = alarmConfig.States
+
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
+  t.end()
+})
+
+test('Step function alarms are not created when disabled individually', (t) => {
+  const alarmConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      States: {
+        enabled: true, // enabdled globally
+        Period: 900,
+        ExecutionsThrottled: {
+          enabled: false, // disabled locally
+          Threshold: 0
+        },
+        ExecutionsFailed: {
+          enabled: false, // disabled locally
+          Threshold: 0
+        },
+        ExecutionsTimedOut: {
+          enabled: false, // disabled locally
+          Threshold: 0
+        }
+      }
+    }
+  )
+
+  const sfAlarmConfig = alarmConfig.States
+
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
   t.end()
 })
