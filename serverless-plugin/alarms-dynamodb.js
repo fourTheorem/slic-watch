@@ -25,21 +25,43 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
       const tableName = tableResource.Properties.TableName
       const tableDimensions = [{ Name: 'TableName', Value: tableName }]
 
-      const alarms = [
-        createAlarm(tableName, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableName}`, 'ReadThrottleEvents')),
-        createAlarm(tableName, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableName}`, 'WriteThrottleEvents')),
-        createAlarm(tableName, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableName}`, 'UserErrors')),
-        createAlarm(tableName, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableName}`, 'SystemErrors'))
-      ]
+      const alarms = []
+
+      if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
+        alarms.push(
+          createAlarm(tableName, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableName}`, 'ReadThrottleEvents'))
+        )
+      }
+
+      if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
+        alarms.push(
+          createAlarm(tableName, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableName}`, 'WriteThrottleEvents'))
+        )
+      }
+
+      if (dynamoDbAlarmConfig.UserErrors.enabled) {
+        alarms.push(
+          createAlarm(tableName, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableName}`, 'UserErrors'))
+        )
+      }
+
+      if (dynamoDbAlarmConfig.SystemErrors.enabled) {
+        alarms.push(
+          createAlarm(tableName, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableName}`, 'SystemErrors'))
+        )
+      }
 
       for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
         const gsiName = gsi.IndexName
         const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
         const identifier = `${tableName}${gsiName}`
-        alarms.push(...[
-          createAlarm(identifier, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')),
-          createAlarm(identifier, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents'))
-        ])
+        if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
+          alarms.push(createAlarm(identifier, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')))
+        }
+
+        if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
+          alarms.push(createAlarm(identifier, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents')))
+        }
       }
 
       for (const alarm of alarms) {

@@ -11,6 +11,7 @@ const {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
+  createTestCloudFormationTemplate,
   defaultCfTemplate
 } = require('./testing-utils')
 
@@ -29,6 +30,7 @@ const context = {
 const alarmConfig = createTestConfig(
   defaultConfig.alarms, {
     DynamoDB: {
+      enabled: true,
       Period: 900,
       ReadThrottleEvents: {
         Threshold: 10
@@ -116,5 +118,23 @@ test('DynamoDB alarms are created without GSI', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   t.equal(Object.keys(alarmResources).length, 4)
+  t.end()
+})
+
+test('DynamoDB alarms are not created when disabled', (t) => {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+    DynamoDB: {
+      enabled: false
+    }
+  })
+
+  const dynamoDbAlarmConfig = alarmConfig.DynamoDB
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  createDynamoDbAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  t.same({}, alarmResources)
   t.end()
 })
