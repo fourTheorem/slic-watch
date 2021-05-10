@@ -1,7 +1,6 @@
 'use strict'
 
 const dynamoDbAlarms = require('../alarms-dynamodb')
-const CloudFormationTemplate = require('../cf-template')
 
 const { test } = require('tap')
 const { cloneDeep } = require('lodash')
@@ -14,12 +13,6 @@ const {
   createTestCloudFormationTemplate,
   defaultCfTemplate
 } = require('./testing-utils')
-
-const sls = {
-  cli: {
-    log: () => {}
-  }
-}
 
 const context = {
   topicArn: 'dummy-arn',
@@ -51,8 +44,7 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
 
 test('DynamoDB alarms are created', (t) => {
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
-  const compiledTemplate = cloneDeep(require('./resources/cloudformation-template-stack.json'))
-  const cfTemplate = CloudFormationTemplate(compiledTemplate, {}, sls)
+  const cfTemplate = createTestCloudFormationTemplate()
   createDynamoDbAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -113,7 +105,7 @@ test('DynamoDB alarms are created without GSI', (t) => {
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
   const compiledTemplate = cloneDeep(defaultCfTemplate)
   delete compiledTemplate.Resources.dataTable.Properties.GlobalSecondaryIndexes
-  const cfTemplate = CloudFormationTemplate(compiledTemplate, {}, sls)
+  const cfTemplate = createTestCloudFormationTemplate(compiledTemplate)
   createDynamoDbAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
