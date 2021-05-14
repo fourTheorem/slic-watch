@@ -5,16 +5,19 @@ const { cascade } = require('./cascading-config')
 const lambdaAlarms = require('./alarms-lambda')
 const apiGatewayAlarms = require('./alarms-api-gateway')
 const stepFunctionAlarms = require('./alarms-step-functions')
+const dynamoDbAlarms = require('./alarms-dynamodb')
 
 module.exports = function alarms (serverless, alarmConfig, context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
-    States: sfConfig
+    States: sfConfig,
+    DynamoDB: dynamoDbConfig
   } = cascade(alarmConfig)
   const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
 
   return {
     addAlarms
@@ -28,9 +31,10 @@ module.exports = function alarms (serverless, alarmConfig, context) {
    */
   function addAlarms (cfTemplate) {
     if (alarmConfig.enabled) {
-      alarmConfig.Lambda.enabled && createLambdaAlarms(cfTemplate)
-      alarmConfig.ApiGateway.enabled && createApiGatewayAlarms(cfTemplate)
-      alarmConfig.States.enabled && createStatesAlarms(cfTemplate)
+      lambdaConfig.enabled && createLambdaAlarms(cfTemplate)
+      apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)
+      sfConfig.enabled && createStatesAlarms(cfTemplate)
+      dynamoDbConfig.enabled && createDynamoDbAlarms(cfTemplate)
     }
   }
 }

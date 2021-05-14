@@ -64,9 +64,9 @@ test('The plugin generates dashboards and alarms', (t) => {
   t.end()
 })
 
-test('compileEvents adds dashboard and alarms', (t) => {
+test('finalizeHook adds dashboard and alarms', (t) => {
   const plugin = new ServerlessPlugin(mockServerless, {})
-  plugin.compileEvents()
+  plugin.finalizeHook()
 
   t.equal(testState.addDashboardCfTemplate.getSourceObject(), testCfTemplate)
   t.equal(testState.addAlarmsCfTemplate.getSourceObject(), testCfTemplate)
