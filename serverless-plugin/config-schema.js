@@ -159,19 +159,33 @@ const dashboardSchema = {
 }
 
 /**
- * JSON Schema for SLIC Watch configuration
+ * JSON Schema for SLIC Watch
  */
-const schema = {
-  $schema: 'http://json-schema.org/draft-07/schema',
-  title: 'SLIC Watch Serverless Plugin configuration',
+const slicWatchSchema = {
   type: 'object',
   properties: {
     alarms: alarmsSchema,
     dashboard: dashboardSchema,
-    topicArn: { type: ['string', 'null'] }
+    topicArn: { type: 'string' }
   },
-  required: ['topicArn'],
+  required: ['topicArn']
+}
+
+/**
+ * JSON Schema for the SLIC Watch Serverless Framework plugin
+ */
+const pluginConfigSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema',
+  title: 'SLIC Watch Serverless Plugin configuration',
+  type: 'object',
+  properties: {
+    slicWatch: slicWatchSchema
+  },
+  required: ['slicWatch'],
   additionalProperties: false
 }
 
-module.exports = schema
+module.exports = {
+  slicWatchSchema,
+  pluginConfigSchema
+}

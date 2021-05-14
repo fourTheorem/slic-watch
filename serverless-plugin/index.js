@@ -1,13 +1,16 @@
 'use strict'
 
 const _ = require('lodash')
+const Ajv = require('ajv')
+
 const alarms = require('./alarms')
 const dashboard = require('./dashboard')
-const configSchema = require('./config-schema')
+const { pluginConfigSchema, slicWatchSchema } = require('./config-schema')
 const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
 
 const ServerlessError = require('serverless/lib/serverless-error')
+const normalizeAjvErrors = require('serverless/lib/classes/ConfigSchemaHandler/normalizeAjvErrors')
 
 class ServerlessPlugin {
   constructor (serverless, options) {
@@ -20,7 +23,7 @@ class ServerlessPlugin {
     }
 
     if (serverless.configSchemaHandler) {
-      serverless.configSchemaHandler.defineCustomProperties(configSchema)
+      serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
@@ -33,20 +36,23 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   finalizeHook () {
-    const { topicArn, ...pluginConfig } = (
-      this.serverless.service.custom || {}
-    ).slicWatch
-    if (!topicArn) {
-      throw new ServerlessError('topicArn not specified in custom.slicWatch')
+    const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch
+
+    const ajv = new Ajv()
+    const slicWatchValidate = ajv.compile(slicWatchSchema)
+    const slicWatchValid = slicWatchValidate(slicWatchConfig)
+    if (!slicWatchValid) {
+      throw new ServerlessError('SLIC Watch configuration is invalid: ' + normalizeAjvErrors(slicWatchValidate.errors).map(e => e.message).join(', '))
     }
 
+    // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
     const context = {
       region: this.serverless.service.provider.region,
       stackName: this.providerNaming.getStackName(),
-      topicArn
+      topicArn: slicWatchConfig.topicArn
     }
 
-    const config = _.merge(defaultConfig, pluginConfig)
+    const config = _.merge(defaultConfig, slicWatchConfig)
 
     this.dashboard = dashboard(this.serverless, config.dashboard, context)
     this.alarms = alarms(this.serverless, config.alarms, context)
