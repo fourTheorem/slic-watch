@@ -3,8 +3,11 @@
 const _ = require('lodash')
 const alarms = require('./alarms')
 const dashboard = require('./dashboard')
+const configSchema = require('./config-schema')
 const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
+
+const ServerlessError = require('serverless/lib/serverless-error')
 
 class ServerlessPlugin {
   constructor (serverless, options) {
@@ -12,25 +15,13 @@ class ServerlessPlugin {
     this.options = options
     this.providerNaming = serverless.providers.aws.naming
 
-    const { topicArn, ...pluginConfig } = (
-      serverless.service.custom || {}
-    ).slicWatch
-    if (!topicArn) {
-      throw new Error('topicArn not specified in custom.slicWatch')
+    if (serverless.service.provider.name !== 'aws') {
+      throw new ServerlessError('SLIC Watch only supports AWS')
     }
 
-    const context = {
-      region: serverless.service.provider.region,
-      stackName: this.providerNaming.getStackName(),
-      topicArn
+    if (serverless.configSchemaHandler) {
+      serverless.configSchemaHandler.defineCustomProperties(configSchema)
     }
-
-    const config = _.merge(defaultConfig, pluginConfig)
-
-    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(config)}`)
-
-    this.dashboard = dashboard(serverless, config.dashboard, context)
-    this.alarms = alarms(serverless, config.alarms, context)
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
     this.hooks = {
@@ -42,6 +33,23 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   finalizeHook () {
+    const { topicArn, ...pluginConfig } = (
+      this.serverless.service.custom || {}
+    ).slicWatch
+    if (!topicArn) {
+      throw new ServerlessError('topicArn not specified in custom.slicWatch')
+    }
+
+    const context = {
+      region: this.serverless.service.provider.region,
+      stackName: this.providerNaming.getStackName(),
+      topicArn
+    }
+
+    const config = _.merge(defaultConfig, pluginConfig)
+
+    this.dashboard = dashboard(this.serverless, config.dashboard, context)
+    this.alarms = alarms(this.serverless, config.alarms, context)
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate,
       this.serverless.service.resources.Resources
