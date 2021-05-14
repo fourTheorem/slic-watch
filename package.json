@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install": "lerna bootstrap",
-    "audit": "lerna exec npm audit",
+    "audit": "npm audit && lerna exec npm audit",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:lint": "eslint .",
