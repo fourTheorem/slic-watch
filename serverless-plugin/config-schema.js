@@ -16,7 +16,7 @@ const supportedAlarms = {
   ApiGateway: ['5XXError', '4XXError', 'Latency'],
   States: ['ExecutionsThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors'],
-  Kinesis: ['GetRecords.IteratorAgeMilliseconds']
+  Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success']
 }
 
 const supportedWidgets = {

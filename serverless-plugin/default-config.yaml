@@ -58,6 +58,24 @@ alarms:
     GetRecords.IteratorAgeMilliseconds:
       Statistic: Maximum
       Threshold: 10000
+    ReadProvisionedThroughputExceeded:
+      Statistic: Maximum
+      Threshold: 0
+    WriteProvisionedThroughputExceeded:
+      Statistic: Maximum
+      Threshold: 0
+    PutRecord.Success:
+      ComparisonOperator: LessThanThreshold
+      Statistic: Average
+      Threshold: 1
+    PutRecords.Success:
+      ComparisonOperator: LessThanThreshold
+      Statistic: Average
+      Threshold: 1
+    GetRecords.Success:
+      ComparisonOperator: LessThanThreshold
+      Statistic: Average
+      Threshold: 1
 
 dashboard:
   timeRange:

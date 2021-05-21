@@ -37,23 +37,24 @@ test('Kinesis data stream alarms are created', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 1)
+  const expectedTypes = {
+    StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
+    StreamReadThroughput: 'ReadProvisionedThroughputExceeded',
+    StreamWriteThroughput: 'WriteProvisionedThroughputExceeded',
+    StreamPutRecordSuccess: 'PutRecord.Success',
+    StreamPutRecordsSuccess: 'PutRecords.Success',
+    StreamGetRecordsSuccess: 'GetRecords.Success'
+  }
+
+  t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
-    alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-    alarmsByType[alarmType].add(al)
-  }
-
-  t.same(Object.keys(alarmsByType).sort(), ['StreamIteratorAge'])
-
-  t.equal(alarmsByType.StreamIteratorAge.size, 1)
-  for (const al of alarmsByType.StreamIteratorAge) {
-    t.equal(al.MetricName, 'GetRecords.IteratorAgeMilliseconds')
-    t.equal(al.Statistic, 'Maximum')
-    t.equal(al.Threshold, kinesisAlarmConfig['GetRecords.IteratorAgeMilliseconds'].Threshold)
+    const expectedMetric = expectedTypes[alarmType]
+    t.equal(al.MetricName, expectedMetric)
+    t.ok(al.Statistic)
+    t.equal(al.Threshold, kinesisAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Kinesis')
     t.equal(al.Period, kinesisAlarmConfig.Period)
