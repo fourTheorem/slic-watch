@@ -1,10 +1,15 @@
 'use strict'
 
 const _ = require('lodash')
+const Ajv = require('ajv')
+
 const alarms = require('./alarms')
 const dashboard = require('./dashboard')
+const { pluginConfigSchema, slicWatchSchema } = require('./config-schema')
 const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
+
+const ServerlessError = require('serverless/lib/serverless-error')
 
 class ServerlessPlugin {
   constructor (serverless, options) {
@@ -12,25 +17,13 @@ class ServerlessPlugin {
     this.options = options
     this.providerNaming = serverless.providers.aws.naming
 
-    const { topicArn, ...pluginConfig } = (
-      serverless.service.custom || {}
-    ).slicWatch
-    if (!topicArn) {
-      throw new Error('topicArn not specified in custom.slicWatch')
+    if (serverless.service.provider.name !== 'aws') {
+      throw new ServerlessError('SLIC Watch only supports AWS')
     }
 
-    const context = {
-      region: serverless.service.provider.region,
-      stackName: this.providerNaming.getStackName(),
-      topicArn
+    if (serverless.configSchemaHandler) {
+      serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
     }
-
-    const config = _.merge(defaultConfig, pluginConfig)
-
-    this.serverless.cli.log(`slicWatch config: ${JSON.stringify(config)}`)
-
-    this.dashboard = dashboard(serverless, config.dashboard, context)
-    this.alarms = alarms(serverless, config.alarms, context)
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
     this.hooks = {
@@ -42,6 +35,26 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   finalizeHook () {
+    const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch
+
+    const ajv = new Ajv()
+    const slicWatchValidate = ajv.compile(slicWatchSchema)
+    const slicWatchValid = slicWatchValidate(slicWatchConfig)
+    if (!slicWatchValid) {
+      throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+    }
+
+    // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
+    const context = {
+      region: this.serverless.service.provider.region,
+      stackName: this.providerNaming.getStackName(),
+      topicArn: slicWatchConfig.topicArn
+    }
+
+    const config = _.merge(defaultConfig, slicWatchConfig)
+
+    this.dashboard = dashboard(this.serverless, config.dashboard, context)
+    this.alarms = alarms(this.serverless, config.alarms, context)
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate,
       this.serverless.service.resources.Resources

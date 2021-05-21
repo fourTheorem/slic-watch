@@ -1,5 +1,6 @@
 service: serverless-test-project
 frameworkVersion: "2"
+configValidationMode: error
 
 plugins:
   - serverless-step-functions

@@ -60,7 +60,6 @@ dashboard:
     # For possible 'start' and 'end' values, see
     # https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
     start: -PT3H
-  metricPeriod: 300
   widgets:
     metricPeriod: 300
     width: 8
