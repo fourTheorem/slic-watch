@@ -46,7 +46,7 @@ test('A dashboard includes metrics', (t) => {
 
   t.test('dashboards includes Lambda metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.endsWith('per Function') || title.startsWith('IteratorAge')
+      title.startsWith('Lambda')
     )
     t.equal(widgets.length, 8)
     const namespaces = new Set()
@@ -61,7 +61,7 @@ test('A dashboard includes metrics', (t) => {
       'Lambda Duration p95 per Function',
       'Lambda Duration Maximum per Function',
       'Lambda Invocations Sum per Function',
-      'IteratorAge serverless-test-project-dev-streamProcessor Maximum',
+      'Lambda IteratorAge serverless-test-project-dev-streamProcessor Maximum',
       'Lambda ConcurrentExecutions Maximum per Function',
       'Lambda Throttles Sum per Function',
       'Lambda Errors Sum per Function'
@@ -144,10 +144,35 @@ test('A dashboard includes metrics', (t) => {
     t.same(actualTitles, expectedTitles)
     t.end()
   })
+
+  t.test('dashboard includes Kinesis metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.endsWith('Kinesis')
+    )
+    t.equal(widgets.length, 3)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/Kinesis']))
+    const expectedTitles = new Set([
+      'IteratorAge awesome-savage-stream Kinesis',
+      'Get/Put Success awesome-savage-stream Kinesis',
+      'Provisioned Throughput awesome-savage-stream Kinesis'
+    ])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
   t.end()
 })
 
-test('Table alarms are created without GSIs', (t) => {
+test('DynamoDB widgets are created without GSIs', (t) => {
   const dash = dashboard(slsMock, defaultConfig.dashboard, context)
   const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes

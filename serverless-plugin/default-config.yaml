@@ -59,10 +59,10 @@ alarms:
       Statistic: Maximum
       Threshold: 10000
     ReadProvisionedThroughputExceeded:
-      Statistic: Maximum
+      Statistic: Sum
       Threshold: 0
     WriteProvisionedThroughputExceeded:
-      Statistic: Maximum
+      Statistic: Sum
       Threshold: 0
     PutRecord.Success:
       ComparisonOperator: LessThanThreshold
@@ -123,4 +123,17 @@ dashboard:
         Statistic: ['Sum']
       WriteThrottleEvents:
         Statistic: ['Sum']
-    
+    Kinesis:
+      # Kinesis Data Streams
+      GetRecords.IteratorAgeMilliseconds:
+        Statistic: ['Maximum']
+      ReadProvisionedThroughputExceeded:
+        Statistic: ['Sum']
+      WriteProvisionedThroughputExceeded:
+        Statistic: ['Sum']
+      PutRecord.Success:
+        Statistic: ['Average']
+      PutRecords.Success:
+        Statistic: ['Average']
+      GetRecords.Success:
+        Statistic: ['Average']

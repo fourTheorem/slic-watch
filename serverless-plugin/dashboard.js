@@ -11,7 +11,8 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       Lambda: lambdaDashConfig,
       ApiGateway: apiGwDashConfig,
       States: sfDashConfig,
-      DynamoDB: dynamoDbDashConfig
+      DynamoDB: dynamoDbDashConfig,
+      Kinesis: kinesisDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -38,6 +39,9 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const tableResources = cfTemplate.getResourcesByType(
       'AWS::DynamoDB::Table'
     )
+    const streamResources = cfTemplate.getResourcesByType(
+      'AWS::Kinesis::Stream'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -47,11 +51,14 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       lambdaResources,
       Object.keys(eventSourceMappingFunctions)
     )
+    const streamWidgets = createStreamWidgets(streamResources)
+
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
       ...stateMachineWidgets,
       ...dynamoDbWidgets,
-      ...lambdaWidgets
+      ...lambdaWidgets,
+      ...streamWidgets
     ])
     const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
     const dashboardResource = {
@@ -69,9 +76,9 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
    *
    * @param {string} title The metric title
    * @param {Array.<object>} metrics The metric definitions to render
-   * @param {Object} Cascaded metric configuration
+   * @param {Object} Cascaded widget/metric configuration
    */
-  function createMetricWidget (title, metricDefs, metricConfig) {
+  function createMetricWidget (title, metricDefs, config) {
     const metrics = metricDefs.map(
       ({ namespace, metric, dimensions, stat }) => [
         namespace,
@@ -91,10 +98,10 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
         title,
         view: 'timeSeries',
         region: context.region,
-        period: metricConfig.metricPeriod
+        period: config.metricPeriod
       },
-      width: metricConfig.width,
-      height: metricConfig.height
+      width: config.width,
+      height: config.height
     }
   }
 
@@ -102,7 +109,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
    * Create a set of CloudWatch Dashboard widgets for the Lambda
    * CloudFormation resources provided
    *
-   * @param {object} functionResources Object with of CloudFormation Lambda Function resources by resource name
+   * @param {object} functionResources Object with CloudFormation Lambda Function resources by resource name
    * @param {Array.<string>} eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
   function createLambdaWidgets (
@@ -111,7 +118,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
   ) {
     const lambdaWidgets = []
     if (Object.keys(functionResources).length > 0) {
-      for (const [metric, metricConfig] of getConfiguredMetrics(lambdaDashConfig)) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
         if (metric !== 'IteratorAge') {
           for (const stat of metricConfig.Statistic) {
             const metricStatWidget = createMetricWidget(
@@ -133,7 +140,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
             const functionName = functionResources[funcResName].Properties.FunctionName
             const stats = metricConfig.Statistic
             const iteratorAgeWidget = createMetricWidget(
-              `IteratorAge ${functionName} ${stats.join(',')}`,
+              `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
               stats.map(stat => ({
                 namespace: 'AWS/Lambda',
                 metric: 'IteratorAge',
@@ -167,7 +174,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
         extractedConfig[metric] = metricConfig
       }
     }
-    return Object.entries(extractedConfig)
+    return extractedConfig
   }
 
   /**
@@ -180,7 +187,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const apiWidgets = []
     for (const res of Object.values(apiResources)) {
       const apiName = res.Properties.Name // TODO: Allow for Ref usage in resource names
-      for (const [metric, metricConfig] of getConfiguredMetrics(apiGwDashConfig)) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         const metricStatWidget = createMetricWidget(
           `${metric} API ${apiName}`,
           Object.values(metricConfig.Statistic).map((stat) => ({
@@ -210,7 +217,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     for (const res of Object.values(smResources)) {
       const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names (see #14)
       const widgetMetrics = []
-      for (const [metric, metricConfig] of getConfiguredMetrics(sfDashConfig)) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
         for (const stat of metricConfig.Statistic) {
           widgetMetrics.push({
             namespace: 'AWS/States',
@@ -241,7 +248,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const ddbWidgets = []
     for (const res of Object.values(tableResources)) {
       const tableName = res.Properties.TableName
-      for (const [metric, metricConfig] of getConfiguredMetrics(dynamoDbDashConfig)) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
         ddbWidgets.push(createMetricWidget(
           `${metric} Table ${tableName}`,
           Object.values(metricConfig.Statistic).map((stat) => ({
@@ -273,6 +280,45 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       }
     }
     return ddbWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for the Kinesis Data Stream CloudFormation resources provided
+   *
+   * @param {object} streamResources Object with CloudFormation Kinesis Data Stream resources by resource name
+   */
+  function createStreamWidgets (streamResources) {
+    const streamWidgets = []
+
+    for (const streamResource of Object.values(streamResources)) {
+      const metricGroups = {
+        IteratorAge: ['GetRecords.IteratorAgeMilliseconds'],
+        'Get/Put Success': ['PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
+        'Provisioned Throughput': ['ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded']
+      }
+      const streamName = streamResource.Properties.Name
+      const metricConfigs = getConfiguredMetrics(kinesisDashConfig)
+      for (const [group, metrics] of Object.entries(metricGroups)) {
+        const widgetMetrics = []
+        for (const metric of metrics) {
+          const metricConfig = metricConfigs[metric]
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/Kinesis',
+              metric,
+              dimensions: { StreamName: streamName },
+              stat
+            })
+          }
+        }
+        streamWidgets.push(createMetricWidget(
+          `${group} ${streamName} Kinesis`,
+          widgetMetrics,
+          kinesisDashConfig
+        ))
+      }
+    }
+    return streamWidgets
   }
 
   /**

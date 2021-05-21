@@ -13,7 +13,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  2. API Gateway
  3. Step Functions
  4. DynamoDB Tables
- 5. Kinesis Data Streams (available for Lambda consumers, more coming soon)
+ 5. Kinesis Data Streams
  6. SQS Queues (Coming soon)
 
 Currently, SLIC Watch is available as a Serverless Framework plugin.
@@ -95,6 +95,28 @@ custom:
           Threshold: 0
         SystemErrors:
           Threshold: 0
+      Kinesis:
+        GetRecords.IteratorAgeMilliseconds:
+          Statistic: Maximum
+          Threshold: 10000
+        ReadProvisionedThroughputExceeded:
+          Statistic: Maximum
+          Threshold: 0
+        WriteProvisionedThroughputExceeded:
+          Statistic: Maximum
+          Threshold: 0
+        PutRecord.Success:
+          ComparisonOperator: LessThanThreshold
+          Statistic: Average
+          Threshold: 1
+        PutRecords.Success:
+          ComparisonOperator: LessThanThreshold
+          Statistic: Average
+          Threshold: 1
+        GetRecords.Success:
+          ComparisonOperator: LessThanThreshold
+          Statistic: Average
+          Threshold: 1
 
     dashboard:
       timeRange:
@@ -143,6 +165,20 @@ custom:
             Statistic: ['Sum']
           WriteThrottleEvents:
             Statistic: ['Sum']
+        Kinesis:
+          # Kinesis Data Streams
+          GetRecords.IteratorAgeMilliseconds:
+            Statistic: ['Maximum']
+          ReadProvisionedThroughputExceeded:
+            Statistic: ['Sum']
+          WriteProvisionedThroughputExceeded:
+            Statistic: ['Sum']
+          PutRecord.Success:
+            Statistic: ['Average']
+          PutRecords.Success:
+            Statistic: ['Average']
+          GetRecords.Success:
+            Statistic: ['Average']
         
 ```
 
