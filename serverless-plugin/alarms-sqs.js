@@ -55,20 +55,17 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     queueName,
     comparisonOperator,
     threshold,
-    metrics,
     metricName,
     statistic,
     period
   ) {
-    const metricProperties = metrics
-      ? { Metrics: metrics }
-      : {
-          Dimensions: [{ Name: 'QueueName', Value: queueName }],
-          MetricName: metricName,
-          Namespace: 'AWS/SQS',
-          Period: period,
-          Statistic: statistic
-        }
+    const metricProperties = {
+      Dimensions: [{ Name: 'QueueName', Value: queueName }],
+      MetricName: metricName,
+      Namespace: 'AWS/SQS',
+      Period: period,
+      Statistic: statistic
+    }
 
     return {
       Type: 'AWS::CloudWatch::Alarm',
@@ -103,7 +100,6 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         queueName, // queueName
         config.ComparisonOperator, // comparisonOperator
         thresholdValue, // threshold
-        null, // metrics
         'ApproximateNumberOfMessagesNotVisible', // metricName
         config.Statistic, // statistic
         config.Period // period
@@ -122,7 +118,6 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         queueName, // queueName
         config.ComparisonOperator, // comparisonOperator
         threshold, // threshold
-        null, // metrics
         'ApproximateAgeOfOldestMessage', // metricName
         config.Statistic, // statistic
         config.Period // period
