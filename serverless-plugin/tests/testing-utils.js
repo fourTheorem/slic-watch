@@ -25,7 +25,7 @@ function assertCommonAlarmProperties (t, al) {
   t.ok(al.ActionsEnabled)
   t.equal(al.AlarmActions.length, 1)
   t.ok(al.AlarmActions)
-  t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
+  t.ok(al.ComparisonOperator)
 }
 
 function alarmNameToType (alarmName) {
