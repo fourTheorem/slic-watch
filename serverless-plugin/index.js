@@ -10,7 +10,6 @@ const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
 
 const ServerlessError = require('serverless/lib/serverless-error')
-const normalizeAjvErrors = require('serverless/lib/classes/ConfigSchemaHandler/normalizeAjvErrors')
 
 class ServerlessPlugin {
   constructor (serverless, options) {
@@ -42,7 +41,7 @@ class ServerlessPlugin {
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
-      throw new ServerlessError('SLIC Watch configuration is invalid: ' + normalizeAjvErrors(slicWatchValidate.errors).map(e => e.message).join(', '))
+      throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
     // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
