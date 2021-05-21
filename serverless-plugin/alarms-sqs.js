@@ -26,7 +26,7 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         const inFlightMsgsAlarm = createInFlightMsgsAlarm(
           queueResourceName,
           queueResource,
-          sqsAlarmsConfig.ApproximateAgeOfOldestMessage
+          sqsAlarmsConfig.InFlightMessagesPc
         )
         cfTemplate.addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource)
       }
@@ -39,7 +39,7 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         const oldestMsgAgeAlarm = createOldestMsgAgeAlarm(
           queueResourceName,
           queueResource,
-          sqsAlarmsConfig.Invocations
+          sqsAlarmsConfig.AgeOfOldestMessage
         )
         cfTemplate.addResource(
           oldestMsgAgeAlarm.resourceName,
@@ -87,45 +87,45 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
   }
 
   function createInFlightMsgsAlarm (queueResourceName, queueResource, config) {
-    const queueName = queueResource.Properties.FunctionName
+    const queueName = queueResource.Properties.QueueName
     const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
-    const hardLimit = queueResource.FifoQueue ? 18000 : 120000
+    const hardLimit = queueResource.Properties.FifoQueue ? 18000 : 120000
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
 
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${queueResourceName}`,
       resource: createSqsAlarm(
-        `SQSApproximateNumberOfMessagesNotVisible_${queueName}`,
-        `In flight messages for ${queueName} exceeds ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`,
-        queueName,
-        config.ComparisonOperator,
-        thresholdValue,
-        null,
-        'ApproximateNumberOfMessagesNotVisible',
-        config.Statistic,
-        config.Period
+        `SQSApproximateNumberOfMessagesNotVisible_${queueName}`, // alarmName
+        `In flight messages for ${queueName} exceeds ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`, // alarmDescription
+        queueName, // queueName
+        config.ComparisonOperator, // comparisonOperator
+        thresholdValue, // threshold
+        null, // metrics
+        'ApproximateNumberOfMessagesNotVisible', // metricName
+        config.Statistic, // statistic
+        config.Period // period
       )
     }
   }
 
   function createOldestMsgAgeAlarm (queueResourceName, queueResource, config) {
-    const queueName = queueResource.Properties.FunctionName
+    const queueName = queueResource.Properties.QueueName
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${queueResourceName}`,
       resource: createSqsAlarm(
-        `SQSApproximateAgeOfOldestMessage_${queueName}`,
-        `Age of oldest message in the queue ${queueName} exceeds ${threshold}`,
-        config.ComparisonOperator,
-        'GreaterThanThreshold',
-        threshold,
-        null,
-        'Errors',
-        config.Statistic,
-        config.Period
+        `SQSApproximateAgeOfOldestMessage_${queueName}`, // alarmName
+        `Age of oldest message in the queue ${queueName} exceeds ${threshold}`, // alarmDescription
+        queueName, // queueName
+        config.ComparisonOperator, // comparisonOperator
+        threshold, // threshold
+        null, // metrics
+        'ApproximateAgeOfOldestMessage', // metricName
+        config.Statistic, // statistic
+        config.Period // period
       )
     }
   }
