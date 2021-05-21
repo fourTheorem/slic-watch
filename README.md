@@ -179,10 +179,16 @@ custom:
             Statistic: ['Average']
           GetRecords.Success:
             Statistic: ['Average']
-        
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)
+
+## A note on CloudWatch cost
+
+This plugin creates additional CloudWatch resources that, apart from a limited free tier, have an associated cost.
+Depending on what you enable, SLIC Watch creates one dashboard and multiple alarms. The number of each depend on the number of resources in your stack and the number of stacks you have.
+
+Check out the AWS [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) page to understand the cost impact of creating CloudWatch resources.
 
 ## Releasing a new version
 
