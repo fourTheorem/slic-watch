@@ -54,6 +54,10 @@ alarms:
       Threshold: 0
     SystemErrors:
       Threshold: 0
+  Kinesis:
+    GetRecords.IteratorAgeMilliseconds:
+      Statistic: Maximum
+      Threshold: 10000
 
 dashboard:
   timeRange:

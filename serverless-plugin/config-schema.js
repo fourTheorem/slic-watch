@@ -15,14 +15,16 @@ const supportedAlarms = {
   Lambda: ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations', 'IteratorAge'],
   ApiGateway: ['5XXError', '4XXError', 'Latency'],
   States: ['ExecutionsThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
-  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors']
+  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors'],
+  Kinesis: ['GetRecords.IteratorAgeMilliseconds']
 }
 
 const supportedWidgets = {
   Lambda: ['Errors', 'Throttles', 'Duration', 'Invocations', 'ConcurrentExecutions', 'IteratorAge'],
   ApiGateway: ['5XXError', '4XXError', 'Latency', 'Count'],
   States: ['ExecutionsThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
-  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents']
+  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents'],
+  Kinesis: []
 }
 
 const commonAlarmProperties = {

@@ -6,18 +6,21 @@ const lambdaAlarms = require('./alarms-lambda')
 const apiGatewayAlarms = require('./alarms-api-gateway')
 const stepFunctionAlarms = require('./alarms-step-functions')
 const dynamoDbAlarms = require('./alarms-dynamodb')
+const kinesisAlarms = require('./alarms-kinesis')
 
 module.exports = function alarms (serverless, alarmConfig, context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
     States: sfConfig,
-    DynamoDB: dynamoDbConfig
+    DynamoDB: dynamoDbConfig,
+    Kinesis: kinesisConfig
   } = cascade(alarmConfig)
   const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context)
 
   return {
     addAlarms
@@ -35,6 +38,7 @@ module.exports = function alarms (serverless, alarmConfig, context) {
       apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)
       sfConfig.enabled && createStatesAlarms(cfTemplate)
       dynamoDbConfig.enabled && createDynamoDbAlarms(cfTemplate)
+      kinesisConfig.enabled && createKinesisAlarms(cfTemplate)
     }
   }
 }
