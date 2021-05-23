@@ -117,6 +117,16 @@ custom:
           ComparisonOperator: LessThanThreshold
           Statistic: Average
           Threshold: 1
+        SQS:
+          # approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
+          AgeOfOldestMessage:
+            Statistic: Maximum
+            enabled: false # Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+            Threshold: null
+          # approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
+          InFlightMessagesPc:
+            Statistic: Maximum
+            Threshold: 80 # 80% of 120.000 for regular queues or 80% of 18000 for FIFO queues
 
     dashboard:
       timeRange:
