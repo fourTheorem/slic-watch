@@ -339,7 +339,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const metricGroups = {
       Messages: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted'],
       'Oldest Message age': ['ApproximateAgeOfOldestMessage'],
-      'Messages in queue': ['ApproximateNumberOfMessage']
+      'Messages in queue': ['ApproximateNumberOfMessagesVisible']
     }
     const metricConfigs = getConfiguredMetrics(sqsDashConfig)
 

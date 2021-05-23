@@ -192,14 +192,14 @@ custom:
         SQS:
           # SQS Queues
           NumberOfMessagesSent:
-            Statistic: ["Average"]
+            Statistic: ["Sum"]
           NumberOfMessagesReceived:
-            Statistic: ["Average"]
+            Statistic: ["Sum"]
           NumberOfMessagesDeleted:
-            Statistic: ["Average"]
+            Statistic: ["Sum"]
           ApproximateAgeOfOldestMessage:
             Statistic: ["Maximum"]
-          ApproximateNumberOfMessage:
+          ApproximateNumberOfMessagesVisible:
             Statistic: ["Maximum"]
 ```
 
