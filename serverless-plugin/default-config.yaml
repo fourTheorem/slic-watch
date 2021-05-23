@@ -147,3 +147,15 @@ dashboard:
         Statistic: ["Average"]
       GetRecords.Success:
         Statistic: ["Average"]
+    SQS:
+      # SQS Queues
+      NumberOfMessagesSent:
+        Statistic: ["Average"]
+      NumberOfMessagesReceived:
+        Statistic: ["Average"]
+      NumberOfMessagesDeleted:
+        Statistic: ["Average"]
+      ApproximateAgeOfOldestMessage:
+        Statistic: ["Maximum"]
+      ApproximateNumberOfMessage:
+        Statistic: ["Maximum"]
