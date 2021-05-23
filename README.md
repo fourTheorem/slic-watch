@@ -14,7 +14,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  3. Step Functions
  4. DynamoDB Tables
  5. Kinesis Data Streams
- 6. SQS Queues (Coming soon)
+ 6. SQS Queues
 
 Currently, SLIC Watch is available as a Serverless Framework plugin.
 
@@ -179,6 +179,18 @@ custom:
             Statistic: ['Average']
           GetRecords.Success:
             Statistic: ['Average']
+        SQS:
+          # SQS Queues
+          NumberOfMessagesSent:
+            Statistic: ["Average"]
+          NumberOfMessagesReceived:
+            Statistic: ["Average"]
+          NumberOfMessagesDeleted:
+            Statistic: ["Average"]
+          ApproximateAgeOfOldestMessage:
+            Statistic: ["Maximum"]
+          ApproximateNumberOfMessage:
+            Statistic: ["Maximum"]
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)
