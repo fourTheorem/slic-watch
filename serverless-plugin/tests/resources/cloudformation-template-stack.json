@@ -666,7 +666,7 @@
     "fifoQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "QueueName": "SomeFifoQueue",
+        "QueueName": "SomeFifoQueue.fifo",
         "FifoQueue": true
       }
     }

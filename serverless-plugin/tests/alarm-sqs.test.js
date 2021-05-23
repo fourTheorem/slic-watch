@@ -89,7 +89,7 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'SomeFifoQueue'
+      Value: 'SomeFifoQueue.fifo'
     }
   ])
 
@@ -119,7 +119,7 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'SomeFifoQueue'
+      Value: 'SomeFifoQueue.fifo'
     }
   ])
 

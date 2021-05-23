@@ -186,9 +186,9 @@ test('A dashboard includes metrics', (t) => {
       'Messages SomeRegularQueue SQS',
       'Oldest Message age SomeRegularQueue SQS',
       'Messages in queue SomeRegularQueue SQS',
-      'Messages SomeFifoQueue SQS',
-      'Oldest Message age SomeFifoQueue SQS',
-      'Messages in queue SomeFifoQueue SQS'
+      'Messages SomeFifoQueue.fifo SQS',
+      'Oldest Message age SomeFifoQueue.fifo SQS',
+      'Messages in queue SomeFifoQueue.fifo SQS'
     ])
 
     const actualTitles = new Set(
