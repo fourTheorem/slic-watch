@@ -52,6 +52,10 @@ test('A dashboard includes metrics', (t) => {
     const namespaces = new Set()
     for (const widget of widgets) {
       for (const metric of widget.properties.metrics) {
+        t.equal(metric.length, 5)
+        const metricProperties = metric[4]
+        const propKeys = Object.keys(metricProperties)
+        t.same(propKeys, ['stat'])
         namespaces.add(metric[0])
       }
     }
@@ -169,6 +173,35 @@ test('A dashboard includes metrics', (t) => {
     t.same(actualTitles, expectedTitles)
     t.end()
   })
+
+  t.test('dashboard includes SQS metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.endsWith('SQS')
+    )
+    t.equal(widgets.length, 6) // 3 groups * 2 queues
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/SQS']))
+    const expectedTitles = new Set([
+      'Messages SomeRegularQueue SQS',
+      'Oldest Message age SomeRegularQueue SQS',
+      'Messages in queue SomeRegularQueue SQS',
+      'Messages SomeFifoQueue.fifo SQS',
+      'Oldest Message age SomeFifoQueue.fifo SQS',
+      'Messages in queue SomeFifoQueue.fifo SQS'
+    ])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
   t.end()
 })
 

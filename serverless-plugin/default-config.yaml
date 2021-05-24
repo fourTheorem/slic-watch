@@ -76,6 +76,16 @@ alarms:
       ComparisonOperator: LessThanThreshold
       Statistic: Average
       Threshold: 1
+  SQS:
+    # approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
+    AgeOfOldestMessage:
+      Statistic: Maximum
+      enabled: false # Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+      Threshold: null
+    # approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
+    InFlightMessagesPc:
+      Statistic: Maximum
+      Threshold: 80 # 80% of 120.000 for regular queues or 80% of 18000 for FIFO queues
 
 dashboard:
   timeRange:
@@ -89,51 +99,63 @@ dashboard:
     Lambda:
       # Metrics per Lambda Function
       Errors:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       Throttles:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       Duration:
-        Statistic: ['Average', 'p95', 'Maximum']
+        Statistic: ["Average", "p95", "Maximum"]
       Invocations:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       ConcurrentExecutions:
-        Statistic: ['Maximum']
+        Statistic: ["Maximum"]
       IteratorAge:
-        Statistic: ['Maximum']
+        Statistic: ["Maximum"]
     ApiGateway:
       5XXError:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       4XXError:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       Latency:
-        Statistic: ['Average', 'p95']
+        Statistic: ["Average", "p95"]
       Count:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
     States:
       # Step Functions
       ExecutionsFailed:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       ExecutionsThrottled:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       ExecutionsTimedOut:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
     DynamoDB:
       # Tables and GSIs
       ReadThrottleEvents:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       WriteThrottleEvents:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
     Kinesis:
       # Kinesis Data Streams
       GetRecords.IteratorAgeMilliseconds:
-        Statistic: ['Maximum']
+        Statistic: ["Maximum"]
       ReadProvisionedThroughputExceeded:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       WriteProvisionedThroughputExceeded:
-        Statistic: ['Sum']
+        Statistic: ["Sum"]
       PutRecord.Success:
-        Statistic: ['Average']
+        Statistic: ["Average"]
       PutRecords.Success:
-        Statistic: ['Average']
+        Statistic: ["Average"]
       GetRecords.Success:
-        Statistic: ['Average']
+        Statistic: ["Average"]
+    SQS:
+      # SQS Queues
+      NumberOfMessagesSent:
+        Statistic: ["Sum"]
+      NumberOfMessagesReceived:
+        Statistic: ["Sum"]
+      NumberOfMessagesDeleted:
+        Statistic: ["Sum"]
+      ApproximateAgeOfOldestMessage:
+        Statistic: ["Maximum"]
+      ApproximateNumberOfMessagesVisible:
+        Statistic: ["Maximum"]

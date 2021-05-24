@@ -87,25 +87,36 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: GSI1
             KeySchema:
-            - AttributeName: gsi1pk
-              KeyType: HASH
-            - AttributeName: gsi1sk
-              KeyType: RANGE
+              - AttributeName: gsi1pk
+                KeyType: HASH
+              - AttributeName: gsi1sk
+                KeyType: RANGE
             Projection:
               NonKeyAttributes:
-              - address
+                - address
               ProjectionType: INCLUDE
         LocalSecondaryIndexes:
           - IndexName: LSI1
             KeySchema:
-            - AttributeName: pk
-              KeyType: HASH
-            - AttributeName: timestamp
-              KeyType: RANGE
+              - AttributeName: pk
+                KeyType: HASH
+              - AttributeName: timestamp
+                KeyType: RANGE
             Projection:
               NonKeyAttributes:
-              - name
+                - name
               ProjectionType: INCLUDE
+
+    regularQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "SomeRegularQueue"
+
+    fifoQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "SomeFifoQueue.fifo"
+        FifoQueue: true
 
 stepFunctions:
   stateMachines:

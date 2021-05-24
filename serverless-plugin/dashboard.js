@@ -12,7 +12,8 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       ApiGateway: apiGwDashConfig,
       States: sfDashConfig,
       DynamoDB: dynamoDbDashConfig,
-      Kinesis: kinesisDashConfig
+      Kinesis: kinesisDashConfig,
+      SQS: sqsDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -42,6 +43,9 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const streamResources = cfTemplate.getResourcesByType(
       'AWS::Kinesis::Stream'
     )
+    const queueResources = cfTemplate.getResourcesByType(
+      'AWS::SQS::Queue'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -52,13 +56,15 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       Object.keys(eventSourceMappingFunctions)
     )
     const streamWidgets = createStreamWidgets(streamResources)
+    const queueWidgets = createQueueWidgets(queueResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
       ...stateMachineWidgets,
       ...dynamoDbWidgets,
       ...lambdaWidgets,
-      ...streamWidgets
+      ...streamWidgets,
+      ...queueWidgets
     ])
     const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
     const dashboardResource = {
@@ -87,7 +93,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
           (acc, [name, value]) => [...acc, name, value],
           []
         ),
-        [{ stat }]
+        { stat }
       ]
     )
 
@@ -290,14 +296,15 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
   function createStreamWidgets (streamResources) {
     const streamWidgets = []
 
+    const metricGroups = {
+      IteratorAge: ['GetRecords.IteratorAgeMilliseconds'],
+      'Get/Put Success': ['PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
+      'Provisioned Throughput': ['ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded']
+    }
+    const metricConfigs = getConfiguredMetrics(kinesisDashConfig)
+
     for (const streamResource of Object.values(streamResources)) {
-      const metricGroups = {
-        IteratorAge: ['GetRecords.IteratorAgeMilliseconds'],
-        'Get/Put Success': ['PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
-        'Provisioned Throughput': ['ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded']
-      }
       const streamName = streamResource.Properties.Name
-      const metricConfigs = getConfiguredMetrics(kinesisDashConfig)
       for (const [group, metrics] of Object.entries(metricGroups)) {
         const widgetMetrics = []
         for (const metric of metrics) {
@@ -319,6 +326,47 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       }
     }
     return streamWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for the SQS resources provided
+   *
+   * @param {object} queueResources Object with CloudFormation SQS resources by resource name
+   */
+  function createQueueWidgets (queueResources) {
+    const queueWidgets = []
+
+    const metricGroups = {
+      Messages: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted'],
+      'Oldest Message age': ['ApproximateAgeOfOldestMessage'],
+      'Messages in queue': ['ApproximateNumberOfMessagesVisible']
+    }
+    const metricConfigs = getConfiguredMetrics(sqsDashConfig)
+
+    for (const queueResource of Object.values(queueResources)) {
+      const queueName = queueResource.Properties.QueueName
+      for (const [group, metrics] of Object.entries(metricGroups)) {
+        const widgetMetrics = []
+        for (const metric of metrics) {
+          const metricConfig = metricConfigs[metric]
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/SQS',
+              metric,
+              dimensions: { QueueName: queueName },
+              stat
+            })
+          }
+        }
+        queueWidgets.push(createMetricWidget(
+          `${group} ${queueName} SQS`,
+          widgetMetrics,
+          sqsDashConfig
+        ))
+      }
+    }
+
+    return queueWidgets
   }
 
   /**
