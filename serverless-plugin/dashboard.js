@@ -93,7 +93,7 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
           (acc, [name, value]) => [...acc, name, value],
           []
         ),
-        [{ stat }]
+        { stat }
       ]
     )
 

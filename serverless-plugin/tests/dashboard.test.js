@@ -52,6 +52,10 @@ test('A dashboard includes metrics', (t) => {
     const namespaces = new Set()
     for (const widget of widgets) {
       for (const metric of widget.properties.metrics) {
+        t.equal(metric.length, 5)
+        const metricProperties = metric[4]
+        const propKeys = Object.keys(metricProperties)
+        t.same(propKeys, ['stat'])
         namespaces.add(metric[0])
       }
     }
