@@ -41,9 +41,8 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
             metric,
             config.Statistic,
             config.Period,
-            config.ExtendedStatistic, // TODO: check if this argument is correct. It does not match the signature!
-            config.evaluationPeriods,
-            config.treatMissingData
+            config.EvaluationPeriods,
+            config.TreatMissingData
           )
           cfTemplate.addResource(alarmResourceName, alarmResource)
         }
