@@ -22,9 +22,12 @@ const context = {
 
 const alarmConfig = createTestConfig(
   defaultConfig.alarms, {
+    Period: 120,
+    EvaluationPeriods: 2,
+    TreatMissingData: 'breaching',
+    ComparisonOperator: 'GreaterThanOrEqualToThreshold',
     DynamoDB: {
       enabled: true,
-      Period: 900,
       ReadThrottleEvents: {
         Threshold: 10
       },
@@ -73,9 +76,11 @@ test('DynamoDB alarms are created', (t) => {
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
       t.equal(al.Threshold, dynamoDbAlarmConfig[type].Threshold)
-      t.equal(al.EvaluationPeriods, 1)
+      t.equal(al.EvaluationPeriods, 2)
+      t.equal(al.TreatMissingData, 'breaching')
+      t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
       t.equal(al.Namespace, 'AWS/DynamoDB')
-      t.equal(al.Period, dynamoDbAlarmConfig.Period)
+      t.equal(al.Period, 120)
       if (al.Dimensions.length === 1) {
         t.same(al.Dimensions, [
           {

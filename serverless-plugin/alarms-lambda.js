@@ -160,8 +160,8 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       resource: createLambdaAlarm(
         `LambdaErrors_${funcName}`,
         `Error count for ${funcName} exceeds ${threshold}`,
+        funcName,
         config.ComparisonOperator,
-        'GreaterThanThreshold',
         threshold,
         null,
         'Errors',
@@ -196,6 +196,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
           Period: period,
           EvaluationPeriods: config.EvaluationPeriods,
           TreatMissingData: config.TreatMissingData,
+          ComparisonOperator: config.ComparisonOperator,
           Stat: config.Statistic
         },
         ReturnData: false
@@ -211,6 +212,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
           Period: period,
           EvaluationPeriods: config.EvaluationPeriods,
           TreatMissingData: config.TreatMissingData,
+          ComparisonOperator: config.ComparisonOperator,
           Stat: config.Statistic
         },
         ReturnData: false
