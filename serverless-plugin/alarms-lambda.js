@@ -194,7 +194,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum'
+          EvaluationPeriods: config.EvaluationPeriods,
+          TreatMissingData: config.TreatMissingData,
+          Stat: config.Statistic
         },
         ReturnData: false
       },
@@ -207,7 +209,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum'
+          EvaluationPeriods: config.EvaluationPeriods,
+          TreatMissingData: config.TreatMissingData,
+          Stat: config.Statistic
         },
         ReturnData: false
       }
@@ -221,7 +225,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         funcName,
         config.ComparisonOperator,
         threshold,
-        metrics // TODO: double check whether this one should have or not the extra arguments
+        metrics
       )
     }
   }
