@@ -72,7 +72,6 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
 
   function createAlarm (identifier, dimensions, metricName, resourceName) {
     const config = dynamoDbAlarmConfig[metricName]
-    const threshold = config.Threshold
 
     const resource = {
       Type: 'AWS::CloudWatch::Alarm',
@@ -81,10 +80,10 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
         AlarmActions: [context.topicArn],
         AlarmName: `${metricName}_${identifier}`,
         AlarmDescription: `DynamoDB ${config.Statistic} for ${identifier} breaches ${config.Threshold}`,
-        EvaluationPeriods: 1,
+        EvaluationPeriods: config.EvaluationPeriods,
         ComparisonOperator: config.ComparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: 'notBreaching',
+        Threshold: config.Threshold,
+        TreatMissingData: config.TreatMissingData,
         Dimensions: dimensions,
         MetricName: metricName,
         Namespace: 'AWS/DynamoDB',
