@@ -20,8 +20,11 @@ test('API Gateway alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
       ApiGateway: {
-        Period: 60,
         '5XXError': {
           Threshold: 0.0
         },
@@ -64,9 +67,11 @@ test('API Gateway alarms are created', (t) => {
     t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
     t.equal(al.Threshold, apiGwAlarmConfig['5XXError'].Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, apiGwAlarmConfig.Period)
+    t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',
@@ -79,9 +84,11 @@ test('API Gateway alarms are created', (t) => {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
     t.equal(al.Threshold, apiGwAlarmConfig['4XXError'].Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, apiGwAlarmConfig.Period)
+    t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',
@@ -94,9 +101,11 @@ test('API Gateway alarms are created', (t) => {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')
     t.equal(al.Threshold, apiGwAlarmConfig.Latency.Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/ApiGateway')
-    t.equal(al.Period, apiGwAlarmConfig.Period)
+    t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
         Name: 'ApiName',

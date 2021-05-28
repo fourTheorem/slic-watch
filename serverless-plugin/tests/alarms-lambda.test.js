@@ -20,7 +20,10 @@ const context = {
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
-      Period: 60,
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
       Errors: {
         Threshold: 0
       },
@@ -67,10 +70,11 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
     t.equal(al.Threshold, lambdaAlarmConfig.Errors.Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, lambdaAlarmConfig.Period)
-    t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
+    t.equal(al.Period, 120)
     t.equal(al.Dimensions.length, 1)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
     t.ok(al.Dimensions[0].Value.startsWith('serverless-test-project-dev-'))
@@ -80,9 +84,11 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
     t.ok(al.Threshold > 1000) // Ensure threshold is in milliseconds
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, lambdaAlarmConfig.Period)
+    t.equal(al.Period, 120)
   }
 
   for (const al of alarmsByType.LambdaThrottles) {
@@ -95,11 +101,15 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(metricsById.throttles_pc.Expression)
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    t.equal(metricsById.throttles.MetricStat.Period, lambdaAlarmConfig.Period)
+    t.equal(metricsById.throttles.MetricStat.Period, 120)
+    t.equal(metricsById.throttles.MetricStat.TreatMissingData, 'breaching')
+    t.equal(metricsById.throttles.MetricStat.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    t.equal(metricsById.invocations.MetricStat.Period, lambdaAlarmConfig.Period)
+    t.equal(metricsById.invocations.MetricStat.Period, 120)
+    t.equal(metricsById.invocations.MetricStat.TreatMissingData, 'breaching')
+    t.equal(metricsById.invocations.MetricStat.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
@@ -108,9 +118,11 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.MetricName, 'IteratorAge')
     t.equal(al.Statistic, 'Maximum')
     t.ok(al.Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Lambda')
-    t.equal(al.Period, lambdaAlarmConfig.Period)
+    t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
         Name: 'FunctionName',

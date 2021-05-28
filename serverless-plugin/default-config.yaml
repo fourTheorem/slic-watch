@@ -10,6 +10,7 @@ alarms:
       Statistic: Sum
     ThrottlesPc: # Throttles are evaluated as a percentage of invocations
       Threshold: 0
+      Statistic: Sum
     DurationPc: # Duration is evaluated as a percentage of the function timeout
       Threshold: 95
       Statistic: Maximum

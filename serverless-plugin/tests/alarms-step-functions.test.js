@@ -20,8 +20,11 @@ test('Step Function alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
       States: {
-        Period: 900,
         ExecutionsThrottled: {
           Threshold: 0
         },
@@ -68,9 +71,11 @@ test('Step Function alarms are created', (t) => {
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
       t.equal(al.Threshold, sfAlarmConfig[type].Threshold)
-      t.equal(al.EvaluationPeriods, 1)
+      t.equal(al.EvaluationPeriods, 2)
+      t.equal(al.TreatMissingData, 'breaching')
+      t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
       t.equal(al.Namespace, 'AWS/States')
-      t.equal(al.Period, sfAlarmConfig.Period)
+      t.equal(al.Period, 120)
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',

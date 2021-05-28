@@ -97,7 +97,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
     metrics,
     metricName,
     statistic,
-    period
+    period,
+    evaluationPeriods,
+    treatMissingData
   ) {
     const metricProperties = metrics
       ? { Metrics: metrics }
@@ -116,10 +118,10 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         AlarmActions: [context.topicArn],
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
-        EvaluationPeriods: 1,
+        EvaluationPeriods: evaluationPeriods,
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
-        TreatMissingData: 'notBreaching',
+        TreatMissingData: treatMissingData,
         ...metricProperties
       }
     }
@@ -143,7 +145,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         null,
         'IteratorAge',
         config.Statistic,
-        config.Period
+        config.Period,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -162,7 +166,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         null,
         'Errors',
         config.Statistic,
-        config.Period
+        config.Period,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -188,7 +194,10 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum'
+          EvaluationPeriods: config.EvaluationPeriods,
+          TreatMissingData: config.TreatMissingData,
+          ComparisonOperator: config.ComparisonOperator,
+          Stat: config.Statistic
         },
         ReturnData: false
       },
@@ -201,7 +210,10 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          Stat: 'Sum'
+          EvaluationPeriods: config.EvaluationPeriods,
+          TreatMissingData: config.TreatMissingData,
+          ComparisonOperator: config.ComparisonOperator,
+          Stat: config.Statistic
         },
         ReturnData: false
       }
@@ -236,7 +248,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         null,
         'Duration',
         config.Statistic,
-        config.Period
+        config.Period,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -259,7 +273,9 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         null,
         'Invocations',
         config.Statistic,
-        config.Period
+        config.Period,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }

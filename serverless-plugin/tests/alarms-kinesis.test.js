@@ -20,8 +20,11 @@ test('Kinesis data stream alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'LessThanThreshold',
       Kinesis: {
-        Period: 60,
         IteratorAgeMilliseconds: {
           Threshold: 3000
         }
@@ -55,9 +58,11 @@ test('Kinesis data stream alarms are created', (t) => {
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
     t.equal(al.Threshold, kinesisAlarmConfig[expectedMetric].Threshold)
-    t.equal(al.EvaluationPeriods, 1)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'LessThanThreshold')
     t.equal(al.Namespace, 'AWS/Kinesis')
-    t.equal(al.Period, kinesisAlarmConfig.Period)
+    t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
         Name: 'StreamName',
