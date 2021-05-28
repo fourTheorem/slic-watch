@@ -32,8 +32,19 @@ functions:
     handler: basic-handler.hello
     reservedConcurrency: 0
 
+  driveStream:
+    handler: stream-test-handler.handleDrive
+    environment:
+      STREAM_NAME: { "Ref": stream }
+
+  driveQueue:
+    handler: queue-test-handler.handleDrive
+
+  driveTable:
+    handler: table-test-hander.handleDrive
+
   streamProcessor:
-    handler: stream_handler.handle
+    handler: stream-handler.handle
     events:
       - stream:
           type: kinesis
@@ -48,7 +59,6 @@ functions:
       - http:
           method: get
           path: "item"
-
 resources:
   Resources:
     stream:
