@@ -77,6 +77,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Period, 120)
     t.equal(al.Dimensions.length, 1)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
+    t.ok(al.Dimensions[0].Value.startsWith('serverless-test-project-dev-'))
   }
 
   for (const al of alarmsByType.LambdaDuration) {
