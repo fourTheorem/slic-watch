@@ -1,17 +1,17 @@
 {
   "name": "slic-watch",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
   "scripts": {
     "install": "lerna bootstrap",
-    "audit": "npm audit && lerna exec npm audit",
+    "audit": "npm audit && lerna exec npm audit -- --omit dev",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:lint": "eslint .",
     "test:packages": "lerna run test",
     "test": "npm run test:lint && npm run test:packages",
-    "lerna:sync": "lerna exec --bail npm install && lerna publish --yes --skip-npm --skip-git --repo-version $npm_package_version",
+    "lerna:sync": "lerna exec --bail npm install && lerna publish --yes --skip-npm --skip-git --repo-version $npm_package_version && npm i && lerna link",
     "lerna:publish": "lerna publish --yes --skip-git --no-verify-access --repo-version $npm_package_version",
     "prepare": "husky install"
   },

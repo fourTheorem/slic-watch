@@ -70,8 +70,10 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, lambdaAlarmConfig.Period)
+    t.equal(al.ComparisonOperator, 'GreaterThanThreshold')
     t.equal(al.Dimensions.length, 1)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
+    t.ok(al.Dimensions[0].Value.startsWith('serverless-test-project-dev-'))
   }
 
   for (const al of alarmsByType.LambdaDuration) {
