@@ -156,8 +156,8 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       resource: createLambdaAlarm(
         `LambdaErrors_${funcName}`,
         `Error count for ${funcName} exceeds ${threshold}`,
+        funcName,
         config.ComparisonOperator,
-        'GreaterThanThreshold',
         threshold,
         null,
         'Errors',
