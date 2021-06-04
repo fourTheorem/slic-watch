@@ -1,6 +1,7 @@
 service: serverless-test-project
 frameworkVersion: "2"
 configValidationMode: error
+variablesResolutionMode: 20210219
 
 plugins:
   - serverless-step-functions

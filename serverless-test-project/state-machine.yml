@@ -27,28 +27,7 @@ States:
     Type: Wait
     Seconds: 1
     Next: KeepWaiting
-  StressTransitions:
-    Type: Map
-    ItemsPath: $.children
-    End: true
-    Parameters:
-      'item.$': '$$.Map.Item.Value'
-    Iterator:
-      StartAt: IterateLevel1
-      States:
-        IterateLevel1:
-          Type: Map
-          InputPath: $.item
-          ItemsPath: $.children
-          End: true
-          Parameters:
-            'item.$': '$$.Map.Item.Value'
-          Iterator:
-            StartAt: Loop
-            States:
-              Loop:
-                Type: Pass
-                Next: Loop
+  StressTransitions: ${file(./stress-transitions.js)}
   Fail:
     Type: Fail
   Succeed:
