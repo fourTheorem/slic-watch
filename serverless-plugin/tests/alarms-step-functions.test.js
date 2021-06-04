@@ -76,7 +76,7 @@ test('Step Function alarms are created', (t) => {
       t.equal(al.TreatMissingData, 'breaching')
       t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
       t.equal(al.Namespace, 'AWS/States')
-      t.equal(al.Period, 120)
+      t.equal(al.Period, 900)
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',
