@@ -99,6 +99,9 @@ resources:
             KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: GSI1
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
             KeySchema:
               - AttributeName: gsi1pk
                 KeyType: HASH
