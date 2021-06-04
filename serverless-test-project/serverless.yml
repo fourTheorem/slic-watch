@@ -134,10 +134,16 @@ resources:
         QueueName: "SomeFifoQueue.fifo"
         FifoQueue: true
 
+    workflowLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: WorkflowLogs
+        RetentionInDays: 1
+
     expressWorkflowLogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: ExpressWorkflowLogs${sls:instanceId}
+        LogGroupName: ExpressWorkflowLogs
         RetentionInDays: 1
 
 stepFunctions:
@@ -145,6 +151,11 @@ stepFunctions:
     workflow:
       name: Workflow
       definition: ${file(./state-machine.yml)}
+      loggingConfig:
+        level: ALL
+        includeExecutionData: true
+        destinations:
+          - Fn::GetAtt: [workflowLogGroup, Arn]
     expressWorkflow:
       name: ExpressWorkflow
       type: EXPRESS

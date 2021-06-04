@@ -44,21 +44,11 @@ States:
           Parameters:
             'item.$': '$$.Map.Item.Value'
           Iterator:
-            StartAt: IterateLevel2
+            StartAt: Loop
             States:
-              IterateLevel2:
-                Type: Map
-                End: true
-                InputPath: $.item
-                ItemsPath: $.children
-                Parameters:
-                  'item.$': '$$.Map.Item.Value'
-                Iterator:
-                  StartAt: Loop
-                  States:
-                    Loop:
-                      Type: Pass
-                      Next: Loop
+              Loop:
+                Type: Pass
+                Next: Loop
   Fail:
     Type: Fail
   Succeed:
