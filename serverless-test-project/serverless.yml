@@ -78,7 +78,9 @@ resources:
       DeletionPolicy: Delete
       Properties:
         TableName: MyTable
-        BillingMode: PAY_PER_REQUEST
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         AttributeDefinitions:
           - AttributeName: pk
             AttributeType: S
