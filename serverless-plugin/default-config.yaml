@@ -32,7 +32,7 @@ alarms:
       Threshold: 5000
   States: # Step Functions
     Statistic: Sum
-    ExecutionsThrottled:
+    ExecutionThrottled:
       Threshold: 0
     ExecutionsFailed:
       Threshold: 0
@@ -123,7 +123,7 @@ dashboard:
       # Step Functions
       ExecutionsFailed:
         Statistic: ["Sum"]
-      ExecutionsThrottled:
+      ExecutionThrottled:
         Statistic: ["Sum"]
       ExecutionsTimedOut:
         Statistic: ["Sum"]

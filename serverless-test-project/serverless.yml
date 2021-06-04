@@ -134,28 +134,23 @@ resources:
         QueueName: "SomeFifoQueue.fifo"
         FifoQueue: true
 
+    expressWorkflowLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: ExpressWorkflowLogs${sls:instanceId}
+        RetentionInDays: 1
+
 stepFunctions:
   stateMachines:
     workflow:
       name: Workflow
-      definition:
-        StartAt: What Next?
-        States:
-          What Next?:
-            Type: Choice
-            Choices:
-              - Variable: $.destination
-                StringEquals: fail
-                Next: Fail
-              - Variable: $.destination
-                StringEquals: throttle
-                Next: Throttle
-            Default: Succeed
-          Throttle:
-            Type: Pass
-            Next: Throttle
-          Fail:
-            Type: Fail
-          Succeed:
-            Type: Pass
-            End: true
+      definition: ${file(./state-machine.yml)}
+    expressWorkflow:
+      name: ExpressWorkflow
+      type: EXPRESS
+      definition: ${file(./state-machine.yml)}
+      loggingConfig:
+        level: ALL
+        includeExecutionData: true
+        destinations:
+          - Fn::GetAtt: [expressWorkflowLogGroup, Arn]

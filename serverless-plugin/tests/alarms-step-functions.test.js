@@ -22,7 +22,7 @@ test('Step Function alarms are created', (t) => {
     {
       States: {
         Period: 900,
-        ExecutionsThrottled: {
+        ExecutionThrottled: {
           Threshold: 0
         },
         ExecutionsFailed: {
@@ -54,7 +54,7 @@ test('Step Function alarms are created', (t) => {
   }
 
   const executionMetrics = [
-    'ExecutionsThrottled',
+    'ExecutionThrottled',
     'ExecutionsFailed',
     'ExecutionsTimedOut'
   ]
@@ -90,7 +90,7 @@ test('Step function alarms are not created when disabled globally', (t) => {
       States: {
         enabled: false, // disabled globally
         Period: 900,
-        ExecutionsThrottled: {
+        ExecutionThrottled: {
           Threshold: 0
         },
         ExecutionsFailed: {
@@ -122,7 +122,7 @@ test('Step function alarms are not created when disabled individually', (t) => {
       States: {
         enabled: true, // enabdled globally
         Period: 900,
-        ExecutionsThrottled: {
+        ExecutionThrottled: {
           enabled: false, // disabled locally
           Threshold: 0
         },

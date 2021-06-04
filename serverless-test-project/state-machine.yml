@@ -1,0 +1,31 @@
+StartAt: What Next?
+States:
+  What Next?:
+    Type: Choice
+    Choices:
+      - Variable: $.destination
+        StringEquals: fail
+        Next: Fail
+      - Variable: $.destination
+        StringEquals: timeoutTask
+        Next: TimeoutTask
+      - Variable: $.destination
+        StringEquals: keepWaiting
+        Next: KeepWaiting
+    Default: Succeed
+  TimeoutTask:
+    Type: Task
+    TimeoutSeconds: 1
+    Resource: !GetAtt PingLambdaFunction.Arn
+    Parameters:
+      'sleepSeconds': 3
+    Next: Succeed
+  KeepWaiting:
+    Type: Wait
+    Seconds: 1
+    Next: KeepWaiting
+  Fail:
+    Type: Fail
+  Succeed:
+    Type: Pass
+    End: true
