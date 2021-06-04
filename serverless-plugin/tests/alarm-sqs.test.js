@@ -20,6 +20,10 @@ test('SQS alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
       SQS: {
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
@@ -69,9 +73,11 @@ test('SQS alarms are created', (t) => {
   t.equal(approximateAgeOfOldMessageAlarms[0].MetricName, 'ApproximateAgeOfOldestMessage')
   t.equal(approximateAgeOfOldMessageAlarms[0].Statistic, 'Maximum')
   t.equal(approximateAgeOfOldMessageAlarms[0].Threshold, sqsAlarmConfig.AgeOfOldestMessage.Threshold)
-  t.equal(approximateAgeOfOldMessageAlarms[0].EvaluationPeriods, 1)
+  t.equal(approximateAgeOfOldMessageAlarms[0].EvaluationPeriods, 2)
+  t.equal(approximateAgeOfOldMessageAlarms[0].TreatMissingData, 'breaching')
+  t.equal(approximateAgeOfOldMessageAlarms[0].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
   t.equal(approximateAgeOfOldMessageAlarms[0].Namespace, 'AWS/SQS')
-  t.equal(approximateAgeOfOldMessageAlarms[0].Period, sqsAlarmConfig.Period)
+  t.equal(approximateAgeOfOldMessageAlarms[0].Period, 120)
   t.same(approximateAgeOfOldMessageAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
@@ -83,9 +89,11 @@ test('SQS alarms are created', (t) => {
   t.equal(approximateAgeOfOldMessageAlarms[1].MetricName, 'ApproximateAgeOfOldestMessage')
   t.equal(approximateAgeOfOldMessageAlarms[1].Statistic, 'Maximum')
   t.equal(approximateAgeOfOldMessageAlarms[1].Threshold, sqsAlarmConfig.AgeOfOldestMessage.Threshold)
-  t.equal(approximateAgeOfOldMessageAlarms[1].EvaluationPeriods, 1)
+  t.equal(approximateAgeOfOldMessageAlarms[1].EvaluationPeriods, 2)
+  t.equal(approximateAgeOfOldMessageAlarms[1].TreatMissingData, 'breaching')
+  t.equal(approximateAgeOfOldMessageAlarms[1].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
   t.equal(approximateAgeOfOldMessageAlarms[1].Namespace, 'AWS/SQS')
-  t.equal(approximateAgeOfOldMessageAlarms[1].Period, sqsAlarmConfig.Period)
+  t.equal(approximateAgeOfOldMessageAlarms[1].Period, 120)
   t.same(approximateAgeOfOldMessageAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
@@ -99,9 +107,11 @@ test('SQS alarms are created', (t) => {
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].MetricName, 'ApproximateNumberOfMessagesNotVisible')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].Statistic, 'Maximum')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].Threshold, 108000) //  (90% of the hard limit of 120000)
-  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].EvaluationPeriods, 1)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].EvaluationPeriods, 2)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].TreatMissingData, 'breaching')
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].Namespace, 'AWS/SQS')
-  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].Period, sqsAlarmConfig.Period)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].Period, 120)
   t.same(approximateNumberOfMessagesNotVisibileAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
@@ -113,9 +123,11 @@ test('SQS alarms are created', (t) => {
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].MetricName, 'ApproximateNumberOfMessagesNotVisible')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Statistic, 'Maximum')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Threshold, 16200) // (90% of the hard limit of 18000)
-  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].EvaluationPeriods, 1)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].EvaluationPeriods, 2)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].TreatMissingData, 'breaching')
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Namespace, 'AWS/SQS')
-  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Period, sqsAlarmConfig.Period)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Period, 120)
   t.same(approximateNumberOfMessagesNotVisibileAlarms[1].Dimensions, [
     {
       Name: 'QueueName',

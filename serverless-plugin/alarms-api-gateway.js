@@ -63,7 +63,9 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     metricName,
     statistic,
     period,
-    extendedStatistic
+    extendedStatistic,
+    evaluationPeriods,
+    treatMissingData
   ) {
     const metricProperties = {
       Dimensions: [{ Name: 'ApiName', Value: apiName }],
@@ -81,10 +83,10 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
         AlarmActions: [context.topicArn],
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
-        EvaluationPeriods: 1,
+        EvaluationPeriods: evaluationPeriods,
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
-        TreatMissingData: 'notBreaching',
+        TreatMissingData: treatMissingData,
         ...metricProperties
       }
     }
@@ -104,7 +106,9 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
         '5XXError',
         config.Statistic,
         config.Period,
-        config.ExtendedStatistic
+        config.ExtendedStatistic,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -123,7 +127,9 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
         '4XXError',
         config.Statistic,
         config.Period,
-        config.ExtendedStatistic
+        config.ExtendedStatistic,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -142,7 +148,9 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
         'Latency',
         config.Statistic,
         config.Period,
-        config.ExtendedStatistic
+        config.ExtendedStatistic,
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }

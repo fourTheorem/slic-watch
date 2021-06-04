@@ -41,7 +41,8 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
             metric,
             config.Statistic,
             config.Period,
-            config.ExtendedStatistic
+            config.EvaluationPeriods,
+            config.TreatMissingData
           )
           cfTemplate.addResource(alarmResourceName, alarmResource)
         }
@@ -57,7 +58,9 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
     threshold,
     metricName,
     statistic,
-    period
+    period,
+    evaluationPeriods,
+    treatMissingData
   ) {
     const metricProperties = {
       Dimensions: [{ Name: 'StateMachineArn', Value: stateMachine }],
@@ -74,10 +77,10 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
         AlarmActions: [context.topicArn],
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
-        EvaluationPeriods: 1,
+        EvaluationPeriods: evaluationPeriods,
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
-        TreatMissingData: 'notBreaching',
+        TreatMissingData: treatMissingData,
         ...metricProperties
       }
     }

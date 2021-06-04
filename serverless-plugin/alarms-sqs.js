@@ -57,7 +57,9 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     threshold,
     metricName,
     statistic,
-    period
+    period,
+    evaluationPeriods,
+    treatMissingData
   ) {
     const metricProperties = {
       Dimensions: [{ Name: 'QueueName', Value: queueName }],
@@ -74,10 +76,10 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         AlarmActions: [context.topicArn],
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
-        EvaluationPeriods: 1,
+        EvaluationPeriods: evaluationPeriods,
         ComparisonOperator: comparisonOperator,
         Threshold: threshold,
-        TreatMissingData: 'notBreaching',
+        TreatMissingData: treatMissingData,
         ...metricProperties
       }
     }
@@ -102,7 +104,9 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         thresholdValue, // threshold
         'ApproximateNumberOfMessagesNotVisible', // metricName
         config.Statistic, // statistic
-        config.Period // period
+        config.Period, // period
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
@@ -120,7 +124,9 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
         threshold, // threshold
         'ApproximateAgeOfOldestMessage', // metricName
         config.Statistic, // statistic
-        config.Period // period
+        config.Period, // period
+        config.EvaluationPeriods,
+        config.TreatMissingData
       )
     }
   }
