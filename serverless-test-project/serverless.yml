@@ -90,6 +90,10 @@ resources:
             AttributeType: S
           - AttributeName: gsi1sk
             AttributeType: S
+          - AttributeName: field1
+            AttributeType: S
+          - AttributeName: field2
+            AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
         KeySchema:
