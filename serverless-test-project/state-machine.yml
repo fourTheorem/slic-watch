@@ -12,9 +12,6 @@ States:
       - Variable: $.destination
         StringEquals: keepWaiting
         Next: KeepWaiting
-      - Variable: $.destination
-        StringEquals: stress
-        Next: StressTransitions
     Default: Succeed
   TimeoutTask:
     Type: Task
@@ -27,7 +24,6 @@ States:
     Type: Wait
     Seconds: 1
     Next: KeepWaiting
-  StressTransitions: ${file(./stress-transitions.js)}
   Fail:
     Type: Fail
   Succeed:
