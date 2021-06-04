@@ -12,6 +12,7 @@ custom:
     alarms:
       Lambda:
         Invocations:
+          enabled: true
           Threshold: 10
 
 provider:
@@ -133,15 +134,21 @@ stepFunctions:
     workflow:
       name: Workflow
       definition:
-        StartAt: Succeed or Fail?
+        StartAt: What Next?
         States:
-          Succeed or Fail?:
+          What Next?:
             Type: Choice
             Choices:
               - Variable: $.shouldFail
                 BooleanEquals: true
                 Next: Fail
+              - Variable: $.shouldThrottle
+                BooleanEquals: true
+                Next: Throttle
             Default: Succeed
+          Throttle:
+            Type: Pass
+            Next: Throttle
           Fail:
             Type: Fail
           Succeed:
