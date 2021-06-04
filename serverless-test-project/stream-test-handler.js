@@ -9,7 +9,8 @@ async function handleDrive (event) {
   console.log(`Sending events to ${STREAM_NAME}`)
   const items = [...new Array(500)].map((_, index) => ({
     index,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    ...event // Propagate event so the received can behave in required ways
   }))
   await kin.putRecords({
     Records: items.map(item => ({
