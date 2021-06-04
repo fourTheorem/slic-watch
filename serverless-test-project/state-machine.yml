@@ -12,6 +12,9 @@ States:
       - Variable: $.destination
         StringEquals: keepWaiting
         Next: KeepWaiting
+      - Variable: $.destination
+        StringEquals: stress
+        Next: StressTransitions
     Default: Succeed
   TimeoutTask:
     Type: Task
@@ -24,6 +27,38 @@ States:
     Type: Wait
     Seconds: 1
     Next: KeepWaiting
+  StressTransitions:
+    Type: Map
+    ItemsPath: $.children
+    End: true
+    Parameters:
+      'item.$': '$$.Map.Item.Value'
+    Iterator:
+      StartAt: IterateLevel1
+      States:
+        IterateLevel1:
+          Type: Map
+          InputPath: $.item
+          ItemsPath: $.children
+          End: true
+          Parameters:
+            'item.$': '$$.Map.Item.Value'
+          Iterator:
+            StartAt: IterateLevel2
+            States:
+              IterateLevel2:
+                Type: Map
+                End: true
+                InputPath: $.item
+                ItemsPath: $.children
+                Parameters:
+                  'item.$': '$$.Map.Item.Value'
+                Iterator:
+                  StartAt: Loop
+                  States:
+                    Loop:
+                      Type: Pass
+                      Next: Loop
   Fail:
     Type: Fail
   Succeed:
