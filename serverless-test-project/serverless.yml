@@ -139,11 +139,11 @@ stepFunctions:
           What Next?:
             Type: Choice
             Choices:
-              - Variable: $.shouldFail
-                BooleanEquals: true
+              - Variable: $.destination
+                StringEquals: fail
                 Next: Fail
-              - Variable: $.shouldThrottle
-                BooleanEquals: true
+              - Variable: $.destination
+                StringEquals: throttle
                 Next: Throttle
             Default: Succeed
           Throttle:
