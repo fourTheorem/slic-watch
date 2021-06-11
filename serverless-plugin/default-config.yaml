@@ -86,7 +86,7 @@ alarms:
     # approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
     InFlightMessagesPc:
       Statistic: Maximum
-      Threshold: 80 # 80% of 120.000 for regular queues or 80% of 18000 for FIFO queues
+      Threshold: 80 # 80% of 120000 for regular queues or 80% of 18000 for FIFO queues
 
 dashboard:
   timeRange:
