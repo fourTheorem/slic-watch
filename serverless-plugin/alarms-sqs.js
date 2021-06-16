@@ -91,7 +91,7 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
-    const hardLimit = queueResource.Properties.FifoQueue ? 18000 : 120000
+    const hardLimit = queueResource.Properties.FifoQueue ? 20000 : 120000
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
 
     return {

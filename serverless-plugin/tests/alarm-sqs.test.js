@@ -122,7 +122,7 @@ test('SQS alarms are created', (t) => {
   // fifo queue
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].MetricName, 'ApproximateNumberOfMessagesNotVisible')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Statistic, 'Maximum')
-  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Threshold, 16200) // (90% of the hard limit of 18000)
+  t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].Threshold, 18000) // (90% of the hard limit of 20000)
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].EvaluationPeriods, 2)
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].TreatMissingData, 'breaching')
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[1].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
