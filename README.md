@@ -41,9 +41,9 @@ Lambda dashboard widgets show:
 
 |Errors|Throttles|Duration Average, P95 and Maximum|
 |--|--|--|
-|![Errors](/docs/lambdaErrors.png)|![Throttles](/docs/lambdaThrottles.png) |![Throttles](/docs/lambdaDurationP95.png) |
+|![Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaErrors.png)|![Throttles](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaThrottles.png) |![Throttles](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaDurationP95.png) |
 |**Invocations**|**Concurrent Executions**|**Iterator Age**|
-|![Invocations](/docs/lambdaInvocations.png) |![concurrent executions](/docs/lambdaConcurrentExecutions.png) |![Iterator Age](/docs/lambdaIteratorAge.png) |
+|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaInvocations.png) |![concurrent executions](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaConcurrentExecutions.png) |![Iterator Age](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaIteratorAge.png) |
 
 ### API Gateway
 
@@ -56,7 +56,7 @@ API Gateway dashboard widgets show:
 
 |5XX Errors|4XX Errors|Latency|Count|
 |--|--|--|--|
-|![5XX Errors](/docs/api5xx.png)|![4XX Errors](/docs/api4xx.png) |![Latency](/docs/apiLatency.png) |![Count](/docs/apiCount.png) |
+|![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/api5xx.png)|![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/api4xx.png) |![Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/apiLatency.png) |![Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/apiCount.png) |
 
 ### DynamoDB
 
@@ -71,9 +71,9 @@ dynamodbGSIReadThrottle.png    dynamodbGSIWriteThrottle.png     dynamodbTableWri
 
 |ReadThrottleEvents (Table)| WriteThrottleEvent (Table)|
 |---|---|
-|![WriteThrottleEvents Table](/docs/dynamodbTableWriteThrottle.png)|![WriteThrottleEvents Table](/docs/dynamodbTableWriteThrottle.png)|
+|![WriteThrottleEvents Table](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/dynamodbTableWriteThrottle.png)|![WriteThrottleEvents Table](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/dynamodbTableWriteThrottle.png)|
 |**ReadThrottleEvents (GSI)**|**WriteThrottleEvent (GSI)**|
-|![WriteThrottleEvents GSI](/docs/dynamodbGSIWriteThrottle.png)|![WriteThrottleEvents GSI](/docs/dynamodbGSIWriteThrottle.png)|
+|![WriteThrottleEvents GSI](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/dynamodbGSIWriteThrottle.png)|![WriteThrottleEvents GSI](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/dynamodbGSIWriteThrottle.png)|
 
 ### Kinesis Data Streams
 Kinesis data stream alarms are created for:
@@ -88,7 +88,7 @@ Kinesis data stream dashboard widgets show:
 
 |Iterator Age|Read Provisioned Throughput Exceeded|Write Provisioned Throughput Exceeded|
 |--|--|--|
-|![Iterator Age](/docs/kinesisIteratorAge.png)|![Provisioned Throughput Exceeded](/docs/kinesisProvisionedThroughput.png) |![Put/Get Success](/docs/kinesisPutGetSuccess.png) |
+|![Iterator Age](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/kinesisIteratorAge.png)|![Provisioned Throughput Exceeded](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/kinesisProvisionedThroughput.png) |![Put/Get Success](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/kinesisPutGetSuccess.png) |
 
 ### SQS Queues
 
@@ -100,7 +100,7 @@ SQS queue dashboard widgets show:
 
 |Messages Sent, Received and Deleted|Messages Visible|Age of Oldest Message|
 |--|--|--|
-|![Messages](/docs/sqsMessages.png)|![Messages Visible](/docs/sqsMessagesInQueue.png) |![Oldest Message](/docs/sqsOldestMessage.png) |
+|![Messages](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/sqsMessages.png)|![Messages Visible](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/sqsMessagesInQueue.png) |![Oldest Message](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/sqsOldestMessage.png) |
 
 ### Step Functions
 
@@ -112,7 +112,7 @@ Step Function alarms are created for:
 The dashboard contains one widget per Step Function:
 |ExecutionsFailed ExecutionThrottled, ExecutionsTimedOut|
 |--|
-|![Step Function widget](/docs/stepFunctions.png)
+|![Step Function widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/stepFunctions.png)
 
 ## Configuration
 

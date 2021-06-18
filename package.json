@@ -1,8 +1,12 @@
 {
   "name": "slic-watch",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-watch.git"
+  },
   "scripts": {
     "install": "lerna bootstrap",
     "audit": "npm audit --omit dev && lerna exec npm audit -- --omit dev",

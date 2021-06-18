@@ -1,13 +1,18 @@
 {
   "name": "serverless-test-project",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Test project for SLIC Watch serverless plugin",
   "main": "basic-handler.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-watch.git",
+    "directory": "serverless-test-project"
+  },
   "license": "ISC",
   "devDependencies": {
     "ajv": "^6.12.6",
     "serverless": "^2.38.0",
-    "serverless-slic-watch-plugin": "^1.0.0-beta.2",
+    "serverless-slic-watch-plugin": "^1.0.0-beta.3",
     "serverless-step-functions": "^2.30.0"
   },
   "scripts": {
