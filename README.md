@@ -67,12 +67,13 @@ DynamoDB alarms are created for:
 4. SystemErrors
 
 Dashboard widgets are created for tables and GSIs:
+dynamodbGSIReadThrottle.png    dynamodbGSIWriteThrottle.png     dynamodbTableWriteThrottle.png
 
 |ReadThrottleEvents (Table)| WriteThrottleEvent (Table)|
 |---|---|
-|TBD | TBD |
+|![WriteThrottleEvents Table](docs/dynamodbTableWriteThrottle.png)|![WriteThrottleEvents Table](docs/dynamodbTableWriteThrottle.png)|
 |**ReadThrottleEvents (GSI)**|**WriteThrottleEvent (GSI)**|
-|TBD | TBD |
+|![WriteThrottleEvents GSI](docs/dynamodbGSIWriteThrottle.png)|![WriteThrottleEvents GSI](docs/dynamodbGSIWriteThrottle.png)|
 
 ### Kinesis Data Streams
 Kinesis data stream alarms are created for:
