@@ -194,9 +194,6 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          EvaluationPeriods: config.EvaluationPeriods,
-          TreatMissingData: config.TreatMissingData,
-          ComparisonOperator: config.ComparisonOperator,
           Stat: config.Statistic
         },
         ReturnData: false
@@ -210,9 +207,6 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
             Dimensions: [{ Name: 'FunctionName', Value: funcName }]
           },
           Period: period,
-          EvaluationPeriods: config.EvaluationPeriods,
-          TreatMissingData: config.TreatMissingData,
-          ComparisonOperator: config.ComparisonOperator,
           Stat: config.Statistic
         },
         ReturnData: false
@@ -222,12 +216,17 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
     return {
       resourceName: `slicWatchLambdaThrottlesAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
-        `LambdaThrottles_${funcName}`,
-        `Throttles % for ${funcName} exceeds ${threshold}`,
-        funcName,
-        config.ComparisonOperator,
-        threshold,
-        metrics
+        `LambdaThrottles_${funcName}`, // alarmName
+        `Throttles % for ${funcName} exceeds ${threshold}`, // alarmDescription
+        funcName, // funcName
+        config.ComparisonOperator, // comparisonOperator
+        threshold, // threshold
+        metrics, // metrics
+        null, // metricName
+        config.Statistic, // statistic
+        config.Period, // period
+        config.EvaluationPeriods, // evaluationPeriods
+        config.TreatMissingData // treatMissingData
       )
     }
   }

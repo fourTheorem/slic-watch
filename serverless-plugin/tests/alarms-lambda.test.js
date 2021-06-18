@@ -102,14 +102,10 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
     t.equal(metricsById.throttles.MetricStat.Period, 120)
-    t.equal(metricsById.throttles.MetricStat.TreatMissingData, 'breaching')
-    t.equal(metricsById.throttles.MetricStat.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
     t.equal(metricsById.invocations.MetricStat.Period, 120)
-    t.equal(metricsById.invocations.MetricStat.TreatMissingData, 'breaching')
-    t.equal(metricsById.invocations.MetricStat.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 

@@ -19,7 +19,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
       'AWS::StepFunctions::StateMachine'
     )
     const executionMetrics = [
-      'ExecutionsThrottled',
+      'ExecutionThrottled',
       'ExecutionsFailed',
       'ExecutionsTimedOut'
     ]

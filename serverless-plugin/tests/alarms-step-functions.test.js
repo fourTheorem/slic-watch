@@ -25,7 +25,8 @@ test('Step Function alarms are created', (t) => {
       TreatMissingData: 'breaching',
       ComparisonOperator: 'GreaterThanOrEqualToThreshold',
       States: {
-        ExecutionsThrottled: {
+        Period: 900,
+        ExecutionThrottled: {
           Threshold: 0
         },
         ExecutionsFailed: {
@@ -57,7 +58,7 @@ test('Step Function alarms are created', (t) => {
   }
 
   const executionMetrics = [
-    'ExecutionsThrottled',
+    'ExecutionThrottled',
     'ExecutionsFailed',
     'ExecutionsTimedOut'
   ]
@@ -75,7 +76,7 @@ test('Step Function alarms are created', (t) => {
       t.equal(al.TreatMissingData, 'breaching')
       t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
       t.equal(al.Namespace, 'AWS/States')
-      t.equal(al.Period, 120)
+      t.equal(al.Period, 900)
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',
@@ -95,7 +96,7 @@ test('Step function alarms are not created when disabled globally', (t) => {
       States: {
         enabled: false, // disabled globally
         Period: 900,
-        ExecutionsThrottled: {
+        ExecutionThrottled: {
           Threshold: 0
         },
         ExecutionsFailed: {
@@ -127,7 +128,7 @@ test('Step function alarms are not created when disabled individually', (t) => {
       States: {
         enabled: true, // enabdled globally
         Period: 900,
-        ExecutionsThrottled: {
+        ExecutionThrottled: {
           enabled: false, // disabled locally
           Threshold: 0
         },
