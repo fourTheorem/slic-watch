@@ -9,7 +9,7 @@ const dynamoDbAlarms = require('./alarms-dynamodb')
 const kinesisAlarms = require('./alarms-kinesis')
 const sqsAlarms = require('./alarms-sqs')
 
-module.exports = function alarms (serverless, alarmConfig, context) {
+module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs, context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -18,7 +18,8 @@ module.exports = function alarms (serverless, alarmConfig, context) {
     Kinesis: kinesisConfig,
     SQS: sqsConfig
   } = cascade(alarmConfig)
-  const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, context)
+  const cascadedFunctionAlarmConfigs = cascade(functionAlarmConfigs)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, cascadedFunctionAlarmConfigs, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)

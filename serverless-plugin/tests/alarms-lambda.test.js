@@ -12,6 +12,8 @@ const {
   testContext
 } = require('./testing-utils')
 
+const funcAlarmConfigs = {}
+
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
@@ -38,7 +40,7 @@ test('AWS Lambda alarms are created', (t) => {
   })
 
   const lambdaAlarmConfig = alarmConfig.Lambda
-  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 
@@ -149,7 +151,7 @@ test('Invocation alarms are created if configured', (t) => {
   })
   const lambdaAlarmConfig = alarmConfig.Lambda
 
-  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 
@@ -197,7 +199,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
   })
   const lambdaAlarmConfig = alarmConfig.Lambda
 
-  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   t.throws(() => createLambdaAlarms(cfTemplate), { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
@@ -253,7 +255,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
       }
     )
 
-    const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+    const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
     createLambdaAlarms(cfTemplate)
     const alarmResources = cfTemplate.getResourcesByType(
       'AWS::CloudWatch::Alarm'
@@ -287,7 +289,7 @@ test('Lambda alarms are not created when disabled globally', (t) => {
   })
 
   const lambdaAlarmConfig = alarmConfig.Lambda
-  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 
@@ -326,7 +328,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
   })
 
   const lambdaAlarmConfig = alarmConfig.Lambda
-  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, testContext)
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createLambdaAlarms(cfTemplate)
 

@@ -13,8 +13,10 @@ const context = {
   region: 'eu-west-1'
 }
 
-test('An empty template creates a dashboard', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, context)
+const funcDashConfigs = {}
+
+test('An empty template creates no dashboard', (t) => {
+  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
 
   const cfTemplate = createTestCloudFormationTemplate({ Resources: [] })
   dash.addDashboard(cfTemplate)
@@ -22,18 +24,12 @@ test('An empty template creates a dashboard', (t) => {
   const dashResources = cfTemplate.getResourcesByType(
     'AWS::CloudWatch::Dashboard'
   )
-  t.equal(Object.keys(dashResources).length, 1)
-  const [, dashResource] = Object.entries(dashResources)[0]
-  t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
-  t.ok(dashBody.start)
-  const widgets = dashBody.widgets
-  t.equal(widgets.length, 0)
+  t.equal(Object.keys(dashResources).length, 0)
   t.end()
 })
 
 test('A dashboard includes metrics', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, context)
+  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -206,7 +202,7 @@ test('A dashboard includes metrics', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, context)
+  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
   const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {

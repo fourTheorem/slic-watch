@@ -209,10 +209,11 @@ const functionConfigSchema = {
         Lambda: widgetSchemas.Lambda
       }
     }
-  },
+  }
 }
 
 module.exports = {
   slicWatchSchema,
-  pluginConfigSchema
+  pluginConfigSchema,
+  functionConfigSchema
 }

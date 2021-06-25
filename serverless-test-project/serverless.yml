@@ -35,6 +35,11 @@ provider:
 functions:
   hello:
     handler: basic-handler.hello
+    slicWatch:
+      alarms:
+        Lambda:
+          Invocations:
+            Threshold: 2
 
   ping:
     handler: basic-handler.hello

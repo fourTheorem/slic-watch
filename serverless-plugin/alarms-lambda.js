@@ -1,9 +1,12 @@
 'use strict'
 
+const _ = require('lodash')
+
 /**
- * @param {object} lambdaAlarmConfig The fully resolved alarm configuration
+ * @param {object} lambdaAlarmConfig The fully resolved alarm plugin configuration
+ * @param {object} functionAlarmConfigs The function-specific configuration by function name
  */
-module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
+module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs, context) {
   return {
     createLambdaAlarms
   }
@@ -19,14 +22,14 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       'AWS::Lambda::Function'
     )
 
-    for (const [funcResourceName, funcResource] of Object.entries(
-      lambdaResources
-    )) {
+    for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
+      const functionName = funcResource.Properties.Name
+      const funcConfig = _.merge(lambdaAlarmConfig, functionAlarmConfigs[functionName])
       if (lambdaAlarmConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.Errors
+          funcConfig.Errors
         )
         cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       }
@@ -35,7 +38,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         const throttlesAlarm = createLambdaThrottlesAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.ThrottlesPc
+          funcConfig.ThrottlesPc
         )
 
         cfTemplate.addResource(
@@ -48,7 +51,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         const durationAlarm = createLambdaDurationAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.DurationPc
+          funcConfig.DurationPc
         )
         cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
       }
@@ -61,7 +64,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.Invocations
+          funcConfig.Invocations
         )
         cfTemplate.addResource(
           invocationsAlarm.resourceName,
@@ -74,11 +77,12 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       for (const [funcResourceName, funcResource] of Object.entries(
         cfTemplate.getEventSourceMappingFunctions()
       )) {
-      // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
+        const funcConfig = _.merge(lambdaAlarmConfig, functionAlarmConfigs[funcResource.Properties.Name])
+        // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.IteratorAge
+          funcConfig.IteratorAge
         )
         cfTemplate.addResource(
           iteratorAgeAlarm.resourceName,

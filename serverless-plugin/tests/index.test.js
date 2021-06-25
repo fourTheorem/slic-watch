@@ -2,10 +2,11 @@
 
 const fs = require('fs')
 const path = require('path')
-const yaml = require('js-yaml')
 
+const _ = require('lodash')
 const proxyrequire = require('proxyquire')
 const { test } = require('tap')
+const yaml = require('js-yaml')
 
 const slsYamlPath = path.resolve(
   __dirname,
@@ -48,12 +49,21 @@ const mockServerless = {
       }
     }
   },
+  getProvider: () => ({
+    naming: {
+      getLambdaLogicalId: (funcName) => {
+        return funcName[0] + funcName.slice(1) + 'LambdaFunction'
+      }
+    }
+  }),
   service: {
     ...slsYaml,
     provider: {
       name: 'aws',
       compiledCloudFormationTemplate: testCfTemplate
-    }
+    },
+    getAllFunctions: () => Object.keys(slsYaml.functions),
+    getFunction: (funcName) => slsYaml.functions[funcName]
   }
 }
 
@@ -97,6 +107,9 @@ test('Plugin registers the configuration schema', (t) => {
     configSchemaHandler: {
       defineCustomProperties: (schema) => {
         testData.schema = schema
+      },
+      defineFunctionProperties: (provider, schema) => {
+        testData.functionSchema = schema
       }
     }
   })
@@ -120,11 +133,15 @@ test('Plugin execution fails with no slicWatch config', (t) => {
 })
 
 test('Plugin execution succeeds if no SNS Topic is provided', (t) => {
-  const serviceYmlWithoutTopic = { ...slsYaml, custom: { slicWatch: {} } }
+  const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
+  delete slsYaml.custom.slicWatch.topicArn
   const plugin = new ServerlessPlugin(
     {
       ...mockServerless,
-      service: serviceYmlWithoutTopic
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithoutTopic
+      }
     },
     {}
   )

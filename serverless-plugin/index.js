@@ -23,7 +23,7 @@ class ServerlessPlugin {
 
     if (serverless.configSchemaHandler) {
       serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
-      serverless.configSchemaHandler.defineFunctionProperties(functionConfigSchema)
+      serverless.configSchemaHandler.defineFunctionProperties('aws', functionConfigSchema)
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
@@ -59,8 +59,21 @@ class ServerlessPlugin {
 
     const config = _.merge(defaultConfig, slicWatchConfig)
 
-    this.dashboard = dashboard(this.serverless, config.dashboard, context)
-    this.alarms = alarms(this.serverless, config.alarms, context)
+    const awsProvider = this.serverless.getProvider('aws')
+    const functionAlarmConfigs = {}
+    const functionDashboardConfigs = {}
+
+    for (const funcName of this.serverless.service.getAllFunctions()) {
+      const func = this.serverless.service.getFunction(funcName)
+      if (func.slicWatch) {
+        const functionName = awsProvider.naming.getLambdaLogicalId(funcName)
+        functionAlarmConfigs[functionName] = func.slicWatch.alarms
+        functionDashboardConfigs[functionName] = func.slicWatch.dashboard
+      }
+    }
+
+    this.dashboard = dashboard(this.serverless, config.dashboard, functionDashboardConfigs, context)
+    this.alarms = alarms(this.serverless, config.alarms, functionAlarmConfigs, context)
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate,
       this.serverless.service.resources.Resources

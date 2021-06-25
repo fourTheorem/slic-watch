@@ -242,6 +242,7 @@ custom:
             Threshold: 80 # 80% of 120.000 for regular queues or 80% of 20000 for FIFO queues
 
     dashboard:
+      enabled: true
       timeRange:
         # For possible 'start' and 'end' values, see
         # https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
