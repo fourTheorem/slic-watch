@@ -5,7 +5,7 @@ const Ajv = require('ajv')
 
 const alarms = require('./alarms')
 const dashboard = require('./dashboard')
-const { pluginConfigSchema, slicWatchSchema } = require('./config-schema')
+const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('./config-schema')
 const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
 
@@ -23,6 +23,7 @@ class ServerlessPlugin {
 
     if (serverless.configSchemaHandler) {
       serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
+      serverless.configSchemaHandler.defineFunctionProperties(functionConfigSchema)
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
