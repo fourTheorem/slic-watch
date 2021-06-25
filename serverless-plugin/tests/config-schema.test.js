@@ -24,3 +24,21 @@ test('Default config conforms to the config schema', (t) => {
 
   t.end()
 })
+
+test('Default config conforms to the config schema without topicArn', (t) => {
+  const slicWatchConfig = {
+    ...defaultConfig
+  }
+
+  const ajv = new Ajv()
+  const slicWatchValidate = ajv.compile(slicWatchSchema)
+  const slicWatchValid = slicWatchValidate(slicWatchConfig)
+  t.ok(slicWatchValid, slicWatchValidate.errors)
+
+  const pluginValidate = ajv.compile(pluginConfigSchema)
+  const testConfig = { slicWatch: slicWatchConfig }
+  const pluginValid = pluginValidate(testConfig)
+  t.ok(pluginValid, pluginValidate.errors)
+
+  t.end()
+})

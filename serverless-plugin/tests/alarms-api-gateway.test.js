@@ -7,14 +7,9 @@ const {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
-  createTestCloudFormationTemplate
+  createTestCloudFormationTemplate,
+  testContext
 } = require('./testing-utils')
-
-const context = {
-  topicArn: 'dummy-arn',
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
 
 test('API Gateway alarms are created', (t) => {
   const alarmConfig = createTestConfig(
@@ -40,7 +35,7 @@ test('API Gateway alarms are created', (t) => {
 
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)
 
@@ -139,7 +134,7 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
 
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)
@@ -175,7 +170,7 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
 
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, context)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)

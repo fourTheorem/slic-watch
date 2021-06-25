@@ -74,7 +74,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
         ActionsEnabled: true,
-        AlarmActions: [context.topicArn],
+        AlarmActions: context.alarmActions,
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
         EvaluationPeriods: evaluationPeriods,

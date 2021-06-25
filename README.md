@@ -116,7 +116,7 @@ The dashboard contains one widget per Step Function:
 
 ## Configuration
 
-The `topic` configuration must be configured with the ARN of an SNS Topic.
+The `topic` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
 Alarm configuration is _cascading_. This means that configuration properties are automatically propagated from parent to children nodes (unless an override is present at the given node).
 Supported options along with their defaults are shown below.
 
@@ -126,7 +126,7 @@ Supported options along with their defaults are shown below.
 
 custom:
   slicWatch:
-    topic: SNS_TOPIC_ARN
+    topic: SNS_TOPIC_ARN  # This is optional but recommended so you can receive alarms via email, Slack, etc.
 
     alarms:
       enabled: true

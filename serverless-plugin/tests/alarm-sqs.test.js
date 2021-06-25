@@ -7,14 +7,9 @@ const {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
-  createTestCloudFormationTemplate
+  createTestCloudFormationTemplate,
+  testContext
 } = require('./testing-utils')
-
-const context = {
-  topicArn: 'dummy-arn',
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
 
 test('SQS alarms are created', (t) => {
   const alarmConfig = createTestConfig(
@@ -39,7 +34,7 @@ test('SQS alarms are created', (t) => {
 
   const sqsAlarmConfig = alarmConfig.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, context)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -157,7 +152,7 @@ test('SQS alarms are not created when disabled globally', (t) => {
 
   const sqsAlarmConfig = alarmConfig.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, context)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -188,7 +183,7 @@ test('SQS alarms are not created when disabled individually', (t) => {
 
   const sqsAlarmConfig = alarmConfig.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, context)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -218,7 +213,7 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
 
   const sqsAlarmConfig = alarmConfig.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, context)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   t.throws(() => createSQSAlarms(cfTemplate), { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()

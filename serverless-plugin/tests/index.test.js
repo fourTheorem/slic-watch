@@ -6,7 +6,6 @@ const yaml = require('js-yaml')
 
 const proxyrequire = require('proxyquire')
 const { test } = require('tap')
-const ServerlessError = require('serverless/lib/serverless-error')
 
 const slsYamlPath = path.resolve(
   __dirname,
@@ -120,7 +119,7 @@ test('Plugin execution fails with no slicWatch config', (t) => {
   t.end()
 })
 
-test('Plugin execution fails if no SNS Topic is provided', (t) => {
+test('Plugin execution succeeds if no SNS Topic is provided', (t) => {
   const serviceYmlWithoutTopic = { ...slsYaml, custom: { slicWatch: {} } }
   const plugin = new ServerlessPlugin(
     {
@@ -129,6 +128,6 @@ test('Plugin execution fails if no SNS Topic is provided', (t) => {
     },
     {}
   )
-  t.throws(() => plugin.finalizeHook(), new ServerlessError('SLIC Watch configuration is invalid: data should have required property \'topicArn\''))
+  plugin.finalizeHook()
   t.end()
 })

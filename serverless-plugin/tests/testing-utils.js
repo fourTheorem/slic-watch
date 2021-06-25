@@ -5,6 +5,12 @@ const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
 const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
 
+const testContext = {
+  alarmActions: ['dummy-arn'],
+  stackName: 'testStack',
+  region: 'eu-west-1'
+}
+
 const slsMock = {
   cli: {
     log: () => {}
@@ -14,6 +20,7 @@ const slsMock = {
 module.exports = {
   slsMock,
   defaultCfTemplate,
+  testContext,
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,

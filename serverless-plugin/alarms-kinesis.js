@@ -62,7 +62,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
         ActionsEnabled: true,
-        AlarmActions: [context.topicArn],
+        AlarmActions: context.alarmActions,
         AlarmName: `${type}_${streamName}`,
         AlarmDescription: `Kinesis ${config.Statistic} ${metric} for ${streamName} breaches ${threshold} milliseconds`,
         EvaluationPeriods: config.EvaluationPeriods,
