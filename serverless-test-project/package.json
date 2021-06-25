@@ -1,6 +1,6 @@
 {
   "name": "serverless-test-project",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Test project for SLIC Watch serverless plugin",
   "main": "basic-handler.js",
   "repository": {
@@ -12,7 +12,7 @@
   "devDependencies": {
     "ajv": "^6.12.6",
     "serverless": "^2.38.0",
-    "serverless-slic-watch-plugin": "^1.0.0-beta.3",
+    "serverless-slic-watch-plugin": "^1.0.0-beta.4",
     "serverless-step-functions": "^2.30.0"
   },
   "scripts": {
