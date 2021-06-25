@@ -44,11 +44,16 @@ class ServerlessPlugin {
       throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
+    const alarmActions = []
+
+    if (slicWatchConfig.topicArn) {
+      alarmActions.push(slicWatchConfig.topicArn)
+    }
     // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
     const context = {
       region: this.serverless.service.provider.region,
       stackName: this.providerNaming.getStackName(),
-      topicArn: slicWatchConfig.topicArn
+      alarmActions
     }
 
     const config = _.merge(defaultConfig, slicWatchConfig)

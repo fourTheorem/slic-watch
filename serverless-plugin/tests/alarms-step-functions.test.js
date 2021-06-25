@@ -7,14 +7,9 @@ const {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
-  createTestCloudFormationTemplate
+  createTestCloudFormationTemplate,
+  testContext
 } = require('./testing-utils')
-
-const context = {
-  topicArn: 'dummy-arn',
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
 
 test('Step Function alarms are created', (t) => {
   const alarmConfig = createTestConfig(
@@ -41,7 +36,7 @@ test('Step Function alarms are created', (t) => {
 
   const sfAlarmConfig = alarmConfig.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 
@@ -111,7 +106,7 @@ test('Step function alarms are not created when disabled globally', (t) => {
 
   const sfAlarmConfig = alarmConfig.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 
@@ -146,7 +141,7 @@ test('Step function alarms are not created when disabled individually', (t) => {
 
   const sfAlarmConfig = alarmConfig.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, context)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 

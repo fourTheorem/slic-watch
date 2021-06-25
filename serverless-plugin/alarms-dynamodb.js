@@ -77,7 +77,7 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
         ActionsEnabled: true,
-        AlarmActions: [context.topicArn],
+        AlarmActions: context.alarmActions,
         AlarmName: `${metricName}_${identifier}`,
         AlarmDescription: `DynamoDB ${config.Statistic} for ${identifier} breaches ${config.Threshold}`,
         EvaluationPeriods: config.EvaluationPeriods,

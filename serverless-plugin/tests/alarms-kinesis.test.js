@@ -7,14 +7,9 @@ const {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
-  createTestCloudFormationTemplate
+  createTestCloudFormationTemplate,
+  testContext
 } = require('./testing-utils')
-
-const context = {
-  topicArn: 'dummy-arn',
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
 
 test('Kinesis data stream alarms are created', (t) => {
   const alarmConfig = createTestConfig(
@@ -34,7 +29,7 @@ test('Kinesis data stream alarms are created', (t) => {
 
   const kinesisAlarmConfig = alarmConfig.Kinesis
 
-  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, context)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createKinesisAlarms(cfTemplate)
 
@@ -90,7 +85,7 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
 
   const kinesisAlarmConfig = alarmConfig.Kinesis
 
-  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, context)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createKinesisAlarms(cfTemplate)

@@ -11,14 +11,9 @@ const {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  defaultCfTemplate
+  defaultCfTemplate,
+  testContext
 } = require('./testing-utils')
-
-const context = {
-  topicArn: 'dummy-arn',
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
 
 const alarmConfig = createTestConfig(
   defaultConfig.alarms, {
@@ -46,7 +41,7 @@ const alarmConfig = createTestConfig(
 const dynamoDbAlarmConfig = alarmConfig.DynamoDB
 
 test('DynamoDB alarms are created', (t) => {
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createDynamoDbAlarms(cfTemplate)
 
@@ -107,7 +102,7 @@ test('DynamoDB alarms are created', (t) => {
 })
 
 test('DynamoDB alarms are created without GSI', (t) => {
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
   const compiledTemplate = cloneDeep(defaultCfTemplate)
   delete compiledTemplate.Resources.dataTable.Properties.GlobalSecondaryIndexes
   const cfTemplate = createTestCloudFormationTemplate(compiledTemplate)
@@ -126,7 +121,7 @@ test('DynamoDB alarms are not created when disabled', (t) => {
   })
 
   const dynamoDbAlarmConfig = alarmConfig.DynamoDB
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, context)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createDynamoDbAlarms(cfTemplate)
 
