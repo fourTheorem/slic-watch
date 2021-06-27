@@ -142,7 +142,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
               for (const res of Object.values(functionResources)) {
                 const functionName = res.Properties.FunctionName
                 const functionConfig = (functionDashboardConfigs[functionName] || {}).dashboard || {}
-                if (functionConfig.enabled !== false) {
+                const functionMetricConfig = functionConfig[metric] || {}
+                if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
                   metricDefs.push({
                     namespace: 'AWS/Lambda',
                     metric,
@@ -164,20 +165,24 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           } else {
             for (const funcResName of eventSourceMappingFunctionResourceNames) {
               const functionName = functionResources[funcResName].Properties.FunctionName
-              const stats = metricConfig.Statistic
-              const iteratorAgeWidget = createMetricWidget(
-                `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
-                stats.map(stat => ({
-                  namespace: 'AWS/Lambda',
-                  metric: 'IteratorAge',
-                  dimensions: {
-                    FunctionName: functionResources[funcResName].Properties.FunctionName
-                  },
-                  stat
-                })),
-                metricConfig
-              )
-              lambdaWidgets.push(iteratorAgeWidget)
+              const functionConfig = (functionDashboardConfigs[functionName] || {}).dashboard || {}
+              const functionMetricConfig = functionConfig[metric] || {}
+              if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
+                const stats = metricConfig.Statistic
+                const iteratorAgeWidget = createMetricWidget(
+                  `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
+                  stats.map(stat => ({
+                    namespace: 'AWS/Lambda',
+                    metric: 'IteratorAge',
+                    dimensions: {
+                      FunctionName: functionResources[funcResName].Properties.FunctionName
+                    },
+                    stat
+                  })),
+                  metricConfig
+                )
+                lambdaWidgets.push(iteratorAgeWidget)
+              }
             }
           }
         }

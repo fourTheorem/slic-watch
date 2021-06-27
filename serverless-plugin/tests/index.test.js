@@ -1,18 +1,11 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-
 const _ = require('lodash')
 const proxyrequire = require('proxyquire')
 const { test } = require('tap')
-const yaml = require('js-yaml')
 
-const slsYamlPath = path.resolve(
-  __dirname,
-  '../../serverless-test-project/serverless.yml'
-)
-const slsYaml = yaml.load(fs.readFileSync(slsYamlPath, 'utf8'))
+const { slsYaml } = require('./testing-utils')
+
 const testCfTemplate = {
   Resources: {}
 }

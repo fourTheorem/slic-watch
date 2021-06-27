@@ -1,22 +1,23 @@
 'use strict'
 
 const { cloneDeep } = require('lodash')
-const { test } = require('tap')
+const { test, only } = require('tap')
 
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
 
-const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock } = require('./testing-utils')
+const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock, slsYaml } = require('./testing-utils')
 
 const context = {
   stackName: 'testStack',
   region: 'eu-west-1'
 }
 
-const funcDashConfigs = {}
+const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'ConcurrentExecutions', 'Throttles']
+const emptyFuncConfigs = {}
 
 test('An empty template creates no dashboard', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
+  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
 
   const cfTemplate = createTestCloudFormationTemplate({ Resources: [] })
   dash.addDashboard(cfTemplate)
@@ -29,7 +30,7 @@ test('An empty template creates no dashboard', (t) => {
 })
 
 test('A dashboard includes metrics', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
+  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -202,7 +203,7 @@ test('A dashboard includes metrics', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, funcDashConfigs, context)
+  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
   const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {
@@ -228,5 +229,57 @@ test('DynamoDB widgets are created without GSIs', (t) => {
     widgets.map((widget) => widget.properties.title)
   )
   t.same(actualTitles, expectedTitles)
+  t.end()
+})
+
+test('A widget is not created for Lambda if disabled at a function level', (t) => {
+  const disabledFunctionName = 'serverless-test-project-dev-hello'
+  for (const metric of lambdaMetrics) {
+    const funcConfigs = {
+      [disabledFunctionName]: {
+        dashboard: { [metric]: { enabled: false } }
+      }
+    }
+
+    const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)
+    const cfTemplate = createTestCloudFormationTemplate()
+    dash.addDashboard(cfTemplate)
+    const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+    const [, dashResource] = Object.entries(dashResources)[0]
+    const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith(`Lambda ${metric}`)
+    )
+    const widgetMetrics = widgets[0].properties.metrics
+    const functionNames = widgetMetrics.map(widgetMetric => widgetMetric[3])
+    t.ok(functionNames.length > 0)
+    t.equal(functionNames.indexOf(disabledFunctionName), -1, `${metric} is disabled`)
+  }
+  t.end()
+})
+
+only('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
+  const funcConfigs = {}
+  const allFunctionNames = Object.keys(slsYaml.functions).map((simpleName) =>
+    `serverless-test-project-dev-${simpleName}`
+  )
+  for (const functionName of allFunctionNames) {
+    funcConfigs[functionName] = { dashboard: {} }
+    for (const metric of lambdaMetrics) {
+      funcConfigs[functionName].dashboard[metric] = { enabled: false }
+    }
+  }
+  const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  dash.addDashboard(cfTemplate)
+  const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+  const [, dashResource] = Object.entries(dashResources)[0]
+  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+
+  const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+    title.startsWith('Lambda')
+  )
+  t.equal(widgets.length, 0)
   t.end()
 })
