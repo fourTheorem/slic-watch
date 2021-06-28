@@ -24,8 +24,8 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
 
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
       const functionName = funcResource.Properties.Name
-      const funcConfig = _.merge(lambdaAlarmConfig, functionAlarmConfigs[functionName])
-      if (lambdaAlarmConfig.Errors.enabled) {
+      const funcConfig = _.merge({}, lambdaAlarmConfig, functionAlarmConfigs[functionName])
+      if (funcConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,
           funcResource,
@@ -34,7 +34,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
         cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       }
 
-      if (lambdaAlarmConfig.ThrottlesPc.enabled) {
+      if (funcConfig.ThrottlesPc.enabled) {
         const throttlesAlarm = createLambdaThrottlesAlarm(
           funcResourceName,
           funcResource,
@@ -47,7 +47,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
         )
       }
 
-      if (lambdaAlarmConfig.DurationPc.enabled) {
+      if (funcConfig.DurationPc.enabled) {
         const durationAlarm = createLambdaDurationAlarm(
           funcResourceName,
           funcResource,
@@ -56,8 +56,8 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
         cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
       }
 
-      if (lambdaAlarmConfig.Invocations.enabled) {
-        if (lambdaAlarmConfig.Invocations.Threshold == null) {
+      if (funcConfig.Invocations.enabled) {
+        if (funcConfig.Invocations.Threshold == null) {
           throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
         }
 
@@ -73,11 +73,11 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
       }
     }
 
-    if (lambdaAlarmConfig.IteratorAge.enabled) {
-      for (const [funcResourceName, funcResource] of Object.entries(
-        cfTemplate.getEventSourceMappingFunctions()
-      )) {
-        const funcConfig = _.merge(lambdaAlarmConfig, functionAlarmConfigs[funcResource.Properties.Name])
+    for (const [funcResourceName, funcResource] of Object.entries(
+      cfTemplate.getEventSourceMappingFunctions()
+    )) {
+      const funcConfig = _.merge({}, lambdaAlarmConfig, functionAlarmConfigs[funcResource.Properties.Name])
+      if (funcConfig.IteratorAge.enabled) {
         // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(
           funcResourceName,
