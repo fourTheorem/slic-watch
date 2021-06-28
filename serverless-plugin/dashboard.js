@@ -265,12 +265,14 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           }
         }
       }
-      const metricStatWidget = createMetricWidget(
-        `${smName} Step Function Executions`,
-        widgetMetrics,
-        sfDashConfig
-      )
-      smWidgets.push(metricStatWidget)
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `${smName} Step Function Executions`,
+          widgetMetrics,
+          sfDashConfig
+        )
+        smWidgets.push(metricStatWidget)
+      }
     }
     return smWidgets
   }

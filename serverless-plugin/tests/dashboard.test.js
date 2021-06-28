@@ -1,7 +1,7 @@
 'use strict'
 
 const { cloneDeep } = require('lodash')
-const { test, only } = require('tap')
+const { test } = require('tap')
 
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
@@ -232,6 +232,35 @@ test('DynamoDB widgets are created without GSIs', (t) => {
   t.end()
 })
 
+test('No dashboard is created if all widgets are disabled', (t) => {
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis']
+  const dashConfig = cloneDeep(defaultConfig.dashboard)
+  for (const service of services) {
+    dashConfig.widgets[service].enabled = false
+  }
+  const dash = dashboard(slsMock, dashConfig, emptyFuncConfigs, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  dash.addDashboard(cfTemplate)
+  const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+  t.same(dashResources, {})
+  t.end()
+})
+
+test('No dashboard is created if all metrics are disabled', (t) => {
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis']
+  const dashConfig = cloneDeep(defaultConfig.dashboard)
+  for (const service of services) {
+    for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+      metricConfig.enabled = false
+    }
+  }
+  const dash = dashboard(slsMock, dashConfig, emptyFuncConfigs, context)
+  const cfTemplate = createTestCloudFormationTemplate()
+  dash.addDashboard(cfTemplate)
+  const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+  t.same(dashResources, {})
+  t.end()
+})
 test('A widget is not created for Lambda if disabled at a function level', (t) => {
   const disabledFunctionName = 'serverless-test-project-dev-hello'
   for (const metric of lambdaMetrics) {
@@ -259,7 +288,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
   t.end()
 })
 
-only('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
+test('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
   const funcConfigs = {}
   const allFunctionNames = Object.keys(slsYaml.functions).map((simpleName) =>
     `serverless-test-project-dev-${simpleName}`
