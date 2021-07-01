@@ -18,10 +18,34 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
 
 Currently, SLIC Watch is available as a Serverless Framework plugin.
 
-## Installation
+## Getting Started
+
+1. 📦 Install the plugin:
 ```
 npm install serverless-slic-watch-plugin --save-dev
 ```
+2. 🖋️ Add the plugin to the `plugins` section of `serverless.yml`:
+```
+plugins:
+  - serverless-slic-watch-plugin
+```
+3. 🪛 _Optionally_, add some configuration for the plugin to the `custom -> slicWatch` section of `serverless.yml`.
+Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
+so you can receive alarm notifications via email, Slack, etc.
+
+```
+custom:
+  slicWatch:
+    topicArn: {'Fn::Ref': myTopic}
+```
+See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
+
+
+4. 🚢 Deploy your application in the usual way, for example:
+```
+sls deploy
+```
+5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
 
 ## Features
 
