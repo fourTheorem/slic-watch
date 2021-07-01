@@ -337,3 +337,40 @@ test('Lambda alarms are not created when disabled individually', (t) => {
   t.same({}, alarmResources)
   t.end()
 })
+
+test('AWS Lambda alarms are not created if disabled at function level', (t) => {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+    Lambda: {
+      Invocations: {
+        enabled: true,
+        Threshold: 1
+      }
+    }
+  })
+  const cfTemplate = createTestCloudFormationTemplate({
+    Resources: {
+      HelloLambdaFunction: {
+        Type: 'AWS::Lambda::Function',
+        Properties: {
+          Name: 'serverless-test-project-dev-simpletest'
+        }
+      },
+      ESM: {
+        Type: 'AWS::Lambda::EventSourceMapping',
+        Properties: {
+          FunctionName: { 'Fn::Ref': 'HelloLambdaFunction' }
+        }
+      }
+    }
+  })
+  const disabledFuncAlarmConfigs = {
+    'serverless-test-project-dev-simpletest': { enabled: false }
+  }
+  const lambdaAlarmConfig = alarmConfig.Lambda
+  const { createLambdaAlarms } = lambdaAlarms(lambdaAlarmConfig, disabledFuncAlarmConfigs, testContext)
+  createLambdaAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  t.equal(Object.keys(alarmResources).length, 0)
+  t.end()
+})

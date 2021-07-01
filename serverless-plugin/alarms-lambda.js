@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
+const { cascade } = require('./cascading-config')
 
 /**
  * @param {object} lambdaAlarmConfig The fully resolved alarm plugin configuration
@@ -24,7 +25,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
 
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
       const functionName = funcResource.Properties.Name
-      const funcConfig = _.merge({}, lambdaAlarmConfig, functionAlarmConfigs[functionName])
+      const funcConfig = cascade(_.merge({}, lambdaAlarmConfig, functionAlarmConfigs[functionName]))
       if (funcConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,
