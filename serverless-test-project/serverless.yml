@@ -43,6 +43,9 @@ functions:
 
   ping:
     handler: basic-handler.hello
+    slicWatch:
+      dashboard:
+        enabled: false
 
   throttler:
     handler: basic-handler.hello

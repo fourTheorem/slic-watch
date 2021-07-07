@@ -67,7 +67,7 @@ class ServerlessPlugin {
       const func = this.serverless.service.getFunction(funcName)
       if (func.slicWatch) {
         const functionName = awsProvider.naming.getLambdaLogicalId(funcName)
-        functionAlarmConfigs[functionName] = func.slicWatch.alarms
+        functionAlarmConfigs[functionName] = func.slicWatch.alarms || {}
         functionDashboardConfigs[functionName] = func.slicWatch.dashboard
       }
     }

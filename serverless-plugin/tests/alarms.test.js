@@ -6,11 +6,13 @@ const alarms = require('../alarms')
 const defaultConfig = require('../default-config')
 const { createTestCloudFormationTemplate, slsMock, createTestConfig, testContext } = require('./testing-utils')
 
-const funcAlarmConfigs = {}
-
 test('Alarms create all service alarms', (t) => {
-  const { addAlarms } = alarms(slsMock, defaultConfig.alarms, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
+  const funcAlarmConfigs = {}
+  for (const func of cfTemplate.getFunctionNames()) {
+    funcAlarmConfigs[func] = {}
+  }
+  const { addAlarms } = alarms(slsMock, defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
@@ -31,8 +33,12 @@ test('Alarms are not created when disabled globally', (t) => {
       enabled: false
     }
   )
-  const { addAlarms } = alarms(slsMock, config, funcAlarmConfigs, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
+  const funcAlarmConfigs = {}
+  for (const func of cfTemplate.getFunctionNames()) {
+    funcAlarmConfigs[func] = {}
+  }
+  const { addAlarms } = alarms(slsMock, config, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
 
   const alarmsCreated = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')

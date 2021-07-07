@@ -1,6 +1,7 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
+const { applyAlarmConfig } = require('./function-config')
 
 const lambdaAlarms = require('./alarms-lambda')
 const apiGatewayAlarms = require('./alarms-api-gateway')
@@ -11,15 +12,16 @@ const sqsAlarms = require('./alarms-sqs')
 
 module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs, context) {
   const {
-    Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
     States: sfConfig,
     DynamoDB: dynamoDbConfig,
     Kinesis: kinesisConfig,
-    SQS: sqsConfig
+    SQS: sqsConfig,
+    Lambda: lambdaConfig
   } = cascade(alarmConfig)
-  const cascadedFunctionAlarmConfigs = cascade(functionAlarmConfigs)
-  const { createLambdaAlarms } = lambdaAlarms(lambdaConfig, cascadedFunctionAlarmConfigs, context)
+
+  const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
+  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
@@ -38,7 +40,7 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
    */
   function addAlarms (cfTemplate) {
     if (alarmConfig.enabled) {
-      lambdaConfig.enabled && createLambdaAlarms(cfTemplate)
+      createLambdaAlarms(cfTemplate)
       apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)
       sfConfig.enabled && createStatesAlarms(cfTemplate)
       dynamoDbConfig.enabled && createDynamoDbAlarms(cfTemplate)

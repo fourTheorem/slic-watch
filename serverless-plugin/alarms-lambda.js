@@ -1,13 +1,10 @@
 'use strict'
 
-const _ = require('lodash')
-const { cascade } = require('./cascading-config')
-
 /**
- * @param {object} lambdaAlarmConfig The fully resolved alarm plugin configuration
- * @param {object} functionAlarmConfigs The function-specific configuration by function name
+ * @param {object} functionAlarmConfigs The cascaded Lambda alarm configuration with
+ *                                      function-specific overrides by function name
  */
-module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs, context) {
+module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
   return {
     createLambdaAlarms
   }
@@ -24,8 +21,8 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
     )
 
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-      const functionName = funcResource.Properties.Name
-      const funcConfig = cascade(_.merge({}, lambdaAlarmConfig, functionAlarmConfigs[functionName]))
+      const functionName = funcResource.Properties.FunctionName
+      const funcConfig = functionAlarmConfigs[functionName]
       if (funcConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,
@@ -77,7 +74,7 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, functionAlarmConfigs,
     for (const [funcResourceName, funcResource] of Object.entries(
       cfTemplate.getEventSourceMappingFunctions()
     )) {
-      const funcConfig = _.merge({}, lambdaAlarmConfig, functionAlarmConfigs[funcResource.Properties.Name])
+      const funcConfig = functionAlarmConfigs[funcResource.Properties.FunctionName]
       if (funcConfig.IteratorAge.enabled) {
         // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(
