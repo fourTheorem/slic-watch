@@ -4,10 +4,26 @@ const _ = require('lodash')
 const proxyrequire = require('proxyquire')
 const { test } = require('tap')
 
-const { slsYaml } = require('./testing-utils')
-
+const slsYaml = {
+  custom: {
+    slicWatch: {
+      topicArn: 'test-topic'
+    }
+  },
+  functions: {
+    hello: {
+    }
+  }
+}
 const testCfTemplate = {
-  Resources: {}
+  Resources: {
+    HelloLambdaFunction: {
+      Type: 'AWS::Lambda::Function',
+      Properties: {
+        FunctionName: 'serverless-test-project-dev-hello'
+      }
+    }
+  }
 }
 
 const testState = {}
@@ -45,7 +61,7 @@ const mockServerless = {
   getProvider: () => ({
     naming: {
       getLambdaLogicalId: (funcName) => {
-        return funcName[0] + funcName.slice(1) + 'LambdaFunction'
+        return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
       }
     }
   }),
@@ -56,7 +72,7 @@ const mockServerless = {
       compiledCloudFormationTemplate: testCfTemplate
     },
     getAllFunctions: () => Object.keys(slsYaml.functions),
-    getFunction: (funcName) => slsYaml.functions[funcName]
+    getFunction: (funcRef) => slsYaml.functions[funcRef]
   }
 }
 
@@ -134,6 +150,28 @@ test('Plugin execution succeeds if no SNS Topic is provided', (t) => {
       service: {
         ...mockServerless.service,
         ...serviceYmlWithoutTopic
+      }
+    },
+    {}
+  )
+  plugin.finalizeHook()
+  t.end()
+})
+
+test('Plugin execution succeeds if resources are provided', (t) => {
+  const plugin = new ServerlessPlugin(
+    {
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        resources: {
+          Resources: {
+            queue: {
+              Type: 'AWS::SQS::Queue',
+              Properties: {}
+            }
+          }
+        }
       }
     },
     {}
