@@ -381,7 +381,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
   })
   const disabledFuncAlarmConfigs = applyAlarmConfig(
     alarmConfig.Lambda, {
-      'serverless-test-project-dev-simpletest': { enabled: false }
+      'serverless-test-project-dev-simpletest': { Lambda: { enabled: false } }
     })
   const { createLambdaAlarms } = lambdaAlarms(disabledFuncAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)

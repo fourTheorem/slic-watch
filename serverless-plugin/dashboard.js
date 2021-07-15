@@ -141,7 +141,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
               const metricDefs = []
               for (const res of Object.values(functionResources)) {
                 const functionName = res.Properties.FunctionName
-                const functionConfig = (functionDashboardConfigs[functionName] || {}).dashboard || {}
+                const functionConfig = functionDashboardConfigs[functionName] || {}
                 const functionMetricConfig = functionConfig[metric] || {}
                 if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
                   metricDefs.push({
@@ -165,7 +165,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           } else {
             for (const funcResName of eventSourceMappingFunctionResourceNames) {
               const functionName = functionResources[funcResName].Properties.FunctionName
-              const functionConfig = (functionDashboardConfigs[functionName] || {}).dashboard || {}
+              const functionConfig = functionDashboardConfigs[functionName] || {}
               const functionMetricConfig = functionConfig[metric] || {}
               if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
                 const stats = metricConfig.Statistic

@@ -348,6 +348,17 @@ functions:
                           # this function's expected invocation count
 ```
 
+To disable all alarms for any given function, use:
+
+```yaml
+functions:
+  hello:
+    handler: basic-handler.hello
+    slicWatch:
+      alarms:
+        Lambda:
+          enabled: false
+```
 ## A note on CloudWatch cost
 
 This plugin creates additional CloudWatch resources that, apart from a limited free tier, have an associated cost.

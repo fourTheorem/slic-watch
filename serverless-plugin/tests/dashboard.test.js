@@ -266,7 +266,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
   for (const metric of lambdaMetrics) {
     const funcConfigs = {
       [disabledFunctionName]: {
-        dashboard: { [metric]: { enabled: false } }
+        [metric]: { enabled: false }
       }
     }
 
@@ -294,9 +294,9 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
     `serverless-test-project-dev-${simpleName}`
   )
   for (const functionName of allFunctionNames) {
-    funcConfigs[functionName] = { dashboard: {} }
+    funcConfigs[functionName] = {}
     for (const metric of lambdaMetrics) {
-      funcConfigs[functionName].dashboard[metric] = { enabled: false }
+      funcConfigs[functionName][metric] = { enabled: false }
     }
   }
   const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)

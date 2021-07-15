@@ -1,6 +1,7 @@
 'use strict'
 
 const merge = require('lodash/merge')
+const get = require('lodash/get')
 
 const { cascade } = require('./cascading-config')
 const defaultConfig = require('./default-config')
@@ -24,9 +25,9 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
   // Add all alarm properties to functionAlarmConfig so we can cascade top-level configuration down
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
-    const funcConfig = { ...functionAlarmConfigs[func] }
+    const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
-      funcConfig[metric] = functionAlarmConfigs[func][metric] || {}
+      funcConfig[metric] = get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
     mergedFuncAlarmConfigs[func] = merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
   }
