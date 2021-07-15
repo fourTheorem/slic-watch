@@ -140,10 +140,21 @@ The dashboard contains one widget per Step Function:
 
 ## Configuration
 
-The `topic` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
-Alarm configuration is _cascading_. This means that configuration properties are automatically propagated from parent to children nodes (unless an override is present at the given node).
-Supported options along with their defaults are shown below.
+Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.
 
+**Note**: Alarm configuration is _cascading_. This means that configuration properties are automatically propagated from parent to children nodes (unless an override is present at the given node).
+
+You can customize the configuration:
+- at the top level, for all resources in each service, and/or
+- at the level of individual functions.
+
+### Plugin configuration
+Top-level plugin configuration can be specified in the `custom` → `slicWatch` section of `serverless.yml`
+
+- The `topic` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
+- Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`
+
+Supported options along with their defaults are shown below.
 
 ```yaml
 # ...
@@ -242,6 +253,7 @@ custom:
             Threshold: 80 # 80% of 120.000 for regular queues or 80% of 20000 for FIFO queues
 
     dashboard:
+      enabled: true
       timeRange:
         # For possible 'start' and 'end' values, see
         # https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
@@ -318,6 +330,35 @@ custom:
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)
 
+### Function-level configuration
+
+For each function, add the `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource.
+
+```yaml
+functions:
+  hello:
+    handler: basic-handler.hello
+    slicWatch:
+      dashboard:
+        enabled: false    # No Lambda widgets will be created for this function
+      alarms:
+        Lambda:
+          Invocations:
+            Threshold: 2  # The invocation threshold is specific to
+                          # this function's expected invocation count
+```
+
+To disable all alarms for any given function, use:
+
+```yaml
+functions:
+  hello:
+    handler: basic-handler.hello
+    slicWatch:
+      alarms:
+        Lambda:
+          enabled: false
+```
 ## A note on CloudWatch cost
 
 This plugin creates additional CloudWatch resources that, apart from a limited free tier, have an associated cost.

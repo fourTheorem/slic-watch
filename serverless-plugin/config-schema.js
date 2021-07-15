@@ -96,6 +96,7 @@ const alarmsSchema = {
 }
 
 const commonWidgetProperties = {
+  enabled: { type: 'boolean' },
   width: { type: ['integer', 'null'], minimum: 1, maximum: 24 },
   height: { type: ['integer', 'null'], minimum: 1, maximum: 1000 },
   metricPeriod: { type: ['integer', 'null'], minimum: 60, multipleOf: 60 },
@@ -134,6 +135,7 @@ for (const service of Object.keys(supportedWidgets)) {
 const dashboardSchema = {
   type: 'object',
   properties: {
+    enabled: { type: 'boolean' },
     timeRange: {
       type: 'object',
       oneOf: [{
@@ -188,7 +190,30 @@ const pluginConfigSchema = {
   additionalProperties: false
 }
 
+/**
+ * JSON Schema for the SLIC Watch configuration at an individual function level
+ */
+const functionConfigSchema = {
+  $schema: 'http://json-schema.org/draft-07/schema',
+  title: 'SLIC Watch Serverless Plugin configuration',
+  type: 'object',
+  properties: {
+    slicWatch: {
+      enabled: { type: 'boolean' },
+      alarms: {
+        enabled: { type: 'boolean' },
+        Lambda: alarmSchemas.Lambda
+      },
+      dashboard: {
+        enabled: { type: 'boolean' },
+        Lambda: widgetSchemas.Lambda
+      }
+    }
+  }
+}
+
 module.exports = {
   slicWatchSchema,
-  pluginConfigSchema
+  pluginConfigSchema,
+  functionConfigSchema
 }

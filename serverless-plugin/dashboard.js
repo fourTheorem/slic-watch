@@ -4,7 +4,13 @@ const { cascade } = require('./cascading-config')
 
 const MAX_WIDTH = 24
 
-module.exports = function dashboard (serverless, dashboardConfig, context) {
+/**
+ * @param {*} serverless  The serverless framework instance
+ * @param {*} dashboardConfig The global plugin dashboard configuration
+ * @param {*} functionDashboardConfigs The dashboard configuration override by function name
+ * @param {*} context The plugin context
+ */
+module.exports = function dashboard (serverless, dashboardConfig, functionDashboardConfigs, context) {
   const {
     timeRange,
     widgets: {
@@ -66,15 +72,19 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       ...streamWidgets,
       ...queueWidgets
     ])
-    const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
-    const dashboardResource = {
-      Type: 'AWS::CloudWatch::Dashboard',
-      Properties: {
-        DashboardName: `${context.stackName}Dashboard`,
-        DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
+    if (positionedWidgets.length > 0) {
+      const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
+      const dashboardResource = {
+        Type: 'AWS::CloudWatch::Dashboard',
+        Properties: {
+          DashboardName: `${context.stackName}Dashboard`,
+          DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
+        }
       }
+      cfTemplate.addResource('slicWatchDashboard', dashboardResource)
+    } else {
+      serverless.cli.log('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
     }
-    cfTemplate.addResource('slicWatchDashboard', dashboardResource)
   }
 
   /**
@@ -125,39 +135,55 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     const lambdaWidgets = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
-        if (metric !== 'IteratorAge') {
-          for (const stat of metricConfig.Statistic) {
-            const metricStatWidget = createMetricWidget(
-              `Lambda ${metric} ${stat} per Function`,
-              Object.values(functionResources).map((res) => ({
-                namespace: 'AWS/Lambda',
-                metric,
-                dimensions: {
-                  FunctionName: res.Properties.FunctionName
-                },
-                stat
-              })),
-              metricConfig
-            )
-            lambdaWidgets.push(metricStatWidget)
-          }
-        } else {
-          for (const funcResName of eventSourceMappingFunctionResourceNames) {
-            const functionName = functionResources[funcResName].Properties.FunctionName
-            const stats = metricConfig.Statistic
-            const iteratorAgeWidget = createMetricWidget(
-              `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
-              stats.map(stat => ({
-                namespace: 'AWS/Lambda',
-                metric: 'IteratorAge',
-                dimensions: {
-                  FunctionName: functionResources[funcResName].Properties.FunctionName
-                },
-                stat
-              })),
-              metricConfig
-            )
-            lambdaWidgets.push(iteratorAgeWidget)
+        if (metricConfig.enabled) {
+          if (metric !== 'IteratorAge') {
+            for (const stat of metricConfig.Statistic) {
+              const metricDefs = []
+              for (const res of Object.values(functionResources)) {
+                const functionName = res.Properties.FunctionName
+                const functionConfig = functionDashboardConfigs[functionName] || {}
+                const functionMetricConfig = functionConfig[metric] || {}
+                if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
+                  metricDefs.push({
+                    namespace: 'AWS/Lambda',
+                    metric,
+                    dimensions: { FunctionName: functionName },
+                    stat
+                  })
+                }
+              }
+
+              if (metricDefs.length > 0) {
+                const metricStatWidget = createMetricWidget(
+                  `Lambda ${metric} ${stat} per Function`,
+                  metricDefs,
+                  metricConfig
+                )
+                lambdaWidgets.push(metricStatWidget)
+              }
+            }
+          } else {
+            for (const funcResName of eventSourceMappingFunctionResourceNames) {
+              const functionName = functionResources[funcResName].Properties.FunctionName
+              const functionConfig = functionDashboardConfigs[functionName] || {}
+              const functionMetricConfig = functionConfig[metric] || {}
+              if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
+                const stats = metricConfig.Statistic
+                const iteratorAgeWidget = createMetricWidget(
+                  `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
+                  stats.map(stat => ({
+                    namespace: 'AWS/Lambda',
+                    metric: 'IteratorAge',
+                    dimensions: {
+                      FunctionName: functionResources[funcResName].Properties.FunctionName
+                    },
+                    stat
+                  })),
+                  metricConfig
+                )
+                lambdaWidgets.push(iteratorAgeWidget)
+              }
+            }
           }
         }
       }
@@ -194,19 +220,21 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     for (const res of Object.values(apiResources)) {
       const apiName = res.Properties.Name // TODO: Allow for Ref usage in resource names
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
-        const metricStatWidget = createMetricWidget(
-          `${metric} API ${apiName}`,
-          Object.values(metricConfig.Statistic).map((stat) => ({
-            namespace: 'AWS/ApiGateway',
-            metric,
-            dimensions: {
-              ApiName: apiName
-            },
-            stat
-          })),
-          metricConfig
-        )
-        apiWidgets.push(metricStatWidget)
+        if (metricConfig.enabled) {
+          const metricStatWidget = createMetricWidget(
+            `${metric} API ${apiName}`,
+            Object.values(metricConfig.Statistic).map((stat) => ({
+              namespace: 'AWS/ApiGateway',
+              metric,
+              dimensions: {
+                ApiName: apiName
+              },
+              stat
+            })),
+            metricConfig
+          )
+          apiWidgets.push(metricStatWidget)
+        }
       }
     }
     return apiWidgets
@@ -224,23 +252,27 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
       const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names (see #14)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
-        for (const stat of metricConfig.Statistic) {
-          widgetMetrics.push({
-            namespace: 'AWS/States',
-            metric,
-            dimensions: {
-              StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:${smName}`
-            },
-            stat
-          })
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/States',
+              metric,
+              dimensions: {
+                StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:${smName}`
+              },
+              stat
+            })
+          }
         }
       }
-      const metricStatWidget = createMetricWidget(
-        `${smName} Step Function Executions`,
-        widgetMetrics,
-        sfDashConfig
-      )
-      smWidgets.push(metricStatWidget)
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `${smName} Step Function Executions`,
+          widgetMetrics,
+          sfDashConfig
+        )
+        smWidgets.push(metricStatWidget)
+      }
     }
     return smWidgets
   }
@@ -255,33 +287,35 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
     for (const res of Object.values(tableResources)) {
       const tableName = res.Properties.TableName
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
-        ddbWidgets.push(createMetricWidget(
-          `${metric} Table ${tableName}`,
-          Object.values(metricConfig.Statistic).map((stat) => ({
-            namespace: 'AWS/DynamoDB',
-            metric,
-            dimensions: {
-              TableName: tableName
-            },
-            stat
-          })),
-          metricConfig
-        ))
-        for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
-          const gsiName = gsi.IndexName
+        if (metricConfig.enabled) {
           ddbWidgets.push(createMetricWidget(
-            `${metric} GSI ${gsiName} in ${tableName}`,
+            `${metric} Table ${tableName}`,
             Object.values(metricConfig.Statistic).map((stat) => ({
               namespace: 'AWS/DynamoDB',
               metric,
               dimensions: {
-                TableName: tableName,
-                GlobalSecondaryIndex: gsiName
+                TableName: tableName
               },
               stat
             })),
             metricConfig
           ))
+          for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
+            const gsiName = gsi.IndexName
+            ddbWidgets.push(createMetricWidget(
+              `${metric} GSI ${gsiName} in ${tableName}`,
+              Object.values(metricConfig.Statistic).map((stat) => ({
+                namespace: 'AWS/DynamoDB',
+                metric,
+                dimensions: {
+                  TableName: tableName,
+                  GlobalSecondaryIndex: gsiName
+                },
+                stat
+              })),
+              metricConfig
+            ))
+          }
         }
       }
     }
@@ -309,20 +343,24 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
         const widgetMetrics = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/Kinesis',
-              metric,
-              dimensions: { StreamName: streamName },
-              stat
-            })
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/Kinesis',
+                metric,
+                dimensions: { StreamName: streamName },
+                stat
+              })
+            }
           }
         }
-        streamWidgets.push(createMetricWidget(
-          `${group} ${streamName} Kinesis`,
-          widgetMetrics,
-          kinesisDashConfig
-        ))
+        if (widgetMetrics.length > 0) {
+          streamWidgets.push(createMetricWidget(
+            `${group} ${streamName} Kinesis`,
+            widgetMetrics,
+            kinesisDashConfig
+          ))
+        }
       }
     }
     return streamWidgets
@@ -349,20 +387,24 @@ module.exports = function dashboard (serverless, dashboardConfig, context) {
         const widgetMetrics = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/SQS',
-              metric,
-              dimensions: { QueueName: queueName },
-              stat
-            })
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/SQS',
+                metric,
+                dimensions: { QueueName: queueName },
+                stat
+              })
+            }
           }
         }
-        queueWidgets.push(createMetricWidget(
-          `${group} ${queueName} SQS`,
-          widgetMetrics,
-          sqsDashConfig
-        ))
+        if (widgetMetrics.length > 0) {
+          queueWidgets.push(createMetricWidget(
+            `${group} ${queueName} SQS`,
+            widgetMetrics,
+            sqsDashConfig
+          ))
+        }
       }
     }
 

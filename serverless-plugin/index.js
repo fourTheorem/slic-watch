@@ -5,7 +5,7 @@ const Ajv = require('ajv')
 
 const alarms = require('./alarms')
 const dashboard = require('./dashboard')
-const { pluginConfigSchema, slicWatchSchema } = require('./config-schema')
+const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('./config-schema')
 const defaultConfig = require('./default-config')
 const CloudFormationTemplate = require('./cf-template')
 
@@ -23,6 +23,7 @@ class ServerlessPlugin {
 
     if (serverless.configSchemaHandler) {
       serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
+      serverless.configSchemaHandler.defineFunctionProperties('aws', functionConfigSchema)
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
@@ -58,12 +59,26 @@ class ServerlessPlugin {
 
     const config = _.merge(defaultConfig, slicWatchConfig)
 
-    this.dashboard = dashboard(this.serverless, config.dashboard, context)
-    this.alarms = alarms(this.serverless, config.alarms, context)
+    const awsProvider = this.serverless.getProvider('aws')
+
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate,
-      this.serverless.service.resources.Resources
+      this.serverless.service.resources ? this.serverless.service.resources.Resources : {}
     )
+
+    const functionAlarmConfigs = {}
+    const functionDashboardConfigs = {}
+    for (const funcName of this.serverless.service.getAllFunctions()) {
+      const func = this.serverless.service.getFunction(funcName)
+      const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
+      const functionName = cfTemplate.getResourceByName(functionResName).Properties.FunctionName
+      const funcConfig = func.slicWatch || {}
+      functionAlarmConfigs[functionName] = funcConfig.alarms || {}
+      functionDashboardConfigs[functionName] = funcConfig.dashboard
+    }
+
+    this.dashboard = dashboard(this.serverless, config.dashboard, functionDashboardConfigs, context)
+    this.alarms = alarms(this.serverless, config.alarms, functionAlarmConfigs, context)
     this.dashboard.addDashboard(cfTemplate)
     this.alarms.addAlarms(cfTemplate)
   }

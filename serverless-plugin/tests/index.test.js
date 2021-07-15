@@ -1,19 +1,29 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-const yaml = require('js-yaml')
-
+const _ = require('lodash')
 const proxyrequire = require('proxyquire')
 const { test } = require('tap')
 
-const slsYamlPath = path.resolve(
-  __dirname,
-  '../../serverless-test-project/serverless.yml'
-)
-const slsYaml = yaml.load(fs.readFileSync(slsYamlPath, 'utf8'))
+const slsYaml = {
+  custom: {
+    slicWatch: {
+      topicArn: 'test-topic'
+    }
+  },
+  functions: {
+    hello: {
+    }
+  }
+}
 const testCfTemplate = {
-  Resources: {}
+  Resources: {
+    HelloLambdaFunction: {
+      Type: 'AWS::Lambda::Function',
+      Properties: {
+        FunctionName: 'serverless-test-project-dev-hello'
+      }
+    }
+  }
 }
 
 const testState = {}
@@ -48,12 +58,21 @@ const mockServerless = {
       }
     }
   },
+  getProvider: () => ({
+    naming: {
+      getLambdaLogicalId: (funcName) => {
+        return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
+      }
+    }
+  }),
   service: {
     ...slsYaml,
     provider: {
       name: 'aws',
       compiledCloudFormationTemplate: testCfTemplate
-    }
+    },
+    getAllFunctions: () => Object.keys(slsYaml.functions),
+    getFunction: (funcRef) => slsYaml.functions[funcRef]
   }
 }
 
@@ -97,6 +116,9 @@ test('Plugin registers the configuration schema', (t) => {
     configSchemaHandler: {
       defineCustomProperties: (schema) => {
         testData.schema = schema
+      },
+      defineFunctionProperties: (provider, schema) => {
+        testData.functionSchema = schema
       }
     }
   })
@@ -120,11 +142,37 @@ test('Plugin execution fails with no slicWatch config', (t) => {
 })
 
 test('Plugin execution succeeds if no SNS Topic is provided', (t) => {
-  const serviceYmlWithoutTopic = { ...slsYaml, custom: { slicWatch: {} } }
+  const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
+  delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
   const plugin = new ServerlessPlugin(
     {
       ...mockServerless,
-      service: serviceYmlWithoutTopic
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithoutTopic
+      }
+    },
+    {}
+  )
+  plugin.finalizeHook()
+  t.end()
+})
+
+test('Plugin execution succeeds if resources are provided', (t) => {
+  const plugin = new ServerlessPlugin(
+    {
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        resources: {
+          Resources: {
+            queue: {
+              Type: 'AWS::SQS::Queue',
+              Properties: {}
+            }
+          }
+        }
+      }
     },
     {}
   )

@@ -1,9 +1,10 @@
 'use strict'
 
 /**
- * @param {object} lambdaAlarmConfig The fully resolved alarm configuration
+ * @param {object} functionAlarmConfigs The cascaded Lambda alarm configuration with
+ *                                      function-specific overrides by function name
  */
-module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
+module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
   return {
     createLambdaAlarms
   }
@@ -19,23 +20,23 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       'AWS::Lambda::Function'
     )
 
-    for (const [funcResourceName, funcResource] of Object.entries(
-      lambdaResources
-    )) {
-      if (lambdaAlarmConfig.Errors.enabled) {
+    for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
+      const functionName = funcResource.Properties.FunctionName
+      const funcConfig = functionAlarmConfigs[functionName]
+      if (funcConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.Errors
+          funcConfig.Errors
         )
         cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       }
 
-      if (lambdaAlarmConfig.ThrottlesPc.enabled) {
+      if (funcConfig.ThrottlesPc.enabled) {
         const throttlesAlarm = createLambdaThrottlesAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.ThrottlesPc
+          funcConfig.ThrottlesPc
         )
 
         cfTemplate.addResource(
@@ -44,24 +45,24 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
         )
       }
 
-      if (lambdaAlarmConfig.DurationPc.enabled) {
+      if (funcConfig.DurationPc.enabled) {
         const durationAlarm = createLambdaDurationAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.DurationPc
+          funcConfig.DurationPc
         )
         cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
       }
 
-      if (lambdaAlarmConfig.Invocations.enabled) {
-        if (lambdaAlarmConfig.Invocations.Threshold == null) {
+      if (funcConfig.Invocations.enabled) {
+        if (funcConfig.Invocations.Threshold == null) {
           throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
         }
 
         const invocationsAlarm = createLambdaInvocationsAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.Invocations
+          funcConfig.Invocations
         )
         cfTemplate.addResource(
           invocationsAlarm.resourceName,
@@ -70,15 +71,16 @@ module.exports = function LambdaAlarms (lambdaAlarmConfig, context) {
       }
     }
 
-    if (lambdaAlarmConfig.IteratorAge.enabled) {
-      for (const [funcResourceName, funcResource] of Object.entries(
-        cfTemplate.getEventSourceMappingFunctions()
-      )) {
-      // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
+    for (const [funcResourceName, funcResource] of Object.entries(
+      cfTemplate.getEventSourceMappingFunctions()
+    )) {
+      const funcConfig = functionAlarmConfigs[funcResource.Properties.FunctionName]
+      if (funcConfig.IteratorAge.enabled) {
+        // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(
           funcResourceName,
           funcResource,
-          lambdaAlarmConfig.IteratorAge
+          funcConfig.IteratorAge
         )
         cfTemplate.addResource(
           iteratorAgeAlarm.resourceName,

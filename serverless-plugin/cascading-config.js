@@ -11,7 +11,7 @@ module.exports = {
  * with default parameters from parent nodes cascaded to child objects where no override is present.
  *
  * @param {object} node hierarchical configuration
- * @param {object} parentConfig The configuration key-values from the parent node to be applied to the current node where no conflict occurs
+ * @param {object} parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
 function cascade (node, parentNode = {}, depth = 0) {
   if (depth > 10) {
