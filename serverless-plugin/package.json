@@ -13,7 +13,6 @@
     "prepublish": "cp ../README.md README.md"
   },
   "devDependencies": {
-    "js-yaml": "^4.0.0",
     "proxyquire": "^2.1.3",
     "serverless": "^2.41.2",
     "tap": "^15.0.9"
@@ -26,8 +25,10 @@
   },
   "license": "Apache",
   "dependencies": {
+    "ajv": "^6.12.6",
     "case": "^1.6.3",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "yaml": "^1.10.2"
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae"
 }
