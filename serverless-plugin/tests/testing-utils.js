@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 const _ = require('lodash')
-const yaml = require('js-yaml')
+const YAML = require('yaml')
 
 const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
@@ -13,7 +13,7 @@ const slsYamlPath = path.resolve(
   __dirname,
   '../../serverless-test-project/serverless.yml'
 )
-const slsYaml = yaml.load(fs.readFileSync(slsYamlPath, 'utf8'))
+const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = {
   alarmActions: ['dummy-arn'],
