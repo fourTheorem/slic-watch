@@ -36,7 +36,7 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   finalizeHook () {
-    const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch
+    const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
 
     const ajv = new Ajv()
     const slicWatchValidate = ajv.compile(slicWatchSchema)
