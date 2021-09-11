@@ -96,7 +96,7 @@ test('finalizeHook adds dashboard and alarms', (t) => {
   t.end()
 })
 
-test('Plugin fails to run load with no custom section', (t) => {
+test('Plugin succeeds with no custom section', (t) => {
   const plugin = new ServerlessPlugin({
     ...mockServerless,
     service: {
@@ -104,7 +104,7 @@ test('Plugin fails to run load with no custom section', (t) => {
       custom: undefined
     }
   })
-  t.throws(() => plugin.finalizeHook())
+  plugin.finalizeHook()
   t.end()
 })
 
@@ -126,7 +126,7 @@ test('Plugin registers the configuration schema', (t) => {
   t.end()
 })
 
-test('Plugin execution fails with no slicWatch config', (t) => {
+test('Plugin execution succeeds with no slicWatch config', (t) => {
   const plugin = new ServerlessPlugin({
     ...mockServerless,
     service: {
@@ -134,10 +134,7 @@ test('Plugin execution fails with no slicWatch config', (t) => {
       custom: {}
     }
   })
-  t.throws(
-    () =>
-      plugin.finalizeHook()
-  )
+  plugin.finalizeHook()
   t.end()
 })
 
