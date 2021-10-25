@@ -373,7 +373,8 @@ Check out the AWS [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing
 
 1. [serverless-plugin-aws-alerts](https://www.npmjs.com/package/serverless-plugin-aws-alerts)
 2. [Real World Serverless Application - Serverless Operations](https://github.com/awslabs/realworld-serverless-application/wiki/Serverless-Operations)
-3. [CDK Patterns - The CloudWatch Dashboard](https://github.com/cdk-patterns/serverless/blob/main/the-cloudwatch-dashboard/README.md)
+3. [CDK Watchful](cdklabs/cdk-watchful)
+4. [CDK Patterns - The CloudWatch Dashboard](https://github.com/cdk-patterns/serverless/blob/main/the-cloudwatch-dashboard/README.md)
 
 ### Reading
 
