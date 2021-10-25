@@ -3,5 +3,5 @@
     "serverless-plugin",
     "serverless-test-project"
   ],
-  "version": "1.0.3"
+  "version": "1.0.4-rc1"
 }
