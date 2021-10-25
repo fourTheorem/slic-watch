@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const proxyrequire = require('proxyquire')
+const ServerlessError = require('serverless/lib/serverless-error')
 const { test } = require('tap')
 
 const slsYaml = {
@@ -174,5 +175,22 @@ test('Plugin execution succeeds if resources are provided', (t) => {
     {}
   )
   plugin.finalizeHook()
+  t.end()
+})
+
+test('Plugin execution fails if an invalid SLIC Watch is provided', (t) => {
+  const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
+  serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
+  const plugin = new ServerlessPlugin(
+    {
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithBadProperty
+      }
+    },
+    {}
+  )
+  t.throws(() => plugin.finalizeHook(), ServerlessError)
   t.end()
 })

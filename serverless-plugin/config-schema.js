@@ -173,7 +173,8 @@ const slicWatchSchema = {
     dashboard: dashboardSchema,
     topicArn: { type: 'string' }
   },
-  required: []
+  required: [],
+  additionalProperties: false
 }
 
 /**
