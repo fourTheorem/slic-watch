@@ -10,7 +10,8 @@ const {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testContext,
+  slsMock
 } = require('./testing-utils')
 const { applyAlarmConfig } = require('../function-config')
 
@@ -384,6 +385,26 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
       'serverless-test-project-dev-simpletest': { Lambda: { enabled: false } }
     })
   const { createLambdaAlarms } = lambdaAlarms(disabledFuncAlarmConfigs, testContext)
+  createLambdaAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  t.equal(Object.keys(alarmResources).length, 0)
+  t.end()
+})
+
+test('AWS Lambda alarms are not created if function configuration is not provided (e.g. Custom Resource injected functions)', (t) => {
+  const cfTemplate = createTestCloudFormationTemplate({
+    Resources: {
+      HelloLambdaFunction: {
+        Type: 'AWS::Lambda::Function',
+        Properties: {
+          FunctionName: 'serverless-test-project-dev-simpletest'
+        }
+      }
+    }
+  })
+  const funcAlarmConfigs = {} // No function configuration as in the case where functions are not defined in serverless.yml:functions
+  const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext, slsMock)
   createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
