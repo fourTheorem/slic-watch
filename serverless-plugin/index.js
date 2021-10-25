@@ -47,6 +47,10 @@ class ServerlessPlugin {
 
     const alarmActions = []
 
+    if (slicWatchConfig.enabled === false) {
+      return
+    }
+
     if (slicWatchConfig.topicArn) {
       alarmActions.push(slicWatchConfig.topicArn)
     }
