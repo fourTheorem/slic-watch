@@ -3,8 +3,10 @@
 /**
  * @param {object} functionAlarmConfigs The cascaded Lambda alarm configuration with
  *                                      function-specific overrides by function name
+ * @param {object} context Deployment context (region, stackName, alarmActions)
+ * @param {object} serverless The Serverless Framework instance
  */
-module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
+module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverless) {
   return {
     createLambdaAlarms
   }
@@ -23,6 +25,12 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
       const functionName = funcResource.Properties.FunctionName
       const funcConfig = functionAlarmConfigs[functionName]
+      if (!funcConfig) {
+        // Function is likely injected by another plugin and not a top-level user function
+        serverless.cli.log(`${functionName} is not defined in Serverless 'functions'. Alarms will not be created.`)
+        return
+      }
+
       if (funcConfig.Errors.enabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcResourceName,

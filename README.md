@@ -152,7 +152,7 @@ You can customize the configuration:
 Top-level plugin configuration can be specified in the `custom` → `slicWatch` section of `serverless.yml`
 
 - The `topic` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
-- Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`
+- Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
 Supported options along with their defaults are shown below.
 
@@ -162,6 +162,7 @@ Supported options along with their defaults are shown below.
 custom:
   slicWatch:
     topic: SNS_TOPIC_ARN  # This is optional but recommended so you can receive alarms via email, Slack, etc.
+    enabled: true
 
     alarms:
       enabled: true

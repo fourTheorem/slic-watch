@@ -21,12 +21,12 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
-  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
-  const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
-  const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context)
-  const { createSQSAlarms } = sqsAlarms(sqsConfig, context)
+  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context, serverless)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context, serverless)
+  const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context, serverless)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context, serverless)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context, serverless)
+  const { createSQSAlarms } = sqsAlarms(sqsConfig, context, serverless)
 
   return {
     addAlarms
