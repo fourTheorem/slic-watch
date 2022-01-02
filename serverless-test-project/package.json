@@ -10,7 +10,7 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "ajv": "^6.12.6",
+    "ajv": "^8.8.2",
     "serverless": "^2.38.0",
     "serverless-slic-watch-plugin": "^1.0.4",
     "serverless-step-functions": "^2.30.0"
