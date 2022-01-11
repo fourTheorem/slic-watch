@@ -12,7 +12,9 @@ test('Default config conforms to the config schema', (t) => {
     topicArn: 'dummy-topic-arn'
   }
 
-  const ajv = new Ajv()
+  const ajv = new Ajv({
+    unicodeRegExp: false
+  })
   const slicWatchValidate = ajv.compile(slicWatchSchema)
   const slicWatchValid = slicWatchValidate(slicWatchConfig)
   t.ok(slicWatchValid, slicWatchValidate.errors)
@@ -30,7 +32,9 @@ test('Default config conforms to the config schema without topicArn', (t) => {
     ...defaultConfig
   }
 
-  const ajv = new Ajv()
+  const ajv = new Ajv({
+    unicodeRegExp: false
+  })
   const slicWatchValidate = ajv.compile(slicWatchSchema)
   const slicWatchValid = slicWatchValidate(slicWatchConfig)
   t.ok(slicWatchValid, slicWatchValidate.errors)

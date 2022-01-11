@@ -38,7 +38,9 @@ class ServerlessPlugin {
   finalizeHook () {
     const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
 
-    const ajv = new Ajv()
+    const ajv = new Ajv({
+      unicodeRegExp: false
+    })
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
