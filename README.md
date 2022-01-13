@@ -197,13 +197,15 @@ custom:
           ExtendedStatistic: p99
           Threshold: 5000
       States: # Step Functions
-        Statistic: Sum
         ExecutionsThrottled:
           Threshold: 0
+          Statistic: Sum
         ExecutionsFailed:
           Threshold: 0
+          Statistic: Sum
         ExecutionsTimedOut:
           Threshold: 0
+          Statistic: Sum
       DynamoDB:
         # Consumed read/write capacity units are not alarmed. These should either
         # be part of an auto-scaling configuration for provisioned mode or should be automatically
