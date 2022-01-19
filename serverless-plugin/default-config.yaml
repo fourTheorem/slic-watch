@@ -32,14 +32,12 @@ alarms:
       ExtendedStatistic: p99
       Threshold: 5000
   States: # Step Functions
+    Statistic: Sum
     ExecutionThrottled:
-      Statistic: Sum
       Threshold: 0
     ExecutionsFailed:
-      Statistic: Sum
       Threshold: 0
     ExecutionsTimedOut:
-      Statistic: Sum
       Threshold: 0
   DynamoDB:
     # Consumed read/write capacity units are not alarmed. These should either
@@ -48,17 +46,14 @@ alarms:
     # to alert failures in these scenarios.
     # Throttles can occur in normal operation and are handled with retries. Threshold should
     # therefore be configured to provide meaningful alarms based on higher than average throttling.
+    Statistic: Sum
     ReadThrottleEvents:
-      Statistic: Sum
       Threshold: 10
     WriteThrottleEvents:
-      Statistic: Sum
       Threshold: 10
     UserErrors:
-      Statistic: Sum
       Threshold: 0
     SystemErrors:
-      Statistic: Sum
       Threshold: 0
   Kinesis:
     GetRecords.IteratorAgeMilliseconds:
