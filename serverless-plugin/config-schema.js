@@ -71,6 +71,7 @@ const commonAlarmProperties = {
 const alarmSchemas = {}
 for (const service of Object.keys(supportedAlarms)) {
   alarmSchemas[service] = {
+    type: 'object',
     properties: {
       ...commonAlarmProperties
     },
@@ -78,6 +79,7 @@ for (const service of Object.keys(supportedAlarms)) {
   }
   for (const metricAlarm of supportedAlarms[service]) {
     alarmSchemas[service].properties[metricAlarm] = {
+      type: 'object',
       properties: {
         ...commonAlarmProperties
       },
@@ -117,6 +119,7 @@ const commonWidgetProperties = {
 const widgetSchemas = {}
 for (const service of Object.keys(supportedWidgets)) {
   widgetSchemas[service] = {
+    type: 'object',
     properties: {
       ...commonWidgetProperties
     },
@@ -124,6 +127,7 @@ for (const service of Object.keys(supportedWidgets)) {
   }
   for (const metricWidget of supportedWidgets[service]) {
     widgetSchemas[service].properties[metricWidget] = {
+      type: 'object',
       properties: {
         ...commonWidgetProperties
       },
@@ -154,6 +158,7 @@ const dashboardSchema = {
       }]
     },
     widgets: {
+      type: 'object',
       properties: {
         ...commonWidgetProperties,
         ...widgetSchemas
