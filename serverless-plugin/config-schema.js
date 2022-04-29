@@ -206,14 +206,23 @@ const functionConfigSchema = {
   type: 'object',
   properties: {
     slicWatch: {
-      enabled: { type: 'boolean' },
-      alarms: {
+      type: 'object',
+      properties: {
         enabled: { type: 'boolean' },
-        Lambda: alarmSchemas.Lambda
-      },
-      dashboard: {
-        enabled: { type: 'boolean' },
-        Lambda: widgetSchemas.Lambda
+        alarms: {
+          type: 'object',
+          properties: {
+            enabled: { type: 'boolean' },
+            Lambda: alarmSchemas.Lambda
+          }
+        },
+        dashboard: {
+          type: 'object',
+          properties: {
+            enabled: { type: 'boolean' },
+            Lambda: widgetSchemas.Lambda
+          }
+        }
       }
     }
   }
