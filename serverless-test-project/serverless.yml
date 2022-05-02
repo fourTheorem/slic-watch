@@ -24,7 +24,6 @@ custom:
           Statistic: Maximum
           Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
 
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -107,10 +106,6 @@ resources:
           - AttributeName: gsi1pk
             AttributeType: S
           - AttributeName: gsi1sk
-            AttributeType: S
-          - AttributeName: field1
-            AttributeType: S
-          - AttributeName: field2
             AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
