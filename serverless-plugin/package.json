@@ -26,7 +26,6 @@
   "license": "Apache",
   "dependencies": {
     "ajv": "^8.9.0",
-    "ajv-formats": "^2.1.1",
     "case": "^1.6.3",
     "lodash": "^4.17.21",
     "yaml": "^1.10.2"
