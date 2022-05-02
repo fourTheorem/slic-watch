@@ -2,15 +2,18 @@
 
 This is a sample Serverless V3 project that showcases how you can configure and deploy a Serverless project using SLIC Watch.
 
+
 ## Requirements
 
 Install all the necessary requirements with:
 
 ```bash
-npm i
+npm i                # install project dependencies
+npm i -g serverless  # installs serverless framework globally
 ```
 
 Make sure to have the AWS CLI installed and configured.
+
 
 ## Deployment
 
@@ -39,3 +42,14 @@ functions:
   streamProcessor: serverless-test-project-dev-streamProcessor (305 kB)
   httpGetter: serverless-test-project-dev-httpGetter (305 kB)
 ```
+
+
+## Clean up
+
+To destroy the deployed service you can run:
+
+```bash
+ALARM_TOPIC=<your_sns_topic_arn> sls destroy
+```
+
+Remember to also delete your SNS topic.
