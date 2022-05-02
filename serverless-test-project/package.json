@@ -8,12 +8,12 @@
     "url": "https://github.com/fourTheorem/slic-watch.git",
     "directory": "serverless-test-project"
   },
-  "license": "ISC",
+  "license": "Apache",
   "devDependencies": {
-    "ajv": "^8.9.0",
-    "serverless": "^2.38.0",
+    "ajv": "^8.11.0",
+    "serverless": "^3",
     "serverless-slic-watch-plugin": "^1.0.7",
-    "serverless-step-functions": "^2.30.0"
+    "serverless-step-functions": "^3.7.0"
   },
   "scripts": {
     "test": "ALARM_TOPIC=test sls package"

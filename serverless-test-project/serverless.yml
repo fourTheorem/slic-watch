@@ -1,5 +1,5 @@
 service: serverless-test-project
-frameworkVersion: "2"
+frameworkVersion: "3"
 configValidationMode: error
 variablesResolutionMode: 20210219
 
