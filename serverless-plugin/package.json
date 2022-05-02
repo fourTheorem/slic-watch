@@ -18,7 +18,7 @@
     "tap": "^15.0.9"
   },
   "peerDependencies": {
-    "serverless": "^2.60 || ^3"
+    "serverless": "^2.60 || ^3.16.0"
   },
   "engines": {
     "node": ">=10.0"
