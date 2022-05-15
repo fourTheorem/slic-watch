@@ -1,6 +1,6 @@
 {
   "name": "serverless-slic-watch-plugin",
-  "version": "1.0.7",
+  "version": "1.1.0-rc1",
   "description": "Serverless plugin for automatic alarms and dashboards",
   "main": "index.js",
   "repository": {
@@ -18,7 +18,7 @@
     "tap": "^15.0.9"
   },
   "peerDependencies": {
-    "serverless": "^3.16.0"
+    "serverless": "^2.60 || ^3.16.0"
   },
   "engines": {
     "node": ">=10.0"

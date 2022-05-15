@@ -1,5 +1,5 @@
 service: serverless-test-project
-frameworkVersion: "3"
+frameworkVersion: "2"
 configValidationMode: error
 variablesResolutionMode: 20210219
 
@@ -23,6 +23,7 @@ custom:
         InFlightMessagesPc:
           Statistic: Maximum
           Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+
 
 provider:
   name: aws
@@ -107,6 +108,10 @@ resources:
             AttributeType: S
           - AttributeName: gsi1sk
             AttributeType: S
+          - AttributeName: field1
+            AttributeType: S
+          - AttributeName: field2
+            AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
         KeySchema:
@@ -182,3 +187,4 @@ stepFunctions:
         includeExecutionData: true
         destinations:
           - Fn::GetAtt: [expressWorkflowLogGroup, Arn]
+

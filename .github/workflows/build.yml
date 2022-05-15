@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12, 14, 16]
+        node-version: [12, 14, 16, 18]
 
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +35,11 @@ jobs:
           parallel: true
           path-to-lcov: serverless-plugin/coverage/lcov.info
           base-path: serverless-plugin
-
+      - name: Package test project with Serverless v2
+        working-directory: ./serverless-test-project
+        run: |
+          npm i serverless@2
+          npm run test:v2
   finish:
     needs: build
     runs-on: ubuntu-latest
