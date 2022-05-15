@@ -16,7 +16,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  5. SQS Queues
  6. Step Functions
 
-Currently, SLIC Watch is available as a Serverless Framework plugin.
+Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
 ## Getting Started
 
