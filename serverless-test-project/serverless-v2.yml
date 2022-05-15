@@ -1,0 +1,190 @@
+service: serverless-test-project
+frameworkVersion: "2"
+configValidationMode: error
+variablesResolutionMode: 20210219
+
+plugins:
+  - serverless-step-functions
+  - serverless-slic-watch-plugin
+
+custom:
+  slicWatch:
+    topicArn: ${env:ALARM_TOPIC}
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-1
+  endpointType: REGIONAL
+
+functions:
+  hello:
+    handler: basic-handler.hello
+    slicWatch:
+      alarms:
+        Lambda:
+          Invocations:
+            Threshold: 2
+
+  ping:
+    handler: basic-handler.hello
+    slicWatch:
+      dashboard:
+        enabled: false
+
+  throttler:
+    handler: basic-handler.hello
+    reservedConcurrency: 0
+
+  driveStream:
+    handler: stream-test-handler.handleDrive
+    environment:
+      STREAM_NAME: { "Ref": stream }
+
+  driveQueue:
+    handler: queue-test-handler.handleDrive
+
+  driveTable:
+    handler: table-test-hander.handleDrive
+
+  streamProcessor:
+    handler: stream-handler.handle
+    events:
+      - stream:
+          type: kinesis
+          arn: { "Fn::GetAtt": [stream, Arn] }
+          startingPosition: LATEST
+          maximumRetryAttempts: 0
+
+  httpGetter:
+    handler: apigw-handler.handleGet
+    timeout: 30
+    events:
+      - http:
+          method: get
+          path: "item"
+resources:
+  Resources:
+    stream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: awesome-savage-stream
+        ShardCount: 1
+
+    bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: awesome-savage-bucket
+
+    dataTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        TableName: MyTable
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+          - AttributeName: gsi1pk
+            AttributeType: S
+          - AttributeName: gsi1sk
+            AttributeType: S
+          - AttributeName: field1
+            AttributeType: S
+          - AttributeName: field2
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+            KeySchema:
+              - AttributeName: gsi1pk
+                KeyType: HASH
+              - AttributeName: gsi1sk
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - address
+              ProjectionType: INCLUDE
+        LocalSecondaryIndexes:
+          - IndexName: LSI1
+            KeySchema:
+              - AttributeName: pk
+                KeyType: HASH
+              - AttributeName: timestamp
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - name
+              ProjectionType: INCLUDE
+
+    regularQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "SomeRegularQueue"
+
+    fifoQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "SomeFifoQueue.fifo"
+        FifoQueue: true
+
+    workflowLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: WorkflowLogs
+        RetentionInDays: 1
+
+    expressWorkflowLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: ExpressWorkflowLogs
+        RetentionInDays: 1
+
+stepFunctions:
+  stateMachines:
+    workflow:
+      name: Workflow
+      definition: ${file(./state-machine.yml)}
+      loggingConfig:
+        level: ALL
+        includeExecutionData: true
+        destinations:
+          - Fn::GetAtt: [workflowLogGroup, Arn]
+    expressWorkflow:
+      name: ExpressWorkflow
+      type: EXPRESS
+      definition: ${file(./state-machine.yml)}
+      loggingConfig:
+        level: ALL
+        includeExecutionData: true
+        destinations:
+          - Fn::GetAtt: [expressWorkflowLogGroup, Arn]
+
