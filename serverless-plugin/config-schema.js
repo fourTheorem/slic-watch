@@ -17,7 +17,8 @@ const supportedAlarms = {
   States: ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors'],
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
-  SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc']
+  SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc'],
+  ECS: ['MemoryUtilization', 'CPUUtilization']
 }
 
 const supportedWidgets = {
@@ -25,7 +26,8 @@ const supportedWidgets = {
   ApiGateway: ['5XXError', '4XXError', 'Latency', 'Count'],
   States: ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents'],
-  Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success']
+  Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
+  ECS: ['MemoryUtilization', 'CPUUtilization']
 }
 
 const commonAlarmProperties = {

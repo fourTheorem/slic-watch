@@ -43,13 +43,16 @@ test('Step Function alarms are created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 3)
-  for (const alarmResource of Object.values(alarmResources)) {
-    const al = alarmResource.Properties
-    assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
-    alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-    alarmsByType[alarmType].add(al)
+  t.equal(Object.keys(alarmResources).length, 6)
+  for (const [resourceName, alarmResource] of Object.entries(alarmResources)) {
+    // Just test the standard workflow alarms
+    if (!resourceName.endsWith('ExpressWorkflow')) {
+      const al = alarmResource.Properties
+      assertCommonAlarmProperties(t, al)
+      const alarmType = alarmNameToType(al.AlarmName)
+      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType].add(al)
+    }
   }
 
   const executionMetrics = [

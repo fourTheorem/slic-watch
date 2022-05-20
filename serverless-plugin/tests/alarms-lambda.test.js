@@ -51,7 +51,7 @@ test('AWS Lambda alarms are created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 16)
+  t.equal(Object.keys(alarmResources).length, 25)
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
@@ -169,7 +169,7 @@ test('Invocation alarms are created if configured', (t) => {
       typeof res.Properties.AlarmName === 'string' &&
       res.Properties.AlarmName.startsWith('LambdaInvocations')
   )
-  t.equal(Object.keys(invocAlarmResources).length, 5)
+  t.equal(Object.keys(invocAlarmResources).length, 8)
   for (const res of Object.values(invocAlarmResources)) {
     const al = res.Properties
     t.equal(al.MetricName, 'Invocations')

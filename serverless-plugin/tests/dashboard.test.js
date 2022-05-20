@@ -103,7 +103,7 @@ test('A dashboard includes metrics', (t) => {
     const widgets = dashBody.widgets.filter((widget) =>
       widget.properties.title.endsWith('Step Function Executions')
     )
-    t.equal(widgets.length, 1)
+    t.equal(widgets.length, 2)
     const namespaces = new Set()
     for (const widget of widgets) {
       for (const metric of widget.properties.metrics) {
@@ -111,7 +111,7 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/States']))
-    const expectedTitles = new Set(['Workflow Step Function Executions'])
+    const expectedTitles = new Set(['Workflow Step Function Executions', 'ExpressWorkflow Step Function Executions'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
@@ -199,6 +199,29 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
+  t.test('dashboard includes ECS metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('ECS')
+    )
+    t.equal(widgets.length, 1)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/ECS']))
+    const expectedTitles = new Set([
+      'ECS Service awesome-service'
+    ])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
   t.end()
 })
 
@@ -233,7 +256,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 })
 
 test('No dashboard is created if all widgets are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     dashConfig.widgets[service].enabled = false
@@ -247,7 +270,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 })
 
 test('No dashboard is created if all metrics are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
@@ -261,6 +284,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   t.same(dashResources, {})
   t.end()
 })
+
 test('A widget is not created for Lambda if disabled at a function level', (t) => {
   const disabledFunctionName = 'serverless-test-project-dev-hello'
   for (const metric of lambdaMetrics) {

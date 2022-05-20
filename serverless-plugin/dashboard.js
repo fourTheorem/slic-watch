@@ -1,6 +1,7 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
+const { resolveEcsClusterNameForSub } = require('./util')
 
 const MAX_WIDTH = 24
 
@@ -19,7 +20,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       States: sfDashConfig,
       DynamoDB: dynamoDbDashConfig,
       Kinesis: kinesisDashConfig,
-      SQS: sqsDashConfig
+      SQS: sqsDashConfig,
+      ECS: ecsDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -52,6 +54,9 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     const queueResources = cfTemplate.getResourcesByType(
       'AWS::SQS::Queue'
     )
+    const ecsServiceResources = cfTemplate.getResourcesByType(
+      'AWS::ECS::Service'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -63,6 +68,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     )
     const streamWidgets = createStreamWidgets(streamResources)
     const queueWidgets = createQueueWidgets(queueResources)
+    const ecsWidgets = createEcsWidgets(ecsServiceResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -70,8 +76,10 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       ...dynamoDbWidgets,
       ...lambdaWidgets,
       ...streamWidgets,
-      ...queueWidgets
+      ...queueWidgets,
+      ...ecsWidgets
     ])
+
     if (positionedWidgets.length > 0) {
       const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
       const dashboardResource = {
@@ -409,6 +417,45 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     }
 
     return queueWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for ECS services.
+   *
+   * @param {object} ecsServiceResources Object of ECS Service resources by resource name
+   */
+  function createEcsWidgets (ecsServiceResources) {
+    const ecsWidgets = []
+    for (const res of Object.values(ecsServiceResources)) {
+      const serviceName = res.Properties.ServiceName
+      const clusterName = resolveEcsClusterNameForSub(res.Properties.Cluster)
+
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/ECS',
+              metric,
+              dimensions: {
+                ServiceName: serviceName,
+                ClusterName: clusterName
+              },
+              stat
+            })
+          }
+        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `ECS Service ${serviceName}`,
+          widgetMetrics,
+          ecsDashConfig
+        )
+        ecsWidgets.push(metricStatWidget)
+      }
+    }
+    return ecsWidgets
   }
 
   /**
