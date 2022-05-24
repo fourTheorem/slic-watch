@@ -1,6 +1,6 @@
 'use strict'
 
-const { makeResourceName } = require('./util')
+const { makeResourceName, getStatisticName } = require('./util')
 
 const kinesisAlarmTypes = {
   StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
@@ -64,7 +64,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
         AlarmName: `${type}_${streamName}`,
-        AlarmDescription: `Kinesis ${config.Statistic} ${metric} for ${streamName} breaches ${threshold} milliseconds`,
+        AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamName} breaches ${threshold} milliseconds`,
         EvaluationPeriods: config.EvaluationPeriods,
         ComparisonOperator: config.ComparisonOperator,
         Threshold: config.Threshold,

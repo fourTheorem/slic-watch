@@ -1,6 +1,6 @@
 'use strict'
 
-const { makeResourceName } = require('./util')
+const { makeResourceName, getStatisticName } = require('./util')
 
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
@@ -99,7 +99,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createApiAlarm(
         `ApiAvailability_${apiName}`,
-        `API 5XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
+        `API 5XXError ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -120,7 +120,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
       resource: createApiAlarm(
         `Api4XXError_${apiName}`,
-        `API 4XXError ${config.Statistic} for ${apiName} breaches ${threshold}`,
+        `API 4XXError ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -141,7 +141,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
       resourceName: makeResourceName('Api', apiName, 'Latency'),
       resource: createApiAlarm(
         `ApiLatency_${apiName}`,
-        `API Latency ${config.Statistic} for ${apiName} breaches ${threshold}`,
+        `API Latency ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
         apiName,
         config.ComparisonOperator,
         threshold,
