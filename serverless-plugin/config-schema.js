@@ -27,6 +27,7 @@ const supportedWidgets = {
   States: ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents'],
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
+  SQS: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted', 'ApproximateAgeOfOldestMessage', 'ApproximateNumberOfMessagesVisible'],
   ECS: ['MemoryUtilization', 'CPUUtilization']
 }
 
