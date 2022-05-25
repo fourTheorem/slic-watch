@@ -148,7 +148,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaIteratorAge_${funcName}`,
-        `Iterator Age for ${funcName} exceeds ${threshold}`,
+        `Iterator Age for ${funcName} breaches ${threshold}`,
         funcName,
         config.ComparisonOperator,
         threshold,
@@ -169,7 +169,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       resourceName: `slicWatchLambdaErrorsAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaErrors_${funcName}`,
-        `Error count for ${funcName} exceeds ${threshold}`,
+        `Error count for ${funcName} breaches ${threshold}`,
         funcName,
         config.ComparisonOperator,
         threshold,
@@ -227,7 +227,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       resourceName: `slicWatchLambdaThrottlesAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaThrottles_${funcName}`, // alarmName
-        `Throttles % for ${funcName} exceeds ${threshold}`, // alarmDescription
+        `Throttles % for ${funcName} breaches ${threshold}`, // alarmDescription
         funcName, // funcName
         config.ComparisonOperator, // comparisonOperator
         threshold, // threshold
@@ -250,7 +250,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       resourceName: `slicWatchLambdaDurationAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaDuration_${funcName}`,
-        `Max duration for ${funcName} exceeds ${threshold}% of timeout (${funcTimeout})`,
+        `Max duration for ${funcName} breaches ${threshold}% of timeout (${funcTimeout})`,
         funcName,
         config.ComparisonOperator,
         (threshold * funcTimeout * 1000) / 100,
@@ -275,7 +275,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       resourceName: `slicWatchLambdaInvocationsAlarm${funcResourceName}`,
       resource: createLambdaAlarm(
         `LambdaInvocations_${funcName}`,
-        `Total invocations for ${funcName} exceeds ${threshold}`,
+        `Total invocations for ${funcName} breaches ${threshold}`,
         funcName,
         config.ComparisonOperator,
         threshold,

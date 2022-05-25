@@ -15,6 +15,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  4. Kinesis Data Streams
  5. SQS Queues
  6. Step Functions
+ 7. ECS (Fargate or EC2)
 
 Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
@@ -138,6 +139,12 @@ The dashboard contains one widget per Step Function:
 |--|
 |![Step Function widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/stepFunctions.png)
 
+### ECS / Fargate
+
+ECS alarms are created for Fargate or EC2 clusters:
+1. Memory Utilization
+2. CPU Utilization
+
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.
@@ -252,6 +259,13 @@ custom:
           InFlightMessagesPc:
             Statistic: Maximum
             Threshold: 80 # 80% of 120.000 for regular queues or 80% of 20000 for FIFO queues
+        ECS:
+          MemoryUtilization:
+            Statistic: Average
+            Threshold: 90
+          CPUUtilization:
+            Statistic: Average
+            Threshold: 90
 
     dashboard:
       enabled: true
@@ -327,6 +341,11 @@ custom:
             Statistic: ["Maximum"]
           ApproximateNumberOfMessagesVisible:
             Statistic: ["Maximum"]
+        ECS:
+          MemoryUtilization:
+            Statistic: ["Average"]
+          CPUUtilization:
+            Statistic: ["Average"]
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)

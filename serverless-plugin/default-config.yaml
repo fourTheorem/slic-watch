@@ -87,6 +87,13 @@ alarms:
     InFlightMessagesPc:
       Statistic: Maximum
       Threshold: 80 # 80% of 120000 for regular queues or 80% of 18000 for FIFO queues
+  ECS:
+    MemoryUtilization:
+      Statistic: Average
+      Threshold: 90
+    CPUUtilization:
+      Statistic: Average
+      Threshold: 90
 
 dashboard:
   enabled: true
@@ -161,3 +168,8 @@ dashboard:
         Statistic: ["Maximum"]
       ApproximateNumberOfMessagesVisible:
         Statistic: ["Maximum"]
+    ECS:
+      MemoryUtilization:
+        Statistic: ["Average"]
+      CPUUtilization:
+        Statistic: ["Average"]

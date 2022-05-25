@@ -9,6 +9,7 @@ const stepFunctionAlarms = require('./alarms-step-functions')
 const dynamoDbAlarms = require('./alarms-dynamodb')
 const kinesisAlarms = require('./alarms-kinesis')
 const sqsAlarms = require('./alarms-sqs')
+const ecsAlarms = require('./alarms-ecs')
 
 module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs, context) {
   const {
@@ -17,7 +18,8 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
     DynamoDB: dynamoDbConfig,
     Kinesis: kinesisConfig,
     SQS: sqsConfig,
-    Lambda: lambdaConfig
+    Lambda: lambdaConfig,
+    ECS: ecsConfig
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
@@ -27,6 +29,7 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context, serverless)
   const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context, serverless)
   const { createSQSAlarms } = sqsAlarms(sqsConfig, context, serverless)
+  const { createECSAlarms } = ecsAlarms(ecsConfig, context, serverless)
 
   return {
     addAlarms
@@ -46,6 +49,7 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
       dynamoDbConfig.enabled && createDynamoDbAlarms(cfTemplate)
       kinesisConfig.enabled && createKinesisAlarms(cfTemplate)
       sqsConfig.enabled && createSQSAlarms(cfTemplate)
+      ecsConfig.enabled && createECSAlarms(cfTemplate)
     }
   }
 }

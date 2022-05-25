@@ -89,6 +89,24 @@
         "LogGroupName": "/aws/lambda/serverless-test-project-dev-throttler"
       }
     },
+    "DriveStreamLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-test-project-dev-driveStream"
+      }
+    },
+    "DriveQueueLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-test-project-dev-driveQueue"
+      }
+    },
+    "DriveTableLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-test-project-dev-driveTable"
+      }
+    },
     "StreamProcessorLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -202,7 +220,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1621600111664-2021-05-21T12:28:31.664Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -227,7 +245,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1621600111664-2021-05-21T12:28:31.664Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -252,7 +270,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1621600111664-2021-05-21T12:28:31.664Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs12.x",
@@ -271,6 +289,88 @@
         "ThrottlerLogGroup"
       ]
     },
+    "DriveStreamLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
+        },
+        "Handler": "stream-test-handler.handleDrive",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-test-project-dev-driveStream",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "STREAM_NAME": {
+              "Ref": "stream"
+            }
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DriveStreamLogGroup"
+      ]
+    },
+    "DriveQueueLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
+        },
+        "Handler": "queue-test-handler.handleDrive",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-test-project-dev-driveQueue",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DriveQueueLogGroup"
+      ]
+    },
+    "DriveTableLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
+        },
+        "Handler": "table-test-hander.handleDrive",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-test-project-dev-driveTable",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DriveTableLogGroup"
+      ]
+    },
     "StreamProcessorLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -278,9 +378,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1621600111664-2021-05-21T12:28:31.664Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
-        "Handler": "stream_handler.handle",
+        "Handler": "stream-handler.handle",
         "Runtime": "nodejs12.x",
         "FunctionName": "serverless-test-project-dev-streamProcessor",
         "MemorySize": 1024,
@@ -303,7 +403,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1621600111664-2021-05-21T12:28:31.664Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "apigw-handler.handleGet",
         "Runtime": "nodejs12.x",
@@ -321,54 +421,84 @@
         "HttpGetterLogGroup"
       ]
     },
-    "HelloLambdaVersionE7sMMy2d5X3u8G12mMKqZQgdGmz5mGlFfTSu4YEpbM": {
+    "HelloLambdaVersion722UxcHK84FtzQksFJLgO33214XN092rFeZxfBAWMI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "s5HvS/UeNLPxN05FcmBRcbhq01uFTU1wVs/Qsv0LfDU="
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
       }
     },
-    "PingLambdaVersionzwz15KcD5p50uTrjP0mqGSiOb4OBaAbyOgYXOTvZ0": {
+    "PingLambdaVersionkRCLggFwidyGPubIpsDG3Bz131vjOVNlzKj7NBM8UgE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "PingLambdaFunction"
         },
-        "CodeSha256": "s5HvS/UeNLPxN05FcmBRcbhq01uFTU1wVs/Qsv0LfDU="
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
       }
     },
-    "ThrottlerLambdaVersion60vIfcQj0t3aCBBuwWVAB2aiO8QsMA3g4a565Y2RqU": {
+    "ThrottlerLambdaVersionl91cFljDzhpqWXdQeA2t4nCL4O8S6eewBytew6LYg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ThrottlerLambdaFunction"
         },
-        "CodeSha256": "s5HvS/UeNLPxN05FcmBRcbhq01uFTU1wVs/Qsv0LfDU="
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
       }
     },
-    "StreamProcessorLambdaVersion8bn2YsV5AvfB5cWWWbli3mqYUH8IPWM7iRDnEgqsr0": {
+    "DriveStreamLambdaVersionZym9I4CW26PuJ2g26SXA4zCtxJm3jUEOzGB9JSpCIA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DriveStreamLambdaFunction"
+        },
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
+      }
+    },
+    "DriveQueueLambdaVersionqxLBmX6bkW9KfIv3nK7Euv6IWU2k1LNIfruRKLQ": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DriveQueueLambdaFunction"
+        },
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
+      }
+    },
+    "DriveTableLambdaVersionmshp4vuCFXIuqNxokV8OQhvrXhDNTcfJirpkqQC5PM": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DriveTableLambdaFunction"
+        },
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
+      }
+    },
+    "StreamProcessorLambdaVersionwlUSF2MKmypdz7S8ASUEQJniFQJWYRU4J5ElG6ncY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StreamProcessorLambdaFunction"
         },
-        "CodeSha256": "s5HvS/UeNLPxN05FcmBRcbhq01uFTU1wVs/Qsv0LfDU="
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
       }
     },
-    "HttpGetterLambdaVersionEQRbKUJhtWeJRPJTVQgrjBJCFtmrSLZPmn1lkhh7Ajo": {
+    "HttpGetterLambdaVersion8bkTDhhXsi9cMBh96OfTi3WanBalxcwLoE8XqtXkHcc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HttpGetterLambdaFunction"
         },
-        "CodeSha256": "s5HvS/UeNLPxN05FcmBRcbhq01uFTU1wVs/Qsv0LfDU="
+        "CodeSha256": "FiQzGCDK0fxVWHwCwOVhJmiILUfHAGFpReDupCZm4IY="
       }
     },
     "WorkflowRole": {
@@ -380,7 +510,9 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "Service": "states.eu-west-1.amazonaws.com"
+                "Service": {
+                  "Fn::Sub": "states.${AWS::Region}.amazonaws.com"
+                }
               },
               "Action": "sts:AssumeRole"
             }
@@ -388,13 +520,119 @@
         },
         "Policies": [
           {
-            "PolicyName": "dev-eu-west-1-serverless-test-project-statemachine",
+            "PolicyName": "dev-serverless-test-project-statemachine",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
                 {
-                  "Effect": "Deny",
-                  "Action": "*",
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "PingLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::GetAtt": [
+                              "PingLambdaFunction",
+                              "Arn"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogDelivery",
+                    "logs:GetLogDelivery",
+                    "logs:UpdateLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeResourcePolicies",
+                    "logs:DescribeLogGroups"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ExpressWorkflowRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::Sub": "states.${AWS::Region}.amazonaws.com"
+                }
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "dev-serverless-test-project-statemachine",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "PingLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Sub": [
+                        "${functionArn}:*",
+                        {
+                          "functionArn": {
+                            "Fn::GetAtt": [
+                              "PingLambdaFunction",
+                              "Arn"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogDelivery",
+                    "logs:GetLogDelivery",
+                    "logs:UpdateLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeResourcePolicies",
+                    "logs:DescribeLogGroups"
+                  ],
                   "Resource": "*"
                 }
               ]
@@ -406,17 +644,90 @@
     "Workflow": {
       "Type": "AWS::StepFunctions::StateMachine",
       "Properties": {
-        "DefinitionString": "{\n  \"StartAt\": \"Succeed or Fail?\",\n  \"States\": {\n    \"Succeed or Fail?\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.shouldFail\",\n          \"BooleanEquals\": true,\n          \"Next\": \"Fail\"\n        }\n      ],\n      \"Default\": \"Succeed\"\n    },\n    \"Fail\": {\n      \"Type\": \"Fail\"\n    },\n    \"Succeed\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+        "DefinitionString": {
+          "Fn::Sub": [
+            "{\n  \"StartAt\": \"What Next?\",\n  \"States\": {\n    \"What Next?\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"fail\",\n          \"Next\": \"Fail\"\n        },\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"timeoutTask\",\n          \"Next\": \"TimeoutTask\"\n        },\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"keepWaiting\",\n          \"Next\": \"KeepWaiting\"\n        }\n      ],\n      \"Default\": \"Succeed\"\n    },\n    \"TimeoutTask\": {\n      \"Type\": \"Task\",\n      \"TimeoutSeconds\": 1,\n      \"Resource\": \"${085edd942ce144c5bd80364a6e973e4d}\",\n      \"Parameters\": {\n        \"sleepSeconds\": 3\n      },\n      \"Next\": \"Succeed\"\n    },\n    \"KeepWaiting\": {\n      \"Type\": \"Wait\",\n      \"Seconds\": 1,\n      \"Next\": \"KeepWaiting\"\n    },\n    \"Fail\": {\n      \"Type\": \"Fail\"\n    },\n    \"Succeed\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+            {
+              "085edd942ce144c5bd80364a6e973e4d": {
+                "Fn::GetAtt": [
+                  "PingLambdaFunction",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
         "RoleArn": {
           "Fn::GetAtt": [
             "WorkflowRole",
             "Arn"
           ]
         },
+        "LoggingConfiguration": {
+          "Level": "ALL",
+          "IncludeExecutionData": true,
+          "Destinations": [
+            {
+              "CloudWatchLogsLogGroup": {
+                "LogGroupArn": {
+                  "Fn::GetAtt": [
+                    "workflowLogGroup",
+                    "Arn"
+                  ]
+                }
+              }
+            }
+          ]
+        },
         "StateMachineName": "Workflow"
       },
       "DependsOn": [
         "WorkflowRole"
+      ]
+    },
+    "ExpressWorkflow": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Sub": [
+            "{\n  \"StartAt\": \"What Next?\",\n  \"States\": {\n    \"What Next?\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"fail\",\n          \"Next\": \"Fail\"\n        },\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"timeoutTask\",\n          \"Next\": \"TimeoutTask\"\n        },\n        {\n          \"Variable\": \"$.destination\",\n          \"StringEquals\": \"keepWaiting\",\n          \"Next\": \"KeepWaiting\"\n        }\n      ],\n      \"Default\": \"Succeed\"\n    },\n    \"TimeoutTask\": {\n      \"Type\": \"Task\",\n      \"TimeoutSeconds\": 1,\n      \"Resource\": \"${085edd942ce144c5bd80364a6e973e4d}\",\n      \"Parameters\": {\n        \"sleepSeconds\": 3\n      },\n      \"Next\": \"Succeed\"\n    },\n    \"KeepWaiting\": {\n      \"Type\": \"Wait\",\n      \"Seconds\": 1,\n      \"Next\": \"KeepWaiting\"\n    },\n    \"Fail\": {\n      \"Type\": \"Fail\"\n    },\n    \"Succeed\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+            {
+              "085edd942ce144c5bd80364a6e973e4d": {
+                "Fn::GetAtt": [
+                  "PingLambdaFunction",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "ExpressWorkflowRole",
+            "Arn"
+          ]
+        },
+        "StateMachineType": "EXPRESS",
+        "LoggingConfiguration": {
+          "Level": "ALL",
+          "IncludeExecutionData": true,
+          "Destinations": [
+            {
+              "CloudWatchLogsLogGroup": {
+                "LogGroupArn": {
+                  "Fn::GetAtt": [
+                    "expressWorkflowLogGroup",
+                    "Arn"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "StateMachineName": "ExpressWorkflow"
+      },
+      "DependsOn": [
+        "ExpressWorkflowRole"
       ]
     },
     "ApiGatewayRestApi": {
@@ -487,9 +798,12 @@
           }
         },
         "MethodResponses": []
-      }
+      },
+      "DependsOn": [
+        "HttpGetterLambdaPermissionApiGateway"
+      ]
     },
-    "ApiGatewayDeployment1621600099710": {
+    "ApiGatewayDeployment1653074568829": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -545,6 +859,7 @@
       ],
       "Properties": {
         "BatchSize": 10,
+        "Enabled": true,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "stream",
@@ -558,7 +873,6 @@
           ]
         },
         "StartingPosition": "LATEST",
-        "Enabled": true,
         "MaximumRetryAttempts": 0
       }
     },
@@ -580,7 +894,10 @@
       "DeletionPolicy": "Delete",
       "Properties": {
         "TableName": "MyTable",
-        "BillingMode": "PAY_PER_REQUEST",
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
         "AttributeDefinitions": [
           {
             "AttributeName": "pk",
@@ -616,6 +933,10 @@
         "GlobalSecondaryIndexes": [
           {
             "IndexName": "GSI1",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
             "KeySchema": [
               {
                 "AttributeName": "gsi1pk",
@@ -669,6 +990,94 @@
         "QueueName": "SomeFifoQueue.fifo",
         "FifoQueue": true
       }
+    },
+    "workflowLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "WorkflowLogs",
+        "RetentionInDays": 1
+      }
+    },
+    "expressWorkflowLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "ExpressWorkflowLogs",
+        "RetentionInDays": 1
+      }
+    },
+    "vpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16"
+      }
+    },
+    "subnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": "eu-west-1a",
+        "CidrBlock": "10.0.16.0/20",
+        "VpcId": {
+          "Ref": "vpc"
+        }
+      }
+    },
+    "ecsCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": "awesome-cluster"
+      }
+    },
+    "ecsService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "ServiceName": "awesome-service",
+        "Cluster": {
+          "Ref": "ecsCluster"
+        },
+        "DesiredCount": 0,
+        "LaunchType": "FARGATE",
+        "TaskDefinition": {
+          "Ref": "taskDef"
+        },
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [],
+            "Subnets": [
+              {
+                "Ref": "subnet"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "taskDef": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "Cpu": 256,
+        "Memory": 512,
+        "ContainerDefinitions": [
+          {
+            "Name": "busybox",
+            "Image": "busybox",
+            "Cpu": 256,
+            "EntryPoint": [
+              "sh",
+              "-c"
+            ],
+            "Memory": 512,
+            "Command": [
+              "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+            ],
+            "Essential": true
+          }
+        ],
+        "NetworkMode": "awsvpc"
+      }
     }
   },
   "Outputs": {
@@ -683,7 +1092,7 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersionE7sMMy2d5X3u8G12mMKqZQgdGmz5mGlFfTSu4YEpbM"
+        "Ref": "HelloLambdaVersion722UxcHK84FtzQksFJLgO33214XN092rFeZxfBAWMI"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-HelloLambdaFunctionQualifiedArn"
@@ -692,7 +1101,7 @@
     "PingLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "PingLambdaVersionzwz15KcD5p50uTrjP0mqGSiOb4OBaAbyOgYXOTvZ0"
+        "Ref": "PingLambdaVersionkRCLggFwidyGPubIpsDG3Bz131vjOVNlzKj7NBM8UgE"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-PingLambdaFunctionQualifiedArn"
@@ -701,16 +1110,43 @@
     "ThrottlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ThrottlerLambdaVersion60vIfcQj0t3aCBBuwWVAB2aiO8QsMA3g4a565Y2RqU"
+        "Ref": "ThrottlerLambdaVersionl91cFljDzhpqWXdQeA2t4nCL4O8S6eewBytew6LYg"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-ThrottlerLambdaFunctionQualifiedArn"
       }
     },
+    "DriveStreamLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DriveStreamLambdaVersionZym9I4CW26PuJ2g26SXA4zCtxJm3jUEOzGB9JSpCIA"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-dev-DriveStreamLambdaFunctionQualifiedArn"
+      }
+    },
+    "DriveQueueLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DriveQueueLambdaVersionqxLBmX6bkW9KfIv3nK7Euv6IWU2k1LNIfruRKLQ"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-dev-DriveQueueLambdaFunctionQualifiedArn"
+      }
+    },
+    "DriveTableLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DriveTableLambdaVersionmshp4vuCFXIuqNxokV8OQhvrXhDNTcfJirpkqQC5PM"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-dev-DriveTableLambdaFunctionQualifiedArn"
+      }
+    },
     "StreamProcessorLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StreamProcessorLambdaVersion8bn2YsV5AvfB5cWWWbli3mqYUH8IPWM7iRDnEgqsr0"
+        "Ref": "StreamProcessorLambdaVersionwlUSF2MKmypdz7S8ASUEQJniFQJWYRU4J5ElG6ncY"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-StreamProcessorLambdaFunctionQualifiedArn"
@@ -719,7 +1155,7 @@
     "HttpGetterLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HttpGetterLambdaVersionEQRbKUJhtWeJRPJTVQgrjBJCFtmrSLZPmn1lkhh7Ajo"
+        "Ref": "HttpGetterLambdaVersion8bkTDhhXsi9cMBh96OfTi3WanBalxcwLoE8XqtXkHcc"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-HttpGetterLambdaFunctionQualifiedArn"
@@ -732,6 +1168,15 @@
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-WorkflowArn"
+      }
+    },
+    "ExpressWorkflowArn": {
+      "Description": "Current StateMachine Arn",
+      "Value": {
+        "Ref": "ExpressWorkflow"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-dev-ExpressWorkflowArn"
       }
     },
     "ServiceEndpoint": {

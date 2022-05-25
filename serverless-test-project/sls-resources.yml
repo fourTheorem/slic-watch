@@ -1,0 +1,137 @@
+Resources:
+  stream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: awesome-savage-stream
+      ShardCount: 1
+
+  bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: awesome-savage-bucket
+
+  dataTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    Properties:
+      TableName: MyTable
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - address
+            ProjectionType: INCLUDE
+      LocalSecondaryIndexes:
+        - IndexName: LSI1
+          KeySchema:
+            - AttributeName: pk
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - name
+            ProjectionType: INCLUDE
+
+  regularQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "SomeRegularQueue"
+
+  fifoQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "SomeFifoQueue.fifo"
+      FifoQueue: true
+
+  workflowLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: WorkflowLogs
+      RetentionInDays: 1
+
+  expressWorkflowLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: ExpressWorkflowLogs
+      RetentionInDays: 1
+
+  vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+
+  subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: 10.0.16.0/20
+      VpcId: !Ref vpc
+
+  ecsCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: awesome-cluster
+
+  ecsService:
+    Type: AWS::ECS::Service
+    Properties:
+      ServiceName: awesome-service
+      Cluster:
+        Ref: ecsCluster
+      DesiredCount: 0
+      LaunchType: FARGATE
+      TaskDefinition: !Ref taskDef
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: []
+          Subnets:
+            - !Ref subnet
+
+  taskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ContainerDefinitions: 
+        - Name: "busybox"
+          Image: "busybox"
+          Cpu: 256
+          EntryPoint: 
+            - "sh"
+            - "-c"
+          Memory: 512
+          Command: 
+            - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+          Essential: true
+      NetworkMode: awsvpc
