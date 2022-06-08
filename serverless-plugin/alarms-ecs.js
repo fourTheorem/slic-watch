@@ -5,7 +5,7 @@ const { resolveEcsClusterNameAsCfn } = require('./util')
 /**
  * @param {object} ecsAlarmsConfig The fully resolved alarm configuration
  */
-module.exports = function sqsAlarms (ecsAlarmsConfig, context) {
+module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
   return {
     createECSAlarms
   }
