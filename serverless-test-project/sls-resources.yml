@@ -135,3 +135,15 @@ Resources:
             - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
           Essential: true
       NetworkMode: awsvpc
+
+  topic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: awesome-savage-topic
+
+  subscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: diren.akkoc@fourtheorem.com
+        Protocol: email
+        TopicArn: !Ref topic

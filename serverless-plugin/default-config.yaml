@@ -94,6 +94,13 @@ alarms:
     CPUUtilization:
       Statistic: Average
       Threshold: 90
+  SNS:
+    NumberOfNotificationsFilteredOut-InvalidAttributes:
+      Statistic: Sum 
+      Threshold: 1
+    NumberOfNotificationsFailed:
+      Statistic: Sum 
+      Threshold: 1
 
 dashboard:
   enabled: true
