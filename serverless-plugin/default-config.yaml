@@ -180,3 +180,10 @@ dashboard:
         Statistic: ["Average"]
       CPUUtilization:
         Statistic: ["Average"]
+    SNS:
+      NumberOfNotificationsFilteredOut-InvalidAttributes:
+        Statistic: ["Sum"]
+      NumberOfNotificationsFailed:
+        Statistic: ["Sum"]
+  
+    
