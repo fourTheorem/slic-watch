@@ -89,6 +89,7 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
         `Number of Notifications Filtered out Invalid Attributes for ${topicName} breaches (${threshold}`, // alarmDescription
         topicName,
         config.ComparisonOperator,
+        threshold,
         'NumberOfNotificationsFilteredOut-InvalidAttributes', // metricName
         config.Statistic,
         config.Period,
