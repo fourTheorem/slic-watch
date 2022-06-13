@@ -83,9 +83,9 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
     const threshold = config.Threshold
 
     return {
-      resourceName: `slicWatchNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicResourceName}`,
+      resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicResourceName}`,
       resource: createSNSAlarm(
-        `NumberOfNotificationsFilteredOutInvalidAttributes_${topicName}`, // alarmName
+        `SNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm_${topicName}`, // alarmName
         `Number of Notifications Filtered out Invalid Attributes for ${topicName} breaches (${threshold}`, // alarmDescription
         topicName,
         config.ComparisonOperator,
@@ -105,7 +105,7 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicResourceName}`,
       resource: createSNSAlarm(
-        `SNSNumberOfNotificationsFailed_${topicName}`, // alarmName
+        `SNSNumberOfNotificationsFailedAlarm_${topicName}`, // alarmName
         `Number of Notifications Failed for ${topicName} breaches ${threshold}`, // alarmDescription
         topicName,
         config.ComparisonOperator,

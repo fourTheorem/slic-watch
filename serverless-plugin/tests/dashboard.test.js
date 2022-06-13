@@ -222,6 +222,29 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
+  t.test('dashboard includes SNS metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('SNS')
+    )
+    t.equal(widgets.length, 1)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/SNS']))
+    const expectedTitles = new Set([
+      'SNS Topic awesome-savage-topic'
+    ])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
   t.end()
 })
 
@@ -256,7 +279,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 })
 
 test('No dashboard is created if all widgets are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     dashConfig.widgets[service].enabled = false
@@ -270,7 +293,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 })
 
 test('No dashboard is created if all metrics are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
