@@ -18,7 +18,8 @@ const supportedAlarms = {
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors'],
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
   SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc'],
-  ECS: ['MemoryUtilization', 'CPUUtilization']
+  ECS: ['MemoryUtilization', 'CPUUtilization'],
+  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
 }
 
 const supportedWidgets = {
@@ -28,7 +29,8 @@ const supportedWidgets = {
   DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents'],
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
   SQS: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted', 'ApproximateAgeOfOldestMessage', 'ApproximateNumberOfMessagesVisible'],
-  ECS: ['MemoryUtilization', 'CPUUtilization']
+  ECS: ['MemoryUtilization', 'CPUUtilization'],
+  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
 }
 
 const commonAlarmProperties = {
