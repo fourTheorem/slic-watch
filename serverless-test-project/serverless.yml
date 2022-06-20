@@ -79,7 +79,7 @@ functions:
           path: "item"
 
   subscriptionHandler:
-    handler: apigw-handler.handleSubcription
+    handler: apigw-handler.handleSubscription
     timeout: 30
     events:
       - http:
