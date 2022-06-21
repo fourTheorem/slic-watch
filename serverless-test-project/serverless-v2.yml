@@ -30,6 +30,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
+  stage: dev
   endpointType: REGIONAL
 
 functions:
