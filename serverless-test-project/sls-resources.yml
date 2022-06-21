@@ -135,3 +135,15 @@ Resources:
             - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
           Essential: true
       NetworkMode: awsvpc
+
+  topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: awesome-savage-topic
+
+  subscriptionTest:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}/subscription"
+        Protocol: https
+        TopicArn: !Ref topic

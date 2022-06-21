@@ -1,0 +1,91 @@
+{
+  "resource": "/subscription",
+  "path": "/subscription",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept-Encoding": "gzip,deflate",
+    "Content-Type": "text/plain; charset=UTF-8",
+    "Host": "mx1iwiveud.execute-api.eu-west-1.amazonaws.com",
+    "User-Agent": "Amazon Simple Notification Service Agent",
+    "x-amz-sns-message-id": "892df3b4-52eb-52ad-88af-a89e3d71563b",
+    "x-amz-sns-message-type": "Notification",
+    "x-amz-sns-subscription-arn": "arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic:ebb6f80d-6313-4fd6-88de-aaa1465f0e93",
+    "x-amz-sns-topic-arn": "arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic",
+    "X-Amzn-Trace-Id": "Root=1-62b06d5a-6a8bf1502d88b77523d8c092",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept-Encoding": [
+      "gzip,deflate"
+    ],
+    "Content-Type": [
+      "text/plain; charset=UTF-8"
+    ],
+    "Host": [
+      "mx1iwiveud.execute-api.eu-west-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "Amazon Simple Notification Service Agent"
+    ],
+    "x-amz-sns-message-id": [
+      "892df3b4-52eb-52ad-88af-a89e3d71563b"
+    ],
+    "x-amz-sns-message-type": [
+      "Notification"
+    ],
+    "x-amz-sns-subscription-arn": [
+      "arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic:ebb6f80d-6313-4fd6-88de-aaa1465f0e93"
+    ],
+    "x-amz-sns-topic-arn": [
+      "arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-62b06d5a-6a8bf1502d88b77523d8c092"
+    ],
+    "X-Forwarded-For": [
+      "54.240.197.7"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "0fhs2t",
+    "resourcePath": "/subscription",
+    "httpMethod": "POST",
+    "extendedRequestId": "UBYGNH4cjoEFuQg=",
+    "requestTime": "20/Jun/2022:12:51:38 +0000",
+    "path": "/dev/subscription",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "dev",
+    "domainPrefix": "mx1iwiveud",
+    "requestTimeEpoch": 1655729498734,
+    "requestId": "0b7d603c-b3d0-4a6b-9fdd-89fa5963ccdd",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Amazon Simple Notification Service Agent",
+      "user": null
+    },
+    "domainName": "mx1iwiveud.execute-api.eu-west-1.amazonaws.com",
+    "apiId": "mx1iwiveud"
+  },
+  "body": "{\n  \"Type\" : \"Notification\",\n  \"MessageId\" : \"892df3b4-52eb-52ad-88af-a89e3d71563b\",\n  \"TopicArn\" : \"arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic\",\n  \"Message\" : \"this is plaintext\",\n  \"Timestamp\" : \"2022-06-20T12:51:38.691Z\",\n  \"SignatureVersion\" : \"1\",\n  \"Signature\" : \"Ox2H1H0LqqaJT2gzFjoTJ614KLX/j/mL/cSG0DtzDgHQarIYmJjLRwHSv6Q9g2ihst7A/Uio87+uR/j/T/65dtF5sjbnb+6vDWB4et+r1i+X4YIPgFm450s11A43Vah/Oly11RqtyXsUx/F5stV7/DTZV6yC0yiy4dB6QjMGX7dyrPQ+20v6TIHjfVCmThCwwjq9Fa09Jh1eVPCR3mKAyfXJxSHTB611wKWaSOSeTKI/ChF7CDRifBwho4obj4CmCuQdS7GyBq1whEUW8TUR/UV4e/h6aqvhW+Y025Hcr/eih7X+IV3+L8voX+/+6fAcoawR9w8aPUayHQbCiU3XGQ==\",\n  \"SigningCertURL\" : \"https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-7ff5318490ec183fbaddaa2a969abfda.pem\",\n  \"UnsubscribeURL\" : \"https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:123456789012:awesome-savage-topic:ebb6f80d-6313-4fd6-88de-aaa1465f0e93\"\n}",
+  "isBase64Encoded": false
+}

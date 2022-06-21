@@ -6,7 +6,6 @@ variablesResolutionMode: 20210219
 plugins:
   - serverless-step-functions
   - serverless-slic-watch-plugin
-
 custom:
   slicWatch:
     topicArn: ${env:ALARM_TOPIC}
@@ -29,6 +28,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
+  stage: dev
   endpointType: REGIONAL
 
 functions:
@@ -77,6 +77,14 @@ functions:
       - http:
           method: get
           path: "item"
+
+  subscriptionHandler:
+    handler: apigw-handler.handleSubscription
+    timeout: 30
+    events:
+      - http:
+          method: post
+          path: "subscription"
 
 resources: ${file(./sls-resources.yml)}
 

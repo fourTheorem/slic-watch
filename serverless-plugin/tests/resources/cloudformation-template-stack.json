@@ -1078,6 +1078,22 @@
         ],
         "NetworkMode": "awsvpc"
       }
+    },
+    "topic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "awesome-savage-topic"
+      }
+    },
+    "subscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Endpoint": "diren.akkoc@fourtheorem.com",
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "topic"
+        }
+      }
     }
   },
   "Outputs": {

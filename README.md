@@ -16,6 +16,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  5. SQS Queues
  6. Step Functions
  7. ECS (Fargate or EC2)
+ 8. SNS
 
 Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
@@ -145,6 +146,18 @@ ECS alarms are created for Fargate or EC2 clusters:
 1. Memory Utilization
 2. CPU Utilization
 
+### SNS
+
+SNS alarms are created for:
+1. Number of Notifications Filtered Out due to Invalid Attributes
+2. Number of Notifications Failed
+
+SNS Topic dashboard widgets show:
+
+|Messages Filtered Out - Invalid Attributes|Notifications Failed|
+|--|--|
+|![Invalid Attributes](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsInvalidAttributes.png)|![Notifications Failed](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsNotificationsFailed.png) |
+
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.
@@ -266,6 +279,13 @@ custom:
           CPUUtilization:
             Statistic: Average
             Threshold: 90
+        SNS:
+          NumberOfNotificationsFilteredOut-InvalidAttributes:
+            Statistic: Sum 
+            Threshold: 1
+          NumberOfNotificationsFailed:
+            Statistic: Sum 
+            Threshold: 1
 
     dashboard:
       enabled: true
@@ -346,6 +366,11 @@ custom:
             Statistic: ["Average"]
           CPUUtilization:
             Statistic: ["Average"]
+        SNS:
+          NumberOfNotificationsFilteredOut-InvalidAttributes:
+            Statistic: ["Sum"]
+          NumberOfNotificationsFailed:
+            Statistic: ["Sum"]
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)

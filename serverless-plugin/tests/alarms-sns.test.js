@@ -1,6 +1,6 @@
 'use strict'
 
-const ecsAlarms = require('../alarms-ecs')
+const snsAlarms = require('../alarms-sns')
 const { test } = require('tap')
 const defaultConfig = require('../default-config')
 const {
@@ -11,36 +11,36 @@ const {
   testContext
 } = require('./testing-utils')
 
-test('ECS MemoryUtilization is created', (t) => {
+test('SNS alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
       EvaluationPeriods: 2,
       TreatMissingData: 'breaching',
-      ComparisonOperator: 'LessThanThreshold',
-      ECS: {
-        MemoryUtilization: {
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+      SNS: {
+        'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50
         },
-        CPUUtilization: {
+        NumberOfNotificationsFailed: {
           Threshold: 50
         }
       }
     }
   )
 
-  const ecsAlarmConfig = alarmConfig.ECS
+  const snsAlarmConfig = alarmConfig.SNS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
+  createSNSAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    ECSMemoryAlarm: 'MemoryUtilization',
-    ECSCPUAlarm: 'CPUUtilization'
+    SNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
+    SNSNumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
@@ -51,20 +51,16 @@ test('ECS MemoryUtilization is created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, ecsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, snsAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'LessThanThreshold')
-    t.equal(al.Namespace, 'AWS/ECS')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al.Namespace, 'AWS/SNS')
     t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
-        Name: 'ServiceName',
-        Value: 'awesome-service'
-      },
-      {
-        Name: 'ClusterName',
-        Value: { Ref: 'ecsCluster' }
+        Name: 'TopicName',
+        Value: 'awesome-savage-topic'
       }
     ])
   }
@@ -72,29 +68,29 @@ test('ECS MemoryUtilization is created', (t) => {
   t.end()
 })
 
-test('ECS alarms are not created when disabled globally', (t) => {
+test('SNS alarms are not created when disabled globally', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
-      ECS: {
+      SNS: {
         enabled: false, // disabled globally
         Period: 60,
-        MemoryUtilization: {
+        'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50
         },
-        CPUUtilization: {
+        NumberOfNotificationsFailed: {
           Threshold: 50
         }
       }
     }
   )
 
-  const ecsAlarmConfig = alarmConfig.ECS
+  const snsAlarmConfig = alarmConfig.SNS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
+  createSNSAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 

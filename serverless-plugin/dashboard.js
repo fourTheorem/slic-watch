@@ -21,7 +21,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       DynamoDB: dynamoDbDashConfig,
       Kinesis: kinesisDashConfig,
       SQS: sqsDashConfig,
-      ECS: ecsDashConfig
+      ECS: ecsDashConfig,
+      SNS: snsDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -57,6 +58,9 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     const ecsServiceResources = cfTemplate.getResourcesByType(
       'AWS::ECS::Service'
     )
+    const topicResources = cfTemplate.getResourcesByType(
+      'AWS::SNS::Topic'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -69,6 +73,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     const streamWidgets = createStreamWidgets(streamResources)
     const queueWidgets = createQueueWidgets(queueResources)
     const ecsWidgets = createEcsWidgets(ecsServiceResources)
+    const topicWidgets = createTopicWidgets(topicResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -77,7 +82,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       ...lambdaWidgets,
       ...streamWidgets,
       ...queueWidgets,
-      ...ecsWidgets
+      ...ecsWidgets,
+      ...topicWidgets
     ])
 
     if (positionedWidgets.length > 0) {
@@ -456,6 +462,43 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       }
     }
     return ecsWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for SNS services.
+   *
+   * @param {object} topicResources Object of SNS Service resources by resource name
+   */
+  function createTopicWidgets (topicResources) {
+    const topicWidgets = []
+    for (const res of Object.values(topicResources)) {
+      const topicName = res.Properties.TopicName
+
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/SNS',
+              metric,
+              dimensions: {
+                TopicName: topicName
+              },
+              stat
+            })
+          }
+        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `SNS Topic ${topicName}`,
+          widgetMetrics,
+          snsDashConfig
+        )
+        topicWidgets.push(metricStatWidget)
+      }
+    }
+    return topicWidgets
   }
 
   /**
