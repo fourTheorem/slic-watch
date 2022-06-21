@@ -149,8 +149,14 @@ ECS alarms are created for Fargate or EC2 clusters:
 ### SNS
 
 SNS alarms are created for:
-1. Number of Notifications Filtered Out Invalid Attributes
+1. Number of Notifications Filtered Out due to Invalid Attributes
 2. Number of Notifications Failed
+
+SNS Topic dashboard widgets show:
+
+|Messages Filtered Out - Invalid Attributes|Notifications Failed|
+|--|--|
+|![Invalid Attributes](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsInvalidAttributes.png)|![Notifications Failed](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsNotificationsFailed.png) |
 
 ## Configuration
 
