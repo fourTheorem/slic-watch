@@ -37,21 +37,34 @@ async function handleGet (event) {
 async function handleSubscription (event) {
   console.log(event)
   const eventBody = JSON.parse(event.body)
+  const result = {}
   try {
     if (eventBody.Type === 'SubscriptionConfirmation') {
       const res = await axios.get(eventBody.SubscribeURL)
-      console.log({ statusCode: res.statusCode })
-      return res
+      console.log('Subscription confirmation response', { statusCode: res.status, statusText: res.statusText })
+      result.statusCode = res.status
     } else {
-      const messageBody = JSON.parse(eventBody.Message)
-      if (messageBody.fail === true) {
-        console.error({ statusCode: 500 })
+      let messageBody
+      try {
+        // Support JSON messages
+        messageBody = JSON.parse(eventBody.Message)
+      } catch (err) {
+        // Fallback to plain text
+        messageBody = eventBody.Message
       }
-      const result = { statusCode: 200 }
-      console.log(result)
-      return result
+
+      if (messageBody.fail === true) {
+        console.log('fail is set to true, simulating message delivery failure')
+        result.statusCode = 500
+      } else {
+        console.log('Successful message delivery')
+        result.statusCode = 200
+      }
     }
   } catch (err) {
-    console.error(err)
+    console.error('Unexpected error received', err)
+    result.statusCode = 500
   }
+  console.log('Returning result', result)
+  return result
 }
