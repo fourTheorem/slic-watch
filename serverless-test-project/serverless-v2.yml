@@ -79,6 +79,14 @@ functions:
           method: get
           path: "item"
 
+  subscriptionHandler:
+    handler: apigw-handler.handleSubscription
+    timeout: 30
+    events:
+      - http:
+          method: post
+          path: "subscription"
+
 resources: ${file(./sls-resources.yml)}
 
 stepFunctions:
