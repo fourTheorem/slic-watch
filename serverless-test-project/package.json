@@ -21,7 +21,6 @@
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae",
   "dependencies": {
-    "https": "^1.0.0",
-    "sns-validator": "^0.3.4"
+    "axios": "^0.27.2" 
   }
 }

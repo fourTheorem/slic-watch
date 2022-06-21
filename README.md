@@ -142,7 +142,7 @@ The dashboard contains one widget per Step Function:
 
 ### ECS / Fargate
 
-ECS alarms are created for:
+ECS alarms are created for Fargate or EC2 clusters:
 1. Memory Utilization
 2. CPU Utilization
 

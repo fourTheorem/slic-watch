@@ -140,13 +140,6 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: awesome-savage-topic
-  
-  subscription:
-    Type: AWS::SNS::Subscription
-    Properties:
-      Endpoint: diren.akkoc@fourtheorem.com
-      Protocol: email
-      TopicArn: !Ref topic
 
   subscriptionTest:
       Type: AWS::SNS::Subscription
@@ -154,4 +147,3 @@ Resources:
         Endpoint: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}/subscription"
         Protocol: https
         TopicArn: !Ref topic
- 

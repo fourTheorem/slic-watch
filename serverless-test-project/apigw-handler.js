@@ -1,6 +1,5 @@
 'use strict'
-const https = require('https')
-const MessageValidator = require('sns-validator')
+const axios = require('axios').default
 
 module.exports = {
   handleGet,
@@ -37,32 +36,22 @@ async function handleGet (event) {
  */
 async function handleSubscription (event) {
   console.log(event)
-  const validator = new MessageValidator()
-  const promise = new Promise(function (resolve, reject) {
-    const eventBody = JSON.parse(event.body)
-    validator.validate(eventBody, (err, message) => {
-      if (err) {
-        console.error(err)
-        return reject(err)
+  const eventBody = JSON.parse(event.body)
+  try {
+    if (eventBody.Type === 'SubscriptionConfirmation') {
+      const res = await axios.get(eventBody.SubscribeURL)
+      console.log({ statusCode: res.statusCode })
+      return res
+    } else {
+      const messageBody = JSON.parse(eventBody.Message)
+      if (messageBody.fail === true) {
+        console.error({ statusCode: 500 })
       }
-      validator.encoding = 'utf8'
-      if (message.Type === 'SubscriptionConfirmation') {
-        https.get(message.SubscribeURL, (res) => {
-          resolve({ statusCode: res.statusCode })
-        }).on('error', (e) => {
-          reject(e)
-        })
-      } else {
-        const messageBody = JSON.parse(eventBody.Message)
-        if (messageBody.fail === true) {
-          return resolve({ statusCode: 500 })
-        }
-        resolve({ statusCode: 200 })
-      }
-    })
-  })
-
-  const result = await promise
-  console.log('Result', result)
-  return result
+      const result = { statusCode: 200 }
+      console.log(result)
+      return result
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
