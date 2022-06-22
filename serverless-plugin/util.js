@@ -66,9 +66,19 @@ function resolveEcsClusterNameForSub (cluster) {
   return cluster
 }
 
+/*
+ * Determine the presentation name for an alarm statistic
+ *
+ * @param {*} alarmConfig Alarm configuration
+ */
+function getStatisticName (alarmConfig) {
+  return alarmConfig.Statistic || alarmConfig.ExtendedStatistic
+}
+
 module.exports = {
   filterObject,
   makeResourceName,
   resolveEcsClusterNameAsCfn,
-  resolveEcsClusterNameForSub
+  resolveEcsClusterNameForSub,
+  getStatisticName
 }

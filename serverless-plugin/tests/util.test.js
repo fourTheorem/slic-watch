@@ -5,7 +5,8 @@ const { test } = require('tap')
 const {
   filterObject,
   resolveEcsClusterNameAsCfn,
-  resolveEcsClusterNameForSub
+  resolveEcsClusterNameForSub,
+  getStatisticName
 } = require('../util')
 
 test('filterObject filters out', (t) => {
@@ -74,5 +75,12 @@ test('resolveEcsClusterNameForSub', (t) => {
   const unexpected = { Unexpected: 'syntax' }
   const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
   t.same(fromUnexpected, unexpected)
+  t.end()
+})
+
+test('getStatisticName chooses Statistic then ExtendedStatistic property', (t) => {
+  t.equal(getStatisticName({ Statistic: 'Sum' }), 'Sum')
+  t.equal(getStatisticName({ ExtendedStatistic: 'p99' }), 'p99')
+  t.equal(getStatisticName({ Statistic: 'Average', ExtendedStatistic: 'p99' }), 'Average')
   t.end()
 })
