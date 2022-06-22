@@ -63,6 +63,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
+        OkActions: context.alarmActions,
         AlarmName: `${type}_${streamName}`,
         AlarmDescription: `Kinesis ${config.Statistic} ${metric} for ${streamName} breaches ${threshold} milliseconds`,
         EvaluationPeriods: config.EvaluationPeriods,

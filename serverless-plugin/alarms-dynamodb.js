@@ -78,6 +78,7 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
+        OkActions: context.alarmActions,
         AlarmName: `${metricName}_${identifier}`,
         AlarmDescription: `DynamoDB ${config.Statistic} for ${identifier} breaches ${config.Threshold}`,
         EvaluationPeriods: config.EvaluationPeriods,

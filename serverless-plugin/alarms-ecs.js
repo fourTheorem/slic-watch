@@ -71,6 +71,7 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
+        OkActions: context.alarmActions,
         AlarmName: alarmName,
         AlarmDescription: alarmDescription,
         EvaluationPeriods: evaluationPeriods,
