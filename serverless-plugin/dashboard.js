@@ -22,7 +22,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       Kinesis: kinesisDashConfig,
       SQS: sqsDashConfig,
       ECS: ecsDashConfig,
-      SNS: snsDashConfig
+      SNS: snsDashConfig,
+      Events: eventsDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -61,6 +62,9 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     const topicResources = cfTemplate.getResourcesByType(
       'AWS::SNS::Topic'
     )
+    const ruleResources = cfTemplate.getResourcesByType(
+      'AWS::Events::Rule'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -74,6 +78,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     const queueWidgets = createQueueWidgets(queueResources)
     const ecsWidgets = createEcsWidgets(ecsServiceResources)
     const topicWidgets = createTopicWidgets(topicResources)
+    const ruleWidgets = createRuleWidgets(ruleResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -83,7 +88,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       ...streamWidgets,
       ...queueWidgets,
       ...ecsWidgets,
-      ...topicWidgets
+      ...topicWidgets,
+      ...ruleWidgets
     ])
 
     if (positionedWidgets.length > 0) {
@@ -499,6 +505,43 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       }
     }
     return topicWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for SNS services.
+   *
+   * @param {object} ruleResources Object of SNS Service resources by resource name
+   */
+  function createRuleWidgets (ruleResources) {
+    const ruleWidgets = []
+    for (const res of Object.values(ruleResources)) {
+      const ruleName = res.Properties.Name
+
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(eventsDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/Events',
+              metric,
+              dimensions: {
+                RuleName: ruleName
+              },
+              stat
+            })
+          }
+        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `Events rule ${ruleName}`,
+          widgetMetrics,
+          eventsDashConfig
+        )
+        ruleWidgets.push(metricStatWidget)
+      }
+    }
+    return ruleWidgets
   }
 
   /**

@@ -12,7 +12,16 @@ custom:
     alarms:
       Lambda:
         Invocations:
-          enabled: true
+          enabled: false
+          Threshold: 10
+        DurationPc:
+          enabled: false
+          Threshold: 10
+        ThrottlesPc:
+          enabled: false
+          Threshold: 10
+        Errors:
+          enabled: false
           Threshold: 10
       SQS:
         AgeOfOldestMessage:
@@ -86,6 +95,14 @@ functions:
           method: post
           path: "subscription"
 
+  eventsRule:
+    handler: rule-handler.handleRule
+    events:
+      - eventBridge:
+          pattern:
+            detail-type: 
+            - Invoke Lambda Function
+
 resources: ${file(./sls-resources.yml)}
 
 stepFunctions:
@@ -107,3 +124,4 @@ stepFunctions:
         includeExecutionData: true
         destinations:
           - Fn::GetAtt: [expressWorkflowLogGroup, Arn]
+

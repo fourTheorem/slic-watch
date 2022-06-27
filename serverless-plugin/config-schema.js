@@ -19,7 +19,8 @@ const supportedAlarms = {
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
   SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc'],
   ECS: ['MemoryUtilization', 'CPUUtilization'],
-  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
+  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
+  Events: ['FailedInvocations', 'ThrottledRules']
 }
 
 const supportedWidgets = {
@@ -30,7 +31,8 @@ const supportedWidgets = {
   Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
   SQS: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted', 'ApproximateAgeOfOldestMessage', 'ApproximateNumberOfMessagesVisible'],
   ECS: ['MemoryUtilization', 'CPUUtilization'],
-  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
+  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
+  Events: ['FailedInvocations', 'ThrottledRules', 'Invocations']
 }
 
 const commonAlarmProperties = {

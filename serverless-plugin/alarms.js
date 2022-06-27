@@ -11,6 +11,7 @@ const kinesisAlarms = require('./alarms-kinesis')
 const sqsAlarms = require('./alarms-sqs')
 const ecsAlarms = require('./alarms-ecs')
 const snsAlarms = require('./alarms-sns')
+const eventsAlarms = require('./alarms-eventbridge')
 
 module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs, context) {
   const {
@@ -21,7 +22,8 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
     SQS: sqsConfig,
     Lambda: lambdaConfig,
     ECS: ecsConfig,
-    SNS: snsConfig
+    SNS: snsConfig,
+    Events: eventsConfig
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
@@ -33,6 +35,7 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
   const { createSQSAlarms } = sqsAlarms(sqsConfig, context, serverless)
   const { createECSAlarms } = ecsAlarms(ecsConfig, context, serverless)
   const { createSNSAlarms } = snsAlarms(snsConfig, context, serverless)
+  const { createEventsAlarms } = eventsAlarms(eventsConfig, context, serverless)
 
   return {
     addAlarms
@@ -54,6 +57,7 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
       sqsConfig.enabled && createSQSAlarms(cfTemplate)
       ecsConfig.enabled && createECSAlarms(cfTemplate)
       snsConfig.enabled && createSNSAlarms(cfTemplate)
+      eventsConfig.enabled && createEventsAlarms(cfTemplate)
     }
   }
 }

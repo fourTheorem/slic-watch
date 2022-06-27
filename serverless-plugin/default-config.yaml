@@ -101,6 +101,14 @@ alarms:
     NumberOfNotificationsFailed:
       Statistic: Sum 
       Threshold: 1
+  Events:
+    #EventBridge
+    FailedInvocations:
+      Statistic: Sum 
+      Threshold: 1
+    ThrottledRules:
+      Statistic: Sum 
+      Threshold: 1
 
 dashboard:
   enabled: true
@@ -185,5 +193,12 @@ dashboard:
         Statistic: ["Sum"]
       NumberOfNotificationsFailed:
         Statistic: ["Sum"]
-  
+    Events:
+    #EventBridge
+      FailedInvocations:
+        Statistic: ["Sum"]
+      ThrottledRules:
+        Statistic: ["Sum"]
+      Invocations: 
+        Statistic: ["Sum"] 
     
