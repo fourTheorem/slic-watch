@@ -1,6 +1,6 @@
 'use strict'
 
-const eventsAlarms = require('../alarms-eventbridge')
+const ruleAlarms = require('../alarms-eventbridge')
 const { test } = require('tap')
 const defaultConfig = require('../default-config')
 const {
@@ -30,11 +30,11 @@ test('Events alarms are created', (t) => {
     }
   )
 
-  const eventsAlarmConfig = alarmConfig.Events
+  const ruleAlarmConfig = alarmConfig.Events
 
-  const { createEventsAlarms } = eventsAlarms(eventsAlarmConfig, testContext)
+  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
-  createEventsAlarms(cfTemplate)
+  createRuleAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
@@ -51,7 +51,7 @@ test('Events alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, eventsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, ruleAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -85,12 +85,12 @@ test('Events alarms are not created when disabled globally', (t) => {
     }
   )
 
-  const eventsAlarmConfig = alarmConfig.Events
+  const ruleAlarmConfig = alarmConfig.Events
 
-  const { createEventsAlarms } = eventsAlarms(eventsAlarmConfig, testContext)
+  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
-  createEventsAlarms(cfTemplate)
+  createRuleAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 

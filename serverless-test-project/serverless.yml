@@ -12,17 +12,9 @@ custom:
     alarms:
       Lambda:
         Invocations:
-          enabled: false
+          enabled: true
           Threshold: 10
-        DurationPc:
-          enabled: false
-          Threshold: 10
-        ThrottlesPc:
-          enabled: false
-          Threshold: 10
-        Errors:
-          enabled: false
-          Threshold: 10
+
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
@@ -97,11 +89,18 @@ functions:
 
   eventsRule:
     handler: rule-handler.handleRule
+    slicWatch:
+      alarms:
+          Lambda:
+            enabled: false
     events:
       - eventBridge:
           pattern:
             detail-type: 
             - Invoke Lambda Function
+          retryPolicy:
+            maximumEventAge: 60
+            maximumRetryAttempts: 2
 
 resources: ${file(./sls-resources.yml)}
 

@@ -1,15 +1,11 @@
 'use strict'
 
-module.exports.handleRule = (event, context, callback) => {
+module.exports.handleRule = async (event) => {
   console.log(event)
-  if (event.sleepSeconds) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, event.sleepSeconds * 1000)
-    })
-  }
-  if (event.triggerError) {
+  const e = Boolean(event.detail.triggerError)
+  if (e) {
     throw new Error('Error triggered')
+  } else {
+    console.log('Successful event delivery')
   }
-  console.log('Error occured')
-  return Error
 }

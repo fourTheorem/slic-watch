@@ -5,16 +5,16 @@
  */
 module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
   return {
-    createEventsAlarms
+    createRuleAlarms
   }
 
   /**
    * Add all required Events alarms to the provided CloudFormation template
-   * based on the Events resources found within
+   * based on the EventBridge Rule found within
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
    */
-  function createEventsAlarms (cfTemplate) {
+  function createRuleAlarms (cfTemplate) {
     const ruleResources = cfTemplate.getResourcesByType(
       'AWS::Events::Rule'
     )
@@ -40,7 +40,7 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     }
   }
 
-  function createEventsAlarm (
+  function createRuleAlarm (
     alarmName,
     alarmDescription,
     ruleName,
@@ -82,7 +82,7 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
 
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${ruleResourceName}`,
-      resource: createEventsAlarm(
+      resource: createRuleAlarm(
         `EventsFailedInvocationsAlarm_${ruleName}`, // alarmName
         `Failed Invocations for ${ruleName} breaches ${threshold}`, // alarmDescription
         ruleName,
@@ -102,7 +102,7 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${ruleResourceName}`,
-      resource: createEventsAlarm(
+      resource: createRuleAlarm(
         `EventsThrottledRulesAlarm_${ruleName}`, // alarmName
         `Throttled RulesAlarm for ${ruleName} breaches ${threshold}`, // alarmDescription
         ruleName,

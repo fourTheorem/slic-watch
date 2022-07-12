@@ -194,7 +194,7 @@ dashboard:
       NumberOfNotificationsFailed:
         Statistic: ["Sum"]
     Events:
-    #EventBridge
+      #EventBridge
       FailedInvocations:
         Statistic: ["Sum"]
       ThrottledRules:

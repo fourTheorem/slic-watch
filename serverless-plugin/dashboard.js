@@ -23,7 +23,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       SQS: sqsDashConfig,
       ECS: ecsDashConfig,
       SNS: snsDashConfig,
-      Events: eventsDashConfig
+      Events: ruleDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -518,7 +518,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       const ruleName = res.Properties.Name
 
       const widgetMetrics = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(eventsDashConfig))) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -536,7 +536,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
         const metricStatWidget = createMetricWidget(
           `Events rule ${ruleName}`,
           widgetMetrics,
-          eventsDashConfig
+          ruleDashConfig
         )
         ruleWidgets.push(metricStatWidget)
       }
