@@ -17,3 +17,18 @@ There are are a number of areas where you can contribute right now.
 ## Pull Request Process
 
 See the [pull request template](./docs/pull_request_template.md).
+
+## How to add support for new resources into SLIC Watch
+
+For every AWS service there are metrics and dimensions that have to be handled. SLIC Watch comes with sane defaults. When we want to create alarms and dashboards we need to define metrics which we need in projects with default value in the [default-config.yml](./serverless-plugin/default-config.yaml). You can configure what you don’t like or disable specific dashboards or alarms. And we create the alarm structure in [alarms.js](./serverless-plugin/alarms.js) module. However keep in mind, every single alarm module is firstly handled in a separate module. We handle dashboard in [dashboard.js](./serverless-plugin/dashboard.js) module. 
+
+[config-schema.js](./serverless-plugin/config-schema.js) is the validation schema of [serverless.yml](./serverless-test-project/serverless.yml) module. It's a JSON schema validation using the ajv npm module We use it to validate custom.slicWatch.You can optionally override part of the configuration in custom.slicWatch if you want to. Because the default configuration is there so you don’t have to specify all resources. In config-schema we can  see supportedAlarms, supportedWidgets have to be filled with valid metrics.
+
+We highly recommend to do unit-test after contributing a new service support. A common gotcha can be forgetable during the unit-test the [cloudformation-template-stack.json](./serverless-plugin/tests/resources/cloudformation-template-stack.json) has to be modified.
+
+
+
+
+
+
+

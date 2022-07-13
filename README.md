@@ -17,6 +17,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  6. Step Functions
  7. ECS (Fargate or EC2)
  8. SNS
+ 9. EventBridge
 
 Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
@@ -162,7 +163,7 @@ SNS Topic dashboard widgets show:
 
 EventBridge alarms are created for:
 1. Failed Invocations
-2. ThrottledRules
+2. Throttled Rules
 
 EventBridge Rule dashboard widgets show:
 

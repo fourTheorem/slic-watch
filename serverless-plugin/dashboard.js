@@ -534,7 +534,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `Events rule ${ruleName}`,
+          `EventBridge Rule ${ruleName}`,
           widgetMetrics,
           ruleDashConfig
         )

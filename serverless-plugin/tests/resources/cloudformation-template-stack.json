@@ -1113,7 +1113,11 @@
                 "Arn"
               ]
             },
-            "Id": "serverless-test-project-dev-eventsRule-rule-1-target"
+            "Id": "serverless-test-project-dev-eventsRule-rule-1-target",
+            "RetryPolicy": {
+              "MaximumEventAgeInSeconds": 60,
+              "MaximumRetryAttempts": 2
+            }
           }
         ]
       }

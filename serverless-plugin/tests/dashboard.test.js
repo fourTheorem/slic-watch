@@ -247,7 +247,7 @@ test('A dashboard includes metrics', (t) => {
 
   t.test('dashboard includes Events metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('Events')
+      title.startsWith('EventBridge')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
@@ -257,7 +257,7 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/Events']))
-    const expectedTitles = new Set(['Events rule serverless-test-project-dev-eventsRule-rule-1'])
+    const expectedTitles = new Set(['EventBridge Rule serverless-test-project-dev-eventsRule-rule-1'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
