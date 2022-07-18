@@ -167,7 +167,7 @@ EventBridge alarms are created for:
 
 EventBridge Rule dashboard widgets show:
 
-|FailedInvocations|Invocations|ThrottledRules|
+|Failed Invocations|Invocations|
 |--|--|
 |![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
 

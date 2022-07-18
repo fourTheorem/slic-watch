@@ -508,9 +508,9 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
   }
 
   /**
-   * Create a set of CloudWatch Dashboard widgets for SNS services.
+   * Create a set of CloudWatch Dashboard widgets for EventBridge services.
    *
-   * @param {object} ruleResources Object of SNS Service resources by resource name
+   * @param {object} ruleResources Object of EventBridge Service resources by resource name
    */
   function createRuleWidgets (ruleResources) {
     const ruleWidgets = []
