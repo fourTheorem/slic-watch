@@ -17,6 +17,7 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  6. Step Functions
  7. ECS (Fargate or EC2)
  8. SNS
+ 9. EventBridge
 
 Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
@@ -158,6 +159,18 @@ SNS Topic dashboard widgets show:
 |--|--|
 |![Invalid Attributes](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsInvalidAttributes.png)|![Notifications Failed](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/snsNotificationsFailed.png) |
 
+### EventBridge
+
+EventBridge alarms are created for:
+1. Failed Invocations
+2. Throttled Rules
+
+EventBridge Rule dashboard widgets show:
+
+|FailedInvocations|Invocations|ThrottledRules|
+|--|--|
+|![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
+
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.
@@ -286,6 +299,14 @@ custom:
           NumberOfNotificationsFailed:
             Statistic: Sum 
             Threshold: 1
+        Events:
+          #EventBridge
+          FailedInvocations:
+            Statistic: Sum 
+            Threshold: 1
+          ThrottledRules:
+            Statistic: Sum 
+            Threshold: 1
 
     dashboard:
       enabled: true
@@ -371,6 +392,14 @@ custom:
             Statistic: ["Sum"]
           NumberOfNotificationsFailed:
             Statistic: ["Sum"]
+        Events:
+          #EventBridge
+          FailedInvocations:
+            Statistic: ["Sum"]
+          ThrottledRules:
+            Statistic: ["Sum"]
+          Invocations: 
+            Statistic: ["Sum"] 
 ```
 
 An example project is provided for reference: [serverless-test-project](./serverless-test-project)

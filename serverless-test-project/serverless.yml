@@ -14,6 +14,7 @@ custom:
         Invocations:
           enabled: true
           Threshold: 10
+
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
@@ -86,6 +87,21 @@ functions:
           method: post
           path: "subscription"
 
+  eventsRule:
+    handler: rule-handler.handleRule
+    slicWatch:
+      alarms:
+          Lambda:
+            enabled: false
+    events:
+      - eventBridge:
+          pattern:
+            detail-type: 
+            - Invoke Lambda Function
+          retryPolicy:
+            maximumEventAge: 60
+            maximumRetryAttempts: 2
+
 resources: ${file(./sls-resources.yml)}
 
 stepFunctions:
@@ -107,3 +123,4 @@ stepFunctions:
         includeExecutionData: true
         destinations:
           - Fn::GetAtt: [expressWorkflowLogGroup, Arn]
+

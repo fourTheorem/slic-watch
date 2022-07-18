@@ -1094,6 +1094,33 @@
           "Ref": "topic"
         }
       }
+    },
+    "ServerlesstestprojectdeveventsRulerule1EventBridgeRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "detail-type": [
+            "Invoke Lambda Function"
+          ]
+        },
+        "Name": "serverless-test-project-dev-eventsRule-rule-1",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "EventsRuleLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Id": "serverless-test-project-dev-eventsRule-rule-1-target",
+            "RetryPolicy": {
+              "MaximumEventAgeInSeconds": 60,
+              "MaximumRetryAttempts": 2
+            }
+          }
+        ]
+      }
     }
   },
   "Outputs": {
