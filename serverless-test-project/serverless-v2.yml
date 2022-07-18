@@ -98,6 +98,7 @@ functions:
             enabled: false
     events:
       - eventBridge:
+          useCloudFormation: true
           pattern:
             detail-type: 
             - Invoke Lambda Function

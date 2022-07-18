@@ -35,7 +35,7 @@ class ServerlessPlugin {
   /**
    * Modify the CloudFormation template before the package is finalized
    */
-  finalizeHook () {
+  async finalizeHook () {
     const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
 
     const ajv = new Ajv({
@@ -85,7 +85,7 @@ class ServerlessPlugin {
 
     this.dashboard = dashboard(this.serverless, config.dashboard, functionDashboardConfigs, context)
     this.alarms = alarms(this.serverless, config.alarms, functionAlarmConfigs, context)
-    this.dashboard.addDashboard(cfTemplate)
+    await this.dashboard.addDashboard(cfTemplate)
     this.alarms.addAlarms(cfTemplate)
   }
 }

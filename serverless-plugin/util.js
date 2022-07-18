@@ -1,6 +1,23 @@
 'use strict'
 
 const stringcase = require('case')
+const { ElasticLoadBalancingV2Client, DescribeTargetGroupsCommand, DescribeLoadBalancersCommand } = require('@aws-sdk/client-elastic-load-balancing-v2') // CommonJS import
+const client = new ElasticLoadBalancingV2Client({})
+
+async function extractFullName (target, command) {
+  return (await client.send(command))[target + 's'][0][target + 'Arn'].split('/').slice(1).join('/')
+}
+
+const getName = resource => Object.values(resource)[0].Properties.Name
+
+async function getTargetGroupFullName (resource) {
+  const command = new DescribeTargetGroupsCommand({ Names: [getName(resource)] })
+  return 'targetgroup/' + await extractFullName('TargetGroup', command)
+}
+async function getLoadBalancerFullName (resource) {
+  const command = new DescribeLoadBalancersCommand({ Names: [getName(resource)] })
+  return extractFullName('LoadBalancer', command)
+}
 
 /**
  * Filter an object to produce a new object with entries matching the supplied predicate
@@ -80,5 +97,7 @@ module.exports = {
   makeResourceName,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
-  getStatisticName
+  getStatisticName,
+  getTargetGroupFullName,
+  getLoadBalancerFullName
 }

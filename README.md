@@ -18,7 +18,8 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  7. ECS (Fargate or EC2)
  8. SNS
  9. EventBridge
-
+ 10. Application Load Balancer
+ 
 Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
 
 ## Getting Started
@@ -170,6 +171,20 @@ EventBridge Rule dashboard widgets show:
 |Failed Invocations|Invocations|
 |--|--|
 |![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
+
+### Application Load Balancer
+
+Application Load Balancer alarms are created for:
+1. HTTP Code  ELB 5XX Count
+2. Rejected Connection Count
+3. HTTP Code Target 5XX Count
+4. UnHealthy Host Count
+5. Lambda Internal Error
+6. Lambda User Error
+
+Application Load Balancer dashboard widgets show:
+|--|--||--|--||--|--|
+|![HTTPCode_ELB_5XX_Count]() |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count]() |![UnHealthyHostCount]() |![LambdaInternalError]() |![LambdaUserError]()|
 
 ## Configuration
 

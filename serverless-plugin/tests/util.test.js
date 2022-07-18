@@ -6,7 +6,9 @@ const {
   filterObject,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
-  getStatisticName
+  getStatisticName,
+  getTargetGroupFullName,
+  getLoadBalancerFullName
 } = require('../util')
 
 test('filterObject filters out', (t) => {
@@ -75,6 +77,18 @@ test('resolveEcsClusterNameForSub', (t) => {
   const unexpected = { Unexpected: 'syntax' }
   const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
   t.same(fromUnexpected, unexpected)
+  t.end()
+})
+
+test('getTargetGroupFullName', (t) => {
+  const fromLiteral = getTargetGroupFullName('targetgroup/10bf92242b4efc6ad3241b156008f170/1498f14364393da3')
+  t.equal(fromLiteral, 'targetgroup/10bf92242b4efc6ad3241b156008f170/1498f14364393da3')
+  t.end()
+})
+
+test('getLoadBalancerFullName', (t) => {
+  const fromLiteral = getLoadBalancerFullName('app/awesome-loadBalancer/c2c94aafd2470792')
+  t.equal(fromLiteral, 'app/awesome-loadBalancer/c2c94aafd2470792')
   t.end()
 })
 

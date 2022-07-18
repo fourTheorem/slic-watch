@@ -109,6 +109,26 @@ alarms:
     ThrottledRules:
       Statistic: Sum 
       Threshold: 1
+  ApplicationELB:
+    #Application Load Balancer 
+    HTTPCode_ELB_5XX_Count:
+      Statistic: Sum 
+      Threshold: 0
+    RejectedConnectionCount:
+      Statistic: Sum 
+      Threshold: 0 
+    HTTPCode_Target_5XX_Count:
+      Statistic: Sum 
+      Threshold: 0 
+    UnHealthyHostCount:
+      Statistic: Average 
+      Threshold: 0 
+    LambdaInternalError:
+      Statistic: Sum 
+      Threshold: 0 
+    LambdaUserError:
+      Statistic: Sum 
+      Threshold: 0 
 
 dashboard:
   enabled: true
@@ -201,4 +221,19 @@ dashboard:
         Statistic: ["Sum"]
       Invocations: 
         Statistic: ["Sum"] 
-    
+    ApplicationELB:
+     #Application Load Balancer  
+      HTTPCode_ELB_5XX_Count:
+        Statistic: ["Sum"] 
+      RejectedConnectionCount:
+        Statistic: ["Sum"] 
+    ApplicationELBTarget:
+      HTTPCode_Target_5XX_Count:
+        Statistic: ["Sum"] 
+      UnHealthyHostCount:
+        Statistic: ["Average"]
+      LambdaInternalError:
+        Statistic: ["Sum"] 
+      LambdaUserError:
+        Statistic: ["Sum"] 
+
