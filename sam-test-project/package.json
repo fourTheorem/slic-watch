@@ -1,0 +1,21 @@
+{
+    "name": "sam-test-project",
+    "description": "Test project for cf-macro-slic-watch",
+    "version": "0.0.1",
+    "main": "lambda1.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fourTheorem/slic-watch.git",
+        "directory": "sam-test-project"
+    },
+    "license": "Apache",
+    "private": true,
+    "dependencies": {
+    },
+    "devDependencies": {
+        "jest": "^26.6.3"
+    },
+    "scripts": {
+        "test": "jest"
+    }
+}

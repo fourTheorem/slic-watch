@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "cf-macro-slic-watch"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-iuh70bg1ttoi"
+s3_prefix = "cf-macro-slic-watch"
+region = "eu-west-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

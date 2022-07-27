@@ -1,0 +1,23 @@
+{
+    "name": "cf-macro-slic-watch",
+    "description": "CF macro for automatic alarms and dashboards",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fourTheorem/slic-watch.git",
+        "directory": "cf-macro"
+    },
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "case": "^1.6.3",
+        "lodash": "^4.17.21",
+        "yaml": "^1.10.2"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3"
+    },
+    "scripts": {
+        "test": "jest"
+    }
+}
