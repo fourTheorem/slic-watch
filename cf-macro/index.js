@@ -1,8 +1,8 @@
 'use strict'
 
-const alarms = require('./core/alarms')
-const CloudFormationTemplate = require('./core/cf-template')
-const defaultConfig = require('./core/default-config')
+const alarms = require('slic-watch-core/alarms')
+const CloudFormationTemplate = require('slic-watch-core/cf-template')
+const defaultConfig = require('slic-watch-core/default-config')
 
 exports.handler =  async function(event, context) {
   console.info("Received event", {event})

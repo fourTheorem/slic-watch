@@ -12,6 +12,7 @@
     "dependencies": {
         "case": "^1.6.3",
         "lodash": "^4.17.21",
+        "slic-watch-core": "file:../core",
         "yaml": "^1.10.2"
     },
     "devDependencies": {
