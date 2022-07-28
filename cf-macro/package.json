@@ -1,5 +1,5 @@
 {
-    "name": "cf-macro-slic-watch",
+    "name": "slic-watch-cf-macro",
     "description": "CF macro for automatic alarms and dashboards",
     "main": "index.js",
     "repository": {
@@ -12,7 +12,7 @@
     "dependencies": {
         "case": "^1.6.3",
         "lodash": "^4.17.21",
-        "slic-watch-core": "file:../core",
+        "slic-watch-core": "^1.0.0",
         "yaml": "^1.10.2"
     },
     "devDependencies": {
