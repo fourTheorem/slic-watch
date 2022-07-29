@@ -2,8 +2,8 @@
   "packages": [
     "serverless-plugin",
     "serverless-test-project",
-    "core",
-    "cf-macro"
+    "cf-macro",
+    "sam-test-project"
   ],
   "version": "1.3.0"
 }

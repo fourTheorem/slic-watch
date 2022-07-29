@@ -24,7 +24,6 @@ function processFragment( event ){
         alarmActions
       }
       const cfTemplate = CloudFormationTemplate(
-        //JSON.parse(outputFragment)
         outputFragment
       )
       const serverless = {cli:console};

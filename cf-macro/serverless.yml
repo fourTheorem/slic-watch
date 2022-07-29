@@ -1,0 +1,23 @@
+service: cf-macro
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-1
+
+functions:
+  MacroLambdaFunction:
+    handler: index.handler
+
+resources:
+  Resources:
+    CfMacroSlicWatch:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: CfMacroSlicWatch
+        FunctionName:
+          Fn::GetAtt:
+            - MacroLambdaFunctionLambdaFunction
+            - Arn
