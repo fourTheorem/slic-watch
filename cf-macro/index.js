@@ -1,6 +1,7 @@
 'use strict'
 
 const alarms = require('slic-watch-core/alarms')
+const dashboard = require('slic-watch-core/dashboard')
 const CloudFormationTemplate = require('slic-watch-core/cf-template')
 const defaultConfig = require('slic-watch-core/default-config')
 
@@ -20,7 +21,12 @@ function processFragment( event ){
       if (process.env.SNSTopic) {
         alarmActions.push(process.env.SNSTopic)
       }
+
+      console.log('event',event)
+      
       const context = {
+        region: event.region,
+        //stackName: this.providerNaming.getStackName(),
         alarmActions
       }
       const cfTemplate = CloudFormationTemplate(
@@ -28,6 +34,7 @@ function processFragment( event ){
       )
       const serverless = {cli:console};
       const functionAlarmConfigs = {}
+      const functionDashboardConfigs = {}
 
       //ToDo: temp fix to fill functionAlarmConfigs required by Alarms implementation
       const lambdaResources = cfTemplate.getResourcesByType(
@@ -35,11 +42,14 @@ function processFragment( event ){
       );
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
         functionAlarmConfigs[funcResource.Properties.FunctionName] =  {}
+        functionDashboardConfigs[funcResource.Properties.FunctionName] =  {}
       }
       //ToDo: temp fix end
   
-      const alarmservice = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
-      alarmservice.addAlarms(cfTemplate)
+      const alarmService = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
+      alarmService.addAlarms(cfTemplate)
+      const dashboardService = dashboard(serverless, defaultConfig.dashboard, functionDashboardConfigs, context)
+      dashboardService.addDashboard(cfTemplate)
       outputFragment = cfTemplate.getSourceObject();
      
     } catch (err) {
