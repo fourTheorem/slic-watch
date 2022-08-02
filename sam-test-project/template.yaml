@@ -6,8 +6,10 @@ Description: >-
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform: ["AWS::Serverless-2016-10-31", "CfMacroSlicWatch"]
 
-# Parameters:
-#   StackName: !Ref "AWS::StackName"
+Parameters:
+  stack:
+    Type: String
+    Default: sam-test-stack-project
       
 Resources:
   LambdaFunction1:
