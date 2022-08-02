@@ -34,16 +34,16 @@ function processFragment( event ){
       const functionAlarmConfigs = {}
       const functionDashboardConfigs = {}
 
-      //ToDo: temp fix to fill functionAlarmConfigs required by Alarms implementation
       const lambdaResources = cfTemplate.getResourcesByType(
         'AWS::Lambda::Function'
       );
+
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        functionAlarmConfigs[funcResource.Properties.FunctionName] =  {}
-        functionDashboardConfigs[funcResource.Properties.FunctionName] =  {}
+        const funcConfig = funcResource.Metadata.slicWatch || {}
+        functionAlarmConfigs[funcResource.Properties.FunctionName] =  funcConfig.alarms || {}
+        functionDashboardConfigs[funcResource.Properties.FunctionName] =  funcConfig.dashboard || {}
       }
-      //ToDo: temp fix end
-  
+
       const alarmService = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
       alarmService.addAlarms(cfTemplate)
       const dashboardService = dashboard(serverless, defaultConfig.dashboard, functionDashboardConfigs, context)
