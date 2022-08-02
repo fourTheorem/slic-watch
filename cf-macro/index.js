@@ -21,14 +21,12 @@ function processFragment( event ){
       if (process.env.SNSTopic) {
         alarmActions.push(process.env.SNSTopic)
       }
-
-      console.log('event',event)
-      
       const context = {
         region: event.region,
-        //stackName: this.providerNaming.getStackName(),
+        stackName: (event.templateParameterValues.stack)?event.templateParameterValues.stack : "",
         alarmActions
       }
+
       const cfTemplate = CloudFormationTemplate(
         outputFragment
       )
