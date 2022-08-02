@@ -26,3 +26,11 @@ Resources:
       Policies:
         # Give Lambda basic execution Permission to the helloFromLambda
         - AWSLambdaBasicExecutionRole
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            Invocations:
+              Threshold: 3
+        dashboard:
+          enabled: false
