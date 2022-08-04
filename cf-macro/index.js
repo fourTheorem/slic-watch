@@ -80,7 +80,7 @@ function processFragment( event ){
     
     return {
         "requestId": event.requestId,
-        "status": "fail",
+        "status": status,
         "fragment": outputFragment
     }
 }
