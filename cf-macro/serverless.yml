@@ -10,6 +10,9 @@ provider:
 functions:
   MacroLambdaFunction:
     handler: index.handler
+    environment:
+      SNSTopic: !Ref MonitoringTopic
+
 
 resources:
   Resources:
@@ -21,3 +24,7 @@ resources:
           Fn::GetAtt:
             - MacroLambdaFunctionLambdaFunction
             - Arn
+    MonitoringTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: Default-CloudWatch-Alarm-Topic

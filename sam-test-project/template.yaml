@@ -10,6 +10,25 @@ Parameters:
   stack:
     Type: String
     Default: sam-test-stack-project
+
+Metadata:
+  slicWatch:
+    enabled: true
+    # topicArn: ${env:ALARM_TOPIC}
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
       
 Resources:
   LambdaFunction1:
