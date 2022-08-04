@@ -15,6 +15,7 @@ Metadata:
   slicWatch:
     enabled: true
     # topicArn: ${env:ALARM_TOPIC}
+    topicArn: !Ref MonitoringTopic
     alarms:
       Lambda:
         Invocations:
@@ -31,6 +32,10 @@ Metadata:
           Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
       
 Resources:
+  MonitoringTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: SS-Alarm-Topic2
   LambdaFunction1:
     Type: AWS::Serverless::Function
     Properties:
