@@ -183,7 +183,7 @@ const slicWatchSchema = {
   properties: {
     alarms: alarmsSchema,
     dashboard: dashboardSchema,
-    topicArn: { type: 'string' },
+    topicArn: { type: ['string', 'object'] },
     enabled: { type: 'boolean' }
   },
   required: [],

@@ -21,19 +21,19 @@ function processFragment( event ){
     try {
 
       const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
-     
       const ajv = new Ajv({
         unicodeRegExp: false
       })
       const slicWatchValidate = ajv.compile(slicWatchSchema)
       const slicWatchValid = slicWatchValidate(slicWatchConfig)
+    
       if (!slicWatchValid) {
         throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
       }
       
       if (slicWatchConfig.enabled === true) {
 
-        const alarmActions = []
+        const alarmActions = []       
 
         if (slicWatchConfig.topicArn) {
           alarmActions.push(slicWatchConfig.topicArn)
