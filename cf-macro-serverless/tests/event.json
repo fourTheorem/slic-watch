@@ -1,0 +1,16 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "The AWS CloudFormation template for this Serverless application",
+    "Resources": {
+        "HelloLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Handler": "handler.hello",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "serverless-test-project-dev-hello",
+              "MemorySize": 1024,
+              "Timeout": 9
+            }
+          }
+    }
+}
