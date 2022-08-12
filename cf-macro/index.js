@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const Ajv = require('ajv')
 
 const alarms = require('slic-watch-core/alarms')
@@ -24,6 +25,8 @@ function processFragment( event ){
       const ajv = new Ajv({
         unicodeRegExp: false
       })
+      const config = _.merge(defaultConfig, slicWatchConfig)
+
       const slicWatchValidate = ajv.compile(slicWatchSchema)
       const slicWatchValid = slicWatchValidate(slicWatchConfig)
     
@@ -71,9 +74,9 @@ function processFragment( event ){
           functionDashboardConfigs[funcResource.Properties.FunctionName] =  funcConfig.dashboard || {}
         }
 
-        const alarmService = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
+        const alarmService = alarms(serverless, config.alarms, functionAlarmConfigs, context)
         alarmService.addAlarms(cfTemplate)
-        const dashboardService = dashboard(serverless, defaultConfig.dashboard, functionDashboardConfigs, context)
+        const dashboardService = dashboard(serverless, config.dashboard, functionDashboardConfigs, context)
         dashboardService.addDashboard(cfTemplate)
         outputFragment = cfTemplate.getSourceObject();
     }
