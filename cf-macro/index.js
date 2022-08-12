@@ -31,7 +31,7 @@ function processFragment( event ){
         throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
       }
       
-      if (slicWatchConfig.enabled === true) {
+      if (slicWatchConfig.enabled !== false) {
 
         const alarmActions = []       
 
@@ -41,7 +41,6 @@ function processFragment( event ){
         else if (process.env.SNSTopic){
           alarmActions.push(process.env.SNSTopic)
         }
-        console.log('alarmActions', alarmActions)
 
         const context = {
           region: event.region,
@@ -56,10 +55,16 @@ function processFragment( event ){
         const functionAlarmConfigs = {}
         const functionDashboardConfigs = {}
 
+        const cdkmetadata = cfTemplate.getResourcesByType(
+          'AWS::CDK::Metadata'
+        );
+        if (cdkmetadata.CDKMetadata !== undefined) {
+          context.stackName = cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].substr(0, cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].indexOf('/'))
+        }
+
         const lambdaResources = cfTemplate.getResourcesByType(
           'AWS::Lambda::Function'
         );
-
         for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
           const funcConfig = funcResource.Metadata.slicWatch || {}
           functionAlarmConfigs[funcResource.Properties.FunctionName] =  funcConfig.alarms || {}
