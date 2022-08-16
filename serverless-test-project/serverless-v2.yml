@@ -32,6 +32,8 @@ provider:
   region: eu-west-1
   stage: dev
   endpointType: REGIONAL
+  eventBridge:
+    useCloudFormation: true
 
 functions:
   hello:
