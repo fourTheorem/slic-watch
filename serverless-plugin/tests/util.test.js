@@ -7,7 +7,7 @@ const {
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
   getStatisticName
-} = require('../util')
+} = require('../../core/util')
 
 test('filterObject filters out', (t) => {
   const obj = { a: 1, b: 2, c: 3 }

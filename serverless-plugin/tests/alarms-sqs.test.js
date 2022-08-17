@@ -1,8 +1,8 @@
 'use strict'
 
-const sqsAlarms = require('../alarms-sqs')
+const sqsAlarms = require('../../core/alarms-sqs')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

@@ -1,11 +1,11 @@
 'use strict'
 
-const dynamoDbAlarms = require('../alarms-dynamodb')
+const dynamoDbAlarms = require('../../core/alarms-dynamodb')
 
 const { test } = require('tap')
 const { cloneDeep } = require('lodash')
 
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

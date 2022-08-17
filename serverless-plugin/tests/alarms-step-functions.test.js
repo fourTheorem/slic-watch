@@ -1,8 +1,8 @@
 'use strict'
 
-const stepFunctionsAlarms = require('../alarms-step-functions')
+const stepFunctionsAlarms = require('../../core/alarms-step-functions')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

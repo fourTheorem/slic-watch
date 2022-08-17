@@ -1,8 +1,8 @@
 'use strict'
 
-const apiGatewayAlarms = require('../alarms-api-gateway')
+const apiGatewayAlarms = require('../../core/alarms-api-gateway')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

@@ -1,9 +1,9 @@
 'use strict'
 
-const lambdaAlarms = require('../alarms-lambda')
+const lambdaAlarms = require('../../core/alarms-lambda')
 const { test } = require('tap')
-const { filterObject } = require('../util')
-const defaultConfig = require('../default-config')
+const { filterObject } = require('../../core/util')
+const defaultConfig = require('../../core/default-config')
 
 const {
   assertCommonAlarmProperties,
@@ -13,7 +13,7 @@ const {
   testContext,
   slsMock
 } = require('./testing-utils')
-const { applyAlarmConfig } = require('../function-config')
+const { applyAlarmConfig } = require('../../core/function-config')
 
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
