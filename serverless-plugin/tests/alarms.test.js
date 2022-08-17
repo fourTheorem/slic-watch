@@ -2,8 +2,8 @@
 
 const { test } = require('tap')
 
-const alarms = require('../alarms')
-const defaultConfig = require('../default-config')
+const alarms = require('../../core/alarms')
+const defaultConfig = require('../../core/default-config')
 const { createTestCloudFormationTemplate, slsMock, createTestConfig, testContext } = require('./testing-utils')
 
 test('Alarms create all service alarms', (t) => {

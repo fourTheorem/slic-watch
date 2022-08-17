@@ -1,8 +1,8 @@
 'use strict'
 
-const kinesisAlarms = require('../alarms-kinesis')
+const kinesisAlarms = require('../../core/alarms-kinesis')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

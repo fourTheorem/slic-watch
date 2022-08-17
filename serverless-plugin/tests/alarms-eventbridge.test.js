@@ -1,8 +1,8 @@
 'use strict'
 
-const ruleAlarms = require('../alarms-eventbridge')
+const ruleAlarms = require('../../core/alarms-eventbridge')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

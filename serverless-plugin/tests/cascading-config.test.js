@@ -2,7 +2,7 @@
 
 const { test } = require('tap')
 
-const { cascade } = require('../cascading-config')
+const { cascade } = require('../../core/cascading-config')
 
 test('No overrides cascades everything down', (t) => {
   const input = {

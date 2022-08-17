@@ -3,8 +3,8 @@
 const { cloneDeep } = require('lodash')
 const { test } = require('tap')
 
-const dashboard = require('../dashboard')
-const defaultConfig = require('../default-config')
+const dashboard = require('../../core/dashboard')
+const defaultConfig = require('../../core/default-config')
 
 const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock, slsYaml } = require('./testing-utils')
 

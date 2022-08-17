@@ -1,8 +1,8 @@
 'use strict'
 
-const ecsAlarms = require('../alarms-ecs')
+const ecsAlarms = require('../../core/alarms-ecs')
 const { test } = require('tap')
-const defaultConfig = require('../default-config')
+const defaultConfig = require('../../core/default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

@@ -5,8 +5,8 @@ const fs = require('fs')
 const _ = require('lodash')
 const YAML = require('yaml')
 
-const { cascade } = require('../cascading-config')
-const CloudFormationTemplate = require('../cf-template')
+const { cascade } = require('../../core/cascading-config')
+const CloudFormationTemplate = require('../../core/cf-template')
 const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
