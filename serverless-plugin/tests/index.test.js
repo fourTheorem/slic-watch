@@ -30,7 +30,7 @@ const testCfTemplate = {
 let testState = {}
 
 const ServerlessPlugin = proxyrequire('../index', {
-  './dashboard': () => {
+  'slic-watch-core/dashboard': () => {
     testState.dashboardCalled = true
     return {
       addDashboard: (cfTemplate) => {
@@ -38,7 +38,7 @@ const ServerlessPlugin = proxyrequire('../index', {
       }
     }
   },
-  './alarms': () => {
+  'slic-watch-core/alarms': () => {
     testState.alarmsCalled = true
     return {
       addAlarms: (cfTemplate) => {
