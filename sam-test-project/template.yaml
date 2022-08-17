@@ -57,4 +57,4 @@ Resources:
             Invocations:
               Threshold: 3
         dashboard:
-          enabled: false
+          enabled: true
