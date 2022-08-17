@@ -6,81 +6,77 @@ const alarms = require('slic-watch-core/alarms')
 const dashboard = require('slic-watch-core/dashboard')
 const CloudFormationTemplate = require('slic-watch-core/cf-template')
 const defaultConfig = require('slic-watch-core/default-config')
-const {  functionConfigSchema, slicWatchSchema } = require('slic-watch-core/config-schema')
+const { slicWatchSchema } = require('slic-watch-core/config-schema')
 
-exports.handler =  async function(event, context) {
-  console.info("Received event", {event})
-  const response = processFragment( event );
-  console.info("Returning", JSON.stringify(response));
-  return response;
+exports.handler = async function (event, context) {
+  console.info('Received event', { event })
+  const response = processFragment(event)
+  console.info('Returning', JSON.stringify(response))
+  return response
 }
 
-function processFragment( event ){
-   let status = "success"
-   let outputFragment = event.fragment; 
-    try {
+function processFragment (event) {
+  let status = 'success'
+  let outputFragment = event.fragment
+  try {
+    const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
+    const ajv = new Ajv({
+      unicodeRegExp: false
+    })
+    const slicWatchValidate = ajv.compile(slicWatchSchema)
+    const slicWatchValid = slicWatchValidate(slicWatchConfig)
 
-      const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
-      const ajv = new Ajv({
-        unicodeRegExp: false
-      })
-      const slicWatchValidate = ajv.compile(slicWatchSchema)
-      const slicWatchValid = slicWatchValidate(slicWatchConfig)
-    
-      if (!slicWatchValid) {
-        throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+    if (!slicWatchValid) {
+      throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+    }
+
+    if (slicWatchConfig.enabled === true) {
+      const alarmActions = []
+
+      if (slicWatchConfig.topicArn) {
+        alarmActions.push(slicWatchConfig.topicArn)
+      } else if (process.env.SNSTopic) {
+        alarmActions.push(process.env.SNSTopic)
       }
-      
-      if (slicWatchConfig.enabled === true) {
+      console.log('alarmActions', alarmActions)
 
-        const alarmActions = []       
+      const context = {
+        region: event.region,
+        stackName: (event.templateParameterValues.stack) ? event.templateParameterValues.stack : '',
+        alarmActions
+      }
 
-        if (slicWatchConfig.topicArn) {
-          alarmActions.push(slicWatchConfig.topicArn)
-        }
-        else if (process.env.SNSTopic){
-          alarmActions.push(process.env.SNSTopic)
-        }
-        console.log('alarmActions', alarmActions)
+      const cfTemplate = CloudFormationTemplate(
+        outputFragment
+      )
+      const serverless = { cli: console }
+      const functionAlarmConfigs = {}
+      const functionDashboardConfigs = {}
 
-        const context = {
-          region: event.region,
-          stackName: (event.templateParameterValues.stack)?event.templateParameterValues.stack : "",
-          alarmActions
-        }
+      const lambdaResources = cfTemplate.getResourcesByType(
+        'AWS::Lambda::Function'
+      )
 
-        const cfTemplate = CloudFormationTemplate(
-          outputFragment
-        )
-        const serverless = {cli:console};
-        const functionAlarmConfigs = {}
-        const functionDashboardConfigs = {}
+      for (const [, funcResource] of Object.entries(lambdaResources)) {
+        const funcConfig = funcResource.Metadata.slicWatch || {}
+        functionAlarmConfigs[funcResource.Properties.FunctionName] = funcConfig.alarms || {}
+        functionDashboardConfigs[funcResource.Properties.FunctionName] = funcConfig.dashboard || {}
+      }
 
-        const lambdaResources = cfTemplate.getResourcesByType(
-          'AWS::Lambda::Function'
-        );
-
-        for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-          const funcConfig = funcResource.Metadata.slicWatch || {}
-          functionAlarmConfigs[funcResource.Properties.FunctionName] =  funcConfig.alarms || {}
-          functionDashboardConfigs[funcResource.Properties.FunctionName] =  funcConfig.dashboard || {}
-        }
-
-        const alarmService = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
-        alarmService.addAlarms(cfTemplate)
-        const dashboardService = dashboard(serverless, defaultConfig.dashboard, functionDashboardConfigs, context)
-        dashboardService.addDashboard(cfTemplate)
-        outputFragment = cfTemplate.getSourceObject();
+      const alarmService = alarms(serverless, defaultConfig.alarms, functionAlarmConfigs, context)
+      alarmService.addAlarms(cfTemplate)
+      const dashboardService = dashboard(serverless, defaultConfig.dashboard, functionDashboardConfigs, context)
+      dashboardService.addDashboard(cfTemplate)
+      outputFragment = cfTemplate.getSourceObject()
     }
-     
-    } catch (err) {
-      console.error(err);
-      status = "fail"
-    }
-    
-    return {
-        "requestId": event.requestId,
-        "status": status,
-        "fragment": outputFragment
-    }
+  } catch (err) {
+    console.error(err)
+    status = 'fail'
+  }
+
+  return {
+    requestId: event.requestId,
+    status: status,
+    fragment: outputFragment
+  }
 }
