@@ -6,10 +6,32 @@ const {
   filterObject,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
-  getStatisticName,
-  getTargetGroupFullName,
-  getLoadBalancerFullName
+  getStatisticName
 } = require('../util')
+
+test('getResourcesFullName', async (t) => {
+  const { getLoadBalancerFullName, getTargetGroupFullName } = t.mock('../util.js', {
+    '@aws-sdk/client-elastic-load-balancing-v2': {
+      ElasticLoadBalancingV2Client: function () {
+        this.send = async command => {
+          return {
+            TargetGroups: [{ TargetGroupArn: 'dummy-arn/1234567/1234890' }],
+            LoadBalancers: [{ LoadBalancerArn: 'dummy-arn/app/awesome-alb/1234890' }]
+          }
+        }
+      },
+      DescribeTargetGroupsCommand: function ({ Names }) {},
+      DescribeLoadBalancersCommand: function ({ Names }) {}
+    }
+  })
+  const targetResource = { SomeTargetGroup: { Properties: { Name: 'TargetGroup' } } }
+  const loadBalancerResource = { SomeLoadBalancer: { Properties: { Name: 'LoadBalancer' } } }
+  const targetGroupFullName = await getTargetGroupFullName(targetResource)
+  const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResource)
+  t.equal('targetgroup/1234567/1234890', targetGroupFullName)
+  t.equal('app/awesome-alb/1234890', loadBalancerFullName)
+  t.end()
+})
 
 test('filterObject filters out', (t) => {
   const obj = { a: 1, b: 2, c: 3 }
@@ -77,18 +99,6 @@ test('resolveEcsClusterNameForSub', (t) => {
   const unexpected = { Unexpected: 'syntax' }
   const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
   t.same(fromUnexpected, unexpected)
-  t.end()
-})
-
-test('getTargetGroupFullName', (t) => {
-  const fromLiteral = getTargetGroupFullName('targetgroup/10bf92242b4efc6ad3241b156008f170/1498f14364393da3')
-  t.equal(fromLiteral, 'targetgroup/10bf92242b4efc6ad3241b156008f170/1498f14364393da3')
-  t.end()
-})
-
-test('getLoadBalancerFullName', (t) => {
-  const fromLiteral = getLoadBalancerFullName('app/awesome-loadBalancer/c2c94aafd2470792')
-  t.equal(fromLiteral, 'app/awesome-loadBalancer/c2c94aafd2470792')
   t.end()
 })
 

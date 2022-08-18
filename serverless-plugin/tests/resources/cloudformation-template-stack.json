@@ -1622,6 +1622,15 @@
       "Export": {
         "Name": "sls-serverless-test-project-dev-ServiceEndpoint"
       }
+    },
+    "AlbEventLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "AlbEventLambdaVersionhrnQYsD35ePajj2oOiAchLcEoSaZiKn5QmaF0LAeaI4"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-dev-AlbEventLambdaFunctionQualifiedArn"
+      }
     }
   }
 }

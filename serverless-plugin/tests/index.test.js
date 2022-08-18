@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 const proxyrequire = require('proxyquire')
-const ServerlessError = require('serverless/lib/serverless-error')
 const { test } = require('tap')
 
 const slsYaml = {
@@ -93,9 +92,9 @@ test('index', t => {
     t.end()
   })
 
-  t.test('finalizeHook adds dashboard and alarms', (t) => {
+  t.test('finalizeHook adds dashboard and alarms', async (t) => {
     const plugin = new ServerlessPlugin(mockServerless, {})
-    plugin.finalizeHook()
+    await plugin.finalizeHook()
 
     t.equal(testState.addDashboardCfTemplate.getSourceObject(), testCfTemplate)
     t.equal(testState.addAlarmsCfTemplate.getSourceObject(), testCfTemplate)
@@ -123,7 +122,7 @@ test('index', t => {
         defineCustomProperties: (schema) => {
           testData.schema = schema
         },
-        defineFunctionProperties: (provider, schema) => {
+        defineFunctionProperties: (_provider, schema) => {
           testData.functionSchema = schema
         }
       }
@@ -186,7 +185,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin execution fails if an invalid SLIC Watch config is provided', (t) => {
+  t.test('Plugin execution fails if an invalid SLIC Watch config is provided', async (t) => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
     const plugin = new ServerlessPlugin(
@@ -199,7 +198,12 @@ test('index', t => {
       },
       {}
     )
-    t.throws(() => plugin.finalizeHook(), ServerlessError)
+    try {
+      await plugin.finalizeHook()
+      t.fail('Should fail because parses')
+    } catch (error) {
+      t.ok(error.name === 'ServerlessError')
+    }
     t.end()
   })
 

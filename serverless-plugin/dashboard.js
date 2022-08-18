@@ -565,31 +565,33 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
    */
   async function createLoadBalancerWidgets (loadBalancerResources) {
     const loadBalancerWidgets = []
-    const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
-    for (const res of Object.values(loadBalancerResources)) {
-      const loadBalancerName = res.Properties.Name
-      const widgetMetrics = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
-        if (metricConfig.enabled) {
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/ApplicationELB',
-              metric,
-              dimensions: {
-                LoadBalancer: loadBalancerFullName
-              },
-              stat
-            })
+    if (Object.keys(loadBalancerResources).length) {
+      const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
+      for (const res of Object.values(loadBalancerResources)) {
+        const loadBalancerName = res.Properties.Name
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName
+                },
+                stat
+              })
+            }
           }
         }
-      }
-      if (widgetMetrics.length > 0) {
-        const metricStatWidget = createMetricWidget(
-          `Application Load Balancer ${loadBalancerName}`,
-          widgetMetrics,
-          albDashConfig
-        )
-        loadBalancerWidgets.push(metricStatWidget)
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Application Load Balancer ${loadBalancerName}`,
+            widgetMetrics,
+            albDashConfig
+          )
+          loadBalancerWidgets.push(metricStatWidget)
+        }
       }
     }
     return loadBalancerWidgets
@@ -603,33 +605,35 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
    */
   async function createTargetGroupWidgets (targetGroupResources, loadBalancerResources) {
     const targetGroupWidgets = []
-    const targetGroupFullName = await getTargetGroupFullName(targetGroupResources)
-    const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
-    for (const res of Object.values(loadBalancerResources)) {
-      const loadBalancerName = res.Properties.Name
-      const widgetMetrics = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-        if (metricConfig.enabled) {
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/ApplicationELB',
-              metric,
-              dimensions: {
-                LoadBalancer: loadBalancerFullName,
-                TargetGroup: targetGroupFullName
-              },
-              stat
-            })
+    if (Object.keys(targetGroupResources).length && Object.keys(loadBalancerResources).length) {
+      const targetGroupFullName = await getTargetGroupFullName(targetGroupResources)
+      const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
+      for (const res of Object.values(loadBalancerResources)) {
+        const loadBalancerName = res.Properties.Name
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName,
+                  TargetGroup: targetGroupFullName
+                },
+                stat
+              })
+            }
           }
         }
-      }
-      if (widgetMetrics.length > 0) {
-        const metricStatWidget = createMetricWidget(
-          `Application Load Balancer/Target Group ${loadBalancerName}`,
-          widgetMetrics,
-          albTargetDashConfig
-        )
-        targetGroupWidgets.push(metricStatWidget)
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Application Load Balancer/Target Group ${loadBalancerName}`,
+            widgetMetrics,
+            albTargetDashConfig
+          )
+          targetGroupWidgets.push(metricStatWidget)
+        }
       }
     }
     return targetGroupWidgets

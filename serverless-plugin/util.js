@@ -1,7 +1,7 @@
 'use strict'
 
 const stringcase = require('case')
-const { ElasticLoadBalancingV2Client, DescribeTargetGroupsCommand, DescribeLoadBalancersCommand } = require('@aws-sdk/client-elastic-load-balancing-v2') // CommonJS import
+const { ElasticLoadBalancingV2Client, DescribeTargetGroupsCommand, DescribeLoadBalancersCommand } = require('@aws-sdk/client-elastic-load-balancing-v2')
 const client = new ElasticLoadBalancingV2Client({})
 
 async function extractFullName (target, command) {
@@ -99,5 +99,7 @@ module.exports = {
   resolveEcsClusterNameForSub,
   getStatisticName,
   getTargetGroupFullName,
-  getLoadBalancerFullName
+  getLoadBalancerFullName,
+  getName,
+  extractFullName
 }

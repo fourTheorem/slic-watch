@@ -37,7 +37,7 @@ test('ALB alarms are created', (t) => {
       EvaluationPeriods: 2,
       TreatMissingData: 'breaching',
       ComparisonOperator: 'GreaterThanOrEqualToThreshold',
-      ApplicationELB: {
+      ApplicationELBTarget: {
         HTTPCode_Target_5XX_Count: {
           Threshold: 50
         },
@@ -54,14 +54,15 @@ test('ALB alarms are created', (t) => {
     }
 
   )
+  function createAlarmResources (elbAlarmConfig) {
+    const { createALBAlarms } = albAlarms(elbAlarmConfig, testContext)
+    const cfTemplate = createTestCloudFormationTemplate()
+    createALBAlarms(cfTemplate)
+    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  }
 
-  const albAlarmConfig = (alarmConfigELB + alarmConfigTargetGroup).ApplicationELB
-
-  const { createALBAlarms } = albAlarms(albAlarmConfig, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createALBAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const albAlarmResources = createAlarmResources(alarmConfigELB.ApplicationELB)
+  const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
 
   const expectedTypesELB = {
     LoadBalancerHTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
@@ -75,15 +76,15 @@ test('ALB alarms are created', (t) => {
     LoadBalancerLambdaUserErrorAlarm: 'LambdaUserError'
   }
 
-  t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypesELB).length)
-  for (const alarmResource of Object.values(alarmResources)) {
+  t.equal(Object.keys(albAlarmResources).length, Object.keys(expectedTypesELB).length)
+  for (const alarmResource of Object.values(albAlarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
     const expectedMetric = expectedTypesELB[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, albAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, alarmConfigELB.ApplicationELB[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -97,15 +98,15 @@ test('ALB alarms are created', (t) => {
     ])
   }
 
-  t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypesTargetGroup).length)
-  for (const alarmResource of Object.values(alarmResources)) {
+  t.equal(Object.keys(targeGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
+  for (const alarmResource of Object.values(targeGroupAlarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
     const expectedMetric = expectedTypesTargetGroup[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, albAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, alarmConfigTargetGroup.ApplicationELBTarget[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -113,12 +114,12 @@ test('ALB alarms are created', (t) => {
     t.equal(al.Period, 120)
     t.same(al.Dimensions, [
       {
-        Name: 'LoadBalancer',
-        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
-      },
-      {
         Name: 'TargetGroup',
         Value: { 'Fn::GetAtt': ['AlbEventAlbTargetGrouphttpListener', 'TargetGroupFullName'] }
+      },
+      {
+        Name: 'LoadBalancer',
+        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
       }
     ])
   }
@@ -127,7 +128,7 @@ test('ALB alarms are created', (t) => {
 })
 
 test('ALB alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const alarmConfigELB = createTestConfig(
     defaultConfig.alarms,
     {
       ApplicationELB: {
@@ -138,7 +139,16 @@ test('ALB alarms are not created when disabled globally', (t) => {
         },
         RejectedConnectionCount: {
           Threshold: 50
-        },
+        }
+      }
+    }
+  )
+  const alarmConfigTargetGroup = createTestConfig(
+    defaultConfig.alarms,
+    {
+      ApplicationELBTarget: {
+        enabled: false, // disabled globally
+        Period: 60,
         HTTPCode_Target_5XX_Count: {
           Threshold: 50
         },
@@ -155,15 +165,16 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  const albAlarmConfig = alarmConfig.ApplicationELB
+  function createAlarmResources (elbAlarmConfig) {
+    const { createALBAlarms } = albAlarms(elbAlarmConfig, testContext)
+    const cfTemplate = createTestCloudFormationTemplate()
+    createALBAlarms(cfTemplate)
+    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  }
 
-  const { createALBAlarms } = albAlarms(albAlarmConfig, testContext)
+  const albAlarmResources = createAlarmResources(alarmConfigELB.ApplicationELB)
+  const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
 
-  const cfTemplate = createTestCloudFormationTemplate()
-  createALBAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
-
-  t.same({}, alarmResources)
+  t.same({}, albAlarmResources, targeGroupAlarmResources)
   t.end()
 })

@@ -117,6 +117,7 @@ alarms:
     RejectedConnectionCount:
       Statistic: Sum 
       Threshold: 0 
+  ApplicationELBTarget:
     HTTPCode_Target_5XX_Count:
       Statistic: Sum 
       Threshold: 0 

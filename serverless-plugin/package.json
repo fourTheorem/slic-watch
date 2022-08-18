@@ -26,6 +26,7 @@
   "license": "Apache",
   "dependencies": {
     "@aws-sdk/client-elastic-load-balancing-v2": "^3.145.0",
+    "@tapjs/mock-esm": "github:tapjs/mock-esm",
     "ajv": "^8.9.0",
     "case": "^1.6.3",
     "lodash": "^4.17.21",

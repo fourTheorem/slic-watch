@@ -21,7 +21,9 @@ const supportedAlarms = {
   ECS: ['MemoryUtilization', 'CPUUtilization'],
   SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
   Events: ['FailedInvocations', 'ThrottledRules'],
-  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount', 'HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
+  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
+  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
+
 }
 
 const supportedWidgets = {
