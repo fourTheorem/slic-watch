@@ -1,8 +1,8 @@
 'use strict'
 
-const snsAlarms = require('../../core/alarms-sns')
+const snsAlarms = require('../alarms-sns')
 const { test } = require('tap')
-const defaultConfig = require('../../core/default-config')
+const defaultConfig = require('../default-config')
 const {
   assertCommonAlarmProperties,
   alarmNameToType,

@@ -3,7 +3,8 @@
     "serverless-plugin",
     "serverless-test-project",
     "cf-macro",
-    "sam-test-project"
+    "sam-test-project",
+    "core"
   ],
   "version": "1.3.0"
 }

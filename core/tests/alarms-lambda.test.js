@@ -1,9 +1,9 @@
 'use strict'
 
-const lambdaAlarms = require('../../core/alarms-lambda')
+const lambdaAlarms = require('../alarms-lambda')
 const { test } = require('tap')
-const { filterObject } = require('../../core/util')
-const defaultConfig = require('../../core/default-config')
+const { filterObject } = require('../util')
+const defaultConfig = require('../default-config')
 
 const {
   assertCommonAlarmProperties,

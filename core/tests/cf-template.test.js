@@ -1,6 +1,6 @@
 'use strict'
 
-const CloudFormationTemplate = require('../../core/cf-template')
+const CloudFormationTemplate = require('../cf-template')
 
 const { test } = require('tap')
 

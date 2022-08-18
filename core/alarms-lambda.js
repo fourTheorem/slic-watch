@@ -243,7 +243,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
 
   function createLambdaDurationAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
-    const funcTimeout = (funcResource.Properties.Timeout === undefined) ? 3 : funcResource.Properties.Timeout // optional prop, default is 3 seconds.
+    const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
 
     return {
