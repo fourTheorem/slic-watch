@@ -3,8 +3,8 @@
 const Ajv = require('ajv')
 const { test } = require('tap')
 
-const defaultConfig = require('../../core/default-config')
-const { pluginConfigSchema, slicWatchSchema } = require('../../core/config-schema')
+const defaultConfig = require('../default-config')
+const { pluginConfigSchema, slicWatchSchema } = require('../config-schema')
 
 test('Default config conforms to the config schema', (t) => {
   const slicWatchConfig = {

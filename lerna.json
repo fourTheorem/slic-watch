@@ -1,5 +1,6 @@
 {
   "packages": [
+    "core",
     "serverless-plugin",
     "serverless-test-project",
     "cf-macro",
