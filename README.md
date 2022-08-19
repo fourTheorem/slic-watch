@@ -62,7 +62,7 @@ Lambda Function alarms are created for:
 2. _Throttles_, as a percentage of the number of invocations
 3. _Duration_, as a percentage of the function's configured timeout
 4. _Invocations_, disabled by default
-5. _IteratorAge_, for function's triggered by an [Event Source Mapping](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html)
+5. _IteratorAge_, for functions triggered by an [Event Source Mapping](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html)
 
 Lambda dashboard widgets show:
 
