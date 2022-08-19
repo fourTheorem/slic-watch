@@ -11,7 +11,7 @@
   "dependencies": {
     "case": "^1.6.3",
     "lodash": "^4.17.21",
-    "yaml": "^2.1.1"
+    "yaml": "^1.10.2"
   }
   ,
   "devDependencies": {
