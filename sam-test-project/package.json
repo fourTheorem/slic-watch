@@ -11,11 +11,5 @@
     "license": "Apache",
     "private": true,
     "dependencies": {
-    },
-    "devDependencies": {
-        "jest": "^26.6.3"
-    },
-    "scripts": {
-        "test": "jest"
     }
 }

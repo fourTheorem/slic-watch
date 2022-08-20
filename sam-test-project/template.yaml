@@ -35,7 +35,7 @@ Resources:
   MonitoringTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: SS-Alarm-Topic2
+        TopicName: Test-Topic1
   LambdaFunction1:
     Type: AWS::Serverless::Function
     Properties:

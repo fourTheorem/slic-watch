@@ -17,12 +17,4 @@ Resources:
         - x86_64
       Policies:
         - AWSLambdaBasicExecutionRole
-      Environment:
-        Variables:
-          SNSTopic: !Ref MonitoringTopic    
-  MonitoringTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: ssTopic2
-
 

@@ -38,8 +38,6 @@ function processFragment (event) {
 
       if (slicWatchConfig.topicArn) {
         alarmActions.push(slicWatchConfig.topicArn)
-      } else if (process.env.SNSTopic) {
-        alarmActions.push(process.env.SNSTopic)
       }
 
       const context = {
