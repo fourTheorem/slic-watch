@@ -55,13 +55,6 @@ function processFragment (event) {
       const functionAlarmConfigs = {}
       const functionDashboardConfigs = {}
 
-      const cdkmetadata = cfTemplate.getResourcesByType(
-        'AWS::CDK::Metadata'
-      )
-      if (cdkmetadata.CDKMetadata !== undefined) {
-        context.stackName = cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].substr(0, cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].indexOf('/'))
-      }
-
       const lambdaResources = cfTemplate.getResourcesByType(
         'AWS::Lambda::Function'
       )
