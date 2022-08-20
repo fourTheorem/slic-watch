@@ -1,0 +1,21 @@
+{
+    "name": "cf-macro-slic-watch",
+    "description": "CF macro for automatic alarms and dashboards",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fourTheorem/slic-watch.git",
+        "directory": "cf-macro"
+    },
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "ajv": "^8.9.0",
+        "case": "^1.6.3",
+        "lodash": "^4.17.21",
+        "yaml": "^1.10.2"
+    },
+    "scripts": {
+        "preinstall": "(cp -r ../core/ node_modules/slic-watch-core || cp -r ../../../../core/ node_modules/slic-watch-core) && npm install --prefix node_modules/slic-watch-core || echo skipping core copy"
+    }
+}

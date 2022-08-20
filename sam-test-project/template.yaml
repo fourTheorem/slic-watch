@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  sam-test-project
+
+# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform: ["AWS::Serverless-2016-10-31", "CfMacroSlicWatch"]
+
+Parameters:
+  stack:
+    Type: String
+    Default: sam-test-stack-project
+
+Metadata:
+  slicWatch:
+    enabled: true
+    # topicArn: ${env:ALARM_TOPIC}
+    topicArn: !Ref MonitoringTopic
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+      
+Resources:
+  MonitoringTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: SS-Alarm-Topic2
+  LambdaFunction1:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName : sam-test-project-lambda1
+      Handler: lambda1.functionHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A Lambda function that returns a static string.
+      Policies:
+        # Give Lambda basic execution Permission to the helloFromLambda
+        - AWSLambdaBasicExecutionRole
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            Invocations:
+              Threshold: 3
+        dashboard:
+          enabled: true

@@ -3,11 +3,11 @@
 const _ = require('lodash')
 const Ajv = require('ajv')
 
-const alarms = require('./alarms')
-const dashboard = require('./dashboard')
-const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('./config-schema')
-const defaultConfig = require('./default-config')
-const CloudFormationTemplate = require('./cf-template')
+const alarms = require('slic-watch-core/alarms')
+const dashboard = require('slic-watch-core/dashboard')
+const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('slic-watch-core/config-schema')
+const defaultConfig = require('slic-watch-core/default-config')
+const CloudFormationTemplate = require('slic-watch-core/cf-template')
 
 const ServerlessError = require('serverless/lib/serverless-error')
 

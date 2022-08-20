@@ -13,7 +13,7 @@ const {
   testContext,
   slsMock
 } = require('./testing-utils')
-const { applyAlarmConfig } = require('../function-config')
+const { applyAlarmConfig } = require('../../core/function-config')
 
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {

@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  CfMacroSlicWatch:
+    Type: AWS::CloudFormation::Macro
+    Properties:
+      Name: CfMacroSlicWatch
+      FunctionName: !GetAtt MacroLambdaFunction.Arn
+  MacroLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs16.x
+      Timeout: 60
+      Architectures:
+        - x86_64
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          SNSTopic: !Ref MonitoringTopic    
+  MonitoringTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ssTopic2
+
+

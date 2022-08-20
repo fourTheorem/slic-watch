@@ -1,7 +1,10 @@
 {
   "packages": [
+    "core",
     "serverless-plugin",
-    "serverless-test-project"
+    "serverless-test-project",
+    "cf-macro",
+    "sam-test-project"
   ],
   "version": "1.3.0"
 }

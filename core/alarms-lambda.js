@@ -163,7 +163,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
   }
 
   function createLambdaErrorsAlarm (funcResourceName, funcResource, config) {
-    const funcName = funcResource.Properties.FunctionName
+    const funcName = funcResource.Properties.FunctionName // ToDo - this is optional, what should be the default?
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcResourceName}`,
@@ -243,7 +243,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
 
   function createLambdaDurationAlarm (funcResourceName, funcResource, config) {
     const funcName = funcResource.Properties.FunctionName
-    const funcTimeout = funcResource.Properties.Timeout
+    const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
 
     return {
