@@ -58,7 +58,7 @@ sls deploy
 ## Getting Started - CloudFormation Macro
 
 1. Deploying to your account (via the console)
-Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications)and click the Deploy button.
+Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications) and click the Deploy button.
 
 2. To add the Macro to a SAM template,  add it in the **Transform** section :
 ```

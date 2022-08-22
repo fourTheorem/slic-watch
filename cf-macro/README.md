@@ -2,7 +2,7 @@ This SAR app deploys a CloudFormation macro that generates CloudWatch Dashboard 
 
 Deployment:
 Deploying to your account (via the console)
-Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications)and click the Deploy button.
+Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications) and click the Deploy button.
 
 To add the Macro to a SAM template,  add it in the **Transform** section :
 ```
