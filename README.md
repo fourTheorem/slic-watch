@@ -19,9 +19,12 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  8. SNS
  9. EventBridge
 
-Currently, SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
+ Support:
 
-## Getting Started
+1. SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
+2. SLIC Watch is available as a CloudFormation Macro published in the SAR repository.
+
+## Getting Started - Serverless Plugin
 
 1. 📦 Install the plugin:
 ```
@@ -32,6 +35,7 @@ npm install serverless-slic-watch-plugin --save-dev
 plugins:
   - serverless-slic-watch-plugin
 ```
+
 3. 🪛 _Optionally_, add some configuration for the plugin to the `custom -> slicWatch` section of `serverless.yml`.
 Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
 so you can receive alarm notifications via email, Slack, etc.
@@ -49,6 +53,29 @@ See the [Configuration](#configuration) section below for more detailed instruct
 sls deploy
 ```
 5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
+
+
+## Getting Started - CloudFormation Macro
+
+1. Deploying to your account (via the console)
+Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications)and click the Deploy button.
+
+2. To add the Macro to a SAM template,  add it in the **Transform** section :
+```
+Transform: [ "CfMacroSlicWatch"]
+```
+3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
+Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
+so you can receive alarm notifications via email, Slack, etc.
+
+```
+Metadata:
+  slicWatch:
+    enabled: true
+    topicArn: !Ref MonitoringTopic
+```
+See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
+
 
 ## Features
 
