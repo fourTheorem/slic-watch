@@ -10,9 +10,7 @@ const defaultConfig = require('slic-watch-core/default-config')
 const { slicWatchSchema } = require('slic-watch-core/config-schema')
 
 exports.handler = async function (event, context) {
-  console.info('Received event', { event })
   const response = processFragment(event)
-  console.info('Returning', JSON.stringify(response))
   return response
 }
 
@@ -55,20 +53,15 @@ function processFragment (event) {
       const functionAlarmConfigs = {}
       const functionDashboardConfigs = {}
 
-      const cdkmetadata = cfTemplate.getResourcesByType(
-        'AWS::CDK::Metadata'
-      )
-      if (cdkmetadata.CDKMetadata !== undefined) {
-        context.stackName = cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].substr(0, cdkmetadata.CDKMetadata.Metadata['aws:cdk:path'].indexOf('/'))
-      }
-
       const lambdaResources = cfTemplate.getResourcesByType(
         'AWS::Lambda::Function'
       )
-      for (const [, funcResource] of Object.entries(lambdaResources)) {
+
+      for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
+        const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
         const funcConfig = funcResource.Metadata.slicWatch || {}
-        functionAlarmConfigs[funcResource.Properties.FunctionName] = funcConfig.alarms || {}
-        functionDashboardConfigs[funcResource.Properties.FunctionName] = funcConfig.dashboard || {}
+        functionAlarmConfigs[functionName] = funcConfig.alarms || {}
+        functionDashboardConfigs[functionName] = funcConfig.dashboard || {}
       }
 
       const alarmService = alarms(serverless, config.alarms, functionAlarmConfigs, context)

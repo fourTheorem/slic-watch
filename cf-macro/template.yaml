@@ -1,6 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: cf-macro-app
+    Description: Creates a Macro that can auto-generate Cloudwatch Alarms and Dashboard.
+    Author: FourTheorem
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: ../LICENSE
+    ReadmeUrl: README.md
+    Labels: ['slicwatch','monitoring']
+    HomePageUrl: https://github.com/fourTheorem/slic-watch
+    SemanticVersion: 0.0.7
+    SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   CfMacroSlicWatch:
     Type: AWS::CloudFormation::Macro
@@ -10,19 +21,11 @@ Resources:
   MacroLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.handler
+      Handler: cf-macro/index.handler
       Runtime: nodejs16.x
       Timeout: 60
       Architectures:
         - x86_64
       Policies:
         - AWSLambdaBasicExecutionRole
-      Environment:
-        Variables:
-          SNSTopic: !Ref MonitoringTopic    
-  MonitoringTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: ssTopic2
-
 
