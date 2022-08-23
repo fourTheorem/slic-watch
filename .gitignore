@@ -254,3 +254,6 @@ coverage/
 .vscode/
 .eslintcache
 lerna-debug*
+
+
+samconfig.toml

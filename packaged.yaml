@@ -6,18 +6,25 @@ Metadata:
     Description: Creates a Macro that can auto-generate Cloudwatch Alarms and Dashboard.
     Author: FourTheorem
     SpdxLicenseId: Apache-2.0
-    LicenseUrl: ../LICENSE
-    ReadmeUrl: README.md
-    Labels: ['slicwatch','monitoring']
+    LicenseUrl: s3://ss-sampackages/418cec9617720b9219e29516dc645028
+    ReadmeUrl: s3://ss-sampackages/f0f992d53795bac8b4aeaf1eaf22fbe6
+    Labels:
+    - slicwatch
+    - monitoring
     HomePageUrl: https://github.com/fourTheorem/slic-watch
-    SemanticVersion: 0.0.4
+    SemanticVersion: '0.0.4'
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   CfMacroSlicWatch:
     Type: AWS::CloudFormation::Macro
     Properties:
       Name: CfMacroSlicWatch
-      FunctionName: !GetAtt MacroLambdaFunction.Arn
+      FunctionName:
+        Fn::GetAtt:
+        - MacroLambdaFunction
+        - Arn
+    Metadata:
+      SamResourceId: CfMacroSlicWatch
   MacroLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -25,7 +32,9 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 60
       Architectures:
-        - x86_64
+      - x86_64
       Policies:
-        - AWSLambdaBasicExecutionRole
-
+      - AWSLambdaBasicExecutionRole
+      CodeUri: s3://ss-sampackages/7ae4314f3860ee2ebe38aa4e1d01b937
+    Metadata:
+      SamResourceId: MacroLambdaFunction
