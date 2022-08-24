@@ -36,7 +36,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     )
 
     for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
-      if (albAlarmConfig.HTTPCode_ELB_5XX_Count?.enabled) {
+      if (albAlarmConfig.HTTPCode_ELB_5XX_Count && albAlarmConfig.HTTPCode_ELB_5XX_Count.enabled) {
         const httpCodeELB5XXCount = createHTTPCodeELB5XXCountAlarm(
           loadBalancerResourceName,
           loadBalancerResource,
@@ -45,7 +45,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
         cfTemplate.addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource)
       }
 
-      if (albAlarmConfig.RejectedConnectionCount?.enabled) {
+      if (albAlarmConfig.RejectedConnectionCount && albAlarmConfig.RejectedConnectionCount.enabled) {
         const rejectedConnectionCount = createRejectedConnectionCountAlarm(
           loadBalancerResourceName,
           loadBalancerResource,
@@ -61,7 +61,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
 
-      if (albAlarmConfig.HTTPCode_Target_5XX_Count?.enabled) {
+      if (albAlarmConfig.HTTPCode_Target_5XX_Count && albAlarmConfig.HTTPCode_Target_5XX_Count.enabled) {
         const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
           targetGroupResourceName,
           targetGroupResource,
@@ -70,7 +70,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
         )
         cfTemplate.addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource)
       }
-      if (albAlarmConfig.UnHealthyHostCount?.enabled) {
+      if (albAlarmConfig.UnHealthyHostCount && albAlarmConfig.UnHealthyHostCount.enabled) {
         const unHealthyHostCount = createUnHealthyHostCountAlarm(
           targetGroupResourceName,
           targetGroupResource,
@@ -79,7 +79,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
         )
         cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
       }
-      if (albAlarmConfig.LambdaInternalError?.enabled) {
+      if (albAlarmConfig.LambdaInternalError && albAlarmConfig.LambdaInternalError.enabled) {
         const lambdaInternalError = createLambdaInternalErrorAlarm(
           targetGroupResourceName,
           targetGroupResource,
@@ -88,7 +88,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
         )
         cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
       }
-      if (albAlarmConfig.LambdaUserError?.enabled) {
+      if (albAlarmConfig.LambdaUserError && albAlarmConfig.LambdaUserError.enabled) {
         const lambdaUserError = createLambdaUserErrorAlarm(
           targetGroupResourceName,
           targetGroupResource,
