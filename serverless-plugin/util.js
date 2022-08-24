@@ -1,24 +1,20 @@
 'use strict'
 
 const stringcase = require('case')
+const { ElasticLoadBalancingV2Client, DescribeTargetGroupsCommand, DescribeLoadBalancersCommand } = require('@aws-sdk/client-elastic-load-balancing-v2')
+const client = new ElasticLoadBalancingV2Client({})
 
 async function extractFullName (target, command) {
-  const { ElasticLoadBalancingV2Client } = require('@aws-sdk/client-elastic-load-balancing-v2')
-  const client = new ElasticLoadBalancingV2Client({})
-
   return (await client.send(command))[target + 's'][0][target + 'Arn'].split('/').slice(1).join('/')
 }
 
 const getName = resource => Object.values(resource)[0].Properties.Name
 
 async function getTargetGroupFullName (resource) {
-  const { DescribeTargetGroupsCommand } = require('@aws-sdk/client-elastic-load-balancing-v2')
   const command = new DescribeTargetGroupsCommand({ Names: [getName(resource)] })
   return 'targetgroup/' + await extractFullName('TargetGroup', command)
 }
 async function getLoadBalancerFullName (resource) {
-  const { DescribeLoadBalancersCommand } = require('@aws-sdk/client-elastic-load-balancing-v2')
-
   const command = new DescribeLoadBalancersCommand({ Names: [getName(resource)] })
   return extractFullName('LoadBalancer', command)
 }
