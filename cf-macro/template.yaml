@@ -10,7 +10,7 @@ Metadata:
     ReadmeUrl: README.md
     Labels: ['slicwatch','monitoring']
     HomePageUrl: https://github.com/fourTheorem/slic-watch
-    SemanticVersion: 0.0.6
+    SemanticVersion: 0.0.7
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   CfMacroSlicWatch:

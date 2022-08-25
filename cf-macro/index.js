@@ -57,10 +57,11 @@ function processFragment (event) {
         'AWS::Lambda::Function'
       )
 
-      for (const [, funcResource] of Object.entries(lambdaResources)) {
+      for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
+        const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
         const funcConfig = funcResource.Metadata.slicWatch || {}
-        functionAlarmConfigs[funcResource.Properties.FunctionName] = funcConfig.alarms || {}
-        functionDashboardConfigs[funcResource.Properties.FunctionName] = funcConfig.dashboard || {}
+        functionAlarmConfigs[functionName] = funcConfig.alarms || {}
+        functionDashboardConfigs[functionName] = funcConfig.dashboard || {}
       }
 
       const alarmService = alarms(serverless, config.alarms, functionAlarmConfigs, context)
