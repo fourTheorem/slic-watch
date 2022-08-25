@@ -17,7 +17,7 @@ async function handleALB (event, context) {
       statusDescription: 'HTTP OK',
       isBase64Encoded: false,
       headers: {
-        'Content-Type': 'text/html'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify('Hello from Lambda!')
     }

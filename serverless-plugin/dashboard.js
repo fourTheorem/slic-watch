@@ -569,6 +569,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
       for (const res of Object.values(loadBalancerResources)) {
         const loadBalancerName = res.Properties.Name
+        console.log(loadBalancerName)
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
           if (metricConfig.enabled) {
@@ -610,6 +611,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       const loadBalancerFullName = await getLoadBalancerFullName(loadBalancerResources)
       for (const res of Object.values(loadBalancerResources)) {
         const loadBalancerName = res.Properties.Name
+        console.log('Second test', loadBalancerName)
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
           if (metricConfig.enabled) {

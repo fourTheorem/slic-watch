@@ -114,6 +114,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+    console.log(loadBalancerFullName)
     const metricProperties = {
       Dimensions: [{ Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,
@@ -154,6 +155,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+    console.log(targetGroupFullName)
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerName, 'LoadBalancerFullName'] }
     const metricProperties = {
       Dimensions: [{ Name: 'TargetGroup', Value: targetGroupFullName }, { Name: 'LoadBalancer', Value: loadBalancerFullName }],
@@ -284,6 +286,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
   }
 
   function createLambdaUserErrorAlarm (targetGroupResourceName, targetGroupResource, loadBalancerName, config) {
+    console.log(loadBalancerName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaUserError'),
