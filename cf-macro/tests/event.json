@@ -17,7 +17,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Handler": "handler.hello",
-              "Runtime": "nodejs12.x",
+              "Runtime": "nodejs16.x",
               "FunctionName": "serverless-test-project-dev-hello",
               "MemorySize": 1024,
               "Timeout": 9
