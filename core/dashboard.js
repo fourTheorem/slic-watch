@@ -559,11 +559,14 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     for (const [loadBalancerResourceName] of Object.entries(loadBalancerResources)) {
       for (const res of Object.values(loadBalancerResources)) {
         const loadBalancerName = res.Properties.Name
-        const loadBalancerFullName = {
-          'Fn::Join': ['/', [
-            { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-          ]]
-        }
+        // const loadBalancerFullName = { 'Fn::Sub': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+        const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
+        // {
+        //   'Fn::Join': ['/', [
+        //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+        //   ]]
+        // }
+        console.log(loadBalancerFullName)
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
           if (metricConfig.enabled) {
@@ -619,20 +622,23 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
       for (const res of Object.values(loadBalancerResources)) {
         const loadBalancerName = res.Properties.Name
-        const targetGroupFullName = {
-          'Fn::Join': ['/', [
-            { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-          ]]
-        }
+        // const targetGroupFullName = {
+        //   'Fn::Join': ['/', [
+        //     { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+        //   ]]
+        // }
         // const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+        const targetGroupFullName = { 'Fn::Sub': targetGroupResourceName }
         console.log('0', loadBalancerResourceName)
         console.log('1', loadBalancerName)
         console.log('2', targetGroupResourceName)
-        const loadBalancerFullName = {
-          'Fn::Join': ['/', [
-            { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-          ]]
-        }
+        console.log('4', targetGroupFullName)
+        const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
+        // {
+        //   'Fn::Join': ['/', [
+        //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+        //   ]]
+        // }
         // const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
