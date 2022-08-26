@@ -6,6 +6,8 @@ const {
   filterObject,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
+  resolveRestApiNameAsCfn,
+  resolveRestApiNameForSub,
   getStatisticName
 } = require('../util')
 
@@ -75,6 +77,40 @@ test('resolveEcsClusterNameForSub', (t) => {
   const unexpected = { Unexpected: 'syntax' }
   const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
   t.same(fromUnexpected, unexpected)
+  t.end()
+})
+
+test('resolveRestApiNameAsCfn', (t) => {
+  const fromLiteral = resolveRestApiNameAsCfn({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  t.equal(fromLiteral, 'my-api-name')
+
+  const fromRef = resolveRestApiNameAsCfn({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
+  t.same(fromRef, { Ref: 'AWS::Stack' })
+
+  const fromGetAtt = resolveRestApiNameAsCfn({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
+  t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
+
+  const fromOpenApiRef = resolveRestApiNameAsCfn({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
+  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
+
+  t.throws(() => resolveRestApiNameAsCfn({ Properties: {} }, 'logicalId'))
+  t.end()
+})
+
+test('resolveRestApiNameForSub', (t) => {
+  const fromLiteral = resolveRestApiNameForSub({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  t.equal(fromLiteral, 'my-api-name')
+
+  const fromRef = resolveRestApiNameForSub({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
+  t.same(fromRef, '$' + '{AWS::Stack}')
+
+  const fromGetAtt = resolveRestApiNameForSub({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
+  t.same(fromGetAtt, '$' + '{myResource.MyProperty}')
+
+  const fromOpenApiRef = resolveRestApiNameForSub({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
+  t.same(fromOpenApiRef, '$' + '{AWS::Stack}')
+
+  t.throws(() => resolveRestApiNameForSub({ Properties: {} }, 'logicalId'))
   t.end()
 })
 

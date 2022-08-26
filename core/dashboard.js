@@ -1,7 +1,7 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
-const { resolveEcsClusterNameForSub } = require('./util')
+const { resolveEcsClusterNameForSub, resolveRestApiNameForSub } = require('./util')
 
 const MAX_WIDTH = 24
 
@@ -237,8 +237,10 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
    */
   function createApiWidgets (apiResources) {
     const apiWidgets = []
-    for (const res of Object.values(apiResources)) {
-      const apiName = res.Properties.Name // TODO: Allow for Ref usage in resource names
+    for (const [resourceName, res] of Object.entries(apiResources)) {
+      // const apiName = getAlarmName(res.Properties.Name, res.Properties.Body.info.title, null);
+      const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
+      console.info(apiName)
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig.enabled) {
           const metricStatWidget = createMetricWidget(

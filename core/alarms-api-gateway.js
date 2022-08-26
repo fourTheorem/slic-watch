@@ -1,6 +1,6 @@
 'use strict'
 
-const { makeResourceName, getStatisticName } = require('./util')
+const { makeResourceName, getStatisticName, resolveRestApiNameAsCfn } = require('./util')
 
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
@@ -93,7 +93,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
   }
 
   function createAvailabilityAlarm (apiResourceName, apiResource, config) {
-    const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
+    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
@@ -114,7 +114,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
   }
 
   function create4XXAlarm (apiResourceName, apiResource, config) {
-    const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
+    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
@@ -135,7 +135,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
   }
 
   function createLatencyAlarm (apiResourceName, apiResource, config) {
-    const apiName = apiResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
+    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, 'Latency'),
