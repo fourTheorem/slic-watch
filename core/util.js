@@ -75,10 +75,67 @@ function getStatisticName (alarmConfig) {
   return alarmConfig.Statistic || alarmConfig.ExtendedStatistic
 }
 
+/**
+ * Given a CloudFormation resource for an API Gateway REST API, derive CloudFormation syntax for
+ * the API name.
+ * The API name can be provided as a `Name` property or in the OpenAPI specification as
+ * `Body.info.title`
+ *
+ * In either case, the name can be a string literal or use a CloudFormation intrinsic function
+ * (Sub, Ref or GetAtt)
+ *
+ * @param restApiResource CloudFormation resource for a REST API
+ * @param restApiLogicalId The logical ID for the resouce
+ * @returns CloudFormation syntax for the API name
+ */
+function resolveRestApiNameAsCfn (restApiResource, restApiLogicalId) {
+  if (restApiResource.Properties.Name) {
+    return restApiResource.Properties.Name
+  }
+  if (restApiResource.Properties.Body && restApiResource.Properties.Body.info && restApiResource.Properties.Body.info.title) {
+    return restApiResource.Properties.Body.info.title
+  }
+  throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
+}
+
+/**
+ * Given a CloudFormation resource for an API Gateway REST API, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * The API name can be provided as a `Name` property or in the OpenAPI specification as
+ * `Body.info.title`
+ *
+ * In either case, the name can be a string literal or use a CloudFormation intrinsic function
+ * (Sub, Ref or GetAtt)
+ *
+ * @param restApiResource CloudFormation resource for a REST API
+ * @param restApiLogicalId The logical ID for the resouce
+ * @returns Literal string or Sub variable syntax
+ */
+function resolveRestApiNameForSub (restApiResource, restApiLogicalId) {
+  const name = restApiResource.Properties.Name || (
+    restApiResource.Properties.Body && restApiResource.Properties.Body.info && restApiResource.Properties.Body.info.title
+  )
+  if (!name) {
+    throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
+  }
+
+  if (name.GetAtt) {
+    return '${' + name.GetAtt[0] + '.' + name.GetAtt[1] + '}'
+  } else if (name.Ref) {
+    return '${' + name.Ref + '}'
+  } else if (name['Fn::Sub']) {
+    return name['Fn::Sub']
+  }
+  return name
+}
+
 module.exports = {
   filterObject,
   makeResourceName,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
-  getStatisticName
+  getStatisticName,
+  resolveRestApiNameAsCfn,
+  resolveRestApiNameForSub
 }
