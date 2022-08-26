@@ -25,7 +25,9 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       SQS: sqsDashConfig,
       ECS: ecsDashConfig,
       SNS: snsDashConfig,
-      Events: ruleDashConfig
+      Events: ruleDashConfig,
+      ApplicationELB: albDashConfig,
+      ApplicationELBTarget: albTargetDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -67,6 +69,13 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const ruleResources = cfTemplate.getResourcesByType(
       'AWS::Events::Rule'
     )
+    const loadBalancerResources = cfTemplate.getResourcesByType(
+      'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    )
+
+    const targetGroupResources = cfTemplate.getResourcesByType(
+      'AWS::ElasticLoadBalancingV2::TargetGroup'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -81,6 +90,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const ecsWidgets = createEcsWidgets(ecsServiceResources)
     const topicWidgets = createTopicWidgets(topicResources)
     const ruleWidgets = createRuleWidgets(ruleResources)
+    const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
+    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, loadBalancerResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -91,7 +102,9 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       ...queueWidgets,
       ...ecsWidgets,
       ...topicWidgets,
-      ...ruleWidgets
+      ...ruleWidgets,
+      ...loadBalancerWidgets,
+      ...targetGroupWidgets
     ])
 
     if (positionedWidgets.length > 0) {
@@ -535,6 +548,119 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
     }
     return ruleWidgets
+  }
+  /**
+   * Create a set of CloudWatch Dashboard widgets for Application Load Balancer services.
+   *
+   * @param {object} loadBalancerResources Object of Application Load Balancer Service resources by resource name
+   */
+  function createLoadBalancerWidgets (loadBalancerResources) {
+    const loadBalancerWidgets = []
+    for (const [loadBalancerResourceName] of Object.entries(loadBalancerResources)) {
+      for (const res of Object.values(loadBalancerResources)) {
+        const loadBalancerName = res.Properties.Name
+        const loadBalancerFullName = {
+          'Fn::Join': ['/', [
+            { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+          ]]
+        }
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName
+                },
+                stat
+              })
+            }
+          }
+        }
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Application Load Balancer ${loadBalancerName}`,
+            widgetMetrics,
+            albDashConfig
+          )
+          loadBalancerWidgets.push(metricStatWidget)
+        }
+      }
+    }
+    return loadBalancerWidgets
+  }
+
+  /**
+   * Given CloudFormation syntax for an Target Group, derive CloudFormation syntax for
+   * the LoadBalancer LogicalId name
+   *
+   * @param  loadBalancerResources  syntax for an Load Balancer Application
+   * @returns CloudFormation syntax for the Load Balancer Resources
+   */
+  function resolveLoadBalancerLogicalIdName (loadBalancerResources) {
+    for (const key in loadBalancerResources) {
+      if (loadBalancerResources[key].Type === 'AWS::ElasticLoadBalancingV2::LoadBalancer') {
+        return key
+      }
+    }
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for Application Load Balancer Target Group services .
+   *
+   * @param {object} targetGroupResources Object of Application Load Balancer Service Target Group resources by resource name
+   * @param {object} loadBalancerResources Object of Application Load Balancer Service resources by resource name
+   */
+  function createTargetGroupWidgets (targetGroupResources, loadBalancerResources) {
+    const targetGroupWidgets = []
+    for (const [targetGroupResourceName] of Object.entries(targetGroupResources)) {
+      const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
+      for (const res of Object.values(loadBalancerResources)) {
+        const loadBalancerName = res.Properties.Name
+        const targetGroupFullName = {
+          'Fn::Join': ['/', [
+            { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+          ]]
+        }
+        // const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+        console.log('0', loadBalancerResourceName)
+        console.log('1', loadBalancerName)
+        console.log('2', targetGroupResourceName)
+        const loadBalancerFullName = {
+          'Fn::Join': ['/', [
+            { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+          ]]
+        }
+        // const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName,
+                  TargetGroup: targetGroupFullName
+                },
+                stat
+              })
+            }
+          }
+        }
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Application Load Balancer/Target Group ${loadBalancerName}`,
+            widgetMetrics,
+            albTargetDashConfig
+          )
+          targetGroupWidgets.push(metricStatWidget)
+        }
+      }
+    }
+    return targetGroupWidgets
   }
 
   /**

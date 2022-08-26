@@ -1,0 +1,35 @@
+service: serverless-test-project
+frameworkVersion: "2"
+configValidationMode: error
+variablesResolutionMode: 20210219
+
+plugins:
+  - serverless-slic-watch-plugin
+
+custom:
+  slicWatch:
+    topicArn: ${env:ALARM_TOPIC}
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-1
+  stage: dev
+  endpointType: REGIONAL
+
+resources: ${file(./sls-resources.yml)}
