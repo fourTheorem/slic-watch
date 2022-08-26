@@ -25,6 +25,7 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
     )) {
       const cluster = serviceResource.Properties.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
+      console.log('123456', clusterName)
       if (ecsAlarmsConfig.MemoryUtilization.enabled) {
         const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
           serviceResourceName,

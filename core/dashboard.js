@@ -1,7 +1,7 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
-const { resolveEcsClusterNameForSub, resolveRestApiNameForSub } = require('./util')
+const { resolveEcsClusterNameForSub, resolveRestApiNameForSub, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } = require('./util')
 const { getLogger } = require('./logging')
 
 const MAX_WIDTH = 24
@@ -556,40 +556,38 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createLoadBalancerWidgets (loadBalancerResources) {
     const loadBalancerWidgets = []
-    for (const [loadBalancerResourceName] of Object.entries(loadBalancerResources)) {
-      for (const res of Object.values(loadBalancerResources)) {
-        const loadBalancerName = res.Properties.Name
-        // const loadBalancerFullName = { 'Fn::Sub': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-        const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
-        // {
-        //   'Fn::Join': ['/', [
-        //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-        //   ]]
-        // }
-        console.log(loadBalancerFullName)
-        const widgetMetrics = []
-        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
-          if (metricConfig.enabled) {
-            for (const stat of metricConfig.Statistic) {
-              widgetMetrics.push({
-                namespace: 'AWS/ApplicationELB',
-                metric,
-                dimensions: {
-                  LoadBalancer: loadBalancerFullName
-                },
-                stat
-              })
-            }
+    for (const res of Object.values(loadBalancerResources)) {
+      const loadBalancerName = res.Properties.Name
+      // const loadBalancerFullName = { 'Fn::Sub': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(res.Properties.loadBalancerResourceName)
+      // {
+      //   'Fn::Join': ['/', [
+      //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+      //   ]]
+      // }
+      console.log('', loadBalancerFullName)
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/ApplicationELB',
+              metric,
+              dimensions: {
+                LoadBalancer: loadBalancerFullName
+              },
+              stat
+            })
           }
         }
-        if (widgetMetrics.length > 0) {
-          const metricStatWidget = createMetricWidget(
-            `Application Load Balancer ${loadBalancerName}`,
-            widgetMetrics,
-            albDashConfig
-          )
-          loadBalancerWidgets.push(metricStatWidget)
-        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `Application Load Balancer ${loadBalancerName}`,
+          widgetMetrics,
+          albDashConfig
+        )
+        loadBalancerWidgets.push(metricStatWidget)
       }
     }
     return loadBalancerWidgets
@@ -628,12 +626,14 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
         //   ]]
         // }
         // const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-        const targetGroupFullName = { 'Fn::Sub': targetGroupResourceName }
+        const targetGroupFullName = resolveTargetGroupFullNameForSub(targetGroupResourceName)
         console.log('0', loadBalancerResourceName)
         console.log('1', loadBalancerName)
         console.log('2', targetGroupResourceName)
         console.log('4', targetGroupFullName)
-        const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
+        // const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
+        const loadBalancerFullName = resolveLoadBalancerFullNameForSub(loadBalancerResourceName)
+        console.log('5', loadBalancerFullName)
         // {
         //   'Fn::Join': ['/', [
         //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }

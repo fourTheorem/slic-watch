@@ -114,6 +114,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+    console.log('alarms page 1', loadBalancerFullName)
     const metricProperties = {
       Dimensions: [{ Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,
@@ -154,6 +155,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+    console.log('alarms page-2', targetGroupFullName)
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerName, 'LoadBalancerFullName'] }
     const metricProperties = {
       Dimensions: [{ Name: 'TargetGroup', Value: targetGroupFullName }, { Name: 'LoadBalancer', Value: loadBalancerFullName }],

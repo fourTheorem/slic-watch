@@ -5,6 +5,10 @@ variablesResolutionMode: 20210219
 
 plugins:
   - serverless-slic-watch-plugin
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
 custom:
   resourceTags:
     - Key: ProjectName
