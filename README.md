@@ -57,6 +57,10 @@ sls deploy
 
 ## Getting Started - CloudFormation Macro
 
+Getting Started - AWS SAM/CloudFormation
+
+This method uses the SLIC Watch CloudFormation macro. It is very simple to add this macro as a transform to your SAM or CloudFormation template, but first you must ensure that the SLIC Watch macro has been deployed to the same AWS account as your application.
+
 1. Deploying to your account (via the console)
 Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications) and click the Deploy button.
 

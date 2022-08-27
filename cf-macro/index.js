@@ -10,28 +10,24 @@ const defaultConfig = require('slic-watch-core/default-config')
 const { slicWatchSchema } = require('slic-watch-core/config-schema')
 
 exports.handler = async function (event, context) {
-  const response = processFragment(event)
-  return response
-}
-
-function processFragment (event) {
   let status = 'success'
   let outputFragment = event.fragment
   try {
     const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
-    const ajv = new Ajv({
-      unicodeRegExp: false
-    })
-    const config = _.merge(defaultConfig, slicWatchConfig)
-
-    const slicWatchValidate = ajv.compile(slicWatchSchema)
-    const slicWatchValid = slicWatchValidate(slicWatchConfig)
-
-    if (!slicWatchValid) {
-      throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
-    }
 
     if (slicWatchConfig.enabled !== false) {
+      const ajv = new Ajv({
+        unicodeRegExp: false
+      })
+      const config = _.merge(defaultConfig, slicWatchConfig)
+
+      const slicWatchValidate = ajv.compile(slicWatchSchema)
+      const slicWatchValid = slicWatchValidate(slicWatchConfig)
+
+      if (!slicWatchValid) {
+        throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+      }
+
       const alarmActions = []
 
       if (slicWatchConfig.topicArn) {
