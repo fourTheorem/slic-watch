@@ -23,7 +23,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
     )
 
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-      const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+      const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
       const funcConfig = functionAlarmConfigs[functionName]
       if (!funcConfig) {
         // Function is likely injected by another plugin and not a top-level user function
@@ -142,7 +142,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
    * @param {(string|Object)} func The Lambda function name
    */
   function createIteratorAgeAlarm (funcResourceName, funcResource, config) {
-    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcResourceName}`,
@@ -163,7 +163,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
   }
 
   function createLambdaErrorsAlarm (funcResourceName, funcResource, config) {
-    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcResourceName}`,
@@ -184,7 +184,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
   }
 
   function createLambdaThrottlesAlarm (funcResourceName, funcResource, config) {
-    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
     const threshold = config.Threshold
     const period = config.Period
 
@@ -242,7 +242,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
   }
 
   function createLambdaDurationAlarm (funcResourceName, funcResource, config) {
-    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
     const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
 
@@ -269,7 +269,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
     funcResource,
     config
   ) {
-    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+    const funcName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaInvocationsAlarm${funcResourceName}`,

@@ -58,7 +58,7 @@ function processFragment (event) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : `${funcResourceName}Name`
+        const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
         const funcConfig = funcResource.Metadata.slicWatch || {}
         functionAlarmConfigs[functionName] = funcConfig.alarms || {}
         functionDashboardConfigs[functionName] = funcConfig.dashboard || {}
