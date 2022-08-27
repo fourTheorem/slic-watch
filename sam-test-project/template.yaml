@@ -4,7 +4,7 @@ Description: >-
 
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
-Transform: ["AWS::Serverless-2016-10-31", "CfMacroSlicWatch"]
+Transform: ["AWS::Serverless-2016-10-31", "SlicWatch-2022-08-31"]
 
 Parameters:
   stack:

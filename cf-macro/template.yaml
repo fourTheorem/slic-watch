@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: cf-macro-app
+    Name: slic-watch-app
     Description: Creates a Macro that can auto-generate Cloudwatch Alarms and Dashboard.
     Author: FourTheorem
     SpdxLicenseId: Apache-2.0
@@ -13,10 +13,10 @@ Metadata:
     SemanticVersion: 0.0.7
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
-  CfMacroSlicWatch:
+  SlicWatch:
     Type: AWS::CloudFormation::Macro
     Properties:
-      Name: CfMacroSlicWatch
+      Name: SlicWatch-2022-08-31
       FunctionName: !GetAtt MacroLambdaFunction.Arn
   MacroLambdaFunction:
     Type: AWS::Serverless::Function

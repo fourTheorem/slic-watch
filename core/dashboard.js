@@ -159,8 +159,9 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           if (metric !== 'IteratorAge') {
             for (const stat of metricConfig.Statistic) {
               const metricDefs = []
-              for (const res of Object.values(functionResources)) {
-                const functionName = res.Properties.FunctionName
+              // for (const res of Object.values(functionResources)) {
+              for (const [resourceName, res] of Object.entries(functionResources)) {
+                const functionName = res.Properties.FunctionName || '${' + resourceName + '}'
                 const functionConfig = functionDashboardConfigs[functionName] || {}
                 const functionMetricConfig = functionConfig[metric] || {}
                 if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
@@ -238,9 +239,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
   function createApiWidgets (apiResources) {
     const apiWidgets = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
-      // const apiName = getAlarmName(res.Properties.Name, res.Properties.Body.info.title, null);
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
-      console.info(apiName)
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig.enabled) {
           const metricStatWidget = createMetricWidget(

@@ -19,10 +19,9 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  8. SNS
  9. EventBridge
 
- Support:
-
-1. SLIC Watch is available as a Serverless Framework plugin. Serverless Framework v2 and v3 are supported.
-2. SLIC Watch is available as a CloudFormation Macro published in the SAR repository.
+SLIC Watch is available for Serverless Framework, AWS SAM and CloudFormation.
+ * Serverless Framework v2 and v3 are supported in the SLIC Watch Serverless Plugin.
+ * SLIC Watch is available as a CloudFormation Macro published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM or CloudFormation templates by simply adding a Transform to your template.
 
 ## Getting Started - Serverless Plugin
 
@@ -57,13 +56,28 @@ sls deploy
 
 ## Getting Started - CloudFormation Macro
 
+Getting Started - AWS SAM/CloudFormation
+
+This method uses the SLIC Watch CloudFormation macro. It is very simple to add this macro as a transform to your SAM or CloudFormation template, but first you must ensure that the SLIC Watch macro has been deployed to the same AWS account/region as your application.
+
 1. Deploying to your account (via the console)
 Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications) and click the Deploy button.
 
 2. To add the Macro to a SAM template,  add it in the **Transform** section :
+
 ```
-Transform: [ "CfMacroSlicWatch"]
+Transform: [ "SlicWatch-2022-08-31"]
 ```
+
+Add a Parameter to pass the stack name to the macro:
+
+```
+Parameters:
+  stack:
+    Type: String
+    Default: sam-test-stack-project
+```
+
 3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
 Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
 so you can receive alarm notifications via email, Slack, etc.
@@ -74,8 +88,27 @@ Metadata:
     enabled: true
     topicArn: !Ref MonitoringTopic
 ```
-See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
 
+For each function, add the `Metadata` section `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource.
+
+```yaml
+Resources:
+  LambdaFunction1:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName : sam-test-project-lambda1
+      Handler: lambda1.functionHandler
+      Runtime: nodejs14.x
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            Invocations:
+              Threshold: 3
+        dashboard:
+          enabled: true
+```
+See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
 
 ## Features
 
