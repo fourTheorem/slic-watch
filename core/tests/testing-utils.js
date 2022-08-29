@@ -39,7 +39,7 @@ module.exports = {
 }
 
 function assertCommonAlarmProperties (t, al) {
-  t.ok(al.AlarmDescription.length > 0)
+  t.ok(al.AlarmDescription)
   t.ok(al.ActionsEnabled)
   t.equal(al.AlarmActions.length, 1)
   t.ok(al.AlarmActions)
@@ -47,6 +47,9 @@ function assertCommonAlarmProperties (t, al) {
 }
 
 function alarmNameToType (alarmName) {
+  if (alarmName['Fn::Sub']) {
+    return alarmName['Fn::Sub'].split('_')[0]
+  }
   return alarmName.split('_')[0]
 }
 

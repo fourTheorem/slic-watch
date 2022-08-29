@@ -6,7 +6,7 @@ const { test } = require('tap')
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
 
-const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock, slsYaml } = require('./testing-utils')
+const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock } = require('./testing-utils')
 
 const context = {
   stackName: 'testStack',
@@ -62,7 +62,8 @@ test('A dashboard includes metrics', (t) => {
       'Lambda Duration p95 per Function',
       'Lambda Duration Maximum per Function',
       'Lambda Invocations Sum per Function',
-      'Lambda IteratorAge serverless-test-project-dev-streamProcessor Maximum',
+      // eslint-disable-next-line no-template-curly-in-string
+      'Lambda IteratorAge ${StreamProcessorLambdaFunction} Maximum',
       'Lambda ConcurrentExecutions Maximum per Function',
       'Lambda Throttles Sum per Function',
       'Lambda Errors Sum per Function'
@@ -358,17 +359,15 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
 
 test('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
   const funcConfigs = {}
-  const allFunctionNames = Object.keys(slsYaml.functions).map((simpleName) =>
-    `serverless-test-project-dev-${simpleName}`
-  )
-  for (const functionName of allFunctionNames) {
-    funcConfigs[functionName] = {}
+  const cfTemplate = createTestCloudFormationTemplate()
+  const allFunctionLogicalIds = Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))
+  for (const funcLogicalId of allFunctionLogicalIds) {
+    funcConfigs[funcLogicalId] = {}
     for (const metric of lambdaMetrics) {
-      funcConfigs[functionName][metric] = { enabled: false }
+      funcConfigs[funcLogicalId][metric] = { enabled: false }
     }
   }
   const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)
-  const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]

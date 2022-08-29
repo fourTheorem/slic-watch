@@ -54,10 +54,9 @@ exports.handler = async function (event, context) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        const functionName = funcResource.Properties.FunctionName ? funcResource.Properties.FunctionName : { Ref: funcResourceName }
         const funcConfig = funcResource.Metadata.slicWatch || {}
-        functionAlarmConfigs[functionName] = funcConfig.alarms || {}
-        functionDashboardConfigs[functionName] = funcConfig.dashboard || {}
+        functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
+        functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
       }
 
       const alarmService = alarms(serverless, config.alarms, functionAlarmConfigs, context)

@@ -77,10 +77,9 @@ class ServerlessPlugin {
     for (const funcName of this.serverless.service.getAllFunctions()) {
       const func = this.serverless.service.getFunction(funcName)
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      const functionName = cfTemplate.getResourceByName(functionResName).Properties.FunctionName
       const funcConfig = func.slicWatch || {}
-      functionAlarmConfigs[functionName] = funcConfig.alarms || {}
-      functionDashboardConfigs[functionName] = funcConfig.dashboard
+      functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
+      functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
 
     this.dashboard = dashboard(this.serverless, config.dashboard, functionDashboardConfigs, context)
