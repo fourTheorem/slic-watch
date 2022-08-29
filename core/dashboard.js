@@ -159,16 +159,15 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           if (metric !== 'IteratorAge') {
             for (const stat of metricConfig.Statistic) {
               const metricDefs = []
-              // for (const res of Object.values(functionResources)) {
-              for (const [resourceName, res] of Object.entries(functionResources)) {
-                const functionName = res.Properties.FunctionName || '${' + resourceName + '}'
-                const functionConfig = functionDashboardConfigs[functionName] || {}
+              for (const logicalId of Object.keys(functionResources)) {
+                const functionConfig = functionDashboardConfigs[logicalId] || {}
                 const functionMetricConfig = functionConfig[metric] || {}
                 if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
                   metricDefs.push({
                     namespace: 'AWS/Lambda',
                     metric,
-                    dimensions: { FunctionName: functionName },
+                    // eslint-disable-next-line no-template-curly-in-string
+                    dimensions: { FunctionName: `\${${logicalId}}` },
                     stat
                   })
                 }
@@ -184,20 +183,18 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
               }
             }
           } else {
-            for (const funcResName of eventSourceMappingFunctionResourceNames) {
-              const functionName = functionResources[funcResName].Properties.FunctionName
-              const functionConfig = functionDashboardConfigs[functionName] || {}
+            for (const logicalId of eventSourceMappingFunctionResourceNames) {
+              const functionConfig = functionDashboardConfigs[logicalId] || {}
               const functionMetricConfig = functionConfig[metric] || {}
               if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
                 const stats = metricConfig.Statistic
                 const iteratorAgeWidget = createMetricWidget(
-                  `Lambda IteratorAge ${functionName} ${stats.join(',')}`,
+                  `Lambda IteratorAge \${${logicalId}} ${stats.join(',')}`,
                   stats.map(stat => ({
                     namespace: 'AWS/Lambda',
                     metric: 'IteratorAge',
-                    dimensions: {
-                      FunctionName: functionResources[funcResName].Properties.FunctionName
-                    },
+                    // eslint-disable-next-line no-template-curly-in-string
+                    dimensions: { FunctionName: `\${${logicalId}}` },
                     stat
                   })),
                   metricConfig
