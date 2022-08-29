@@ -302,17 +302,16 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
    */
   function createDynamoDbWidgets (tableResources) {
     const ddbWidgets = []
-    for (const res of Object.values(tableResources)) {
-      const tableName = res.Properties.TableName
+    for (const [logicalId, res] of Object.entries(tableResources)) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
         if (metricConfig.enabled) {
           ddbWidgets.push(createMetricWidget(
-            `${metric} Table ${tableName}`,
+            `${metric} Table $\{${logicalId}}`,
             Object.values(metricConfig.Statistic).map((stat) => ({
               namespace: 'AWS/DynamoDB',
               metric,
               dimensions: {
-                TableName: tableName
+                TableName: `\${${logicalId}}`
               },
               stat
             })),
@@ -321,12 +320,12 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
           for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
             const gsiName = gsi.IndexName
             ddbWidgets.push(createMetricWidget(
-              `${metric} GSI ${gsiName} in ${tableName}`,
+              `${metric} GSI ${gsiName} in \${${logicalId}}`,
               Object.values(metricConfig.Statistic).map((stat) => ({
                 namespace: 'AWS/DynamoDB',
                 metric,
                 dimensions: {
-                  TableName: tableName,
+                  TableName: `\${${logicalId}}`,
                   GlobalSecondaryIndex: gsiName
                 },
                 stat

@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 const { cloneDeep } = require('lodash')
@@ -62,7 +63,6 @@ test('A dashboard includes metrics', (t) => {
       'Lambda Duration p95 per Function',
       'Lambda Duration Maximum per Function',
       'Lambda Invocations Sum per Function',
-      // eslint-disable-next-line no-template-curly-in-string
       'Lambda IteratorAge ${StreamProcessorLambdaFunction} Maximum',
       'Lambda ConcurrentExecutions Maximum per Function',
       'Lambda Throttles Sum per Function',
@@ -134,10 +134,10 @@ test('A dashboard includes metrics', (t) => {
     }
     t.same(namespaces, new Set(['AWS/DynamoDB']))
     const expectedTitles = new Set([
-      'ReadThrottleEvents Table MyTable',
-      'ReadThrottleEvents GSI GSI1 in MyTable',
-      'WriteThrottleEvents Table MyTable',
-      'WriteThrottleEvents GSI GSI1 in MyTable'
+      'ReadThrottleEvents Table ${dataTable}',
+      'ReadThrottleEvents GSI GSI1 in ${dataTable}',
+      'WriteThrottleEvents Table ${dataTable}',
+      'WriteThrottleEvents GSI GSI1 in ${dataTable}'
     ])
 
     const actualTitles = new Set(
@@ -289,8 +289,8 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 
   t.equal(widgets.length, 2)
   const expectedTitles = new Set([
-    'ReadThrottleEvents Table MyTable',
-    'WriteThrottleEvents Table MyTable'
+    'ReadThrottleEvents Table ${dataTable}',
+    'WriteThrottleEvents Table ${dataTable}'
   ])
 
   const actualTitles = new Set(
