@@ -1,6 +1,6 @@
 'use strict'
 
-const { makeResourceName, getStatisticName, resolveRestApiNameAsCfn } = require('./util')
+const { makeResourceName, getStatisticName, resolveRestApiNameAsCfn, resolveRestApiNameForSub } = require('./util')
 
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
@@ -94,12 +94,13 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
 
   function createAvailabilityAlarm (apiResourceName, apiResource, config) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
+    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createApiAlarm(
-        `ApiAvailability_${apiName}`,
-        `API 5XXError ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
+        { 'Fn::Sub': `ApiAvailability_${apiNameForSub}` },
+        { 'Fn::Sub': `API 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -115,12 +116,13 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
 
   function create4XXAlarm (apiResourceName, apiResource, config) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
+    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
       resource: createApiAlarm(
-        `Api4XXError_${apiName}`,
-        `API 4XXError ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
+        { 'Fn::Sub': `Api4XXError_${apiNameForSub}` },
+        { 'Fn::Sub': `API 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -136,12 +138,13 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
 
   function createLatencyAlarm (apiResourceName, apiResource, config) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
+    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, 'Latency'),
       resource: createApiAlarm(
-        `ApiLatency_${apiName}`,
-        `API Latency ${getStatisticName(config)} for ${apiName} breaches ${threshold}`,
+        { 'Fn::Sub': `ApiLatency_${apiNameForSub}` },
+        { 'Fn::Sub': `API Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,

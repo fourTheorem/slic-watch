@@ -37,7 +37,9 @@ test('A dashboard includes metrics', (t) => {
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
-  t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
+  t.same(dashResource.Properties.DashboardName, {
+    'Fn::Sub': '${AWS::StackName}Dashboard'
+  })
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
   t.ok(dashBody.start)

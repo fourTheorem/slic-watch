@@ -38,7 +38,6 @@ exports.handler = async function (event, context) {
 
       const context = {
         region: event.region,
-        stackName: (event.templateParameterValues.stack) ? event.templateParameterValues.stack : '',
         alarmActions
       }
 
