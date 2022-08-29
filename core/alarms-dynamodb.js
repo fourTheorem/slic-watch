@@ -22,45 +22,45 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
     )
 
     for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
-      const tableName = tableResource.Properties.TableName
-      const tableDimensions = [{ Name: 'TableName', Value: tableName }]
+      const tableDimensions = [{ Name: 'TableName', Value: { Ref: tableResourceName } }]
 
       const alarms = []
 
+      const tableNameSub = `\${${tableResourceName}}`
       if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
         alarms.push(
-          createAlarm(tableName, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableName}`, 'ReadThrottleEvents'))
+          createAlarm(tableNameSub, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'ReadThrottleEvents'))
         )
       }
 
       if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
         alarms.push(
-          createAlarm(tableName, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableName}`, 'WriteThrottleEvents'))
+          createAlarm(tableNameSub, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'WriteThrottleEvents'))
         )
       }
 
       if (dynamoDbAlarmConfig.UserErrors.enabled) {
         alarms.push(
-          createAlarm(tableName, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableName}`, 'UserErrors'))
+          createAlarm(tableNameSub, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableNameSub}`, 'UserErrors'))
         )
       }
 
       if (dynamoDbAlarmConfig.SystemErrors.enabled) {
         alarms.push(
-          createAlarm(tableName, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableName}`, 'SystemErrors'))
+          createAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
         )
       }
 
       for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
         const gsiName = gsi.IndexName
         const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
-        const identifier = `${tableName}${gsiName}`
+        const gsiIdentifierSub = `${tableNameSub}${gsiName}`
         if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
-          alarms.push(createAlarm(identifier, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')))
+          alarms.push(createAlarm(gsiIdentifierSub, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')))
         }
 
         if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
-          alarms.push(createAlarm(identifier, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents')))
+          alarms.push(createAlarm(gsiIdentifierSub, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents')))
         }
       }
 
@@ -70,7 +70,7 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
     }
   }
 
-  function createAlarm (identifier, dimensions, metricName, resourceName) {
+  function createAlarm (identifierSub, dimensions, metricName, resourceName) {
     const config = dynamoDbAlarmConfig[metricName]
 
     const resource = {
@@ -78,8 +78,8 @@ module.exports = function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
-        AlarmName: `${metricName}_${identifier}`,
-        AlarmDescription: `DynamoDB ${config.Statistic} for ${identifier} breaches ${config.Threshold}`,
+        AlarmName: { 'Fn::Sub': `${metricName}_${identifierSub}` },
+        AlarmDescription: { 'Fn::Sub': `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}` },
         EvaluationPeriods: config.EvaluationPeriods,
         ComparisonOperator: config.ComparisonOperator,
         Threshold: config.Threshold,
