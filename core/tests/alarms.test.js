@@ -9,7 +9,7 @@ const { createTestCloudFormationTemplate, slsMock, createTestConfig, testContext
 test('Alarms create all service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
-  for (const funcLogicalId of cfTemplate.getResourcesByType('AWS::Lambda::Function')) {
+  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
   const { addAlarms } = alarms(slsMock, defaultConfig.alarms, funcAlarmConfigs, testContext)
@@ -35,7 +35,7 @@ test('Alarms are not created when disabled globally', (t) => {
   )
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
-  for (const funcLogicalId of cfTemplate.getResourcesByType('AWS::Lambda::Function')) {
+  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
   const { addAlarms } = alarms(slsMock, config, funcAlarmConfigs, testContext)
