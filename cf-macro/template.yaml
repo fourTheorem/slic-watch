@@ -16,7 +16,7 @@ Resources:
   SlicWatch:
     Type: AWS::CloudFormation::Macro
     Properties:
-      Name: SlicWatch
+      Name: SlicWatch-2022-08-31
       FunctionName: !GetAtt MacroLambdaFunction.Arn
   MacroLambdaFunction:
     Type: AWS::Serverless::Function

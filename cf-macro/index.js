@@ -45,7 +45,7 @@ exports.handler = async function (event, context) {
       const cfTemplate = CloudFormationTemplate(
         outputFragment
       )
-      const serverless = { cli: console }
+      const serverless = { cli: console } // TODO remove the serverless dependency from slic-watch-core library
       const functionAlarmConfigs = {}
       const functionDashboardConfigs = {}
 
