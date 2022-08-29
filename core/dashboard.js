@@ -474,9 +474,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
    */
   function createTopicWidgets (topicResources) {
     const topicWidgets = []
-    for (const res of Object.values(topicResources)) {
-      const topicName = res.Properties.TopicName
-
+    for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
         if (metricConfig.enabled) {
@@ -485,7 +483,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
               namespace: 'AWS/SNS',
               metric,
               dimensions: {
-                TopicName: topicName
+                TopicName: `\${${logicalId}.TopicName}`
               },
               stat
             })
@@ -494,7 +492,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `SNS Topic ${topicName}`,
+          `SNS Topic \${${logicalId}.TopicName}`,
           widgetMetrics,
           snsDashConfig
         )

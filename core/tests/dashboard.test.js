@@ -235,9 +235,7 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/SNS']))
-    const expectedTitles = new Set([
-      'SNS Topic awesome-savage-topic'
-    ])
+    const expectedTitles = new Set(['SNS Topic ${topic.TopicName}'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
