@@ -69,15 +69,6 @@ Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/app
 Transform: [ "SlicWatch-2022-08-31"]
 ```
 
-Add a Parameter to pass the stack name to the macro:
-
-```
-Parameters:
-  stack:
-    Type: String
-    Default: sam-test-stack-project
-```
-
 3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
 Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
 so you can receive alarm notifications via email, Slack, etc.

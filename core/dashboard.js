@@ -97,7 +97,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       const dashboardResource = {
         Type: 'AWS::CloudWatch::Dashboard',
         Properties: {
-          DashboardName: `${context.stackName}Dashboard`,
+          // eslint-disable-next-line no-template-curly-in-string
+          DashboardName: { 'Fn::Sub': '${AWS::StackName}Dashboard' },
           DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
         }
       }
