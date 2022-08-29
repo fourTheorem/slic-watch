@@ -19,12 +19,10 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
       'AWS::SNS::Topic'
     )
 
-    for (const [topicResourceName, topicResource] of Object.entries(
-      topicResources
-    )) {
+    for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
       if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].enabled) {
         const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
-          topicResourceName,
+          topicLogicalId,
           topicResource,
           snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes']
         )
@@ -33,7 +31,7 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
 
       if (snsAlarmsConfig.NumberOfNotificationsFailed.enabled) {
         const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
-          topicResourceName,
+          topicLogicalId,
           topicResource,
           snsAlarmsConfig.NumberOfNotificationsFailed
         )
@@ -78,16 +76,15 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
     }
   }
 
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicResourceName, topicResource, config) {
-    const topicName = topicResource.Properties.TopicName
+  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId, topicResource, config) {
     const threshold = config.Threshold
 
     return {
-      resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicResourceName}`,
+      resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicLogicalId}`,
       resource: createSNSAlarm(
-        `SNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm_${topicName}`, // alarmName
-        `Number of Notifications Filtered out Invalid Attributes for ${topicName} breaches (${threshold}`, // alarmDescription
-        topicName,
+        { 'Fn::Sub': `SNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
+        { 'Fn::Sub': `Number of Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
+        { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name
         config.ComparisonOperator,
         threshold,
         'NumberOfNotificationsFilteredOut-InvalidAttributes', // metricName
@@ -99,15 +96,14 @@ module.exports = function snsAlarms (snsAlarmsConfig, context) {
     }
   }
 
-  function createNumberOfNotificationsFailedAlarm (topicResourceName, topicResource, config) {
-    const topicName = topicResource.Properties.TopicName
+  function createNumberOfNotificationsFailedAlarm (topicLogicalId, topicResource, config) {
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicResourceName}`,
+      resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,
       resource: createSNSAlarm(
-        `SNSNumberOfNotificationsFailedAlarm_${topicName}`, // alarmName
-        `Number of Notifications Failed for ${topicName} breaches ${threshold}`, // alarmDescription
-        topicName,
+        { 'Fn::Sub': `SNSNumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
+        { 'Fn::Sub': `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
+        { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name
         config.ComparisonOperator,
         threshold,
         'NumberOfNotificationsFailed', // metricName

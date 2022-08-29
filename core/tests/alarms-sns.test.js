@@ -60,7 +60,7 @@ test('SNS alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'TopicName',
-        Value: 'awesome-savage-topic'
+        Value: { 'Fn::GetAtt': ['topic', 'TopicName'] }
       }
     ])
   }
