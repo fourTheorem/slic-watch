@@ -1,0 +1,27 @@
+name: Publish SLIC Watch SAR application
+on:
+  push:
+    branches:
+      - slic-watch-sam-support
+env:
+  BUCKET_NAME : "ft-sar-apps-949339270388-eu-west-1"
+  AWS_REGION : "eu-west-1"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  WhoAmI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::949339270388:role/SarAppGitHubActionDeploymentRole
+          role-session-name: github-action-sar-deploy-session
+          aws-region: ${{ env.AWS_REGION }}
+      - name:
+        run: |
+          aws sts get-caller-identity
+          aws s3 ls s3://
