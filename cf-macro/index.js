@@ -37,7 +37,6 @@ exports.handler = async function (event, context) {
       }
 
       const context = {
-        region: event.region,
         alarmActions
       }
 
