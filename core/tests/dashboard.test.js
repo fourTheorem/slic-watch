@@ -162,9 +162,9 @@ test('A dashboard includes metrics', (t) => {
     }
     t.same(namespaces, new Set(['AWS/Kinesis']))
     const expectedTitles = new Set([
-      'IteratorAge awesome-savage-stream Kinesis',
-      'Get/Put Success awesome-savage-stream Kinesis',
-      'Provisioned Throughput awesome-savage-stream Kinesis'
+      'IteratorAge ${stream} Kinesis',
+      'Get/Put Success ${stream} Kinesis',
+      'Provisioned Throughput ${stream} Kinesis'
     ])
 
     const actualTitles = new Set(
