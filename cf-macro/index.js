@@ -8,9 +8,14 @@ const dashboard = require('slic-watch-core/dashboard')
 const CloudFormationTemplate = require('slic-watch-core/cf-template')
 const defaultConfig = require('slic-watch-core/default-config')
 const { slicWatchSchema } = require('slic-watch-core/config-schema')
+const { getLogger } = require('slic-watch-core/logging')
 
-exports.handler = async function (event, context) {
+const logger = getLogger({ name: 'macroHandler' })
+
+exports.handler = async function (event) {
   let status = 'success'
+  logger.info({ event })
+
   let outputFragment = event.fragment
   try {
     const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
@@ -43,7 +48,6 @@ exports.handler = async function (event, context) {
       const cfTemplate = CloudFormationTemplate(
         outputFragment
       )
-      const serverless = { cli: console } // TODO remove the serverless dependency from slic-watch-core library
       const functionAlarmConfigs = {}
       const functionDashboardConfigs = {}
 
@@ -57,9 +61,9 @@ exports.handler = async function (event, context) {
         functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
       }
 
-      const alarmService = alarms(serverless, config.alarms, functionAlarmConfigs, context)
+      const alarmService = alarms(config.alarms, functionAlarmConfigs, context)
       alarmService.addAlarms(cfTemplate)
-      const dashboardService = dashboard(serverless, config.dashboard, functionDashboardConfigs, context)
+      const dashboardService = dashboard(config.dashboard, functionDashboardConfigs, context)
       dashboardService.addDashboard(cfTemplate)
       outputFragment = cfTemplate.getSourceObject()
     }
@@ -67,6 +71,7 @@ exports.handler = async function (event, context) {
     console.error(err)
     status = 'fail'
   }
+  logger.info({ outputFragment })
 
   return {
     requestId: event.requestId,

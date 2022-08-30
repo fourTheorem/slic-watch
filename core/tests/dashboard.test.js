@@ -7,7 +7,7 @@ const { test } = require('tap')
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
 
-const { createTestCloudFormationTemplate, defaultCfTemplate, slsMock } = require('./testing-utils')
+const { createTestCloudFormationTemplate, defaultCfTemplate } = require('./testing-utils')
 
 const context = {
   stackName: 'testStack',
@@ -18,7 +18,7 @@ const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'Conc
 const emptyFuncConfigs = {}
 
 test('An empty template creates no dashboard', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
 
   const cfTemplate = createTestCloudFormationTemplate({ Resources: [] })
   dash.addDashboard(cfTemplate)
@@ -31,7 +31,7 @@ test('An empty template creates no dashboard', (t) => {
 })
 
 test('A dashboard includes metrics', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -271,7 +271,7 @@ test('A dashboard includes metrics', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  const dash = dashboard(slsMock, defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
   const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {
@@ -306,7 +306,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   for (const service of services) {
     dashConfig.widgets[service].enabled = false
   }
-  const dash = dashboard(slsMock, dashConfig, emptyFuncConfigs, context)
+  const dash = dashboard(dashConfig, emptyFuncConfigs, context)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -322,7 +322,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
       metricConfig.enabled = false
     }
   }
-  const dash = dashboard(slsMock, dashConfig, emptyFuncConfigs, context)
+  const dash = dashboard(dashConfig, emptyFuncConfigs, context)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -339,7 +339,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
       }
     }
 
-    const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)
+    const dash = dashboard(defaultConfig.dashboard, funcConfigs, context)
     const cfTemplate = createTestCloudFormationTemplate()
     dash.addDashboard(cfTemplate)
     const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -367,7 +367,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
       funcConfigs[funcLogicalId][metric] = { enabled: false }
     }
   }
-  const dash = dashboard(slsMock, defaultConfig.dashboard, funcConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, funcConfigs, context)
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]

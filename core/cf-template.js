@@ -1,22 +1,25 @@
 'use strict'
 
 const { filterObject } = require('./util')
+const { getLogger } = require('./logging')
+
+const logger = getLogger()
 
 /**
  * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
  * and directly-specified CloudFormation resources
  *
  * @param {object} compiledTemplate The compiled CloudFormation template
- * @param {object} serviceResources Directly-provided CloudFormation resources (from serverless.yml resources.Resources)
- * @param {object} serverless The Serverless Framework instance
+ * @param {object} additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
-module.exports = function CloudFormationTemplate (compiledTemplate, serviceResources, serverless) {
+module.exports = function CloudFormationTemplate (compiledTemplate, additionalResources) {
   /**
-   * Take a function or resource name and resolve the function resource name in the current stack
+   * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
+   * CloudFormation logical ID from within this stack
    *
-   * @param {(string|Object)} func The function or CloudFormation intrinsic resolving a function
+   * @param {(string|Object)} func The function logical ID or CloudFormation intrinsic resolving a function
    */
-  function resolveFunctionResourceName (func, funcResources) {
+  function resolveFunctionLogicalId (func) {
     if (typeof func === 'string') {
       return func
     }
@@ -26,26 +29,18 @@ module.exports = function CloudFormationTemplate (compiledTemplate, serviceResou
     if (func.Ref) {
       return func.Ref
     }
-    serverless.cli.log(
-      `WARNING: Unable to resolve function resource name from ${JSON.stringify(
-        func
-      )}`
-    )
+    logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
   }
 
   function addResource (resourceName, resource) {
     compiledTemplate.Resources[resourceName] = resource
   }
 
-  function getResourceByName (resourceName) {
-    return compiledTemplate.Resources[resourceName]
-  }
-
   function getResourcesByType (type) {
     return filterObject(
       {
         ...compiledTemplate.Resources,
-        ...serviceResources
+        ...additionalResources
       },
       (resource) => resource.Type === type
     )
@@ -58,7 +53,7 @@ module.exports = function CloudFormationTemplate (compiledTemplate, serviceResou
     const lambdaResources = getResourcesByType('AWS::Lambda::Function')
     const eventSourceMappingFunctions = {}
     for (const eventSourceMapping of Object.values(eventSourceMappings)) {
-      const funcResourceName = resolveFunctionResourceName(
+      const funcResourceName = resolveFunctionLogicalId(
         eventSourceMapping.Properties.FunctionName
       )
       if (funcResourceName) {
@@ -77,10 +72,9 @@ module.exports = function CloudFormationTemplate (compiledTemplate, serviceResou
 
   return {
     addResource,
-    getResourceByName,
     getResourcesByType,
     getSourceObject,
     getEventSourceMappingFunctions,
-    resolveFunctionResourceName
+    resolveFunctionResourceName: resolveFunctionLogicalId
   }
 }

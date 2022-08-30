@@ -1,12 +1,15 @@
 'use strict'
 
+const { getLogger } = require('./logging')
+
+const logging = getLogger()
+
 /**
  * @param {object} functionAlarmConfigs The cascaded Lambda alarm configuration with
  *                                      function-specific overrides by function logical ID
- * @param {object} context Deployment context (region, stackName, alarmActions)
- * @param {object} serverless The Serverless Framework instance
+ * @param {object} context Deployment context (alarmActions)
  */
-module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverless) {
+module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
   return {
     createLambdaAlarms
   }
@@ -26,7 +29,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context, serverles
       const funcConfig = functionAlarmConfigs[funcLogicalId]
       if (!funcConfig) {
         // Function is likely injected by another plugin and not a top-level user function
-        serverless.cli.log(`${funcLogicalId} is not defined in Serverless 'functions'. Alarms will not be created.`)
+        logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
         return
       }
 

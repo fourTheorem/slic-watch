@@ -191,11 +191,11 @@ const slicWatchSchema = {
 }
 
 /**
- * JSON Schema for the SLIC Watch Serverless Framework plugin
+ * JSON Schema for SLIC Watch configuration
  */
 const pluginConfigSchema = {
   $schema: 'http://json-schema.org/draft-07/schema',
-  title: 'SLIC Watch Serverless Plugin configuration',
+  title: 'SLIC Watch configuration',
   type: 'object',
   properties: {
     slicWatch: slicWatchSchema
@@ -209,7 +209,7 @@ const pluginConfigSchema = {
  */
 const functionConfigSchema = {
   $schema: 'http://json-schema.org/draft-07/schema',
-  title: 'SLIC Watch Serverless Plugin configuration',
+  title: 'SLIC Watch function configuration',
   type: 'object',
   properties: {
     slicWatch: {

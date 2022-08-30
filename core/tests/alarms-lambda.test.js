@@ -10,8 +10,7 @@ const {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext,
-  slsMock
+  testContext
 } = require('./testing-utils')
 const { applyAlarmConfig } = require('../../core/function-config')
 
@@ -398,10 +397,31 @@ test('AWS Lambda alarms are not created if function configuration is not provide
     }
   })
   const funcAlarmConfigs = {} // No function configuration as in the case where functions are not defined in serverless.yml:functions
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext, slsMock)
+  const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   t.equal(Object.keys(alarmResources).length, 0)
+  t.end()
+})
+
+test('Duration alarms are created if no timeout is specified', (t) => {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {})
+
+  const cfTemplate = createTestCloudFormationTemplate()
+  const funcAlarmConfigs = {}
+  for (const [funcLogicalId, resource] of Object.entries(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+    funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
+    delete resource.Properties.Timeout
+  }
+  const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
+  createLambdaAlarms(cfTemplate)
+
+  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const invocAlarmResources = filterObject(
+    alarmResources,
+    (res) => res.Properties.AlarmName['Fn::Sub'].startsWith('LambdaDuration')
+  )
+  t.equal(Object.keys(invocAlarmResources).length, 8)
   t.end()
 })

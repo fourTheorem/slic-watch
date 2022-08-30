@@ -110,6 +110,10 @@ test('resolveRestApiNameForSub', (t) => {
   const fromOpenApiRef = resolveRestApiNameForSub({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
   t.same(fromOpenApiRef, '$' + '{AWS::Stack}')
 
+  // eslint-disable-next-line no-template-curly-in-string
+  const fromSub = resolveRestApiNameForSub({ Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } } }, 'logicalId')
+  t.same(fromSub, '$' + '{AWS::StackName}Suffix')
+
   t.throws(() => resolveRestApiNameForSub({ Properties: {} }, 'logicalId'))
   t.end()
 })

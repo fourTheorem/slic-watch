@@ -11,6 +11,7 @@
   "dependencies": {
     "case": "^1.6.3",
     "lodash": "^4.17.21",
+    "pino": "^8.4.2",
     "yaml": "^1.10.2"
   },
   "devDependencies": {

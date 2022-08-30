@@ -13,7 +13,7 @@ const ecsAlarms = require('./alarms-ecs')
 const snsAlarms = require('./alarms-sns')
 const ruleAlarms = require('./alarms-eventbridge')
 
-module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs, context) {
+module.exports = function alarms (alarmConfig, functionAlarmConfigs, context) {
   const {
     ApiGateway: apiGwConfig,
     States: sfConfig,
@@ -27,15 +27,15 @@ module.exports = function alarms (serverless, alarmConfig, functionAlarmConfigs,
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
-  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context, serverless)
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context, serverless)
-  const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context, serverless)
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context, serverless)
-  const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context, serverless)
-  const { createSQSAlarms } = sqsAlarms(sqsConfig, context, serverless)
-  const { createECSAlarms } = ecsAlarms(ecsConfig, context, serverless)
-  const { createSNSAlarms } = snsAlarms(snsConfig, context, serverless)
-  const { createRuleAlarms } = ruleAlarms(ruleConfig, context, serverless)
+  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
+  const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisConfig, context)
+  const { createSQSAlarms } = sqsAlarms(sqsConfig, context)
+  const { createECSAlarms } = ecsAlarms(ecsConfig, context)
+  const { createSNSAlarms } = snsAlarms(snsConfig, context)
+  const { createRuleAlarms } = ruleAlarms(ruleConfig, context)
 
   return {
     addAlarms
