@@ -1,0 +1,36 @@
+{
+    "Comment": "A test state machine ",
+    "StartAt": "Say hello",
+    "States": {
+        "Say hello": {
+            "Type": "Task",
+            "Resource": "${HelloArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.TaskFailed"
+                    ],
+                    "IntervalSeconds": 15,
+                    "MaxAttempts": 5,
+                    "BackoffRate": 1.5
+                }
+            ],
+            "Next": "Say another hello"
+        },
+        "Say another hello": {
+            "Type": "Task",
+            "Resource": "${AnotherHelloArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.TaskFailed"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 1
+                }
+            ],
+            "End": true
+        }
+    }
+}

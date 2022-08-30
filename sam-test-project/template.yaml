@@ -124,6 +124,19 @@ Resources:
         alarms:
           Lambda:
             enabled: false
+  
+  StockTradingStateMachine:
+    Type: AWS::Serverless::StateMachine 
+    Properties:
+      DefinitionUri: statemachine/test.asl.json
+      DefinitionSubstitutions:
+        HelloArn: !GetAtt hello.Arn
+        AnotherHelloArn: !GetAtt hello.Arn
+      Policies: 
+        - LambdaInvokePolicy:
+            FunctionName: !Ref hello
+        - LambdaInvokePolicy:
+            FunctionName: !Ref hello
 
   stream:
     Type: AWS::Kinesis::Stream
