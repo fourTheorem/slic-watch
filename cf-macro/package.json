@@ -7,7 +7,7 @@
         "url": "https://github.com/fourTheorem/slic-watch.git",
         "directory": "cf-macro"
     },
-    "version": "0.0.1",
+    "version": "2.0.0-rc1",
     "private": true,
     "scripts": {
         "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.js"
@@ -20,6 +20,7 @@
         "ajv": "^8.9.0",
         "case": "^1.6.3",
         "lodash": "^4.17.21",
+        "slic-watch-core": "^2.0.0-rc1",
         "yaml": "^1.10.2"
     }
 }
