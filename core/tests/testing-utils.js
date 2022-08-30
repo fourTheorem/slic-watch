@@ -35,11 +35,16 @@ function assertCommonAlarmProperties (t, al) {
   t.ok(al.ComparisonOperator)
 }
 
+/**
+ * Derive an alarm 'type' by stripping the last component from the underscore-delimited name
+ * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} objectj
+ * @returns The inferred type
+ */
 function alarmNameToType (alarmName) {
-  if (alarmName['Fn::Sub']) {
-    return alarmName['Fn::Sub'].split('_')[0]
-  }
-  return alarmName.split('_')[0]
+  const resolvedName = alarmName['Fn::Sub'] ? alarmName['Fn::Sub'] : alarmName
+  const components = resolvedName.split('_')
+  components.pop()
+  return components.join('_')
 }
 
 function createTestConfig (from, cascadingChanges) {

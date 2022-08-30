@@ -39,8 +39,8 @@ test('ECS MemoryUtilization is created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    ECSMemoryAlarm: 'MemoryUtilization',
-    ECSCPUAlarm: 'CPUUtilization'
+    ECS_MemoryAlarm: 'MemoryUtilization',
+    ECS_CPUAlarm: 'CPUUtilization'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)

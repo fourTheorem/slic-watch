@@ -148,7 +148,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     return {
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcLogicalId}`,
       resource: createLambdaAlarm(
-        { 'Fn::Sub': `LambdaIteratorAge_\${${funcLogicalId}}` },
+        { 'Fn::Sub': `Lambda_IteratorAge_\${${funcLogicalId}}` },
         { 'Fn::Sub': `Iterator Age for ${funcLogicalId} breaches ${threshold}` },
         { Ref: funcLogicalId },
         config.ComparisonOperator,
@@ -168,7 +168,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcLogicalId}`,
       resource: createLambdaAlarm(
-        { 'Fn::Sub': `LambdaErrors_\${${funcLogicalId}}` },
+        { 'Fn::Sub': `Lambda_Errors_\${${funcLogicalId}}` },
         { 'Fn::Sub': `Error count for \${${funcLogicalId}} breaches ${threshold}` },
         { Ref: funcLogicalId },
         config.ComparisonOperator,
@@ -225,7 +225,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     return {
       resourceName: `slicWatchLambdaThrottlesAlarm${funcLogicalId}`,
       resource: createLambdaAlarm(
-        { 'Fn::Sub': `LambdaThrottles_\${${funcLogicalId}}` },
+        { 'Fn::Sub': `Lambda_Throttles_\${${funcLogicalId}}` },
         { 'Fn::Sub': `Throttles % for \${${funcLogicalId}} breaches ${threshold}` },
         { Ref: funcLogicalId },
         config.ComparisonOperator, // comparisonOperator
@@ -247,7 +247,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     return {
       resourceName: `slicWatchLambdaDurationAlarm${funcLogicalId}`,
       resource: createLambdaAlarm(
-        { 'Fn::Sub': `LambdaDuration_\${${funcLogicalId}}` },
+        { 'Fn::Sub': `Lambda_Duration_\${${funcLogicalId}}` },
         { 'Fn::Sub': `Max duration for \${${funcLogicalId}} breaches ${threshold}% of timeout (${funcTimeout})` },
         { Ref: funcLogicalId },
         config.ComparisonOperator,
@@ -271,7 +271,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     return {
       resourceName: `slicWatchLambdaInvocationsAlarm${funcLogicalId}`,
       resource: createLambdaAlarm(
-        { 'Fn::Sub': `LambdaInvocations_\${${funcLogicalId}}` },
+        { 'Fn::Sub': `Lambda_Invocations_\${${funcLogicalId}}` },
         { 'Fn::Sub': `Total invocations for \${${funcLogicalId}} breaches ${threshold}` },
         { Ref: funcLogicalId },
         config.ComparisonOperator,

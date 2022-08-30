@@ -56,9 +56,9 @@ test('Step Function alarms are created', (t) => {
   }
 
   const executionMetrics = [
-    'ExecutionThrottled',
-    'ExecutionsFailed',
-    'ExecutionsTimedOut'
+    'StepFunctions_ExecutionThrottled',
+    'StepFunctions_ExecutionsFailed',
+    'StepFunctions_ExecutionsTimedOut'
   ]
 
   const stateMachineRef = { Ref: 'Workflow' }
@@ -69,7 +69,8 @@ test('Step Function alarms are created', (t) => {
     t.equal(alarmsByType[type].size, 1)
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
-      t.equal(al.Threshold, sfAlarmConfig[type].Threshold)
+      const metric = type.split('_')[1]
+      t.equal(al.Threshold, sfAlarmConfig[metric].Threshold)
       t.equal(al.EvaluationPeriods, 2)
       t.equal(al.TreatMissingData, 'breaching')
       t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')

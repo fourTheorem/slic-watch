@@ -63,7 +63,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
-        AlarmName: { 'Fn::Sub': `${type}_\${${streamLogicalId}}` },
+        AlarmName: { 'Fn::Sub': `Kinesis_${type}_\${${streamLogicalId}}` },
         AlarmDescription: { 'Fn::Sub': `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds` },
         EvaluationPeriods: config.EvaluationPeriods,
         ComparisonOperator: config.ComparisonOperator,

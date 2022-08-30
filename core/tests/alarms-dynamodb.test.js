@@ -64,20 +64,21 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
       alarmsByType[alarmType].add(al)
     }
 
-    const metricCounts = {
-      ReadThrottleEvents: 2,
-      WriteThrottleEvents: 2,
-      UserErrors: 1,
-      SystemErrors: 1
+    const alarmCounts = {
+      DDB_ReadThrottleEvents: 2,
+      DDB_WriteThrottleEvents: 2,
+      DDB_UserErrors: 1,
+      DDB_SystemErrors: 1
     }
 
-    t.same(new Set(Object.keys(alarmsByType)), new Set(Object.keys(metricCounts)))
+    t.same(new Set(Object.keys(alarmsByType)), new Set(Object.keys(alarmCounts)))
 
-    for (const type of Object.keys(metricCounts)) {
-      t.equal(alarmsByType[type].size, metricCounts[type])
+    for (const type of Object.keys(alarmCounts)) {
+      t.equal(alarmsByType[type].size, alarmCounts[type])
       for (const al of alarmsByType[type]) {
         t.equal(al.Statistic, 'Sum')
-        t.equal(al.Threshold, dynamoDbAlarmConfig[type].Threshold)
+        const metric = type.split('_')[1]
+        t.equal(al.Threshold, dynamoDbAlarmConfig[metric].Threshold)
         t.equal(al.EvaluationPeriods, 2)
         t.equal(al.TreatMissingData, 'breaching')
         t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
