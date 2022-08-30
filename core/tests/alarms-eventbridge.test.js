@@ -60,7 +60,7 @@ test('Events alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'RuleName',
-        Value: 'serverless-test-project-dev-eventsRule-rule-1'
+        Value: 'ServerlesstestprojectdeveventsRulerule1EventBridgeRule'
       }
     ])
   }

@@ -76,16 +76,15 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     }
   }
 
-  function createFailedInvocationsAlarm (ruleResourceName, ruleResource, config) {
-    const ruleName = ruleResource.Properties.Name
+  function createFailedInvocationsAlarm (logicalId, ruleResource, config) {
     const threshold = config.Threshold
 
     return {
-      resourceName: `slicWatchEventsFailedInvocationsAlarm${ruleResourceName}`,
+      resourceName: `slicWatchEventsFailedInvocationsAlarm${logicalId}`,
       resource: createRuleAlarm(
-        `Events_FailedInvocationsAlarm_${ruleName}`, // alarmName
-        `EventBridge Failed Invocations for ${ruleName} breaches ${threshold}`, // alarmDescription
-        ruleName,
+        { 'Fn::Sub': `Events_FailedInvocationsAlarm_\${${logicalId}}` }, // alarmName
+        { 'Fn::Sub': `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
+        `${logicalId}`,
         config.ComparisonOperator,
         threshold,
         'FailedInvocations', // metricName
@@ -97,15 +96,14 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     }
   }
 
-  function createThrottledRulesAlarm (ruleResourceName, ruleResource, config) {
-    const ruleName = ruleResource.Properties.Name
+  function createThrottledRulesAlarm (logicalId, ruleResource, config) {
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchEventsThrottledRulesAlarm${ruleResourceName}`,
+      resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,
       resource: createRuleAlarm(
-        `Events_ThrottledRulesAlarm_${ruleName}`, // alarmName
-        `EventBridge Throttled Rules for ${ruleName} breaches ${threshold}`, // alarmDescription
-        ruleName,
+        { 'Fn::Sub': `Events_ThrottledRulesAlarm_\${${logicalId}}` }, // alarmName
+        { 'Fn::Sub': `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
+        `${logicalId}`,
         config.ComparisonOperator,
         threshold,
         'ThrottledRules', // metricName
