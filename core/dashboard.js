@@ -411,7 +411,9 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
               widgetMetrics.push({
                 namespace: 'AWS/SQS',
                 metric,
-                dimensions: { QueueName: `\${${logicalId}}` },
+                dimensions: {
+                  QueueName: `\${${logicalId}.QueueName}`
+                },
                 stat
               })
             }
@@ -419,7 +421,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
         }
         if (widgetMetrics.length > 0) {
           queueWidgets.push(createMetricWidget(
-            `${group} $\{${logicalId}} SQS`,
+            `${group} \${${logicalId}.QueueName} SQS`,
             widgetMetrics,
             sqsDashConfig
           ))

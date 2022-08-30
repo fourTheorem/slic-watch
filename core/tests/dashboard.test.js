@@ -187,12 +187,12 @@ test('A dashboard includes metrics', (t) => {
     }
     t.same(namespaces, new Set(['AWS/SQS']))
     const expectedTitles = new Set([
-      'Messages ${regularQueue} SQS',
-      'Oldest Message age ${regularQueue} SQS',
-      'Messages in queue ${regularQueue} SQS',
-      'Messages ${fifoQueue} SQS',
-      'Oldest Message age ${fifoQueue} SQS',
-      'Messages in queue ${fifoQueue} SQS'
+      'Messages ${regularQueue.QueueName} SQS',
+      'Oldest Message age ${regularQueue.QueueName} SQS',
+      'Messages in queue ${regularQueue.QueueName} SQS',
+      'Messages ${fifoQueue.QueueName} SQS',
+      'Oldest Message age ${fifoQueue.QueueName} SQS',
+      'Messages in queue ${fifoQueue.QueueName} SQS'
     ])
 
     const actualTitles = new Set(
