@@ -85,21 +85,19 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     }
   }
 
-  function createInFlightMsgsAlarm (queueResourceName, queueResource, config) {
-    const queueName = queueResource.Properties.QueueName
+  function createInFlightMsgsAlarm (logicalId, queueResource, config) {
     const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
-    const hardLimit = queueResource.Properties.FifoQueue ? 20000 : 120000
+    const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
-
     return {
-      resourceName: `slicWatchSQSInFlightMsgsAlarm${queueResourceName}`,
+      resourceName: `slicWatchSQSInFlightMsgsAlarm${logicalId}`,
       resource: createSqsAlarm(
-        `SQS_ApproximateNumberOfMessagesNotVisible_${queueName}`, // alarmName
-        `SQS in-flight messages for ${queueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`, // alarmDescription
-        queueName, // queueName
+        { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}}` }, // alarmName
+        { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` }, // alarmDescription
+        `${logicalId}`,
         config.ComparisonOperator, // comparisonOperator
         thresholdValue, // threshold
         'ApproximateNumberOfMessagesNotVisible', // metricName
@@ -111,15 +109,14 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     }
   }
 
-  function createOldestMsgAgeAlarm (queueResourceName, queueResource, config) {
-    const queueName = queueResource.Properties.QueueName
+  function createOldestMsgAgeAlarm (logicalId, queueResource, config) {
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchSQSOldestMsgAgeAlarm${queueResourceName}`,
+      resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,
       resource: createSqsAlarm(
-        `SQS_ApproximateAgeOfOldestMessage_${queueName}`, // alarmName
-        `SQS age of oldest message in the queue ${queueName} breaches ${threshold}`, // alarmDescription
-        queueName, // queueName
+        { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}}` }, // alarmName
+        { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}} breaches ${threshold}` }, // alarmDescription
+        `${logicalId}`,
         config.ComparisonOperator, // comparisonOperator
         threshold, // threshold
         'ApproximateAgeOfOldestMessage', // metricName

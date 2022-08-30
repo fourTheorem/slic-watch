@@ -401,8 +401,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     }
     const metricConfigs = getConfiguredMetrics(sqsDashConfig)
 
-    for (const queueResource of Object.values(queueResources)) {
-      const queueName = queueResource.Properties.QueueName
+    for (const [logicalId] of Object.entries(queueResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
         const widgetMetrics = []
         for (const metric of metrics) {
@@ -412,7 +411,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
               widgetMetrics.push({
                 namespace: 'AWS/SQS',
                 metric,
-                dimensions: { QueueName: queueName },
+                dimensions: { QueueName: `\${${logicalId}}` },
                 stat
               })
             }
@@ -420,7 +419,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
         }
         if (widgetMetrics.length > 0) {
           queueWidgets.push(createMetricWidget(
-            `${group} ${queueName} SQS`,
+            `${group} $\{${logicalId}} SQS`,
             widgetMetrics,
             sqsDashConfig
           ))
