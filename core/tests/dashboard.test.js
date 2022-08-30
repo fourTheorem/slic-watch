@@ -258,7 +258,7 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/Events']))
-    const expectedTitles = new Set(['EventBridge Rule serverless-test-project-dev-eventsRule-rule-1'])
+    const expectedTitles = new Set(['EventBridge Rule ${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)

@@ -512,9 +512,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createRuleWidgets (ruleResources) {
     const ruleWidgets = []
-    for (const res of Object.values(ruleResources)) {
-      const ruleName = res.Properties.Name
-
+    for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
         if (metricConfig.enabled) {
@@ -522,9 +520,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
             widgetMetrics.push({
               namespace: 'AWS/Events',
               metric,
-              dimensions: {
-                RuleName: ruleName
-              },
+              dimensions: { RuleName: `\${${logicalId}}` },
               stat
             })
           }
@@ -532,7 +528,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `EventBridge Rule ${ruleName}`,
+          `EventBridge Rule \${${logicalId}}`,
           widgetMetrics,
           ruleDashConfig
         )

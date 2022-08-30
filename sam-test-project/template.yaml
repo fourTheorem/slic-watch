@@ -88,6 +88,39 @@ Resources:
             Stream: !GetAtt stream.Arn
             MaximumRetryAttempts: 0
             StartingPosition: LATEST
+  httpGetter:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: apigw-handler.handleGet
+      Timeout: 30
+      Runtime: nodejs16.x
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: "item"
+            Method: GET
+            
+  eventsRule:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: rule-handler.handleRule
+      Runtime: nodejs16.x  
+      Events:
+        Trigger:
+          Type: CloudWatchEvent 
+          Properties:
+            Pattern:
+              detail-type: 
+              - Invoke Lambda Function
+            RetryPolicy:
+              MaximumRetryAttempts: 0
+              MaximumEventAgeInSeconds: 60
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            enabled: false
 
   stream:
     Type: AWS::Kinesis::Stream
