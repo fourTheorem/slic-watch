@@ -1,8 +1,8 @@
 {
     "name": "sam-test-project",
-    "description": "Test project for cf-macro-slic-watch",
+    "description": "Test project for Macro",
     "version": "0.0.1",
-    "main": "lambda1.js",
+    "main": "basic-handler.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/fourTheorem/slic-watch.git",
@@ -12,10 +12,7 @@
     "private": true,
     "dependencies": {
     },
-    "devDependencies": {
-        "jest": "^26.6.3"
-    },
     "scripts": {
-        "test": "jest"
+        "test": "echo \"Error: no test specified\" && exit 0"
     }
 }

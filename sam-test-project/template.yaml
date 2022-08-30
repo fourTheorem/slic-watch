@@ -2,14 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   sam-test-project
 
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform: ["AWS::Serverless-2016-10-31", "SlicWatch-2022-08-31"]
-
-Parameters:
-  stack:
-    Type: String
-    Default: sam-test-stack-project
 
 Metadata:
   slicWatch:
@@ -21,7 +14,6 @@ Metadata:
         Invocations:
           enabled: true
           Threshold: 10
-
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
@@ -36,25 +28,69 @@ Resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: SS-Alarm-Topic2
-  LambdaFunction1:
+
+  hello:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName : sam-test-project-lambda1
-      Handler: lambda1.functionHandler
-      Runtime: nodejs14.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A Lambda function that returns a static string.
-      Policies:
-        # Give Lambda basic execution Permission to the helloFromLambda
-        - AWSLambdaBasicExecutionRole
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
     Metadata:
       slicWatch:
         alarms:
           Lambda:
             Invocations:
-              Threshold: 3
+              Threshold: 2
+
+  ping:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+    Metadata:
+      slicWatch:
         dashboard:
-          enabled: true
+          enabled: false
+
+  throttler:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+      ReservedConcurrentExecutions: 0
+
+  driveStream:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: stream-test-handler.handleDrive
+      Runtime: nodejs16.x
+
+  driveQueue:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+
+  driveTable:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+
+  streamProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+      Events:
+        Stream:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt stream.Arn
+            MaximumRetryAttempts: 0
+            StartingPosition: LATEST
+
+  stream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      ShardCount: 1
+ 

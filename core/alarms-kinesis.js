@@ -46,11 +46,11 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
     }
   }
 
-  function createStreamAlarm (streamResourceName, streamResource, type, metric, config) {
-    const streamName = streamResource.Properties.Name // TODO: Allow for Ref usage in resource names (see #14)
+  function createStreamAlarm (streamLogicalId, streamResource, type, metric, config) {
     const threshold = config.Threshold
+    const streamNameSub = `\${${streamLogicalId}}`
     const metricProperties = {
-      Dimensions: [{ Name: 'StreamName', Value: streamName }],
+      Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } }],
       MetricName: metric,
       Namespace: 'AWS/Kinesis',
       Period: config.Period,
@@ -63,8 +63,8 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
-        AlarmName: `${type}_${streamName}`,
-        AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamName} breaches ${threshold} milliseconds`,
+        AlarmName: { 'Fn::Sub': `${type}_\${${streamLogicalId}}` },
+        AlarmDescription: { 'Fn::Sub': `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds` },
         EvaluationPeriods: config.EvaluationPeriods,
         ComparisonOperator: config.ComparisonOperator,
         Threshold: config.Threshold,
@@ -73,7 +73,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       }
     }
     return {
-      resourceName: makeResourceName('kinesis', streamName, type),
+      resourceName: makeResourceName('kinesis', `${streamNameSub}`, type),
       resource
     }
   }

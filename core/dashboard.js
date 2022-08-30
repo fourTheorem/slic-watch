@@ -356,8 +356,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
     }
     const metricConfigs = getConfiguredMetrics(kinesisDashConfig)
 
-    for (const streamResource of Object.values(streamResources)) {
-      const streamName = streamResource.Properties.Name
+    for (const [logicalId] of Object.entries(streamResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
         const widgetMetrics = []
         for (const metric of metrics) {
@@ -367,7 +366,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
               widgetMetrics.push({
                 namespace: 'AWS/Kinesis',
                 metric,
-                dimensions: { StreamName: streamName },
+                dimensions: { StreamName: `\${${logicalId}}` },
                 stat
               })
             }
@@ -375,7 +374,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
         }
         if (widgetMetrics.length > 0) {
           streamWidgets.push(createMetricWidget(
-            `${group} ${streamName} Kinesis`,
+            `${group} $\{${logicalId}} Kinesis`,
             widgetMetrics,
             kinesisDashConfig
           ))
