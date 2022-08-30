@@ -90,6 +90,7 @@ Resources:
             Stream: !GetAtt stream.Arn
             MaximumRetryAttempts: 0
             StartingPosition: LATEST
+
   httpGetter:
     Type: AWS::Serverless::Function
     Properties:
@@ -128,6 +129,7 @@ Resources:
     Type: AWS::Kinesis::Stream
     Properties:
       ShardCount: 1
+
   regularQueue:
     Type: "AWS::SQS::Queue"
 

@@ -95,9 +95,9 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${logicalId}`,
       resource: createSqsAlarm(
-        { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}}` }, // alarmName
-        { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` }, // alarmDescription
-        `${logicalId}`,
+        { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}` }, // alarmName
+        { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` }, // alarmDescription
+        { 'Fn::GetAtt': [logicalId, 'QueueName'] },
         config.ComparisonOperator, // comparisonOperator
         thresholdValue, // threshold
         'ApproximateNumberOfMessagesNotVisible', // metricName
@@ -114,9 +114,9 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,
       resource: createSqsAlarm(
-        { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}}` }, // alarmName
-        { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}} breaches ${threshold}` }, // alarmDescription
-        `${logicalId}`,
+        { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}` }, // alarmName
+        { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}` }, // alarmDescription
+        { 'Fn::GetAtt': [logicalId, 'QueueName'] },
         config.ComparisonOperator, // comparisonOperator
         threshold, // threshold
         'ApproximateAgeOfOldestMessage', // metricName

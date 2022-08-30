@@ -76,7 +76,12 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'regularQueue'
+      Value: {
+        'Fn::GetAtt': [
+          'regularQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
@@ -92,7 +97,12 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'fifoQueue'
+      Value: {
+        'Fn::GetAtt': [
+          'fifoQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
@@ -110,7 +120,12 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'regularQueue'
+      Value: {
+        'Fn::GetAtt': [
+          'regularQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
@@ -126,7 +141,12 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: 'fifoQueue'
+      Value: {
+        'Fn::GetAtt': [
+          'fifoQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
