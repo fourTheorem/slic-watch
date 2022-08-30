@@ -4,7 +4,7 @@ on:
     branches:
       - slic-watch-sam-support
 env:
-  BUCKET_NAME : "ft-sar-apps-949339270388-eu-west-1"
+  SAR_BUCKET_NAME : ${{ secrets.SAR_BUCKET_NAME }}
   AWS_REGION : "eu-west-1"
 permissions:
   id-token: write
@@ -16,7 +16,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::949339270388:role/SarAppGitHubActionDeploymentRole
+          role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
           aws-region: ${{ env.AWS_REGION }}
       - name: Git clone the repository
