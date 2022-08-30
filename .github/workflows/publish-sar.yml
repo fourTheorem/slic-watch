@@ -10,7 +10,7 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  WhoAmI:
+  publish-sar:
     runs-on: ubuntu-latest
     steps:
       - name: configure aws credentials
