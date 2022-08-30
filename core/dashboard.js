@@ -2,16 +2,18 @@
 
 const { cascade } = require('./cascading-config')
 const { resolveEcsClusterNameForSub, resolveRestApiNameForSub } = require('./util')
+const { getLogger } = require('./logging')
 
 const MAX_WIDTH = 24
 
+const logger = getLogger()
+
 /**
- * @param {*} serverless  The serverless framework instance
  * @param {*} dashboardConfig The global plugin dashboard configuration
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-module.exports = function dashboard (serverless, dashboardConfig, functionDashboardConfigs, context) {
+module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, context) {
   const {
     timeRange,
     widgets: {
@@ -104,7 +106,7 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
       }
       cfTemplate.addResource('slicWatchDashboard', dashboardResource)
     } else {
-      serverless.cli.log('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
+      logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
     }
   }
 

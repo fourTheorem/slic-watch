@@ -15,20 +15,9 @@ const slsYamlPath = path.resolve(
 )
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
-const testContext = {
-  alarmActions: ['dummy-arn'],
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
-
-const slsMock = {
-  cli: {
-    log: () => {}
-  }
-}
+const testContext = { alarmActions: ['dummy-arn'] }
 
 module.exports = {
-  slsMock,
   slsYaml,
   defaultCfTemplate,
   testContext,
@@ -66,9 +55,5 @@ function createTestConfig (from, cascadingChanges) {
 function createTestCloudFormationTemplate (stackDefinition = null) {
   const data = stackDefinition || defaultCfTemplate
 
-  return CloudFormationTemplate(
-    _.cloneDeep(data),
-    {},
-    slsMock
-  )
+  return CloudFormationTemplate(_.cloneDeep(data), {})
 }
