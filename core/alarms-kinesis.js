@@ -48,7 +48,6 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
 
   function createStreamAlarm (streamLogicalId, streamResource, type, metric, config) {
     const threshold = config.Threshold
-    const streamNameSub = `\${${streamLogicalId}}`
     const metricProperties = {
       Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } }],
       MetricName: metric,
@@ -73,7 +72,7 @@ module.exports = function KinesisAlarms (kinesisAlarmConfig, context) {
       }
     }
     return {
-      resourceName: makeResourceName('kinesis', `${streamNameSub}`, type),
+      resourceName: makeResourceName('Kinesis', streamLogicalId, type),
       resource
     }
   }
