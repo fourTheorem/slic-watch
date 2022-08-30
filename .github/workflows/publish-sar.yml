@@ -28,6 +28,7 @@ jobs:
       - name:
         run: |
           aws sts get-caller-identity
+          npm ci
           sam build --base-dir . --template-file cf-macro/template.yaml
           sam package --output-template-file packaged.yaml --s3-bucket ${BUCKET_NANAME}
           sam publish --template packaged.yaml --region ${AWS_REGION}
