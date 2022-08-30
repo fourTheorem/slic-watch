@@ -134,7 +134,8 @@ module.exports = function dashboard (serverless, dashboardConfig, functionDashbo
         metrics,
         title,
         view: 'timeSeries',
-        region: context.region,
+        // eslint-disable-next-line no-template-curly-in-string
+        region: '${AWS::Region}',
         period: config.metricPeriod
       },
       width: config.width,
