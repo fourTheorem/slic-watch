@@ -13,15 +13,21 @@ jobs:
   WhoAmI:
     runs-on: ubuntu-latest
     steps:
-      # - name: Git clone the repository
-      #   uses: actions/checkout@v3
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::949339270388:role/SarAppGitHubActionDeploymentRole
           role-session-name: github-action-sar-deploy-session
           aws-region: ${{ env.AWS_REGION }}
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+      - uses: aws-actions/setup-sam@v2
       - name:
         run: |
           aws sts get-caller-identity
-          aws s3 ls s3://
+          sam build --base-dir . --template-file cf-macro/template.yaml
+          sam package --output-template-file packaged.yaml --s3-bucket ${BUCKET_NANAME}
+          sam publish --template packaged.yaml --region ${AWS_REGION}
