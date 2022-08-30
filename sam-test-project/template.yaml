@@ -2,7 +2,9 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   sam-test-project
 
-Transform: ["AWS::Serverless-2016-10-31", "SlicWatch-2022-08-31"]
+Transform:
+  - AWS::Serverless-2016-10-31
+  - SlicWatch-v2
 
 Metadata:
   slicWatch:
@@ -22,7 +24,7 @@ Metadata:
         InFlightMessagesPc:
           Statistic: Maximum
           Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
-      
+
 Resources:
   MonitoringTopic:
       Type: AWS::SNS::Topic
