@@ -128,4 +128,11 @@ Resources:
     Type: AWS::Kinesis::Stream
     Properties:
       ShardCount: 1
+  regularQueue:
+    Type: "AWS::SQS::Queue"
+
+  fifoQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      FifoQueue: true
  
