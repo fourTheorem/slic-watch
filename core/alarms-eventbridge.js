@@ -83,8 +83,8 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${ruleResourceName}`,
       resource: createRuleAlarm(
-        `EventsFailedInvocationsAlarm_${ruleName}`, // alarmName
-        `Failed Invocations for ${ruleName} breaches ${threshold}`, // alarmDescription
+        `Events_FailedInvocationsAlarm_${ruleName}`, // alarmName
+        `EventBridge Failed Invocations for ${ruleName} breaches ${threshold}`, // alarmDescription
         ruleName,
         config.ComparisonOperator,
         threshold,
@@ -103,8 +103,8 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${ruleResourceName}`,
       resource: createRuleAlarm(
-        `EventsThrottledRulesAlarm_${ruleName}`, // alarmName
-        `Throttled RulesAlarm for ${ruleName} breaches ${threshold}`, // alarmDescription
+        `Events_ThrottledRulesAlarm_${ruleName}`, // alarmName
+        `EventBridge Throttled Rules for ${ruleName} breaches ${threshold}`, // alarmDescription
         ruleName,
         config.ComparisonOperator,
         threshold,

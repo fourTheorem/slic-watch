@@ -52,13 +52,13 @@ test('API Gateway alarms are created', (t) => {
   }
 
   t.same(Object.keys(alarmsByType).sort(), [
-    'Api4XXError',
-    'ApiAvailability',
-    'ApiLatency'
+    'APIGW_4XXError',
+    'APIGW_5XXError',
+    'APIGW_Latency'
   ])
 
-  t.equal(alarmsByType.ApiAvailability.size, 1)
-  for (const al of alarmsByType.ApiAvailability) {
+  t.equal(alarmsByType.APIGW_5XXError.size, 1)
+  for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
     t.equal(al.Threshold, apiGwAlarmConfig['5XXError'].Threshold)
@@ -75,7 +75,7 @@ test('API Gateway alarms are created', (t) => {
     ])
   }
 
-  for (const al of alarmsByType.Api4XXError) {
+  for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
     t.equal(al.Threshold, apiGwAlarmConfig['4XXError'].Threshold)
@@ -92,7 +92,7 @@ test('API Gateway alarms are created', (t) => {
     ])
   }
 
-  for (const al of alarmsByType.ApiLatency) {
+  for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')
     t.equal(al.Threshold, apiGwAlarmConfig.Latency.Threshold)

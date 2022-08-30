@@ -36,12 +36,12 @@ test('Kinesis data stream alarms are created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
-    StreamReadThroughput: 'ReadProvisionedThroughputExceeded',
-    StreamWriteThroughput: 'WriteProvisionedThroughputExceeded',
-    StreamPutRecordSuccess: 'PutRecord.Success',
-    StreamPutRecordsSuccess: 'PutRecords.Success',
-    StreamGetRecordsSuccess: 'GetRecords.Success'
+    Kinesis_StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
+    Kinesis_StreamReadThroughput: 'ReadProvisionedThroughputExceeded',
+    Kinesis_StreamWriteThroughput: 'WriteProvisionedThroughputExceeded',
+    Kinesis_StreamPutRecordSuccess: 'PutRecord.Success',
+    Kinesis_StreamPutRecordsSuccess: 'PutRecords.Success',
+    Kinesis_StreamGetRecordsSuccess: 'GetRecords.Success'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)

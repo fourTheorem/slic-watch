@@ -97,8 +97,8 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${queueResourceName}`,
       resource: createSqsAlarm(
-        `SQSApproximateNumberOfMessagesNotVisible_${queueName}`, // alarmName
-        `In flight messages for ${queueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`, // alarmDescription
+        `SQS_ApproximateNumberOfMessagesNotVisible_${queueName}`, // alarmName
+        `SQS in-flight messages for ${queueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`, // alarmDescription
         queueName, // queueName
         config.ComparisonOperator, // comparisonOperator
         thresholdValue, // threshold
@@ -117,8 +117,8 @@ module.exports = function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${queueResourceName}`,
       resource: createSqsAlarm(
-        `SQSApproximateAgeOfOldestMessage_${queueName}`, // alarmName
-        `Age of oldest message in the queue ${queueName} breaches ${threshold}`, // alarmDescription
+        `SQS_ApproximateAgeOfOldestMessage_${queueName}`, // alarmName
+        `SQS age of oldest message in the queue ${queueName} breaches ${threshold}`, // alarmDescription
         queueName, // queueName
         config.ComparisonOperator, // comparisonOperator
         threshold, // threshold

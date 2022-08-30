@@ -88,8 +88,8 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchECSMemoryAlarm${serviceResourceName}`,
       resource: createEcsAlarm(
-        `ECSMemoryAlarm_${serviceName}`, // alarmName
-        `Memory Utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
+        `ECS_MemoryAlarm_${serviceName}`, // alarmName
+        `ECS memory utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
         serviceName,
         clusterName,
         config.ComparisonOperator,
@@ -109,8 +109,8 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchECSCPUAlarm${serviceResourceName}`,
       resource: createEcsAlarm(
-        `ECSCPUAlarm_${serviceName}`, // alarmName
-        `CPU Utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
+        `ECS_CPUAlarm_${serviceName}`, // alarmName
+        `ECS CPU utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
         serviceName,
         clusterName,
         config.ComparisonOperator,

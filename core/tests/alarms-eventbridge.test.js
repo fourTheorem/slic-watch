@@ -39,8 +39,8 @@ test('Events alarms are created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    EventsFailedInvocationsAlarm: 'FailedInvocations',
-    EventsThrottledRulesAlarm: 'ThrottledRules'
+    Events_FailedInvocationsAlarm: 'FailedInvocations',
+    Events_ThrottledRulesAlarm: 'ThrottledRules'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)

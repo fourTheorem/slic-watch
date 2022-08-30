@@ -33,8 +33,8 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
           const alarmResourceName = `slicWatchStates${metric}Alarm${smResourceName}`
           const smName = smResource.Properties.StateMachineName
           const alarmResource = createStateMachineAlarm(
-            `${metric}_${smName}`,
-            `${metric} ${config.Statistic} for ${smName} breaches ${config.Threshold}`,
+            `StepFunctions_${metric}_${smName}`,
+            `StepFunctions_${metric} ${config.Statistic} for ${smName} breaches ${config.Threshold}`,
             stateMachine,
             config.ComparisonOperator,
             config.Threshold,

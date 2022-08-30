@@ -54,15 +54,15 @@ test('SQS alarms are created', (t) => {
   }
 
   t.same(Object.keys(alarmsByType).sort(), [
-    'SQSApproximateAgeOfOldestMessage',
-    'SQSApproximateNumberOfMessagesNotVisible'
+    'SQS_ApproximateAgeOfOldestMessage',
+    'SQS_ApproximateNumberOfMessagesNotVisible'
   ])
 
   // we expect one alarm type per queue (and we have 2 queues)
-  t.equal(alarmsByType.SQSApproximateAgeOfOldestMessage.size, 2)
-  t.equal(alarmsByType.SQSApproximateNumberOfMessagesNotVisible.size, 2)
+  t.equal(alarmsByType.SQS_ApproximateAgeOfOldestMessage.size, 2)
+  t.equal(alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible.size, 2)
 
-  const approximateAgeOfOldMessageAlarms = [...alarmsByType.SQSApproximateAgeOfOldestMessage]
+  const approximateAgeOfOldMessageAlarms = [...alarmsByType.SQS_ApproximateAgeOfOldestMessage]
 
   // regular queue
   t.equal(approximateAgeOfOldMessageAlarms[0].MetricName, 'ApproximateAgeOfOldestMessage')
@@ -96,7 +96,7 @@ test('SQS alarms are created', (t) => {
     }
   ])
 
-  const approximateNumberOfMessagesNotVisibileAlarms = [...alarmsByType.SQSApproximateNumberOfMessagesNotVisible]
+  const approximateNumberOfMessagesNotVisibileAlarms = [...alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible]
 
   // regular queue
   t.equal(approximateNumberOfMessagesNotVisibileAlarms[0].MetricName, 'ApproximateNumberOfMessagesNotVisible')

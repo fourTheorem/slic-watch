@@ -39,8 +39,8 @@ test('SNS alarms are created', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    SNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
-    SNSNumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
+    SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
+    SNS_NumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)

@@ -60,13 +60,13 @@ test('AWS Lambda alarms are created', (t) => {
   }
 
   t.same(Object.keys(alarmsByType).sort(), [
-    'LambdaDuration',
-    'LambdaErrors',
-    'LambdaIteratorAge',
-    'LambdaThrottles'
+    'Lambda_Duration',
+    'Lambda_Errors',
+    'Lambda_IteratorAge',
+    'Lambda_Throttles'
   ])
 
-  for (const al of alarmsByType.LambdaErrors) {
+  for (const al of alarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
     t.equal(al.Threshold, alarmConfig.Lambda.Errors.Threshold)
@@ -80,7 +80,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.ok(al.Dimensions[0].Value)
   }
 
-  for (const al of alarmsByType.LambdaDuration) {
+  for (const al of alarmsByType.Lambda_Duration) {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
     t.ok(al.Threshold > 1000) // Ensure threshold is in milliseconds
@@ -91,7 +91,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Period, 120)
   }
 
-  for (const al of alarmsByType.LambdaThrottles) {
+  for (const al of alarmsByType.Lambda_Throttles) {
     t.equal(al.Metrics.length, 3)
     const metricsById = {}
     for (const metric of al.Metrics) {
@@ -109,8 +109,8 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
-  t.equal(alarmsByType.LambdaIteratorAge.size, 1)
-  for (const al of alarmsByType.LambdaIteratorAge) {
+  t.equal(alarmsByType.Lambda_IteratorAge.size, 1)
+  for (const al of alarmsByType.Lambda_IteratorAge) {
     t.equal(al.MetricName, 'IteratorAge')
     t.equal(al.Statistic, 'Maximum')
     t.ok(al.Threshold)
@@ -160,7 +160,7 @@ test('Invocation alarms are created if configured', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   const invocAlarmResources = filterObject(
     alarmResources,
-    (res) => res.Properties.AlarmName['Fn::Sub'].startsWith('LambdaInvocations')
+    (res) => res.Properties.AlarmName['Fn::Sub'].startsWith('Lambda_Invocations')
   )
   t.equal(Object.keys(invocAlarmResources).length, 8)
   for (const res of Object.values(invocAlarmResources)) {
@@ -420,7 +420,7 @@ test('Duration alarms are created if no timeout is specified', (t) => {
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   const invocAlarmResources = filterObject(
     alarmResources,
-    (res) => res.Properties.AlarmName['Fn::Sub'].startsWith('LambdaDuration')
+    (res) => res.Properties.AlarmName['Fn::Sub'].startsWith('Lambda_Duration')
   )
   t.equal(Object.keys(invocAlarmResources).length, 8)
   t.end()

@@ -25,7 +25,7 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
       const alarms = []
 
       if (apiGwAlarmConfig['5XXError'].enabled) {
-        alarms.push(createAvailabilityAlarm(
+        alarms.push(create5XXAlarm(
           apiResourceName,
           apiResource,
           apiGwAlarmConfig['5XXError']
@@ -92,15 +92,15 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     }
   }
 
-  function createAvailabilityAlarm (apiResourceName, apiResource, config) {
+  function create5XXAlarm (apiResourceName, apiResource, config) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createApiAlarm(
-        { 'Fn::Sub': `ApiAvailability_${apiNameForSub}` },
-        { 'Fn::Sub': `API 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+        { 'Fn::Sub': `APIGW_5XXError_${apiNameForSub}` },
+        { 'Fn::Sub': `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -121,8 +121,8 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     return {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
       resource: createApiAlarm(
-        { 'Fn::Sub': `Api4XXError_${apiNameForSub}` },
-        { 'Fn::Sub': `API 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+        { 'Fn::Sub': `APIGW_4XXError_${apiNameForSub}` },
+        { 'Fn::Sub': `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,
@@ -143,8 +143,8 @@ module.exports = function ApiGatewayAlarms (apiGwAlarmConfig, context) {
     return {
       resourceName: makeResourceName('Api', apiName, 'Latency'),
       resource: createApiAlarm(
-        { 'Fn::Sub': `ApiLatency_${apiNameForSub}` },
-        { 'Fn::Sub': `API Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+        { 'Fn::Sub': `APIGW_Latency_${apiNameForSub}` },
+        { 'Fn::Sub': `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
         config.ComparisonOperator,
         threshold,
