@@ -215,7 +215,7 @@ test('A dashboard includes metrics', (t) => {
     }
     t.same(namespaces, new Set(['AWS/ECS']))
     const expectedTitles = new Set([
-      'ECS Service awesome-service'
+      'ECS Service ${ecsService.Name}'
     ])
 
     const actualTitles = new Set(
