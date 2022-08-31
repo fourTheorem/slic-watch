@@ -28,6 +28,8 @@ jobs:
       - name: Npm security audit
         run: npm run audit
       - name: Release
-        run: npm publish --workspace slic-watch-core --workspace serverless-slic-watch-plugin
+        run: |
+          [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
+          echo npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
