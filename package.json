@@ -21,6 +21,7 @@
     "test:lint": "eslint .",
     "test:packages": "npm run test --workspaces",
     "test": "npm run test:lint && npm run test:packages",
+    "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install"
   },
   "devDependencies": {
