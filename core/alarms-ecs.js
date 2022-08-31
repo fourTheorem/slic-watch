@@ -82,15 +82,14 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
     }
   }
 
-  function createMemoryUtilizationAlarm (serviceResourceName, serviceResource, clusterName, config) {
-    const serviceName = serviceResource.Properties.ServiceName
+  function createMemoryUtilizationAlarm (logicalId, serviceResource, clusterName, config) {
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchECSMemoryAlarm${serviceResourceName}`,
+      resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
       resource: createEcsAlarm(
-        `ECS_MemoryAlarm_${serviceName}`, // alarmName
-        `ECS memory utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
-        serviceName,
+        { 'Fn::Sub': `ECS_MemoryAlarm_\${${logicalId}.Name}` },
+        { 'Fn::Sub': `ECS memory utilization for ${logicalId}.Name breaches ${threshold}` },
+        { 'Fn::GetAtt': [logicalId, 'Name'] },
         clusterName,
         config.ComparisonOperator,
         threshold,
@@ -103,15 +102,14 @@ module.exports = function ecsAlarms (ecsAlarmsConfig, context) {
     }
   }
 
-  function createCPUUtilizationAlarm (serviceResourceName, serviceResource, clusterName, config) {
-    const serviceName = serviceResource.Properties.ServiceName
+  function createCPUUtilizationAlarm (logicalId, serviceResource, clusterName, config) {
     const threshold = config.Threshold
     return {
-      resourceName: `slicWatchECSCPUAlarm${serviceResourceName}`,
+      resourceName: `slicWatchECSCPUAlarm${logicalId}`,
       resource: createEcsAlarm(
-        `ECS_CPUAlarm_${serviceName}`, // alarmName
-        `ECS CPU utilization for ${serviceName} breaches ${threshold}`, // alarmDescription
-        serviceName,
+        { 'Fn::Sub': `ECS_CPUAlarm_\${${logicalId}.Name}` },
+        { 'Fn::Sub': `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}` },
+        { 'Fn::GetAtt': [logicalId, 'Name'] },
         clusterName,
         config.ComparisonOperator,
         threshold,

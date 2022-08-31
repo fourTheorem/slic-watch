@@ -439,8 +439,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createEcsWidgets (ecsServiceResources) {
     const ecsWidgets = []
-    for (const res of Object.values(ecsServiceResources)) {
-      const serviceName = res.Properties.ServiceName
+    for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties.Cluster)
 
       const widgetMetrics = []
@@ -451,7 +450,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
               namespace: 'AWS/ECS',
               metric,
               dimensions: {
-                ServiceName: serviceName,
+                ServiceName: `\${${logicalId}.Name}`,
                 ClusterName: clusterName
               },
               stat
@@ -461,7 +460,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `ECS Service ${serviceName}`,
+          `ECS Service \${${logicalId}.Name}`,
           widgetMetrics,
           ecsDashConfig
         )

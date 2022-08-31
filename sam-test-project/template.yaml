@@ -150,4 +150,56 @@ Resources:
     Type: "AWS::SQS::Queue"
     Properties:
       FifoQueue: true
+      
+  vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+
+  subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
+      CidrBlock: 10.0.16.0/20
+      VpcId: !Ref vpc
+
+  ecsCluster:
+    Type: AWS::ECS::Cluster
+
+  ecsService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster:
+        Ref: ecsCluster
+      DesiredCount: 0
+      LaunchType: FARGATE
+      TaskDefinition: !Ref taskDef
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: []
+          Subnets:
+            - !Ref subnet
+
+  taskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ContainerDefinitions: 
+        - Name: "busybox"
+          Image: "busybox"
+          Cpu: 256
+          EntryPoint: 
+            - "sh"
+            - "-c"
+          Memory: 512
+          Command: 
+            - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+          Essential: true
+      NetworkMode: awsvpc
  
