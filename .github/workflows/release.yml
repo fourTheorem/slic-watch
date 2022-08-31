@@ -15,10 +15,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 16.x
           registry-url: "https://registry.npmjs.org"
-      - name: Use npm 7.5
-        run: npm install -g npm@^7
+      - name: Use npm 8
+        run: npm install -g npm@^8
       - name: Test NPM login
         run: npm whoami
         env:
@@ -28,6 +28,6 @@ jobs:
       - name: Npm security audit
         run: npm run audit
       - name: Release
-        run: npm run lerna:publish
+        run: npm publish --workspace slic-watch-core --workspace serverless-slic-watch-plugin
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
