@@ -26,11 +26,10 @@ SLIC Watch is available for **Serverless Framework**, **AWS SAM** and **CloudFor
 
 <!-- TOC -->
 
-- [1. Contents](#1-contents)
 - [2. Getting Started with Serverless Framework](#2-getting-started-with-serverless-framework)
 - [3. Getting Started with AWS SAM or CloudFormation](#3-getting-started-with-aws-sam-or-cloudformation)
   - [3.1. Deploying the SLIC Watch Macro](#31-deploying-the-slic-watch-macro)
-  - [3.2. Adding the SLIC Watch Transform:](#32-adding-the-slic-watch-transform)
+  - [3.2. Adding the SLIC Watch Transform](#32-adding-the-slic-watch-transform)
 - [4. Features](#4-features)
   - [4.1. Lambda Functions](#41-lambda-functions)
   - [4.2. API Gateway](#42-api-gateway)
@@ -108,7 +107,7 @@ npm install
 sam build --base-dir . --template-file cf-macro/template.yaml
 sam deploy --guided
 ```
-### 3.2. Adding the SLIC Watch Transform:
+### 3.2. Adding the SLIC Watch Transform
 Once you have deployed the macro, add it to a SAM or CloudFormation template in the **Transform** section :
 
 ```
@@ -264,7 +263,7 @@ You can customize the configuration:
 
 ### 5.1. Top-level configuration
 SLIC Watch configuration can be specified:
-- For *Serverless Framework applications*, in the `custom` → `slicWatch` section of `serverless.yml`, e.g:
+- For *Serverless Framework applications*, in the `custom` → `slicWatch` section of `serverless.yml`:
 ```yaml
 custom:
   slicWatch:
