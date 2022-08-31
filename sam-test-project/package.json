@@ -1,7 +1,7 @@
 {
     "name": "sam-test-project",
     "description": "Test project for Macro",
-    "version": "0.0.1",
+    "version": "2.0.0-rc1",
     "main": "basic-handler.js",
     "repository": {
         "type": "git",
@@ -10,8 +10,7 @@
     },
     "license": "Apache",
     "private": true,
-    "dependencies": {
-    },
+    "dependencies": {},
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0"
     }
