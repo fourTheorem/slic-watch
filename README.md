@@ -92,7 +92,7 @@ This method uses the SLIC Watch _CloudFormation Macro_. It is very simple to add
 
 ### 3.1. Deploying the SLIC Watch Macro
 Deploy the SLIC Watch Macro in your account: 
-- _Method 1 using the Service Application Repository (SAR) console_: Go to [SLIC Watch in the Serverless Application Repository](https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/create/app?applicationId=arn:aws:serverlessrepo:eu-west-1:949339270388:applications/slic-watch-app) and click the Deploy button.
+- _Method 1 using the Service Application Repository (SAR) console_: Go to [SLIC Watch in the Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/eu-west-1/949339270388/slic-watch-app) and click the Deploy button.
 - _Method 2 (using SAR with CloudFormation)_: Add the SLIC Watch SAR application as a resource in a template:
  ```yaml
  SlicWatchMacro:
