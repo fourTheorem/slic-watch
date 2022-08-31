@@ -19,7 +19,7 @@
  8. SNS
  9. EventBridge
 
-SLIC Watch is available for **Serverless Framework**, **AWS SAM** and **CloudFormation**.
+SLIC Watch is available for ⚡️ **Serverless Framework**, 🐿 **AWS SAM** and ☁️ **CloudFormation**.
 
  * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
  * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM or CloudFormation templates by simply adding a `Transform` to your template.

@@ -1,6 +1,6 @@
 {
     "name": "cf-macro-slic-watch",
-    "description": "CF macro for automatic alarms and dashboards",
+    "description": "SLIC Watch CloudFormation Macro for automatic alarms and dashboards",
     "main": "index.js",
     "repository": {
         "type": "git",

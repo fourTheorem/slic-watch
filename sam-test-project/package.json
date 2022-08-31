@@ -1,6 +1,6 @@
 {
     "name": "sam-test-project",
-    "description": "Test project for Macro",
+    "description": "SLIC Watch test project for CloudFormation Macro",
     "version": "2.0.0-rc2",
     "main": "basic-handler.js",
     "repository": {
@@ -9,7 +9,6 @@
         "directory": "sam-test-project"
     },
     "license": "Apache",
-    "private": true,
     "dependencies": {},
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0"
