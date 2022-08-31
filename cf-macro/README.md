@@ -17,7 +17,7 @@ Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/app
 
 To add the Macro to a SAM template,  add it in the **Transform** section :
 ```
-Transform: [ "SlicWatch-2022-08-31"]
+Transform: [ "SlicWatch-v2"]
 
 ```
 A sample SAM Test Project Stack that uses the Macro can be found [here](https://github.com/fourTheorem/slic-watch).

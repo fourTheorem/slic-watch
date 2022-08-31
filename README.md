@@ -66,7 +66,7 @@ Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/app
 2. To add the Macro to a SAM template,  add it in the **Transform** section :
 
 ```
-Transform: [ "SlicWatch-2022-08-31"]
+Transform: [ "SlicWatch-v2"]
 ```
 
 3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
