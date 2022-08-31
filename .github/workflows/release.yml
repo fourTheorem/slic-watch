@@ -30,6 +30,6 @@ jobs:
       - name: Release
         run: |
           [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
-          echo npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
+          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
