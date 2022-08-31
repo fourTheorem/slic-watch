@@ -7,10 +7,10 @@ Metadata:
     Author: fourTheorem
     SpdxLicenseId: Apache-2.0
     LicenseUrl: ../LICENSE
-    ReadmeUrl: README.md
+    ReadmeUrl: ../README.md
     Labels: ['monitoring', 'observability', 'cloudwatch']
     HomePageUrl: https://github.com/fourTheorem/slic-watch
-    SemanticVersion: 2.0.0
+    SemanticVersion: 2.0.0-rc1
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   SlicWatch:

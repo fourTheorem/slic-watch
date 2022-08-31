@@ -12,5 +12,5 @@ const majorVer = version.split('.')[0]
 const templatePath = path.resolve(__dirname, '..', 'cf-macro', 'template.yaml')
 const template = fs.readFileSync(templatePath).toString('utf8')
 
-const updatedTemplate = template.replace(/SlicWatch-v\d+/g, `SlicWatch-v${majorVer}`)
+const updatedTemplate = template.replace(/SlicWatch-v\d+/g, `SlicWatch-v${majorVer}`).replace(/SemanticVersion: .*(\s)/g, `SemanticVersion: ${version}$1`)
 fs.writeFileSync(templatePath, updatedTemplate)

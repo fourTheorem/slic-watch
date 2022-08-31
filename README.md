@@ -7,7 +7,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 
-SLIC Watch provides a CloudWatch Dashboard and Alarms for:
+**SLIC Watch** creates instant, best-practice CloudWatch **Dashboards** and **Alarms** for your AWS applications. The supported AWS services are:
 
  1. AWS Lambda
  2. API Gateway
@@ -19,11 +19,42 @@ SLIC Watch provides a CloudWatch Dashboard and Alarms for:
  8. SNS
  9. EventBridge
 
-SLIC Watch is available for Serverless Framework, AWS SAM and CloudFormation.
- * Serverless Framework v2 and v3 are supported in the SLIC Watch Serverless Plugin.
- * SLIC Watch is available as a CloudFormation Macro published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM or CloudFormation templates by simply adding a Transform to your template.
+SLIC Watch is available for **Serverless Framework**, **AWS SAM** and **CloudFormation**.
 
-## Getting Started - Serverless Plugin
+ * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
+ * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM or CloudFormation templates by simply adding a `Transform` to your template.
+
+<!-- TOC -->
+
+## Contents
+- [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
+- [Getting Started with AWS SAM or CloudFormation](#getting-started-with-aws-sam-or-cloudformation)
+  - [Deploying the SLIC Watch Macro using the Serverless](#deploying-the-slic-watch-macro-using-the-serverless)
+- [Features](#features)
+  - [Lambda Functions](#lambda-functions)
+  - [API Gateway](#api-gateway)
+  - [DynamoDB](#dynamodb)
+  - [Kinesis Data Streams](#kinesis-data-streams)
+  - [SQS Queues](#sqs-queues)
+  - [Step Functions](#step-functions)
+  - [ECS / Fargate](#ecs--fargate)
+  - [SNS](#sns)
+  - [EventBridge](#eventbridge)
+- [Configuration](#configuration)
+  - [Top-level configuration](#top-level-configuration)
+  - [Function-level configuration](#function-level-configuration)
+    - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
+    - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
+- [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
+- [References](#references)
+  - [Other Projects](#other-projects)
+  - [Reading](#reading)
+- [LICENSE](#license)
+
+<!-- /TOC -->
+## Getting Started with Serverless Framework
+
+_If you are using AWS SAM or CloudFormation, skip to the section below._
 
 1. 📦 Install the plugin:
 ```
@@ -54,19 +85,34 @@ sls deploy
 5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
 
 
-## Getting Started - CloudFormation Macro
+## Getting Started with AWS SAM or CloudFormation
 
-Getting Started - AWS SAM/CloudFormation
+This method uses the SLIC Watch _CloudFormation Macro_. It is very simple to add this macro as a transform to your SAM or CloudFormation template, but first you must ensure that the SLIC Watch Macro has been deployed to the same AWS account/region as your application.
 
-This method uses the SLIC Watch CloudFormation macro. It is very simple to add this macro as a transform to your SAM or CloudFormation template, but first you must ensure that the SLIC Watch macro has been deployed to the same AWS account/region as your application.
-
-1. Deploying to your account (via the console)
-Go to the [AWS Application Repository](https://serverlessrepo.aws.amazon.com/applications) and click the Deploy button.
-
-2. To add the Macro to a SAM template,  add it in the **Transform** section :
+### Deploying the SLIC Watch Macro
+1. Deploy the SLIC Watch Macro in your account: 
+- _Method 1 using the Service Application Repository (SAR) console_: Go to [SLIC Watch in the Serverless Application Repository](https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/create/app?applicationId=arn:aws:serverlessrepo:eu-west-1:949339270388:applications/slic-watch-app) and click the Deploy button.
+- _Method 2 (using SAR with CloudFormation)_: Add the SLIC Watch SAR application as a resource in a template:
+ ```yaml
+ SlicWatchMacro:
+  Type: AWS::Serverless::Application
+  Properties:
+    Location:
+      ApplicationId: arn:aws:serverlessrepo:eu-west-1:949339270388:applications~slic-watch-app 
+      SemanticVersion: <enter latest version>
+ ```
+- _Method 3 (manual Macro deployment using SAM)_:
+```
+npm install
+sam build --base-dir . --template-file cf-macro/template.yaml
+sam deploy --guided
+```
+2. Once you have deployed the macro, add it to a SAM or CloudFormation template in the **Transform** section :
 
 ```
-Transform: [ "SlicWatch-v2"]
+Transform:
+  - ...
+  - SlicWatch-v2
 ```
 
 3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
@@ -79,27 +125,9 @@ Metadata:
     enabled: true
     topicArn: !Ref MonitoringTopic
 ```
-
-For each function, add the `Metadata` section `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource.
-
-```yaml
-Resources:
-  LambdaFunction1:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName : sam-test-project-lambda1
-      Handler: lambda1.functionHandler
-      Runtime: nodejs14.x
-    Metadata:
-      slicWatch:
-        alarms:
-          Lambda:
-            Invocations:
-              Threshold: 3
-        dashboard:
-          enabled: true
-```
 See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
+
+If you want to override the default alarm and dashboard settings for each Lambda Functino resource, add the `slicWatch` property to the `Metadata` section.
 
 ## Features
 
@@ -232,233 +260,37 @@ You can customize the configuration:
 - at the top level, for all resources in each service, and/or
 - at the level of individual functions.
 
-### Plugin configuration
-Top-level plugin configuration can be specified in the `custom` → `slicWatch` section of `serverless.yml`
+### Top-level configuration
+SLIC Watch configuration can be specified:
+- For *Serverless Framework applications*, in the `custom` → `slicWatch` section of `serverless.yml`, e.g:
+```yaml
+custom:
+  slicWatch:
+    enabled: true
+    ...
+```
+- For *CloudFormation or SAM templates*, in the `Metadata` → `slicWatch` section of the template:
+```yaml
+Metadata:
+  slicWatch:
+    enabled: true
+    ...
+```
 
 - The `topicArn` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-Supported options along with their defaults are shown below.
+A complete set of supported options along with their defaults are shown in [default-config.yaml](./core/default-config.yaml)
 
-```yaml
-# ...
-
-custom:
-  slicWatch:
-    topicArn: SNS_TOPIC_ARN  # This is optional but recommended so you can receive alarms via email, Slack, etc.
-    enabled: true
-
-    alarms:
-      enabled: true
-      Period: 60
-      EvaluationPeriods: 1
-      TreatMissingData: notBreaching
-      ComparisonOperator: GreaterThanThreshold
-      Lambda: # Lambda Functions
-        Errors:
-          Threshold: 0
-          Statistic: Sum
-        ThrottlesPc: # Throttles are evaluated as a percentage of invocations
-          Threshold: 0
-        DurationPc: # Duration is evaluated as a percentage of the function timeout
-          Threshold: 95
-          Statistic: Maximum
-        Invocations: # No invocation alarms are created by default. Override threshold to create alarms
-          enabled: false # Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
-          Threshold: null
-          Statistic: Sum
-        IteratorAge:
-          Threshold: 10000
-          Statistic: Maximum
-      ApiGateway: # API Gateway REST APIs
-        5XXError:
-          Statistic: Average
-          Threshold: 0
-        4XXError:
-          Statistic: Average
-          Threshold: 0.05
-        Latency:
-          ExtendedStatistic: p99
-          Threshold: 5000
-      States: # Step Functions
-        Statistic: Sum
-        ExecutionsThrottled:
-          Threshold: 0
-        ExecutionsFailed:
-          Threshold: 0
-        ExecutionsTimedOut:
-          Threshold: 0
-      DynamoDB:
-        # Consumed read/write capacity units are not alarmed. These should either
-        # be part of an auto-scaling configuration for provisioned mode or should be automatically
-        # avoided for on-demand mode. Instead, we rely on persistent throttling
-        # to alert failures in these scenarios.
-        # Throttles can occur in normal operation and are handled with retries. Threshold should
-        # therefore be configured to provide meaningful alarms based on higher than average throttling.
-        Statistic: Sum
-        ReadThrottleEvents:
-          Threshold: 10
-        WriteThrottleEvents:
-          Threshold: 10
-        UserErrors:
-          Threshold: 0
-        SystemErrors:
-          Threshold: 0
-      Kinesis:
-        GetRecords.IteratorAgeMilliseconds:
-          Statistic: Maximum
-          Threshold: 10000
-        ReadProvisionedThroughputExceeded:
-          Statistic: Maximum
-          Threshold: 0
-        WriteProvisionedThroughputExceeded:
-          Statistic: Maximum
-          Threshold: 0
-        PutRecord.Success:
-          ComparisonOperator: LessThanThreshold
-          Statistic: Average
-          Threshold: 1
-        PutRecords.Success:
-          ComparisonOperator: LessThanThreshold
-          Statistic: Average
-          Threshold: 1
-        GetRecords.Success:
-          ComparisonOperator: LessThanThreshold
-          Statistic: Average
-          Threshold: 1
-        SQS:
-          # approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
-          AgeOfOldestMessage:
-            Statistic: Maximum
-            enabled: false # Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
-            Threshold: null
-          # approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 20000 for FIFO queues)
-          InFlightMessagesPc:
-            Statistic: Maximum
-            Threshold: 80 # 80% of 120.000 for regular queues or 80% of 20000 for FIFO queues
-        ECS:
-          MemoryUtilization:
-            Statistic: Average
-            Threshold: 90
-          CPUUtilization:
-            Statistic: Average
-            Threshold: 90
-        SNS:
-          NumberOfNotificationsFilteredOut-InvalidAttributes:
-            Statistic: Sum 
-            Threshold: 1
-          NumberOfNotificationsFailed:
-            Statistic: Sum 
-            Threshold: 1
-        Events:
-          #EventBridge
-          FailedInvocations:
-            Statistic: Sum 
-            Threshold: 1
-          ThrottledRules:
-            Statistic: Sum 
-            Threshold: 1
-
-    dashboard:
-      enabled: true
-      timeRange:
-        # For possible 'start' and 'end' values, see
-        # https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
-        start: -PT3H
-      metricPeriod: 300
-      widgets:
-        metricPeriod: 300
-        width: 8
-        height: 6
-        Lambda:
-          # Metrics per Lambda Function
-          Errors:
-            Statistic: ['Sum']
-          Throttles:
-            Statistic: ['Sum']
-          Duration:
-            Statistic: ['Average', 'p95', 'Maximum']
-          Invocations:
-            Statistic: ['Sum']
-          ConcurrentExecutions:
-            Statistic: ['Maximum']
-          IteratorAge:
-            Statistic: ['Maximum']
-        ApiGateway:
-          5XXError:
-            Statistic: ['Sum']
-          4XXError:
-            Statistic: ['Sum']
-          Latency:
-            Statistic: ['Average', 'p95']
-          Count:
-            Statistic: ['Sum']
-        States:
-          # Step Functions
-          ExecutionsFailed:
-            Statistic: ['Sum']
-          ExecutionsThrottled:
-            Statistic: ['Sum']
-          ExecutionsTimedOut:
-            Statistic: ['Sum']
-        DynamoDB:
-          # Tables and GSIs
-          ReadThrottleEvents:
-            Statistic: ['Sum']
-          WriteThrottleEvents:
-            Statistic: ['Sum']
-        Kinesis:
-          # Kinesis Data Streams
-          GetRecords.IteratorAgeMilliseconds:
-            Statistic: ['Maximum']
-          ReadProvisionedThroughputExceeded:
-            Statistic: ['Sum']
-          WriteProvisionedThroughputExceeded:
-            Statistic: ['Sum']
-          PutRecord.Success:
-            Statistic: ['Average']
-          PutRecords.Success:
-            Statistic: ['Average']
-          GetRecords.Success:
-            Statistic: ['Average']
-        SQS:
-          # SQS Queues
-          NumberOfMessagesSent:
-            Statistic: ["Sum"]
-          NumberOfMessagesReceived:
-            Statistic: ["Sum"]
-          NumberOfMessagesDeleted:
-            Statistic: ["Sum"]
-          ApproximateAgeOfOldestMessage:
-            Statistic: ["Maximum"]
-          ApproximateNumberOfMessagesVisible:
-            Statistic: ["Maximum"]
-        ECS:
-          MemoryUtilization:
-            Statistic: ["Average"]
-          CPUUtilization:
-            Statistic: ["Average"]
-        SNS:
-          NumberOfNotificationsFilteredOut-InvalidAttributes:
-            Statistic: ["Sum"]
-          NumberOfNotificationsFailed:
-            Statistic: ["Sum"]
-        Events:
-          #EventBridge
-          FailedInvocations:
-            Statistic: ["Sum"]
-          ThrottledRules:
-            Statistic: ["Sum"]
-          Invocations: 
-            Statistic: ["Sum"] 
-```
-
-An example project is provided for reference: [serverless-test-project](./serverless-test-project)
+Example projects are also provided for reference: 
+- [serverless-test-project](./serverless-test-project)
+- [sam-test-project](./sam-test-project)
 
 ### Function-level configuration
 
-For each function, add the `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource.
+For each function, add the `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource. 
 
+#### Serverless Framework function-level configuration
 ```yaml
 functions:
   hello:
@@ -483,6 +315,38 @@ functions:
       alarms:
         Lambda:
           enabled: false
+```
+
+#### SAM/CloudFormation function-level configuration
+```yaml
+Resources:
+  LambdaFunction1:
+    Type: AWS::Serverless::Function  # Can also be applied to AWS::Lambda::Function resources
+    Properties:
+      Handler: lambda1.functionHandler
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            Invocations:
+              Threshold: 3
+        dashboard:
+          enabled: true
+```
+
+To disable all alarms for any given function, use:
+
+```yaml
+Resources:
+  LambdaFunction1:
+    Type: AWS::Serverless::Function  # Can also be applied to AWS::Lambda::Function resources
+    Properties:
+      Handler: lambda1.functionHandler
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            enabled: false
 ```
 ## A note on CloudWatch cost
 
