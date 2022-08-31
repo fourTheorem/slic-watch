@@ -57,12 +57,9 @@ test('Events alarms are created', (t) => {
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Events')
     t.equal(al.Period, 120)
-    t.same(al.Dimensions, [
-      {
-        Name: 'RuleName',
-        Value: 'ServerlesstestprojectdeveventsRulerule1EventBridgeRule'
-      }
-    ])
+    t.equal(al.Dimensions.length, 1)
+    t.equal(al.Dimensions[0].Name, 'RuleName')
+    t.ok(al.Dimensions[0].Value.Ref)
   }
 
   t.end()

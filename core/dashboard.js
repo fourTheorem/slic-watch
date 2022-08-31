@@ -279,7 +279,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
               namespace: 'AWS/States',
               metric,
               dimensions: {
-                StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:\${${logicalId}.Name}`
+                StateMachineArn: `\${${logicalId}}`
               },
               stat
             })

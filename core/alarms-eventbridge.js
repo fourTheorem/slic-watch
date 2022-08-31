@@ -84,7 +84,7 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
       resource: createRuleAlarm(
         { 'Fn::Sub': `Events_FailedInvocationsAlarm_\${${logicalId}}` }, // alarmName
         { 'Fn::Sub': `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
-        `${logicalId}`,
+        { Ref: logicalId },
         config.ComparisonOperator,
         threshold,
         'FailedInvocations', // metricName
@@ -103,7 +103,7 @@ module.exports = function eventsAlarms (eventsAlarmsConfig, context) {
       resource: createRuleAlarm(
         { 'Fn::Sub': `Events_ThrottledRulesAlarm_\${${logicalId}}` }, // alarmName
         { 'Fn::Sub': `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
-        `${logicalId}`,
+        { Ref: logicalId },
         config.ComparisonOperator,
         threshold,
         'ThrottledRules', // metricName

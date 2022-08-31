@@ -32,7 +32,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
           const alarmResource = createStateMachineAlarm(
             { 'Fn::Sub': `StepFunctions_${metric}_\${${logicalId}.Name}` },
             { 'Fn::Sub': `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}` },
-            { 'Fn::GetAtt': [logicalId, 'Name'] },
+            { Ref: logicalId },
             config.ComparisonOperator,
             config.Threshold,
             metric,
@@ -50,7 +50,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
   function createStateMachineAlarm (
     alarmName,
     alarmDescription,
-    stateMachine,
+    stateMachineArn,
     comparisonOperator,
     threshold,
     metricName,
@@ -60,7 +60,7 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
     treatMissingData
   ) {
     const metricProperties = {
-      Dimensions: [{ Name: 'StateMachineArn', Value: stateMachine }],
+      Dimensions: [{ Name: 'StateMachineArn', Value: stateMachineArn }],
       MetricName: metricName,
       Namespace: 'AWS/States',
       Period: period,
