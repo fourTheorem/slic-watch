@@ -270,8 +270,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createStateMachineWidgets (smResources) {
     const smWidgets = []
-    for (const res of Object.values(smResources)) {
-      const smName = res.Properties.StateMachineName // TODO: Allow for Ref usage in resource names (see #14)
+    for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
         if (metricConfig.enabled) {
@@ -280,7 +279,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
               namespace: 'AWS/States',
               metric,
               dimensions: {
-                StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:${smName}`
+                StateMachineArn: `arn:aws:states:\${AWS::Region}:\${AWS::AccountId}:stateMachine:\${${logicalId}.Name}`
               },
               stat
             })
@@ -289,7 +288,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `${smName} Step Function Executions`,
+          `\${${logicalId}.Name} Step Function Executions`,
           widgetMetrics,
           sfDashConfig
         )

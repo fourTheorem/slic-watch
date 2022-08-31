@@ -61,8 +61,6 @@ test('Step Function alarms are created', (t) => {
     'StepFunctions_ExecutionsTimedOut'
   ]
 
-  const stateMachineRef = { Ref: 'Workflow' }
-
   t.same(new Set(Object.keys(alarmsByType)), new Set(executionMetrics))
 
   for (const type of executionMetrics) {
@@ -79,7 +77,12 @@ test('Step Function alarms are created', (t) => {
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',
-          Value: stateMachineRef
+          Value: {
+            'Fn::GetAtt': [
+              'Workflow',
+              'Name'
+            ]
+          }
         }
       ])
     }

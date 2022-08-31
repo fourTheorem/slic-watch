@@ -114,7 +114,7 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/States']))
-    const expectedTitles = new Set(['Workflow Step Function Executions', 'ExpressWorkflow Step Function Executions'])
+    const expectedTitles = new Set(['${Workflow.Name} Step Function Executions', '${ExpressWorkflow.Name} Step Function Executions'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)

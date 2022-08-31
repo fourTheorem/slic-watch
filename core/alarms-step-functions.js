@@ -24,18 +24,15 @@ module.exports = function StatesAlarms (sfAlarmConfig, context) {
       'ExecutionsTimedOut'
     ]
 
-    for (const [smResourceName, smResource] of Object.entries(smResources)) {
-      const stateMachine = { Ref: smResourceName }
-
+    for (const [logicalId] of Object.entries(smResources)) {
       for (const metric of executionMetrics) {
         if (sfAlarmConfig[metric].enabled) {
           const config = sfAlarmConfig[metric]
-          const alarmResourceName = `slicWatchStates${metric}Alarm${smResourceName}`
-          const smName = smResource.Properties.StateMachineName
+          const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
           const alarmResource = createStateMachineAlarm(
-            `StepFunctions_${metric}_${smName}`,
-            `StepFunctions_${metric} ${config.Statistic} for ${smName} breaches ${config.Threshold}`,
-            stateMachine,
+            { 'Fn::Sub': `StepFunctions_${metric}_\${${logicalId}.Name}` },
+            { 'Fn::Sub': `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}` },
+            { 'Fn::GetAtt': [logicalId, 'Name'] },
             config.ComparisonOperator,
             config.Threshold,
             metric,

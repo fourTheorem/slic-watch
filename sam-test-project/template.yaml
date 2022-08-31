@@ -125,7 +125,7 @@ Resources:
           Lambda:
             enabled: false
   
-  StockTradingStateMachine:
+  TestStateMachine:
     Type: AWS::Serverless::StateMachine 
     Properties:
       DefinitionUri: statemachine/test.asl.json
@@ -202,4 +202,53 @@ Resources:
             - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
           Essential: true
       NetworkMode: awsvpc
+
+  dataTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    Properties:
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - address
+            ProjectionType: INCLUDE
+      LocalSecondaryIndexes:
+        - IndexName: LSI1
+          KeySchema:
+            - AttributeName: pk
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - name
+            ProjectionType: INCLUDE
  
