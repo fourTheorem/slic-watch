@@ -10,7 +10,7 @@ Metadata:
     ReadmeUrl: ../README.md
     Labels: ['monitoring', 'observability', 'cloudwatch']
     HomePageUrl: https://github.com/fourTheorem/slic-watch
-    SemanticVersion: 2.0.0-rc5
+    SemanticVersion: 2.0.0-rc6
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   SlicWatch:
