@@ -25,6 +25,7 @@
     "prepare": "test ! -d '.git' || is-ci || husky install"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.23.0",
@@ -45,8 +46,8 @@
     ]
   },
   "dependencies": {
-    "yaml": "^1.10.2",
     "case": "^1.6.3",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "yaml": "^1.10.2"
   }
 }

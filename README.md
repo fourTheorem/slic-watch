@@ -7,30 +7,21 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 
-**SLIC Watch** creates instant, best-practice CloudWatch **Dashboards** and **Alarms** for your AWS applications. The supported AWS services are:
+Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
- 1. AWS Lambda
- 2. API Gateway
- 3. DynamoDB
- 4. Kinesis Data Streams
- 5. SQS Queues
- 6. Step Functions
- 7. ECS (Fargate or EC2)
- 8. SNS
- 9. EventBridge
-
-SLIC Watch is available for ⚡️ **Serverless Framework**, 🐿 **AWS SAM** and ☁️ **CloudFormation**.
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS and EventBridge._ and works with ⚡️ **Serverless Framework**, 🐿 **AWS SAM**, **AWS CDK**  and ☁️ **CloudFormation**.
 
  * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
- * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM or CloudFormation templates by simply adding a `Transform` to your template.
+ * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM, CDK or CloudFormation templates by simply adding a `Transform` to your template.
 
-<!-- TOC -->
-
+## Contents
 - [slic-watch](#slic-watch)
+  - [Contents](#contents)
   - [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
-  - [Getting Started with AWS SAM or CloudFormation](#getting-started-with-aws-sam-or-cloudformation)
+  - [Getting Started with AWS SAM, CDK or CloudFormation](#getting-started-with-aws-sam-cdk-or-cloudformation)
     - [Deploying the SLIC Watch Macro](#deploying-the-slic-watch-macro)
-    - [Adding the SLIC Watch Transform](#adding-the-slic-watch-transform)
+    - [Adding the SLIC Watch Transform to SAM or CloudFormation templates](#adding-the-slic-watch-transform-to-sam-or-cloudformation-templates)
+    - [Adding the SLIC Watch Transform to CDK Apps](#adding-the-slic-watch-transform-to-cdk-apps)
   - [Features](#features)
     - [Lambda Functions](#lambda-functions)
     - [API Gateway](#api-gateway)
@@ -46,32 +37,30 @@ SLIC Watch is available for ⚡️ **Serverless Framework**, 🐿 **AWS SAM** an
     - [Function-level configuration](#function-level-configuration)
       - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
       - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
+      - [CDK function-level configuration](#cdk-function-level-configuration)
   - [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
   - [References](#references)
     - [Other Projects](#other-projects)
     - [Reading](#reading)
   - [LICENSE](#license)
-
-<!-- /TOC -->
 ## Getting Started with Serverless Framework
 
 _If you are using AWS SAM or CloudFormation, skip to the section below._
 
 1. 📦 Install the plugin:
-```
+```bash
 npm install serverless-slic-watch-plugin --save-dev
 ```
 2. 🖋️ Add the plugin to the `plugins` section of `serverless.yml`:
-```
+```yaml
 plugins:
   - serverless-slic-watch-plugin
 ```
-
 3. 🪛 _Optionally_, add some configuration for the plugin to the `custom -> slicWatch` section of `serverless.yml`.
 Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
 so you can receive alarm notifications via email, Slack, etc.
 
-```
+```yaml
 custom:
   slicWatch:
     topicArn: {'Fn::Ref': myTopic}
@@ -86,8 +75,9 @@ sls deploy
 5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
 
 
-## Getting Started with AWS SAM or CloudFormation
-ℹ️ **IMPORTANT**: If you are using AWS SAM, or just plain CloudFormation, the most important thing to know is that your AWS account/region should have the **SLIC Watch Macro** deployed before you do anything. Once that's done, it is very simple to add this macro as a transform to your SAM or CloudFormation template.
+## Getting Started with AWS SAM, CDK or CloudFormation
+
+ℹ️ **IMPORTANT**: If you are using AWS SAM, CDK, or just plain CloudFormation, the most important thing to know is that your AWS account/region should have the **SLIC Watch Macro** deployed before you do anything. Once that's done, it is very simple to add this macro as a transform to your SAM or CloudFormation template.
 
 ### Deploying the SLIC Watch Macro
 It would be nice if CloudFormation allowed us to publicly publish a macro so you don't need this step, but for now, you can deploy the SLIC Watch Macro using any of the following options. We have made the macro available as a _Serverless Application Repository (SAR)_ app. This SAR app is used in Options 1 and 2 below. Option 3 is a manual option where you deploy the macro from this repository directly without using SAR.
@@ -106,25 +96,25 @@ The snippet of CloudFormation is as follows.
           SemanticVersion: <enter latest version>
  ```
 - **Option 3** (manual Macro deployment using SAM directly from source):
-```
+```bash
 npm install
 sam build --base-dir . --template-file cf-macro/template.yaml
 sam deploy --guided
 ```
-### Adding the SLIC Watch Transform
+### Adding the SLIC Watch Transform to SAM or CloudFormation templates
 Once you have deployed the macro, you can start using SLIC Watch in SAM or CloudFormation templates by adding this to the **Transform** section:
 
-```
+```yaml
 Transform:
   - ...
   - SlicWatch-v2
 ```
 
-3. 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
+🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
 Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
 so you can receive alarm notifications via email, Slack, etc.
 
-```
+```yaml
 Metadata:
   slicWatch:
     enabled: true
@@ -133,6 +123,46 @@ Metadata:
 See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
 
 If you want to override the default alarm and dashboard settings for each Lambda Functino resource, add the `slicWatch` property to the `Metadata` section.
+
+### Adding the SLIC Watch Transform to CDK Apps
+Once you have deployed the macro, add it to CDK Stack in the constructor of the class that extends Stack. It should be done for every Stack in the CDK App.
+
+```javascript
+// JavaScript/TypeScript:
+export class MyStack extends cdk.Stack {
+  constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
+    super(scope, id, props)
+
+    this.addTransform('SlicWatch-v2')
+    ...
+  }
+}
+```
+
+```python
+# Python:
+self.add_transform("SlicWatch-v2")
+```
+```csharp
+// C#:
+this.AddTransform("SlicWatch-v2")
+```
+
+```java
+// Java:
+this.addTransform("SlicWatch-v2");
+```
+
+🪛 _Optionally_, add some configuration for the plugin as below:
+
+```javascript
+this.templateOptions.metadata = {
+  slicWatch: {
+    enabled: true,
+    topicArn: "arn:aws:sns:eu-west-1:xxxxxxx:topic",
+  }
+}
+```
 
 ## Features
 
@@ -353,13 +383,29 @@ Resources:
           Lambda:
             enabled: false
 ```
+#### CDK function-level configuration
+```typescript
+const hello: lambda.Function;
+const cfnFuncHello = hello.node.defaultChild as CfnResource;
+cfnFuncHello.cfnOptions.metadata = {
+  slicWatch: {
+    alarms: {
+      Lambda: {
+        Invocations: {
+          Threshold: 2
+        }
+      }
+    }
+  }
+}
+```
+
 ## A note on CloudWatch cost
 
 This plugin creates additional CloudWatch resources that, apart from a limited free tier, have an associated cost.
 Depending on what you enable, SLIC Watch creates one dashboard and multiple alarms. The number of each depend on the number of resources in your stack and the number of stacks you have.
 
 Check out the AWS [CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) page to understand the cost impact of creating CloudWatch resources.
-
 
 ## References
 
