@@ -70,27 +70,32 @@ function resolveEcsClusterNameForSub (cluster) {
  * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
  * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
  *
- * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
+ * @param resource The Application Load Balancer resource object
+ * @param logicalId The CloudFormation logical ID for the ALB resource
  * @returns Literal string or Sub variable syntax
  */
-function resolveLoadBalancerFullNameForSub (loadBalancerResourceName) {
-  if (typeof loadBalancerResourceName === 'string') {
-    if (loadBalancerResourceName.startsWith('arn:')) {
-      return loadBalancerResourceName.split(':').pop().split('/').pop()
-    }
-    return loadBalancerResourceName
-  }
-  // 'AWS::ElasticLoadBalancingV2::LoadBalancer' returns the cluster name for 'Ref'
-  // This can be used as a 'Fn::Sub' variable
-  if (loadBalancerResourceName.GetAtt && loadBalancerResourceName.GetAtt[1] === 'Arn') {
-    return '${' + loadBalancerResourceName.GetAtt[0] + '}'
-  } else if (loadBalancerResourceName.Ref) {
-    return '${' + loadBalancerResourceName.Ref + '}'
-  } else if (loadBalancerResourceName['Fn::Sub']) {
-    return loadBalancerResourceName['Fn::Sub']
-  }
-  return loadBalancerResourceName
+function resolveLoadBalancerFullNameForSub (resource, logicalId) {
+  // eslint-disable-next-line no-template-curly-in-string
+  return `\${${logicalId}.LoadBalancerFullName}`
 }
+
+// if (typeof loadBalancerResourceName === 'string') {
+//   if (loadBalancerResourceName.startsWith('arn:')) {
+//     return loadBalancerResourceName.split(':').pop().split('/').pop()
+//   }
+//   return loadBalancerResourceName
+// }
+// // 'AWS::ElasticLoadBalancingV2::LoadBalancer' returns the cluster name for 'Ref'
+// // This can be used as a 'Fn::Sub' variable
+// if (loadBalancerResourceName.GetAtt && loadBalancerResourceName.GetAtt[1] === 'Arn') {
+//   return '${' + loadBalancerResourceName.GetAtt[0] + '}'
+// } else if (loadBalancerResourceName.Ref) {
+//   return '${' + loadBalancerResourceName.Ref + '}'
+// } else if (loadBalancerResourceName['Fn::Sub']) {
+//   return loadBalancerResourceName['Fn::Sub']
+// }
+// return loadBalancerResourceName
+// }
 
 /**
  * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or

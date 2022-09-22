@@ -549,6 +549,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     }
     return ruleWidgets
   }
+
   /**
    * Create a set of CloudWatch Dashboard widgets for Application Load Balancer services.
    *
@@ -556,16 +557,20 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createLoadBalancerWidgets (loadBalancerResources) {
     const loadBalancerWidgets = []
-    for (const res of Object.values(loadBalancerResources)) {
-      const loadBalancerName = res.Properties.Name
+    for (const [logicalId, res] of Object.entries(loadBalancerResources)) {
+      const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
       // const loadBalancerFullName = { 'Fn::Sub': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(res.Properties.loadBalancerResourceName)
+      // const loadBalancerFullName =  $'{'+loadBalancerResourceName.LoadBalancerFullName'}'
+
+      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(res, logicalId)
+      console.log('1', logicalId)
+      console.log('2', loadBalancerFullName)
       // {
       //   'Fn::Join': ['/', [
       //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
       //   ]]
       // }
-      console.log('', loadBalancerFullName)
+      // console.log('', loadBalancerFullName)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig.enabled) {
@@ -626,14 +631,17 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
         //   ]]
         // }
         // const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+        // $'{'+loadBalancerResourceName.LoadBalancerFullName'}'
+        // const targetGroupFullName = 'targetgroup'+/+targetGroupResources.Name+/+'29bc507ed68a3625'
         const targetGroupFullName = resolveTargetGroupFullNameForSub(targetGroupResourceName)
-        console.log('0', loadBalancerResourceName)
-        console.log('1', loadBalancerName)
-        console.log('2', targetGroupResourceName)
-        console.log('4', targetGroupFullName)
+        // console.log(targetGroupFullName)
+        // console.log('0', loadBalancerResourceName)
+        // console.log('1', loadBalancerName)
+        // console.log('2', targetGroupResourceName)
+        // console.log('4', targetGroupFullName)
         // const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
         const loadBalancerFullName = resolveLoadBalancerFullNameForSub(loadBalancerResourceName)
-        console.log('5', loadBalancerFullName)
+        // console.log('5', loadBalancerFullName)
         // {
         //   'Fn::Join': ['/', [
         //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
