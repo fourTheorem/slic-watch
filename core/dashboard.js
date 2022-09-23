@@ -559,18 +559,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const loadBalancerWidgets = []
     for (const [logicalId, res] of Object.entries(loadBalancerResources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
-      // const loadBalancerFullName = { 'Fn::Sub': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-      // const loadBalancerFullName =  $'{'+loadBalancerResourceName.LoadBalancerFullName'}'
 
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(res, logicalId)
-      console.log('1', logicalId)
-      console.log('2', loadBalancerFullName)
-      // {
-      //   'Fn::Join': ['/', [
-      //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-      //   ]]
-      // }
-      // console.log('', loadBalancerFullName)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig.enabled) {
@@ -621,57 +611,34 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createTargetGroupWidgets (targetGroupResources, loadBalancerResources) {
     const targetGroupWidgets = []
-    for (const [targetGroupResourceName] of Object.entries(targetGroupResources)) {
+    for (const [logicalId, res] of Object.entries(targetGroupResources, loadBalancerResources)) {
       const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
-      for (const res of Object.values(loadBalancerResources)) {
-        const loadBalancerName = res.Properties.Name
-        // const targetGroupFullName = {
-        //   'Fn::Join': ['/', [
-        //     { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-        //   ]]
-        // }
-        // const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-        // $'{'+loadBalancerResourceName.LoadBalancerFullName'}'
-        // const targetGroupFullName = 'targetgroup'+/+targetGroupResources.Name+/+'29bc507ed68a3625'
-        const targetGroupFullName = resolveTargetGroupFullNameForSub(targetGroupResourceName)
-        // console.log(targetGroupFullName)
-        // console.log('0', loadBalancerResourceName)
-        // console.log('1', loadBalancerName)
-        // console.log('2', targetGroupResourceName)
-        // console.log('4', targetGroupFullName)
-        // const loadBalancerFullName = { 'Fn::Sub': loadBalancerResourceName }
-        const loadBalancerFullName = resolveLoadBalancerFullNameForSub(loadBalancerResourceName)
-        // console.log('5', loadBalancerFullName)
-        // {
-        //   'Fn::Join': ['/', [
-        //     { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-        //   ]]
-        // }
-        // const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-        const widgetMetrics = []
-        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-          if (metricConfig.enabled) {
-            for (const stat of metricConfig.Statistic) {
-              widgetMetrics.push({
-                namespace: 'AWS/ApplicationELB',
-                metric,
-                dimensions: {
-                  LoadBalancer: loadBalancerFullName,
-                  TargetGroup: targetGroupFullName
-                },
-                stat
-              })
-            }
+      const loadBalancerName = `\${${loadBalancerResourceName}.LoadBalancerName}`
+      const targetGroupFullName = resolveTargetGroupFullNameForSub(res, logicalId)
+      const loadBalancerFullName = `\${${loadBalancerResourceName}.LoadBalancerFullName}`
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/ApplicationELB',
+              metric,
+              dimensions: {
+                LoadBalancer: loadBalancerFullName,
+                TargetGroup: targetGroupFullName
+              },
+              stat
+            })
           }
         }
-        if (widgetMetrics.length > 0) {
-          const metricStatWidget = createMetricWidget(
-            `Application Load Balancer/Target Group ${loadBalancerName}`,
-            widgetMetrics,
-            albTargetDashConfig
-          )
-          targetGroupWidgets.push(metricStatWidget)
-        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `Application Load Balancer/Target Group ${loadBalancerName}`,
+          widgetMetrics,
+          albTargetDashConfig
+        )
+        targetGroupWidgets.push(metricStatWidget)
       }
     }
     return targetGroupWidgets

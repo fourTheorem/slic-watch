@@ -60,9 +60,6 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     )
     for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
-      // console.log('1', targetGroupResource)
-      // console.log('2', targetGroupResourceName)
-      // console.log('3', loadBalancerResources)
       if (albAlarmConfig.HTTPCode_Target_5XX_Count && albAlarmConfig.HTTPCode_Target_5XX_Count.enabled) {
         const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
           targetGroupResourceName,
@@ -116,6 +113,7 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
+    console.log('1', loadBalancerFullName)
     const metricProperties = {
       Dimensions: [{ Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,
@@ -156,9 +154,10 @@ module.exports = function ALBlarms (albAlarmConfig, context) {
     treatMissingData
   ) {
     const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-    console.log(targetGroupFullName)
+    console.log('3', targetGroupFullName)
     console.log(targetGroupResourceName)
     const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerName, 'LoadBalancerFullName'] }
+    console.log('2', loadBalancerFullName)
     const metricProperties = {
       Dimensions: [{ Name: 'TargetGroup', Value: targetGroupFullName }, { Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,
