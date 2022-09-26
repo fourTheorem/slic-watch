@@ -1258,6 +1258,12 @@
         "Principal": "elasticloadbalancing.amazonaws.com"
       }
     },
+    "bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "awesome-savage-bucket1"
+      }
+    },
     "vpcALB": {
       "Type": "AWS::EC2::VPC",
       "Properties": {

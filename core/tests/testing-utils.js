@@ -11,7 +11,8 @@ const defaultCfTemplate = require('./resources/cloudformation-template-stack.jso
 
 const slsYamlPath = path.resolve(
   __dirname,
-  '../../serverless-test-project/serverless.yml'
+  '../../serverless-test-project/serverless.yml',
+  '../../serverless-test-project-alb/serverless.yml'
 )
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 

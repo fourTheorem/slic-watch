@@ -1,4 +1,4 @@
-service: serverless-test-project
+service: serverless-test-project-alb
 frameworkVersion: "3"
 configValidationMode: error
 variablesResolutionMode: 20210219
@@ -12,7 +12,7 @@ package:
 custom:
   resourceTags:
     - Key: ProjectName
-      Value: serverless-test-project
+      Value: serverless-test-project-alb
     - Key: Stage
       Value: ${self:provider.stage}
   slicWatch:

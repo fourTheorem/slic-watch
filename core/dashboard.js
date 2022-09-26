@@ -578,7 +578,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `Application Load Balancer ${loadBalancerName}`,
+          `ALB ${loadBalancerName}`,
           widgetMetrics,
           albDashConfig
         )
@@ -634,7 +634,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
       if (widgetMetrics.length > 0) {
         const metricStatWidget = createMetricWidget(
-          `Application Load Balancer/Target Group ${loadBalancerName}`,
+          `Target Group ${loadBalancerName}`,
           widgetMetrics,
           albTargetDashConfig
         )

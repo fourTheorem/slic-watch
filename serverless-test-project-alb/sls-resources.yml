@@ -2,7 +2,7 @@ Resources:
   bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: awesome-savage-bucket2
+      BucketName: awesome-savage-bucket1
 
 
   vpcALB:

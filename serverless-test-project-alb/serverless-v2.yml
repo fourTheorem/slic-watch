@@ -32,4 +32,18 @@ provider:
   stage: dev
   endpointType: REGIONAL
 
+functions:
+  albEvent:
+    handler: alb-handler.handleALB
+    events:
+      - alb:
+          listenerArn: !Ref httpListener
+          priority: 1
+          conditions:
+            path: /handleALB
+            method:
+              - POST
+          healthCheck: false # it is by default false but can be enbaled true
+          # we diabled it to not getting redundant health-check logs on the CloudWatch logs 
+
 resources: ${file(./sls-resources.yml)}

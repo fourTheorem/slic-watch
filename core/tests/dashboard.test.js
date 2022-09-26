@@ -269,7 +269,7 @@ test('A dashboard includes metrics', (t) => {
 
   t.test('dashboard includes Application Load Balancer metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('Application')
+      title.startsWith('ALB')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
@@ -279,7 +279,8 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
-    const expectedTitles = new Set(['Application Load Balancer awesome-loadBalancer'])
+    // eslint-disable-next-line no-template-curly-in-string
+    const expectedTitles = new Set(['ALB ${alb.LoadBalancerName}'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
@@ -290,7 +291,7 @@ test('A dashboard includes metrics', (t) => {
 
   t.test('dashboard includes Application Load Balancer Target Groups metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('Application')
+      title.startsWith('Target')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
@@ -300,7 +301,8 @@ test('A dashboard includes metrics', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
-    const expectedTitles = new Set(['Application Load Balancer/Target Group awesome-loadBalancer'])
+    // eslint-disable-next-line no-template-curly-in-string
+    const expectedTitles = new Set(['Target Group ${alb.LoadBalancerName}'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
@@ -343,7 +345,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 })
 
 test('No dashboard is created if all widgets are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     dashConfig.widgets[service].enabled = false
@@ -357,7 +359,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 })
 
 test('No dashboard is created if all metrics are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
