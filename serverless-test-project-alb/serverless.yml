@@ -16,7 +16,7 @@ custom:
     - Key: Stage
       Value: ${self:provider.stage}
   slicWatch:
-    # topicArn: ${env:ALARM_TOPIC}
+    topicArn: ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:

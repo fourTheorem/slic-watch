@@ -8,6 +8,7 @@ const {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
+  albCfTemplate,
   testContext
 } = require('./testing-utils')
 
@@ -38,7 +39,7 @@ test('ALB Target Group alarms are created', (t) => {
   )
   function createAlarmResources (elbAlarmConfig) {
     const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
-    const cfTemplate = createTestCloudFormationTemplate()
+    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
@@ -106,7 +107,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
 
   function createAlarmResources (elbAlarmConfig) {
     const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
-    const cfTemplate = createTestCloudFormationTemplate()
+    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }

@@ -8,18 +8,20 @@ const YAML = require('yaml')
 const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
 const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
+const albCfTemplate = require('./resources/alb-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
   __dirname,
-  '../../serverless-test-project/serverless.yml',
-  '../../serverless-test-project-alb/serverless.yml'
+  '../../serverless-test-project/serverless.yml'
 )
+
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = { alarmActions: ['dummy-arn'] }
 
 module.exports = {
   slsYaml,
+  albCfTemplate,
   defaultCfTemplate,
   testContext,
   assertCommonAlarmProperties,

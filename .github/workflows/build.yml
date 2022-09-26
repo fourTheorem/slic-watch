@@ -26,7 +26,7 @@ jobs:
         run: npm i -g npm@^7
       - run: npm ci
       - run: npm run audit
-      - run: cd serverless-plugin && npm test
+      - run: npm test
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:

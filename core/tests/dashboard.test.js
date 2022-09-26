@@ -7,7 +7,7 @@ const { test } = require('tap')
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
 
-const { createTestCloudFormationTemplate, defaultCfTemplate } = require('./testing-utils')
+const { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate } = require('./testing-utils')
 
 const context = {
   stackName: 'testStack',
@@ -267,6 +267,21 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
+  t.end()
+})
+
+test('A dashboard includes metrics for ALB', (t) => {
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+  const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
+  dash.addDashboard(cfTemplate)
+  const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+  t.equal(Object.keys(dashResources).length, 1)
+  const [, dashResource] = Object.entries(dashResources)[0]
+  t.equal(dashResource.Properties.DashboardName, 'testStackDashboard')
+  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+
+  t.ok(dashBody.start)
+
   t.test('dashboard includes Application Load Balancer metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
       title.startsWith('ALB')
@@ -310,7 +325,6 @@ test('A dashboard includes metrics', (t) => {
     t.same(actualTitles, expectedTitles)
     t.end()
   })
-
   t.end()
 })
 
