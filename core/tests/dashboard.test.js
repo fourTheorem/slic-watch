@@ -267,6 +267,48 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
+  t.test('dashboard includes Application Load Balancer metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('Application')
+    )
+    t.equal(widgets.length, 1)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/ApplicationELB']))
+    const expectedTitles = new Set(['Application Load Balancer awesome-loadBalancer'])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
+  t.test('dashboard includes Application Load Balancer Target Groups metrics', (t) => {
+    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('Application')
+    )
+    t.equal(widgets.length, 1)
+    const namespaces = new Set()
+    for (const widget of widgets) {
+      for (const metric of widget.properties.metrics) {
+        namespaces.add(metric[0])
+      }
+    }
+    t.same(namespaces, new Set(['AWS/ApplicationELB']))
+    const expectedTitles = new Set(['Application Load Balancer/Target Group awesome-loadBalancer'])
+
+    const actualTitles = new Set(
+      widgets.map((widget) => widget.properties.title)
+    )
+    t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
   t.end()
 })
 
