@@ -10,6 +10,8 @@ async function handleALB (event, context) {
   console.log(body)
   if (body.triggerError) {
     throw new Error('Error triggered')
+  } else if (event.triggerError) {
+    throw new Error('Error triggered by Lambda')
   } else {
     console.log('Successful event delivery')
     return {
