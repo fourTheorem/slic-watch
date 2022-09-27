@@ -1,13 +1,14 @@
 'use strict'
 
 const { makeResourceName, getStatisticName } = require('./util')
+
 /**
-   * Given CloudFormation syntax for an Target Group, derive CloudFormation syntax for
-   * the LoadBalancer LogicalId name
-   *
-   * @param  loadBalancerResources  syntax for an Load Balancer Application
-   * @returns CloudFormation syntax for the Load Balancer Resources
-   */
+  * Given CloudFormation syntax for an Target Group, derive CloudFormation syntax for
+  * the LoadBalancer LogicalId name
+  *
+  * @param  loadBalancerResources  syntax for an Load Balancer Application
+  * @returns CloudFormation syntax for the Load Balancer Resources
+  */
 function resolveLoadBalancerLogicalIdName (loadBalancerResources) {
   for (const key in loadBalancerResources) {
     if (loadBalancerResources[key].Type === 'AWS::ElasticLoadBalancingV2::LoadBalancer') {
@@ -19,13 +20,13 @@ function resolveLoadBalancerLogicalIdName (loadBalancerResources) {
 /**
  * @param {object} albTargetAlarmConfig The fully resolved alarm configuration
  */
-module.exports = function ALBlarms (albTargetAlarmConfig, context) {
+module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
   return {
     createALBTargetAlarms
   }
 
   /**
-   * Add all required Application Load Balancer alarms to the provided CloudFormation template
+   * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
    * based on the resources found within
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
@@ -39,12 +40,12 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
       'AWS::ElasticLoadBalancingV2::TargetGroup'
     )
     for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
-      const loadBalancerName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
+      const loadBalancerLogicalID = resolveLoadBalancerLogicalIdName(loadBalancerResources)
       if (albTargetAlarmConfig.HTTPCode_Target_5XX_Count && albTargetAlarmConfig.HTTPCode_Target_5XX_Count.enabled) {
         const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
           targetGroupResourceName,
           targetGroupResource,
-          loadBalancerName,
+          loadBalancerLogicalID,
           albTargetAlarmConfig.HTTPCode_Target_5XX_Count
         )
         cfTemplate.addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource)
@@ -53,7 +54,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         const unHealthyHostCount = createUnHealthyHostCountAlarm(
           targetGroupResourceName,
           targetGroupResource,
-          loadBalancerName,
+          loadBalancerLogicalID,
           albTargetAlarmConfig.UnHealthyHostCount
         )
         cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
@@ -62,7 +63,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         const lambdaInternalError = createLambdaInternalErrorAlarm(
           targetGroupResourceName,
           targetGroupResource,
-          loadBalancerName,
+          loadBalancerLogicalID,
           albTargetAlarmConfig.LambdaInternalError
         )
         cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
@@ -71,7 +72,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         const lambdaUserError = createLambdaUserErrorAlarm(
           targetGroupResourceName,
           targetGroupResource,
-          loadBalancerName,
+          loadBalancerLogicalID,
           albTargetAlarmConfig.LambdaUserError
         )
         cfTemplate.addResource(lambdaUserError.resourceName, lambdaUserError.resource)
@@ -83,7 +84,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     alarmName,
     alarmDescription,
     targetGroupResourceName, // Logical ID of the CloudFormation Target Group Resource
-    loadBalancerName,
+    loadBalancerLogicalID,
     comparisonOperator,
     threshold,
     metricName,
@@ -94,7 +95,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     treatMissingData
   ) {
     const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
-    const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerName, 'LoadBalancerFullName'] }
+    const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerLogicalID, 'LoadBalancerFullName'] }
     const metricProperties = {
       Dimensions: [{ Name: 'TargetGroup', Value: targetGroupFullName }, { Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,
@@ -120,7 +121,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName, targetGroupResource, loadBalancerName, config) {
+  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'HTTPCodeTarget5XXCount'),
@@ -128,7 +129,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         `LoadBalancerHTTPCodeTarget5XXCountAlarm_${targetGroupResourceName}`,
         `LoadBalancer HTTP Code Target 5XX Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
         targetGroupResourceName,
-        loadBalancerName,
+        loadBalancerLogicalID,
         config.ComparisonOperator,
         threshold,
         'HTTPCode_Target_5XX_Count',
@@ -141,7 +142,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createUnHealthyHostCountAlarm (targetGroupResourceName, targetGroupResource, loadBalancerName, config) {
+  function createUnHealthyHostCountAlarm (targetGroupResourceName, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'UnHealthyHostCount'),
@@ -149,7 +150,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
         `LoadBalancer UnHealthy Host Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
         targetGroupResourceName,
-        loadBalancerName,
+        loadBalancerLogicalID,
         config.ComparisonOperator,
         threshold,
         'UnHealthyHostCount',
@@ -162,7 +163,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createLambdaInternalErrorAlarm (targetGroupResourceName, targetGroupResource, loadBalancerName, config) {
+  function createLambdaInternalErrorAlarm (targetGroupResourceName, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaInternalError'),
@@ -170,7 +171,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
         `LoadBalancer Lambda Internal Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
         targetGroupResourceName,
-        loadBalancerName,
+        loadBalancerLogicalID,
         config.ComparisonOperator,
         threshold,
         'LambdaInternalError',
@@ -183,7 +184,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createLambdaUserErrorAlarm (targetGroupResourceName, targetGroupResource, loadBalancerName, config) {
+  function createLambdaUserErrorAlarm (targetGroupResourceName, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaUserError'),
@@ -191,7 +192,7 @@ module.exports = function ALBlarms (albTargetAlarmConfig, context) {
         `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,
         `LoadBalancer Lambda User Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
         targetGroupResourceName,
-        loadBalancerName,
+        loadBalancerLogicalID,
         config.ComparisonOperator,
         threshold,
         'LambdaUserError',

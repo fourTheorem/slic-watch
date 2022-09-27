@@ -286,7 +286,6 @@ EventBridge Rule dashboard widgets show:
 |![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
 
 ### Application Load Balancer
-
 Application Load Balancer alarms are created for:
 1. HTTP Code  ELB 5XX Count
 2. Rejected Connection Count
@@ -296,8 +295,13 @@ Application Load Balancer alarms are created for:
 6. Lambda User Error
 
 Application Load Balancer dashboard widgets show:
-|--|--||--|--||--|--|
-|![HTTPCode_ELB_5XX_Count]() |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count]() |![UnHealthyHostCount]() |![LambdaInternalError]() |![LambdaUserError]()|
+
+|HTTP Code  ELB 5XX Count|Rejected Connection Count|HTTP Code Target 5XX Count| 
+|--|--|--|
+|![HTTPCode_ELB_5XX_Count]() |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count]()|
+|**UnHealthy Host Count**|**Lambda Internal Error**|**Lambda User Error**|
+|--|--|--|
+|![UnHealthyHostCount]() |![LambdaInternalError]() |![LambdaUserError]()|
 
 ## Configuration
 

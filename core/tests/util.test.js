@@ -8,8 +8,22 @@ const {
   resolveEcsClusterNameForSub,
   resolveRestApiNameAsCfn,
   resolveRestApiNameForSub,
-  getStatisticName
+  getStatisticName,
+  findLoadBalancersForTargetGroup
 } = require('../util')
+
+const { albCfTemplate } = require('./testing-utils')
+const CloudFormationTemplate = require('../cf-template')
+const albCfTemp = CloudFormationTemplate(albCfTemplate)
+
+test(' finds the associated Load Balancer if it exist in the CloudFormation template for the Target Group', (t) => {
+  const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
+  const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemp)
+  t.equal(loadBalancerLogicalIds.length, 1)
+  t.equal(loadBalancerLogicalIds[0], 'alb')
+  t.end()
+}
+)
 
 test('filterObject filters out', (t) => {
   const obj = { a: 1, b: 2, c: 3 }

@@ -1,8 +1,15 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
-const { resolveEcsClusterNameForSub, resolveRestApiNameForSub, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } = require('./util')
+const {
+  resolveEcsClusterNameForSub,
+  resolveRestApiNameForSub,
+  resolveLoadBalancerFullNameForSub,
+  resolveTargetGroupFullNameForSub,
+  findLoadBalancersForTargetGroup
+} = require('./util')
 const { getLogger } = require('./logging')
+const cfTemplate = require('./cf-template')
 
 const MAX_WIDTH = 24
 
@@ -557,10 +564,10 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createLoadBalancerWidgets (loadBalancerResources) {
     const loadBalancerWidgets = []
-    for (const [logicalId, res] of Object.entries(loadBalancerResources)) {
+    for (const [logicalId] of Object.entries(loadBalancerResources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
 
-      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(res, logicalId)
+      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig.enabled) {
@@ -589,32 +596,22 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
   }
 
   /**
-   * Given CloudFormation syntax for an Target Group, derive CloudFormation syntax for
-   * the LoadBalancer LogicalId name
-   *
-   * @param  loadBalancerResources  syntax for an Load Balancer Application
-   * @returns CloudFormation syntax for the Load Balancer Resources
-   */
-  function resolveLoadBalancerLogicalIdName (loadBalancerResources) {
-    for (const key in loadBalancerResources) {
-      if (loadBalancerResources[key].Type === 'AWS::ElasticLoadBalancingV2::LoadBalancer') {
-        return key
-      }
-    }
-  }
-
-  /**
    * Create a set of CloudWatch Dashboard widgets for Application Load Balancer Target Group services .
    *
    * @param {object} targetGroupResources Object of Application Load Balancer Service Target Group resources by resource name
-   * @param {object} loadBalancerResources Object of Application Load Balancer Service resources by resource name
+   * @param {object}  Object of Application Load Balancer Service resources by resource name
    */
-  function createTargetGroupWidgets (targetGroupResources, loadBalancerResources) {
+  function createTargetGroupWidgets (targetGroupResources) {
     const targetGroupWidgets = []
-    for (const [logicalId, res] of Object.entries(targetGroupResources, loadBalancerResources)) {
-      const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
+    for (const [logicalId] of Object.entries(targetGroupResources)) {
+      // const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
+      // const targetGroupResourceName = resolveTargetGroupLogicalIdName(targetGroupResources)
+      const albCfTemp = cfTemplate(cfTemplate)
+      const loadBalancerResourceName = findLoadBalancersForTargetGroup(targetGroupResources, albCfTemp)
+      console.log('loadBalancerResourceName', loadBalancerResourceName)
       const loadBalancerName = `\${${loadBalancerResourceName}.LoadBalancerName}`
-      const targetGroupFullName = resolveTargetGroupFullNameForSub(res, logicalId)
+      console.log(loadBalancerName)
+      const targetGroupFullName = resolveTargetGroupFullNameForSub(logicalId)
       const loadBalancerFullName = `\${${loadBalancerResourceName}.LoadBalancerFullName}`
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {

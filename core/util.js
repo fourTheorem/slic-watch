@@ -67,6 +67,43 @@ function resolveEcsClusterNameForSub (cluster) {
 }
 
 /**
+ *
+ * @param {*} cfTemplate A CloudFormation template object
+ * @param {*} targetGroupLogicalId Target Group CloudFormation logicalID
+ * @returns {Array} All Load Balancers CloduFormation logicalIDs
+ */
+
+function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
+  const allLoadBalancerLogicalIds = new Set()
+  const allListenerRules = {}
+  const listenerRuleResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::ListenerRule'
+  )
+  for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
+    for (const action of listenerRule.Properties.Actions || []) {
+      const targetGroupArn = action.TargetGroupArn
+      if (targetGroupArn.Ref === targetGroupLogicalId) {
+        allListenerRules[listenerRuleLogicalId] = listenerRule
+        break
+      }
+    }
+  }
+  for (const listenerRule of Object.values(allListenerRules)) {
+    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
+    if (listenerLogicalId) {
+      const listener = cfTemplate.getResourceByName(listenerLogicalId)
+      if (listener) {
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
+  return [...allLoadBalancerLogicalIds]
+}
+
+/**
  * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
  * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
  *
@@ -74,7 +111,7 @@ function resolveEcsClusterNameForSub (cluster) {
  * @param logicalId The CloudFormation logical ID for the ALB resource
  * @returns Literal string or Sub variable syntax
  */
-function resolveLoadBalancerFullNameForSub (resource, logicalId) {
+function resolveLoadBalancerFullNameForSub (logicalId) {
   return `\${${logicalId}.LoadBalancerFullName}`
 }
 
@@ -85,9 +122,10 @@ function resolveLoadBalancerFullNameForSub (resource, logicalId) {
  * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
  * @returns Literal string or Sub variable syntax
  */
-function resolveTargetGroupFullNameForSub (resource, logicalId) {
+function resolveTargetGroupFullNameForSub (logicalId) {
   return `\${${logicalId}.TargetGroupFullName}`
 }
+
 /*
  * Determine the presentation name for an alarm statistic
  *
@@ -157,5 +195,6 @@ module.exports = {
   resolveRestApiNameAsCfn,
   resolveRestApiNameForSub,
   resolveLoadBalancerFullNameForSub,
-  resolveTargetGroupFullNameForSub
+  resolveTargetGroupFullNameForSub,
+  findLoadBalancersForTargetGroup
 }

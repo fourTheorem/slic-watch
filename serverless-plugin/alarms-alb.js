@@ -5,13 +5,13 @@ const { makeResourceName, getStatisticName } = require('./util')
 /**
  * @param {object} albAlarmConfig The fully resolved alarm configuration
  */
-module.exports = function ALBlarms (albAlarmConfig, context) {
+module.exports = function ALBAlarms (albAlarmConfig, context) {
   return {
     createALBAlarms
   }
 
   /**
-   * Add all required Application Load Balancer alarms to the provided CloudFormation template
+   * Add all required Application Load Balancer alarms for Application Load Balancer to the provided CloudFormation template
    * based on the resources found within
    *
    * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
