@@ -67,12 +67,14 @@ function resolveEcsClusterNameForSub (cluster) {
 }
 
 /**
+ * For a given target group defined by its CloudFormation resources Logical ID, find any load balancer
+ * that relates to the target group by finding associated ListenerRules, their Listener and each Listener's
+ * referenced load balancer.
  *
- * @param {*} cfTemplate A CloudFormation template object
  * @param {*} targetGroupLogicalId Target Group CloudFormation logicalID
- * @returns {Array} All Load Balancers CloduFormation logicalIDs
+ * @param {*} cfTemplate A CloudFormation template instance
+ * @returns {Array} All Load Balancers CloudFormation logicalIDs
  */
-
 function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
   const allLoadBalancerLogicalIds = new Set()
   const allListenerRules = {}

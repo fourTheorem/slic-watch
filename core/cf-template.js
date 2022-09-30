@@ -36,6 +36,10 @@ module.exports = function CloudFormationTemplate (compiledTemplate, additionalRe
     compiledTemplate.Resources[resourceName] = resource
   }
 
+  function getResourceByName (resourceName) {
+    return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
+  }
+
   function getResourcesByType (type) {
     return filterObject(
       {
@@ -72,6 +76,7 @@ module.exports = function CloudFormationTemplate (compiledTemplate, additionalRe
 
   return {
     addResource,
+    getResourceByName,
     getResourcesByType,
     getSourceObject,
     getEventSourceMappingFunctions,

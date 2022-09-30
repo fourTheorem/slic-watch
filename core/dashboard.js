@@ -9,7 +9,6 @@ const {
   findLoadBalancersForTargetGroup
 } = require('./util')
 const { getLogger } = require('./logging')
-const cfTemplate = require('./cf-template')
 
 const MAX_WIDTH = 24
 
@@ -98,7 +97,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const topicWidgets = createTopicWidgets(topicResources)
     const ruleWidgets = createRuleWidgets(ruleResources)
     const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
-    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, loadBalancerResources)
+    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, cfTemplate)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -599,43 +598,39 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    * Create a set of CloudWatch Dashboard widgets for Application Load Balancer Target Group services .
    *
    * @param {object} targetGroupResources Object of Application Load Balancer Service Target Group resources by resource name
-   * @param {object}  Object of Application Load Balancer Service resources by resource name
+   * @param {object} cfTemplate The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources) {
+  function createTargetGroupWidgets (targetGroupResources, cfTemplate) {
     const targetGroupWidgets = []
-    for (const [logicalId] of Object.entries(targetGroupResources)) {
-      // const loadBalancerResourceName = resolveLoadBalancerLogicalIdName(loadBalancerResources)
-      // const targetGroupResourceName = resolveTargetGroupLogicalIdName(targetGroupResources)
-      const albCfTemp = cfTemplate(cfTemplate)
-      const loadBalancerResourceName = findLoadBalancersForTargetGroup(targetGroupResources, albCfTemp)
-      console.log('loadBalancerResourceName', loadBalancerResourceName)
-      const loadBalancerName = `\${${loadBalancerResourceName}.LoadBalancerName}`
-      console.log(loadBalancerName)
-      const targetGroupFullName = resolveTargetGroupFullNameForSub(logicalId)
-      const loadBalancerFullName = `\${${loadBalancerResourceName}.LoadBalancerFullName}`
-      const widgetMetrics = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-        if (metricConfig.enabled) {
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/ApplicationELB',
-              metric,
-              dimensions: {
-                LoadBalancer: loadBalancerFullName,
-                TargetGroup: targetGroupFullName
-              },
-              stat
-            })
+    for (const tgLogicalId of Object.keys(targetGroupResources)) {
+      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
+      for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
+        const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
+        const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName,
+                  TargetGroup: targetGroupFullName
+                },
+                stat
+              })
+            }
           }
         }
-      }
-      if (widgetMetrics.length > 0) {
-        const metricStatWidget = createMetricWidget(
-          `Target Group ${loadBalancerName}`,
-          widgetMetrics,
-          albTargetDashConfig
-        )
-        targetGroupWidgets.push(metricStatWidget)
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Target Group \${${loadBalancerLogicalId}.LoadBalancerName}/\${${tgLogicalId}.TargetGroupName}`,
+            widgetMetrics,
+            albTargetDashConfig
+          )
+          targetGroupWidgets.push(metricStatWidget)
+        }
       }
     }
     return targetGroupWidgets

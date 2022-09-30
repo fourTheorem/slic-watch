@@ -1,9 +1,6 @@
 Resources:
   bucket:
     Type: AWS::S3::Bucket
-    Properties:
-      BucketName: awesome-savage-bucket1
-
 
   vpcALB:
     Type: AWS::EC2::VPC
@@ -18,7 +15,7 @@ Resources:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags: ${self:custom.resourceTags}
-  
+
   vpcGatewayAttachment:
       Type: AWS::EC2::VPCGatewayAttachment
       Properties:
@@ -40,14 +37,14 @@ Resources:
       CidrBlock: 10.0.6.0/24
       VpcId: !Ref vpcALB
       Tags: ${self:custom.resourceTags}
-  
-  routeTableA: 
+
+  routeTableA:
       Type: AWS::EC2::RouteTable
       Properties:
         VpcId: !Ref vpcALB
         Tags: ${self:custom.resourceTags}
-  
-  routeTableB: 
+
+  routeTableB:
       Type: AWS::EC2::RouteTable
       Properties:
         VpcId: !Ref vpcALB
@@ -58,7 +55,7 @@ Resources:
       Properties:
         SubnetId: !Ref subnetA
         RouteTableId: !Ref routeTableA
-  
+
   routeTableAssociationSubnetB:
       Type: AWS::EC2::SubnetRouteTableAssociation
       Properties:
@@ -107,7 +104,7 @@ Resources:
            Path: "/#{path}"
            Query: "#{query}"
            StatusCode: HTTP_301
-           
+
   albSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:

@@ -22,8 +22,7 @@ test(' finds the associated Load Balancer if it exist in the CloudFormation temp
   t.equal(loadBalancerLogicalIds.length, 1)
   t.equal(loadBalancerLogicalIds[0], 'alb')
   t.end()
-}
-)
+})
 
 test('filterObject filters out', (t) => {
   const obj = { a: 1, b: 2, c: 3 }
