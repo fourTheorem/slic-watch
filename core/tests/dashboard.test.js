@@ -317,7 +317,7 @@ test('A dashboard includes metrics for ALB', (t) => {
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
     // eslint-disable-next-line no-template-curly-in-string
-    const expectedTitles = new Set(['Target Group ${alb.LoadBalancerName}'])
+    const expectedTitles = new Set(['Target Group ${alb.LoadBalancerName}/${AlbEventAlbTargetGrouphttpListener.TargetGroupName}'])
 
     const actualTitles = new Set(
       widgets.map((widget) => widget.properties.title)
