@@ -9,9 +9,13 @@ async function handleALB (event, context) {
   const body = JSON.parse(event.body || '{}')
   console.log(body)
   if (body.triggerError) {
-    throw new Error('Error triggered')
+    throw new Error('Error triggered by lambda')
   } else if (event.triggerError) {
-    throw new Error('Error triggered by Lambda')
+    throw new Error('Error triggered by ALB')
+  } else if (event.sendHttpError) {
+    return {
+      statusCode: event.sendHttpError
+    }
   } else {
     console.log('Successful event delivery')
     return {

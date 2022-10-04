@@ -298,10 +298,10 @@ Application Load Balancer dashboard widgets show:
 
 |HTTP Code  ELB 5XX Count|Rejected Connection Count|HTTP Code Target 5XX Count| 
 |--|--|--|
-|![HTTPCode_ELB_5XX_Count]() |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count]()|
+|![HTTPCode_ELB_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeElb5XXCount.png)) |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeTarget5XXCount.png)|
 |**UnHealthy Host Count**|**Lambda Internal Error**|**Lambda User Error**|
 |--|--|--|
-|![UnHealthyHostCount]() |![LambdaInternalError]() |![LambdaUserError]()|
+|![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaInternalError]() |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)|
 
 ## Configuration
 

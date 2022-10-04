@@ -24,12 +24,12 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
       for (const tgLogicalId of Object.keys(targetGroupResources)) {
         const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
         for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-          const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
+          // const loadBalancerFullName = resolveLoadBalancerFullNameForSub(loadBalancerLogicalId)
           if (albTargetAlarmConfig.HTTPCode_Target_5XX_Count && albTargetAlarmConfig.HTTPCode_Target_5XX_Count.enabled) {
             const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
               targetGroupResourceName,
               targetGroupResource,
-              loadBalancerFullName,
+              loadBalancerLogicalId,
               albTargetAlarmConfig.HTTPCode_Target_5XX_Count
             )
             cfTemplate.addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource)
@@ -38,7 +38,7 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
             const unHealthyHostCount = createUnHealthyHostCountAlarm(
               targetGroupResourceName,
               targetGroupResource,
-              loadBalancerFullName,
+              loadBalancerLogicalId,
               albTargetAlarmConfig.UnHealthyHostCount
             )
             cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
@@ -47,7 +47,7 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
             const lambdaInternalError = createLambdaInternalErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
-              loadBalancerFullName,
+              loadBalancerLogicalId,
               albTargetAlarmConfig.LambdaInternalError
             )
             cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
@@ -56,7 +56,7 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
             const lambdaUserError = createLambdaUserErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
-              loadBalancerFullName,
+              loadBalancerLogicalId,
               albTargetAlarmConfig.LambdaUserError
             )
             cfTemplate.addResource(lambdaUserError.resourceName, lambdaUserError.resource)
@@ -70,7 +70,7 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
     alarmName,
     alarmDescription,
     targetGroupResourceName, // Logical ID of the CloudFormation Target Group Resource
-    loadBalancerFullName,
+    loadBalancerLogicalId,
     comparisonOperator,
     threshold,
     metricName,
@@ -81,6 +81,7 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
     treatMissingData
   ) {
     const targetGroupFullName = { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] }
+    const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] }
     const metricProperties = {
       Dimensions: [{ Name: 'TargetGroup', Value: targetGroupFullName }, { Name: 'LoadBalancer', Value: loadBalancerFullName }],
       MetricName: metricName,

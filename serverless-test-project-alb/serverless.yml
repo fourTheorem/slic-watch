@@ -50,7 +50,7 @@ functions:
             path: /handleALB
             method:
               - POST
-          healthCheck: false # it is by default false but can be enbaled true
-          # we diabled it to not getting redundant health-check logs on the CloudWatch logs 
+          healthCheck: true # it is by default false but can be enbaled true
+          #you can disable it for not getting redundant health-check logs on the CloudWatch logs 
 
 resources: ${file(./sls-resources.yml)}

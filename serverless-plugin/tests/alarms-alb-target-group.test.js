@@ -74,8 +74,7 @@ test('ALB Target Group alarms are created', (t) => {
       },
       {
         Name: 'LoadBalancer',
-        // eslint-disable-next-line no-template-curly-in-string
-        Value: '${alb.LoadBalancerFullName}'
+        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
       }
     ])
   }
