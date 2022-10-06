@@ -38,7 +38,7 @@ test('A dashboard includes metrics', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   t.same(dashResource.Properties.DashboardName, {
-    'Fn::Sub': '${AWS::StackName}Dashboard'
+    'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard'
   })
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 

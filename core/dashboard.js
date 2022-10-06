@@ -100,7 +100,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
         Type: 'AWS::CloudWatch::Dashboard',
         Properties: {
           // eslint-disable-next-line no-template-curly-in-string
-          DashboardName: { 'Fn::Sub': '${AWS::StackName}Dashboard' },
+          DashboardName: { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' },
           DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
         }
       }
