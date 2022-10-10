@@ -343,7 +343,7 @@ this.templateOptions.metadata = {
 - The `topicArn` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-A complete set of supported options along with their defaults are shown in [default-config.yaml](./core/default-config.yaml)
+A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)
 
 Example projects are also provided for reference: 
 - [serverless-test-project](./serverless-test-project)
