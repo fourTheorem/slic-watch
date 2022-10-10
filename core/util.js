@@ -78,9 +78,27 @@ function resolveEcsClusterNameForSub (cluster) {
 function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
   const allLoadBalancerLogicalIds = new Set()
   const allListenerRules = {}
+  const listenerResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::Listener'
+  )
+
+  // First, find Listeners with _default actions_ referencing the target group
+  for (const listener of Object.values(listenerResources)) {
+    for (const action of listener.Properties.DefaultActions || []) {
+      const targetGroupArn = action.TargetGroupArn
+      if (targetGroupArn.Ref === targetGroupLogicalId) {
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
   const listenerRuleResources = cfTemplate.getResourcesByType(
     'AWS::ElasticLoadBalancingV2::ListenerRule'
   )
+
+  // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
     for (const action of listenerRule.Properties.Actions || []) {
       const targetGroupArn = action.TargetGroupArn
@@ -90,6 +108,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
       }
     }
   }
+
   for (const listenerRule of Object.values(allListenerRules)) {
     const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
     if (listenerLogicalId) {
