@@ -153,8 +153,8 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   })
   const albCf = createTestCloudFormationTemplate(albCfTemplate)
   const albFuncAlarmConfigs = {}
-  for (const f of albCf.getFunctionNames()) {
-    albFuncAlarmConfigs[f] = albAlarmConfig.Lambda
+  for (const funcLogicalId of Object.keys(albCf.getResourcesByType('AWS::Lambda::Function'))) {
+    albFuncAlarmConfigs[funcLogicalId] = albAlarmConfig.Lambda
   }
   const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmConfigs, testContext)
   createLambdaAlarms(albCf)
@@ -171,12 +171,12 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   }
 
   t.same(Object.keys(albAlarmsByType).sort(), [
-    'LambdaDuration',
-    'LambdaErrors',
-    'LambdaThrottles'
+    'Lambda_Duration',
+    'Lambda_Errors',
+    'Lambda_Throttles'
   ])
 
-  for (const al of albAlarmsByType.LambdaErrors) {
+  for (const al of albAlarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
     t.equal(al.Threshold, albAlarmConfig.Lambda.Errors.Threshold)
@@ -188,7 +188,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(al.Dimensions.length, 1)
   }
 
-  for (const al of albAlarmsByType.LambdaDuration) {
+  for (const al of albAlarmsByType.Lambda_Duration) {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
     t.ok(al.Threshold > 1000) // Ensure threshold is in milliseconds
@@ -199,7 +199,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(al.Period, 120)
   }
 
-  for (const al of albAlarmsByType.LambdaThrottles) {
+  for (const al of albAlarmsByType.Lambda_Throttles) {
     t.equal(al.Metrics.length, 3)
     const metricsById = {}
     for (const metric of al.Metrics) {

@@ -70,21 +70,12 @@ module.exports = function CloudFormationTemplate (compiledTemplate, additionalRe
     return eventSourceMappingFunctions
   }
 
-  /**
-   * @returns An array of function names for all Lambda functions defined in the stack
-   */
-  function getFunctionNames () {
-    const funcResources = getResourcesByType('AWS::Lambda::Function')
-    return Object.values(funcResources).map(res => res.Properties.FunctionName)
-  }
-
   function getSourceObject () {
     return compiledTemplate
   }
 
   return {
     addResource,
-    getFunctionNames,
     getResourceByName,
     getResourcesByType,
     getSourceObject,

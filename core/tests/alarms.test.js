@@ -24,14 +24,13 @@ test('Alarms create all service alarms', (t) => {
   }
   t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApiGateway', 'AWS/States', 'AWS/DynamoDB', 'AWS/Kinesis', 'AWS/SQS', 'AWS/ECS', 'AWS/SNS', 'AWS/Events']))
   t.end()
-  console.log('1', namespaces)
 })
 
 test('Alarms create all ALB service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
   const funcAlarmConfigs = {}
-  for (const func of cfTemplate.getFunctionNames()) {
-    funcAlarmConfigs[func] = {}
+  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+    funcAlarmConfigs[funcLogicalId] = {}
   }
   const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
