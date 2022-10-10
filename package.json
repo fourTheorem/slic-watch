@@ -13,6 +13,7 @@
     "serverless-plugin",
     "cf-macro",
     "serverless-test-project",
+    "serverless-test-project-alb",
     "sam-test-project"
   ],
   "scripts": {
