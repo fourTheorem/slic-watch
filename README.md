@@ -26,30 +26,31 @@ SLIC Watch is available for ⚡️ **Serverless Framework**, 🐿 **AWS SAM** an
 
 <!-- TOC -->
 
-- [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
-- [Getting Started with AWS SAM or CloudFormation](#getting-started-with-aws-sam-or-cloudformation)
-  - [Deploying the SLIC Watch Macro](#deploying-the-slic-watch-macro)
-  - [Adding the SLIC Watch Transform](#adding-the-slic-watch-transform)
-- [Features](#features)
-  - [Lambda Functions](#lambda-functions)
-  - [API Gateway](#api-gateway)
-  - [DynamoDB](#dynamodb)
-  - [Kinesis Data Streams](#kinesis-data-streams)
-  - [SQS Queues](#sqs-queues)
-  - [Step Functions](#step-functions)
-  - [ECS / Fargate](#ecs--fargate)
-  - [SNS](#sns)
-  - [EventBridge](#eventbridge)
-- [Configuration](#configuration)
-  - [Top-level configuration](#top-level-configuration)
-  - [Function-level configuration](#function-level-configuration)
-    - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
-    - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
-- [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
-- [References](#references)
-  - [Other Projects](#other-projects)
-  - [Reading](#reading)
-- [LICENSE](#license)
+- [slic-watch](#slic-watch)
+  - [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
+  - [Getting Started with AWS SAM or CloudFormation](#getting-started-with-aws-sam-or-cloudformation)
+    - [Deploying the SLIC Watch Macro](#deploying-the-slic-watch-macro)
+    - [Adding the SLIC Watch Transform](#adding-the-slic-watch-transform)
+  - [Features](#features)
+    - [Lambda Functions](#lambda-functions)
+    - [API Gateway](#api-gateway)
+    - [DynamoDB](#dynamodb)
+    - [Kinesis Data Streams](#kinesis-data-streams)
+    - [SQS Queues](#sqs-queues)
+    - [Step Functions](#step-functions)
+    - [ECS / Fargate](#ecs--fargate)
+    - [SNS](#sns)
+    - [EventBridge](#eventbridge)
+  - [Configuration](#configuration)
+    - [Top-level configuration](#top-level-configuration)
+    - [Function-level configuration](#function-level-configuration)
+      - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
+      - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
+  - [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
+  - [References](#references)
+    - [Other Projects](#other-projects)
+    - [Reading](#reading)
+  - [LICENSE](#license)
 
 <!-- /TOC -->
 ## Getting Started with Serverless Framework
@@ -86,29 +87,32 @@ sls deploy
 
 
 ## Getting Started with AWS SAM or CloudFormation
-
-This method uses the SLIC Watch _CloudFormation Macro_. It is very simple to add this macro as a transform to your SAM or CloudFormation template, but first you must ensure that the SLIC Watch Macro has been deployed to the same AWS account/region as your application.
+ℹ️ **IMPORTANT**: If you are using AWS SAM, or just plain CloudFormation, the most important thing to know is that your AWS account/region should have the **SLIC Watch Macro** deployed before you do anything. Once that's done, it is very simple to add this macro as a transform to your SAM or CloudFormation template.
 
 ### Deploying the SLIC Watch Macro
-Deploy the SLIC Watch Macro in your account: 
-- _Method 1 using the Service Application Repository (SAR) console_: Go to [SLIC Watch in the Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/eu-west-1/949339270388/slic-watch-app) and click the Deploy button.
-- _Method 2 (using SAR with CloudFormation)_: Add the SLIC Watch SAR application as a resource in a template:
+It would be nice if CloudFormation allowed us to publicly publish a macro so you don't need this step, but for now, you can deploy the SLIC Watch Macro using any of the following options. We have made the macro available as a _Serverless Application Repository (SAR)_ app. This SAR app is used in Options 1 and 2 below. Option 3 is a manual option where you deploy the macro from this repository directly without using SAR.
+
+- **Option 1** using the Service Application Repository (SAR) console: Go to [SLIC Watch in the Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/eu-west-1/949339270388/slic-watch-app) and click the _Deploy_ button.
+- **Option 2** (using SAR with CloudFormation): If you prefer to automate the deployment of SAR apps using Infrastructure as Code, you can add the SAR app as a resource in any CloudFormation template. Note that this cannot be the same template as the application in which you want to use SLIC Watch!
+The snippet of CloudFormation is as follows.
  ```yaml
- SlicWatchMacro:
-  Type: AWS::Serverless::Application
-  Properties:
-    Location:
-      ApplicationId: arn:aws:serverlessrepo:eu-west-1:949339270388:applications~slic-watch-app 
-      SemanticVersion: <enter latest version>
+  Resources:
+    ...
+    SlicWatchMacro:
+      Type: AWS::Serverless::Application
+      Properties:
+        Location:
+          ApplicationId: arn:aws:serverlessrepo:eu-west-1:949339270388:applications~slic-watch-app 
+          SemanticVersion: <enter latest version>
  ```
-- _Method 3 (manual Macro deployment using SAM)_:
+- **Option 3** (manual Macro deployment using SAM directly from source):
 ```
 npm install
 sam build --base-dir . --template-file cf-macro/template.yaml
 sam deploy --guided
 ```
 ### Adding the SLIC Watch Transform
-Once you have deployed the macro, add it to a SAM or CloudFormation template in the **Transform** section :
+Once you have deployed the macro, you can start using SLIC Watch in SAM or CloudFormation templates by adding this to the **Transform** section:
 
 ```
 Transform:
