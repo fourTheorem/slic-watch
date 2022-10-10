@@ -1,9 +1,6 @@
 {
   "name": "cdk-test-project",
   "version": "0.1.0",
-  "bin": {
-    "cdk-test-project": "bin/cdk-test-project.js"
-  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
