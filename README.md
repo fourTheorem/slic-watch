@@ -9,7 +9,7 @@
 
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS and EventBridge._ and works with ⚡️ **Serverless Framework**, 🐿 **AWS SAM**, **AWS CDK**  and ☁️ **CloudFormation**.
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS and EventBridge._ ⚡️ **Serverless Framework**, 🐿 **AWS SAM**, **AWS CDK**  and ☁️ **CloudFormation**.
 
  * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
  * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM, CDK or CloudFormation templates by simply adding a `Transform` to your template.
@@ -310,6 +310,16 @@ Metadata:
   slicWatch:
     enabled: true
     ...
+```
+
+- For *CDK Stacks, the top-level SLIC Watch configuration can be set as follows.
+```typescript
+this.templateOptions.metadata = {
+  slicWatch: {
+    enabled: true,
+    ....
+  }
+}
 ```
 
 - The `topicArn` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
