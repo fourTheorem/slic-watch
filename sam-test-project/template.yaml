@@ -1,0 +1,254 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  sam-test-project
+
+Transform:
+  - AWS::Serverless-2016-10-31
+  - SlicWatch-v2
+
+Metadata:
+  slicWatch:
+    enabled: true
+    # topicArn: ${env:ALARM_TOPIC}
+    topicArn: !Ref MonitoringTopic
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+
+Resources:
+  MonitoringTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: SS-Alarm-Topic2
+
+  hello:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            Invocations:
+              Threshold: 2
+
+  ping:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+    Metadata:
+      slicWatch:
+        dashboard:
+          enabled: false
+
+  throttler:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+      ReservedConcurrentExecutions: 0
+
+  driveStream:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: stream-test-handler.handleDrive
+      Runtime: nodejs16.x
+
+  driveQueue:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+
+  driveTable:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+
+  streamProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basic-handler.hello
+      Runtime: nodejs16.x
+      Events:
+        Stream:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt stream.Arn
+            MaximumRetryAttempts: 0
+            StartingPosition: LATEST
+
+  httpGetter:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: apigw-handler.handleGet
+      Timeout: 30
+      Runtime: nodejs16.x
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: "item"
+            Method: GET
+            
+  eventsRule:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: rule-handler.handleRule
+      Runtime: nodejs16.x  
+      Events:
+        Trigger:
+          Type: CloudWatchEvent 
+          Properties:
+            Pattern:
+              detail-type: 
+              - Invoke Lambda Function
+            RetryPolicy:
+              MaximumRetryAttempts: 0
+              MaximumEventAgeInSeconds: 60
+    Metadata:
+      slicWatch:
+        alarms:
+          Lambda:
+            enabled: false
+  
+  TestStateMachine:
+    Type: AWS::Serverless::StateMachine 
+    Properties:
+      DefinitionUri: statemachine/test.asl.json
+      DefinitionSubstitutions:
+        HelloArn: !GetAtt hello.Arn
+        AnotherHelloArn: !GetAtt hello.Arn
+      Policies: 
+        - LambdaInvokePolicy:
+            FunctionName: !Ref hello
+        - LambdaInvokePolicy:
+            FunctionName: !Ref hello
+
+  stream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      ShardCount: 1
+
+  regularQueue:
+    Type: "AWS::SQS::Queue"
+
+  fifoQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      FifoQueue: true
+      
+  vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+
+  subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
+      CidrBlock: 10.0.16.0/20
+      VpcId: !Ref vpc
+
+  ecsCluster:
+    Type: AWS::ECS::Cluster
+
+  ecsService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster:
+        Ref: ecsCluster
+      DesiredCount: 0
+      LaunchType: FARGATE
+      TaskDefinition: !Ref taskDef
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: []
+          Subnets:
+            - !Ref subnet
+
+  taskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ContainerDefinitions: 
+        - Name: "busybox"
+          Image: "busybox"
+          Cpu: 256
+          EntryPoint: 
+            - "sh"
+            - "-c"
+          Memory: 512
+          Command: 
+            - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+          Essential: true
+      NetworkMode: awsvpc
+
+  dataTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    Properties:
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+            - AttributeName: gsi1sk
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - address
+            ProjectionType: INCLUDE
+      LocalSecondaryIndexes:
+        - IndexName: LSI1
+          KeySchema:
+            - AttributeName: pk
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - name
+            ProjectionType: INCLUDE
+ 

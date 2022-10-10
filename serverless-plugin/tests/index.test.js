@@ -4,6 +4,7 @@ const _ = require('lodash')
 const proxyrequire = require('proxyquire')
 const ServerlessError = require('serverless/lib/serverless-error')
 const { test } = require('tap')
+const { getLogger } = require('slic-watch-core/logging')
 
 const slsYaml = {
   custom: {
@@ -30,7 +31,7 @@ const testCfTemplate = {
 let testState = {}
 
 const ServerlessPlugin = proxyrequire('../index', {
-  './dashboard': () => {
+  'slic-watch-core/dashboard': () => {
     testState.dashboardCalled = true
     return {
       addDashboard: (cfTemplate) => {
@@ -38,7 +39,7 @@ const ServerlessPlugin = proxyrequire('../index', {
       }
     }
   },
-  './alarms': () => {
+  'slic-watch-core/alarms': () => {
     testState.alarmsCalled = true
     return {
       addAlarms: (cfTemplate) => {
@@ -52,13 +53,7 @@ const mockServerless = {
   cli: {
     log: () => {}
   },
-  providers: {
-    aws: {
-      naming: {
-        getStackName: () => 'MockStack'
-      }
-    }
-  },
+  providers: { aws: {} },
   getProvider: () => ({
     naming: {
       getLambdaLogicalId: (funcName) => {
@@ -80,6 +75,14 @@ const mockServerless = {
 test('index', t => {
   t.beforeEach(t => {
     testState = {}
+  })
+
+  t.test('plugin uses v3 logger if provided', (t) => {
+    const dummyV3Logger = {}
+    const plugin = new ServerlessPlugin(mockServerless, {}, { log: dummyV3Logger })
+    t.equal(getLogger(), dummyV3Logger)
+    t.ok(plugin)
+    t.end()
   })
 
   t.test('plugin fails if provider is not aws', (t) => {

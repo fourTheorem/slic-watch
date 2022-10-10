@@ -3,18 +3,31 @@
 const _ = require('lodash')
 const Ajv = require('ajv')
 
-const alarms = require('./alarms')
-const dashboard = require('./dashboard')
-const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('./config-schema')
-const defaultConfig = require('./default-config')
-const CloudFormationTemplate = require('./cf-template')
+const alarms = require('slic-watch-core/alarms')
+const dashboard = require('slic-watch-core/dashboard')
+const { pluginConfigSchema, functionConfigSchema, slicWatchSchema } = require('slic-watch-core/config-schema')
+const defaultConfig = require('slic-watch-core/default-config')
+const CloudFormationTemplate = require('slic-watch-core/cf-template')
+const logging = require('slic-watch-core/logging')
 
 const ServerlessError = require('serverless/lib/serverless-error')
 
 class ServerlessPlugin {
-  constructor (serverless, options) {
+  /**
+   * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
+   * @param {*} serverless The Serverless isntance
+   * @param {*} cliOptions Serverless framework CLI options
+   * @param {*} pluginUtils V3 utilitiessss, including the logger
+   */
+  constructor (serverless, cliOptions, pluginUtils = {}) {
     this.serverless = serverless
-    this.options = options
+    const logger = pluginUtils.log
+    if (logger) {
+      logging.setLogger(logger)
+    } else {
+      // Use serverless v2 logger
+      logging.setLogger(require('./serverless-v2-logger')(serverless))
+    }
     this.providerNaming = serverless.providers.aws.naming
 
     if (serverless.service.provider.name !== 'aws') {
@@ -57,11 +70,7 @@ class ServerlessPlugin {
       alarmActions.push(slicWatchConfig.topicArn)
     }
     // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
-    const context = {
-      region: this.serverless.service.provider.region,
-      stackName: this.providerNaming.getStackName(),
-      alarmActions
-    }
+    const context = { alarmActions }
 
     const config = _.merge(defaultConfig, slicWatchConfig)
 
@@ -77,14 +86,13 @@ class ServerlessPlugin {
     for (const funcName of this.serverless.service.getAllFunctions()) {
       const func = this.serverless.service.getFunction(funcName)
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      const functionName = cfTemplate.getResourceByName(functionResName).Properties.FunctionName
       const funcConfig = func.slicWatch || {}
-      functionAlarmConfigs[functionName] = funcConfig.alarms || {}
-      functionDashboardConfigs[functionName] = funcConfig.dashboard
+      functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
+      functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
 
-    this.dashboard = dashboard(this.serverless, config.dashboard, functionDashboardConfigs, context)
-    this.alarms = alarms(this.serverless, config.alarms, functionAlarmConfigs, context)
+    this.dashboard = dashboard(config.dashboard, functionDashboardConfigs, context)
+    this.alarms = alarms(config.alarms, functionAlarmConfigs, context)
     this.dashboard.addDashboard(cfTemplate)
     this.alarms.addAlarms(cfTemplate)
   }

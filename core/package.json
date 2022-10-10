@@ -1,0 +1,26 @@
+{
+  "name": "slic-watch-core",
+  "version": "2.0.0-rc6",
+  "description": "SLIC Watch core library for adding alarms and dashboards to CloudFormation",
+  "main": "alarms.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-watch.git",
+    "directory": "core"
+  },
+  "scripts": {
+    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "case": "^1.6.3",
+    "lodash": "^4.17.21",
+    "pino": "^8.4.2",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "proxyquire": "^2.1.3",
+    "tap": "^15.0.9"
+  }
+}

@@ -5,6 +5,14 @@ on:
     types:
       - published
 
+env:
+  SAR_BUCKET_NAME : ${{ secrets.SAR_BUCKET_NAME }}
+  AWS_REGION : "eu-west-1"
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release:
     name: release
@@ -15,19 +23,37 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 16.x
           registry-url: "https://registry.npmjs.org"
-      - name: Use npm 7.5
-        run: npm install -g npm@^7
+      - name: Use npm 8
+        run: npm install -g npm@^8
       - name: Test NPM login
         run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+      - uses: aws-actions/setup-sam@v2
       - name: Install dependencies
         run: npm ci
-      - name: Npm security audit
+      - name: NPM security audit
         run: npm run audit
-      - name: Release
-        run: npm run lerna:publish
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
+          role-session-name: github-action-sar-deploy-session
+          aws-region: ${{ env.AWS_REGION }}
+      - name: NPM publish
+        run: |
+          cp README.md serverless-plugin
+          [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
+          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: SAR publish
+        run: |
+          sam build --base-dir . --template-file cf-macro/template.yaml
+          sam package --output-template-file packaged.yaml --s3-bucket ${SAR_BUCKET_NAME}
+          sam publish --template packaged.yaml --region ${AWS_REGION} --semantic-version $(cat package.json | jq -r '.version')
