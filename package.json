@@ -9,6 +9,7 @@
   },
   "workspaces": [
     "core",
+    "cdk-test-project",
     "serverless-plugin",
     "cf-macro",
     "serverless-test-project",
