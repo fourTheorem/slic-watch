@@ -86,7 +86,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
   for (const listener of Object.values(listenerResources)) {
     for (const action of listener.Properties.DefaultActions || []) {
       const targetGroupArn = action.TargetGroupArn
-      if (targetGroupArn.Ref === targetGroupLogicalId) {
+      if (targetGroupArn?.Ref === targetGroupLogicalId) {
         const loadBalancerLogicalId = listener.Properties.LoadBalancerArn.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)

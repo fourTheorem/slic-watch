@@ -43,23 +43,25 @@ module.exports = function ALBTargetAlarms (albTargetAlarmConfig, context) {
             )
             cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
           }
-          if (albTargetAlarmConfig.LambdaInternalError && albTargetAlarmConfig.LambdaInternalError.enabled) {
-            const lambdaInternalError = createLambdaInternalErrorAlarm(
-              targetGroupResourceName,
-              targetGroupResource,
-              loadBalancerLogicalId,
-              albTargetAlarmConfig.LambdaInternalError
-            )
-            cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
-          }
-          if (albTargetAlarmConfig.LambdaUserError && albTargetAlarmConfig.LambdaUserError.enabled) {
-            const lambdaUserError = createLambdaUserErrorAlarm(
-              targetGroupResourceName,
-              targetGroupResource,
-              loadBalancerLogicalId,
-              albTargetAlarmConfig.LambdaUserError
-            )
-            cfTemplate.addResource(lambdaUserError.resourceName, lambdaUserError.resource)
+          if (targetGroupResource.Properties.TargetType === 'lambda') {
+            if (albTargetAlarmConfig.LambdaInternalError && albTargetAlarmConfig.LambdaInternalError.enabled) {
+              const lambdaInternalError = createLambdaInternalErrorAlarm(
+                targetGroupResourceName,
+                targetGroupResource,
+                loadBalancerLogicalId,
+                albTargetAlarmConfig.LambdaInternalError
+              )
+              cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
+            }
+            if (albTargetAlarmConfig.LambdaUserError && albTargetAlarmConfig.LambdaUserError.enabled) {
+              const lambdaUserError = createLambdaUserErrorAlarm(
+                targetGroupResourceName,
+                targetGroupResource,
+                loadBalancerLogicalId,
+                albTargetAlarmConfig.LambdaUserError
+              )
+              cfTemplate.addResource(lambdaUserError.resourceName, lambdaUserError.resource)
+            }
           }
         }
       }
