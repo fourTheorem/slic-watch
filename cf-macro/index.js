@@ -37,8 +37,8 @@ exports.handler = async function (event) {
 
       if (slicWatchConfig.topicArn) {
         alarmActions.push(slicWatchConfig.topicArn)
-      } else if (process.env.SNSTopic) {
-        alarmActions.push(process.env.SNSTopic)
+      } else if (process.env.ALARM_SNS_TOPIC) {
+        alarmActions.push(process.env.ALARM_SNS_TOPIC)
       }
 
       const context = {

@@ -287,7 +287,7 @@ EventBridge Rule dashboard widgets show:
 
 ### Application Load Balancer
 Application Load Balancer alarms are created for:
-1. HTTP Code  ELB 5XX Count
+1. HTTP Code ELB 5XX Count
 2. Rejected Connection Count
 3. HTTP Code Target 5XX Count
 4. UnHealthy Host Count
