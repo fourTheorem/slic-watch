@@ -35,6 +35,8 @@ jobs:
         with:
           python-version: "3.8"
       - uses: aws-actions/setup-sam@v2
+      - name: Install esbuild
+        run: npm install esbuild -g
       - name: Install dependencies
         run: npm ci
       - name: NPM security audit
