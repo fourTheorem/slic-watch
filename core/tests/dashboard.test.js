@@ -325,6 +325,23 @@ test('A dashboard includes metrics for ALB', (t) => {
     t.same(actualTitles, expectedTitles)
     t.end()
   })
+
+  test('No widgets are created if all ALB metrics are disabled', (t) => {
+    const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
+    const dashConfig = cloneDeep(defaultConfig.dashboard)
+    for (const service of services) {
+      for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+        metricConfig.enabled = false
+      }
+    }
+    const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
+    dash.addDashboard(cfTemplate)
+    const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+    t.same(dashResources, {})
+    t.end()
+  })
+
   t.end()
 })
 

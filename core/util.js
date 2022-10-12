@@ -85,9 +85,9 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
     for (const action of listener.Properties.DefaultActions || []) {
-      const targetGroupArn = action.TargetGroupArn
+      const targetGroupArn = action?.TargetGroupArn
       if (targetGroupArn?.Ref === targetGroupLogicalId) {
-        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn.Ref
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
         }
@@ -114,7 +114,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
     if (listenerLogicalId) {
       const listener = cfTemplate.getResourceByName(listenerLogicalId)
       if (listener) {
-        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn.Ref
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
         }

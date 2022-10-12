@@ -16,11 +16,201 @@ const { albCfTemplate } = require('./testing-utils')
 const CloudFormationTemplate = require('../cf-template')
 const albCfTemp = CloudFormationTemplate(albCfTemplate)
 
-test(' finds the associated Load Balancer if it exist in the CloudFormation template for the Target Group', (t) => {
-  const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
-  const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemp)
-  t.equal(loadBalancerLogicalIds.length, 1)
-  t.equal(loadBalancerLogicalIds[0], 'alb')
+test('findLoadBalancersForTargetGroup', (t) => {
+  test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
+    const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemp)
+    t.same(loadBalancerLogicalIds, ['alb'])
+    t.end()
+  })
+
+  test('returns empty list for non-existent listener', (t) => {
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', CloudFormationTemplate({}))
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
+  test('includes an ALB from the DefaultActions', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            DefaultActions: [
+              {
+                TargetGroupArn: { Ref: 'tg' }
+              }
+            ],
+            LoadBalancerArn: { Ref: 'alb' }
+          }
+        },
+        tg: {
+          Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+        },
+        alb: {}
+      }
+    })
+
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    t.same(loadBalancerLogicalIds, ['alb'])
+    t.end()
+  })
+
+  test('excludes DefaultActions with a literal load balancer ARN', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            DefaultActions: [
+              {
+                TargetGroupArn: { Ref: 'tg' }
+              }
+            ],
+            LoadBalancerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188'
+          }
+        },
+        tg: {
+          Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+        },
+        alb: {}
+      }
+    })
+
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+  test('finds load balancers through listener rule target groups', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRuleA: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tgA' } }],
+            ListenerArn: { Ref: 'listener' }
+          }
+        },
+        listenerRuleB: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tgB' } }],
+            ListenerArn: { Ref: 'listener' }
+          }
+        },
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            LoadBalancerArn: { Ref: 'alb' }
+          }
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    t.same(loadBalancerLogicalIds, ['alb'])
+    t.end()
+  })
+
+  test('omits listener rules with no load balancer', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRule: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tg' } }],
+            ListenerArn: { Ref: 'listener' }
+          }
+        },
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {}
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
+  test('omits listener rules with no actions', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRule: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            ListenerArn: { Ref: 'listener' }
+          }
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
+  test('omits listener rules a literal listener ARN', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRule: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tgA' } }],
+            ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2'
+          }
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
+  test('omits listeners with a literal load balancer ARN', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRuleA: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tgA' } }],
+            ListenerArn: { Ref: 'listener' }
+          }
+        },
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            LoadBalancerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188'
+          }
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
+  test('omits listener rules referencing a listener that cannot be found', (t) => {
+    const template = CloudFormationTemplate({
+      Resources: {
+        listenerRuleA: {
+          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+          Properties: {
+            Actions: [{ TargetGroupArn: { Ref: 'tgA' } }],
+            ListenerArn: { Ref: 'listenerX' }
+          }
+        },
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            LoadBalancerArn: { Ref: 'alb' }
+          }
+        }
+      }
+    })
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    t.equal(loadBalancerLogicalIds.length, 0)
+    t.end()
+  })
+
   t.end()
 })
 

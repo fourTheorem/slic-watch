@@ -12,7 +12,7 @@ const logger = getLogger()
  * @param {object} compiledTemplate The compiled CloudFormation template
  * @param {object} additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
-module.exports = function CloudFormationTemplate (compiledTemplate, additionalResources) {
+module.exports = function CloudFormationTemplate (compiledTemplate, additionalResources = {}) {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
