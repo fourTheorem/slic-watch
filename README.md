@@ -8,10 +8,11 @@
 
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge and Application Load Balancer._ ⚡️ **Serverless Framework**, 🐿 **AWS SAM**, **AWS CDK**  and ☁️ **CloudFormation**.
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge and Application Load Balancer._  
 
- * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
- * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM, CDK or CloudFormation templates by simply adding a `Transform` to your template.
+Supported tools include:
+ * ⚡️ **Serverless Framework** v2 and v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
+ * 🐿 **AWS SAM**, 📦 **AWS CDK**  and ☁️ **CloudFormation** using the [_CloudFormation Macro_](#getting-started-with-aws-sam-cdk-or-cloudformation), published in the Serverless Application Repository (SAR).
 
 ## Contents
 - [slic-watch](#slic-watch)
