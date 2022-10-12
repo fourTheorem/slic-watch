@@ -56,7 +56,7 @@ exports.handler = async function (event) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        const funcConfig = funcResource.Metadata.slicWatch || {}
+        const funcConfig = funcResource.Metadata?.slicWatch || {}
         functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
         functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
       }
