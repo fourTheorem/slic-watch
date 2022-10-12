@@ -1,41 +1,49 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "The AWS CloudFormation template for this Serverless application",
-    "Parameters": {
-      "stack": {
-        "Type": "String",
-        "Default": "sam-test-stack-project"
-      }
-    },
-    "Metadata": {
-      "slicWatch": {
-        "enabled": true
-      }
-    },
-    "Resources": {
-        "HelloLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Handler": "handler.hello",
-              "Runtime": "nodejs16.x",
-              "FunctionName": "serverless-test-project-dev-hello",
-              "MemorySize": 1024,
-              "Timeout": 9
-            },
-            "Metadata": {
-              "slicWatch": {
-                "alarms": {
-                  "Lambda": {
-                    "Invocations": {
-                      "Threshold": 3
-                    }
-                  }
-                },
-                "dashboard": {
-                  "enabled": true
-                }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Parameters": {
+    "stack": {
+      "Type": "String",
+      "Default": "sam-test-stack-project"
+    }
+  },
+  "Metadata": {
+    "slicWatch": {
+      "enabled": true
+    }
+  },
+  "Resources": {
+    "HelloLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "handler.hello",
+        "Runtime": "nodejs16.x",
+        "FunctionName": "serverless-test-project-dev-hello",
+        "MemorySize": 1024,
+        "Timeout": 9
+      },
+      "Metadata": {
+        "slicWatch": {
+          "alarms": {
+            "Lambda": {
+              "Invocations": {
+                "Threshold": 3
               }
             }
+          },
+          "dashboard": {
+            "enabled": true
           }
+        }
+      }
+    },
+    "NoMetadataFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "handler.hello",
+        "Runtime": "nodejs16.x",
+        "FunctionName": "serverless-test-project-dev-nometadata"
+      }
     }
+  }
 }
