@@ -6,13 +6,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/fourTheorem/slic-watch/badge.svg)](https://coveralls.io/github/fourTheorem/slic-watch)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS and EventBridge._ ⚡️ **Serverless Framework**, 🐿 **AWS SAM**, **AWS CDK**  and ☁️ **CloudFormation**.
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge and Application Load Balancer._  
 
- * Serverless Framework v2 and v3 are supported in the _SLIC Watch Serverless Plugin_.
- * SLIC Watch is available as a _CloudFormation Macro_ published in the Serverless Application Repository (SAR). This allows you to add SLIC Watch to SAM, CDK or CloudFormation templates by simply adding a `Transform` to your template.
+Supported tools include:
+ * ⚡️ **Serverless Framework** v2 and v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
+ * 🐿 **AWS SAM**, 📦 **AWS CDK**  and ☁️ **CloudFormation** using the [_CloudFormation Macro_](#getting-started-with-aws-sam-cdk-or-cloudformation), published in the Serverless Application Repository (SAR).
 
 ## Contents
 - [slic-watch](#slic-watch)
@@ -32,6 +32,7 @@ SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, S
     - [ECS / Fargate](#ecs--fargate)
     - [SNS](#sns)
     - [EventBridge](#eventbridge)
+    - [Application Load Balancer](#application-load-balancer)
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
     - [Function-level configuration](#function-level-configuration)
@@ -285,6 +286,23 @@ EventBridge Rule dashboard widgets show:
 |--|--|
 |![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
 
+### Application Load Balancer
+Application Load Balancer alarms are created for:
+1. HTTP Code ELB 5XX Count
+2. Rejected Connection Count
+3. HTTP Code Target 5XX Count
+4. UnHealthy Host Count
+5. Lambda Internal Error
+6. Lambda User Error
+
+Application Load Balancer dashboard widgets show:
+
+|HTTP Code ELB 5XX Count|HTTP Code Target 5XX Count|Rejected Connection Count| 
+|--|--|--|
+|![HTTPCode_ELB_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeElb5XXCount.png) |![HTTPCode_Target_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeTarget5XXCount.png)| |
+|**UnHealthy Host Count**|**Lambda User Error**|**Lambda Internal Error**|
+|![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)| |
+
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.
@@ -325,7 +343,7 @@ this.templateOptions.metadata = {
 - The `topicArn` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-A complete set of supported options along with their defaults are shown in [default-config.yaml](./core/default-config.yaml)
+A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)
 
 Example projects are also provided for reference: 
 - [serverless-test-project](./serverless-test-project)

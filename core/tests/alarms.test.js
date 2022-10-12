@@ -4,7 +4,7 @@ const { test } = require('tap')
 
 const alarms = require('../alarms')
 const defaultConfig = require('../default-config')
-const { createTestCloudFormationTemplate, createTestConfig, testContext } = require('./testing-utils')
+const { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testContext } = require('./testing-utils')
 
 test('Alarms create all service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
@@ -23,6 +23,26 @@ test('Alarms create all service alarms', (t) => {
     }
   }
   t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApiGateway', 'AWS/States', 'AWS/DynamoDB', 'AWS/Kinesis', 'AWS/SQS', 'AWS/ECS', 'AWS/SNS', 'AWS/Events']))
+  t.end()
+})
+
+test('Alarms create all ALB service alarms', (t) => {
+  const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
+  const funcAlarmConfigs = {}
+  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+    funcAlarmConfigs[funcLogicalId] = {}
+  }
+  const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
+  addAlarms(cfTemplate)
+  const namespaces = new Set()
+  for (const resource of Object.values(
+    cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  )) {
+    if (resource.Properties.Namespace) {
+      namespaces.add(resource.Properties.Namespace)
+    }
+  }
+  t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApplicationELB']))
   t.end()
 })
 

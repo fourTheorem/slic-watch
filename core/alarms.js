@@ -12,6 +12,8 @@ const sqsAlarms = require('./alarms-sqs')
 const ecsAlarms = require('./alarms-ecs')
 const snsAlarms = require('./alarms-sns')
 const ruleAlarms = require('./alarms-eventbridge')
+const albAlarms = require('./alarms-alb')
+const albTargetAlarms = require('./alarms-alb-target-group')
 
 module.exports = function alarms (alarmConfig, functionAlarmConfigs, context) {
   const {
@@ -23,7 +25,9 @@ module.exports = function alarms (alarmConfig, functionAlarmConfigs, context) {
     Lambda: lambdaConfig,
     ECS: ecsConfig,
     SNS: snsConfig,
-    Events: ruleConfig
+    Events: ruleConfig,
+    ApplicationELB: albConfig,
+    ApplicationELBTarget: albTargetConfig
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
@@ -36,6 +40,8 @@ module.exports = function alarms (alarmConfig, functionAlarmConfigs, context) {
   const { createECSAlarms } = ecsAlarms(ecsConfig, context)
   const { createSNSAlarms } = snsAlarms(snsConfig, context)
   const { createRuleAlarms } = ruleAlarms(ruleConfig, context)
+  const { createALBAlarms } = albAlarms(albConfig, context)
+  const { createALBTargetAlarms } = albTargetAlarms(albTargetConfig, context)
 
   return {
     addAlarms
@@ -58,6 +64,8 @@ module.exports = function alarms (alarmConfig, functionAlarmConfigs, context) {
       ecsConfig.enabled && createECSAlarms(cfTemplate)
       snsConfig.enabled && createSNSAlarms(cfTemplate)
       ruleConfig.enabled && createRuleAlarms(cfTemplate)
+      albConfig.enabled && createALBAlarms(cfTemplate)
+      albTargetConfig.enabled && createALBTargetAlarms(cfTemplate)
     }
   }
 }

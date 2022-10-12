@@ -37,6 +37,34 @@ test('index', t => {
     t.equal(result.status, 'success')
   })
 
+  t.test('macro uses SNS Topic environment variable if specified', async t => {
+    process.env.ALARM_SNS_TOPIC = 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
+    try {
+      const result = await lambda.handler(event, null)
+      t.equal(result.status, 'success')
+    } finally {
+      delete process.env.ALARM_SNS_TOPIC
+    }
+  })
+
+  t.test('macro uses topicArn if specified', async t => {
+    const eventWithTopic = {
+      ...event,
+      fragment: {
+        ...event.fragment,
+        Metadata: {
+          ...event.fragment.Metadata,
+          slicWatch: {
+            ...event.fragment.Metadata.slicWatch,
+            topicArn: 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
+          }
+        }
+      }
+    }
+    const result = await lambda.handler(eventWithTopic, null)
+    t.equal(result.status, 'success')
+  })
+
   t.test('Macro skips SLIC Watch if top-level enabled==false', async t => {
     const testevent = _.cloneDeep(event)
     testevent.fragment.Metadata.slicWatch.enabled = false
@@ -48,6 +76,25 @@ test('index', t => {
     await lambda.handler(event, null)
     t.equal(testState.addDashboardCfTemplate.getSourceObject(), template)
     t.equal(testState.addAlarmsCfTemplate.getSourceObject(), template)
+  })
+
+  t.test('Macro adds dashboard and alarms if no function configuration is provided', async t => {
+    const testEvent = {
+      ...event,
+      fragment: {
+        ...event.fragment,
+        Resources: {
+          ...event.fragment.Resources,
+          HelloLambdaFunction: {
+            ...event.fragment.Resources.HelloLambdaFunction,
+            Metadata: {}
+          }
+        }
+      }
+    }
+    await lambda.handler(testEvent, null)
+    t.equal(testState.addDashboardCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
+    t.equal(testState.addAlarmsCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
   })
 
   t.test('Macro execution fails if an invalid SLIC Watch config is provided', async t => {

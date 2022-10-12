@@ -1,0 +1,122 @@
+Resources:
+  bucket:
+    Type: AWS::S3::Bucket
+
+  vpcALB:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/20
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags: ${self:custom.resourceTags}
+
+  internetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags: ${self:custom.resourceTags}
+
+  vpcGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId: !Ref vpcALB
+        InternetGatewayId: !Ref internetGateway
+
+  subnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: 10.0.5.0/24
+      VpcId: !Ref vpcALB
+      Tags: ${self:custom.resourceTags}
+
+  subnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}b
+      CidrBlock: 10.0.6.0/24
+      VpcId: !Ref vpcALB
+      Tags: ${self:custom.resourceTags}
+
+  routeTableA:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref vpcALB
+        Tags: ${self:custom.resourceTags}
+
+  routeTableB:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref vpcALB
+        Tags: ${self:custom.resourceTags}
+
+  routeTableAssociationSubnetA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId: !Ref subnetA
+        RouteTableId: !Ref routeTableA
+
+  routeTableAssociationSubnetB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId: !Ref subnetB
+        RouteTableId: !Ref routeTableB
+
+  routeTableAInternetRoute:
+      Type: AWS::EC2::Route
+      DependsOn: vpcGatewayAttachment
+      Properties:
+        RouteTableId: !Ref routeTableA
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref internetGateway
+
+  routeTableBInternetRoute:
+      Type: AWS::EC2::Route
+      DependsOn: vpcGatewayAttachment
+      Properties:
+        RouteTableId: !Ref routeTableB
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref internetGateway
+
+  alb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: awesome-loadBalancer
+      Type: application
+      Subnets:
+        - !Ref subnetA
+        - !Ref subnetB
+      SecurityGroups:
+        - !Ref albSecurityGroup
+
+  httpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref alb
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+       - Type: redirect
+         RedirectConfig:
+           Protocol: HTTP
+           Port: 400
+           Host: "#{host}"
+           Path: "/#{path}"
+           Query: "#{query}"
+           StatusCode: HTTP_301
+
+  albSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to client host
+      VpcId: !Ref vpcALB
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+

@@ -66,6 +66,87 @@ function resolveEcsClusterNameForSub (cluster) {
   return cluster
 }
 
+/**
+ * For a given target group defined by its CloudFormation resources Logical ID, find any load balancer
+ * that relates to the target group by finding associated ListenerRules, their Listener and each Listener's
+ * referenced load balancer.
+ *
+ * @param {*} targetGroupLogicalId Target Group CloudFormation logicalID
+ * @param {*} cfTemplate A CloudFormation template instance
+ * @returns {Array} All Load Balancers CloudFormation logicalIDs
+ */
+function findLoadBalancersForTargetGroup (targetGroupLogicalId, cfTemplate) {
+  const allLoadBalancerLogicalIds = new Set()
+  const allListenerRules = {}
+  const listenerResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::Listener'
+  )
+
+  // First, find Listeners with _default actions_ referencing the target group
+  for (const listener of Object.values(listenerResources)) {
+    for (const action of listener.Properties.DefaultActions || []) {
+      const targetGroupArn = action?.TargetGroupArn
+      if (targetGroupArn?.Ref === targetGroupLogicalId) {
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
+  const listenerRuleResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::ListenerRule'
+  )
+
+  // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
+  for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
+    for (const action of listenerRule.Properties.Actions || []) {
+      const targetGroupArn = action.TargetGroupArn
+      if (targetGroupArn.Ref === targetGroupLogicalId) {
+        allListenerRules[listenerRuleLogicalId] = listenerRule
+        break
+      }
+    }
+  }
+
+  for (const listenerRule of Object.values(allListenerRules)) {
+    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
+    if (listenerLogicalId) {
+      const listener = cfTemplate.getResourceByName(listenerLogicalId)
+      if (listener) {
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
+  return [...allLoadBalancerLogicalIds]
+}
+
+/**
+ * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * @param resource The Application Load Balancer resource object
+ * @param logicalId The CloudFormation logical ID for the ALB resource
+ * @returns Literal string or Sub variable syntax
+ */
+function resolveLoadBalancerFullNameForSub (logicalId) {
+  return `\${${logicalId}.LoadBalancerFullName}`
+}
+
+/**
+ * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
+ * @returns Literal string or Sub variable syntax
+ */
+function resolveTargetGroupFullNameForSub (logicalId) {
+  return `\${${logicalId}.TargetGroupFullName}`
+}
+
 /*
  * Determine the presentation name for an alarm statistic
  *
@@ -133,5 +214,8 @@ module.exports = {
   resolveEcsClusterNameForSub,
   getStatisticName,
   resolveRestApiNameAsCfn,
-  resolveRestApiNameForSub
+  resolveRestApiNameForSub,
+  resolveLoadBalancerFullNameForSub,
+  resolveTargetGroupFullNameForSub,
+  findLoadBalancersForTargetGroup
 }

@@ -33,8 +33,7 @@ jobs:
           github-token: ${{ secrets.github_token }}
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
-          path-to-lcov: serverless-plugin/coverage/lcov.info
-          base-path: serverless-plugin
+          path-to-lcov: coverage/lcov.info
       - name: Package test project with Serverless v2
         working-directory: ./serverless-test-project
         run: |
@@ -49,5 +48,4 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           parallel-finished: true
-          path-to-lcov: serverless-plugin/coverage/lcov.info
-          base-path: serverless-plugin
+          path-to-lcov: coverage/lcov.info

@@ -20,7 +20,9 @@ const supportedAlarms = {
   SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc'],
   ECS: ['MemoryUtilization', 'CPUUtilization'],
   SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
-  Events: ['FailedInvocations', 'ThrottledRules']
+  Events: ['FailedInvocations', 'ThrottledRules'],
+  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
+  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
 }
 
 const supportedWidgets = {
@@ -32,7 +34,9 @@ const supportedWidgets = {
   SQS: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted', 'ApproximateAgeOfOldestMessage', 'ApproximateNumberOfMessagesVisible'],
   ECS: ['MemoryUtilization', 'CPUUtilization'],
   SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
-  Events: ['FailedInvocations', 'ThrottledRules', 'Invocations']
+  Events: ['FailedInvocations', 'ThrottledRules', 'Invocations'],
+  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
+  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
 }
 
 const commonAlarmProperties = {

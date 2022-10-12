@@ -1,7 +1,13 @@
 'use strict'
 
 const { cascade } = require('./cascading-config')
-const { resolveEcsClusterNameForSub, resolveRestApiNameForSub } = require('./util')
+const {
+  resolveEcsClusterNameForSub,
+  resolveRestApiNameForSub,
+  resolveLoadBalancerFullNameForSub,
+  resolveTargetGroupFullNameForSub,
+  findLoadBalancersForTargetGroup
+} = require('./util')
 const { getLogger } = require('./logging')
 
 const MAX_WIDTH = 24
@@ -25,7 +31,9 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       SQS: sqsDashConfig,
       ECS: ecsDashConfig,
       SNS: snsDashConfig,
-      Events: ruleDashConfig
+      Events: ruleDashConfig,
+      ApplicationELB: albDashConfig,
+      ApplicationELBTarget: albTargetDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -67,6 +75,13 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const ruleResources = cfTemplate.getResourcesByType(
       'AWS::Events::Rule'
     )
+    const loadBalancerResources = cfTemplate.getResourcesByType(
+      'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    )
+
+    const targetGroupResources = cfTemplate.getResourcesByType(
+      'AWS::ElasticLoadBalancingV2::TargetGroup'
+    )
 
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
@@ -81,6 +96,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const ecsWidgets = createEcsWidgets(ecsServiceResources)
     const topicWidgets = createTopicWidgets(topicResources)
     const ruleWidgets = createRuleWidgets(ruleResources)
+    const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
+    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, cfTemplate)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -91,7 +108,9 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       ...queueWidgets,
       ...ecsWidgets,
       ...topicWidgets,
-      ...ruleWidgets
+      ...ruleWidgets,
+      ...loadBalancerWidgets,
+      ...targetGroupWidgets
     ])
 
     if (positionedWidgets.length > 0) {
@@ -535,6 +554,86 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
     }
     return ruleWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for Application Load Balancer services.
+   *
+   * @param {object} loadBalancerResources Object of Application Load Balancer Service resources by resource name
+   */
+  function createLoadBalancerWidgets (loadBalancerResources) {
+    const loadBalancerWidgets = []
+    for (const [logicalId] of Object.entries(loadBalancerResources)) {
+      const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
+
+      const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/ApplicationELB',
+              metric,
+              dimensions: {
+                LoadBalancer: loadBalancerFullName
+              },
+              stat
+            })
+          }
+        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `ALB ${loadBalancerName}`,
+          widgetMetrics,
+          albDashConfig
+        )
+        loadBalancerWidgets.push(metricStatWidget)
+      }
+    }
+    return loadBalancerWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for Application Load Balancer Target Group services .
+   *
+   * @param {object} targetGroupResources Object of Application Load Balancer Service Target Group resources by resource name
+   * @param {object} cfTemplate The full CloudFormation template instance used to look up associated listener and ALB resources
+   */
+  function createTargetGroupWidgets (targetGroupResources, cfTemplate) {
+    const targetGroupWidgets = []
+    for (const tgLogicalId of Object.keys(targetGroupResources)) {
+      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
+      for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
+        const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
+        const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
+        const widgetMetrics = []
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+          if (metricConfig.enabled) {
+            for (const stat of metricConfig.Statistic) {
+              widgetMetrics.push({
+                namespace: 'AWS/ApplicationELB',
+                metric,
+                dimensions: {
+                  LoadBalancer: loadBalancerFullName,
+                  TargetGroup: targetGroupFullName
+                },
+                stat
+              })
+            }
+          }
+        }
+        if (widgetMetrics.length > 0) {
+          const metricStatWidget = createMetricWidget(
+            `Target Group \${${loadBalancerLogicalId}.LoadBalancerName}/\${${tgLogicalId}.TargetGroupName}`,
+            widgetMetrics,
+            albTargetDashConfig
+          )
+          targetGroupWidgets.push(metricStatWidget)
+        }
+      }
+    }
+    return targetGroupWidgets
   }
 
   /**

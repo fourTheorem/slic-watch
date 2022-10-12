@@ -10,6 +10,7 @@ const {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
+  albCfTemplate,
   testContext
 } = require('./testing-utils')
 const { applyAlarmConfig } = require('../../core/function-config')
@@ -121,6 +122,99 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Period, 120)
     t.equal(al.Dimensions[0].Name, 'FunctionName')
     t.ok(al.Dimensions[0].Value)
+  }
+
+  t.end()
+})
+
+test('AWS Lambda alarms are created for ALB', (t) => {
+  const albAlarmConfig = createTestConfig(defaultConfig.alarms, {
+    Lambda: {
+      Period: 120,
+      EvaluationPeriods: 2,
+      TreatMissingData: 'breaching',
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+      Errors: {
+        Threshold: 0
+      },
+      ThrottlesPc: {
+        Threshold: 0
+      },
+      DurationPc: {
+        Threshold: 95
+      },
+      Invocations: {
+        Threshold: null // Disabled
+      },
+      IteratorAge: {
+        Threshold: null
+      }
+    }
+  })
+  const albCf = createTestCloudFormationTemplate(albCfTemplate)
+  const albFuncAlarmConfigs = {}
+  for (const funcLogicalId of Object.keys(albCf.getResourcesByType('AWS::Lambda::Function'))) {
+    albFuncAlarmConfigs[funcLogicalId] = albAlarmConfig.Lambda
+  }
+  const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmConfigs, testContext)
+  createLambdaAlarms(albCf)
+  const albAlarmResources = albCf.getResourcesByType('AWS::CloudWatch::Alarm')
+
+  const albAlarmsByType = {}
+  t.equal(Object.keys(albAlarmResources).length, 3)
+  for (const alarmResource of Object.values(albAlarmResources)) {
+    const al = alarmResource.Properties
+    assertCommonAlarmProperties(t, al)
+    const alarmType = alarmNameToType(al.AlarmName)
+    albAlarmsByType[alarmType] = albAlarmsByType[alarmType] || new Set()
+    albAlarmsByType[alarmType].add(al)
+  }
+
+  t.same(Object.keys(albAlarmsByType).sort(), [
+    'Lambda_Duration',
+    'Lambda_Errors',
+    'Lambda_Throttles'
+  ])
+
+  for (const al of albAlarmsByType.Lambda_Errors) {
+    t.equal(al.MetricName, 'Errors')
+    t.equal(al.Statistic, 'Sum')
+    t.equal(al.Threshold, albAlarmConfig.Lambda.Errors.Threshold)
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al.Namespace, 'AWS/Lambda')
+    t.equal(al.Period, 120)
+    t.equal(al.Dimensions.length, 1)
+  }
+
+  for (const al of albAlarmsByType.Lambda_Duration) {
+    t.equal(al.MetricName, 'Duration')
+    t.equal(al.Statistic, 'Maximum')
+    t.ok(al.Threshold > 1000) // Ensure threshold is in milliseconds
+    t.equal(al.EvaluationPeriods, 2)
+    t.equal(al.TreatMissingData, 'breaching')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al.Namespace, 'AWS/Lambda')
+    t.equal(al.Period, 120)
+  }
+
+  for (const al of albAlarmsByType.Lambda_Throttles) {
+    t.equal(al.Metrics.length, 3)
+    const metricsById = {}
+    for (const metric of al.Metrics) {
+      metricsById[metric.Id] = metric
+    }
+
+    t.ok(metricsById.throttles_pc.Expression)
+    t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
+    t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
+    t.equal(metricsById.throttles.MetricStat.Period, 120)
+    t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
+    t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
+    t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
+    t.equal(metricsById.invocations.MetricStat.Period, 120)
+    t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
   t.end()

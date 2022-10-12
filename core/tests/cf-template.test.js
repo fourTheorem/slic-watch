@@ -47,6 +47,28 @@ test('Resource can be resolved by type from compiled template', (t) => {
   t.end()
 })
 
+test('Resource can be resolved by type from template with additional resource ', (t) => {
+  const compiledTemplate = {
+    Resources: {
+      a: { Type: 'AWS::DynamoDB::Table' }
+    }
+  }
+  const template = CloudFormationTemplate(compiledTemplate, {
+    b: { Type: 'AWS::SQS::Queue' }
+  }, sls)
+
+  const tableResources = template.getResourcesByType('AWS::DynamoDB::Table')
+  t.equal(Object.keys(tableResources).length, 1)
+  t.equal(Object.values(tableResources)[0].Type, 'AWS::DynamoDB::Table')
+  const queueResources = template.getResourcesByType('AWS::SQS::Queue')
+  t.equal(Object.keys(queueResources).length, 1)
+  t.equal(Object.values(queueResources)[0].Type, 'AWS::SQS::Queue')
+
+  const queueResource = template.getResourceByName('b')
+  t.equal(queueResource.Type, 'AWS::SQS::Queue')
+  t.end()
+})
+
 test('Resource can be resolved by type from service resources', (t) => {
   const compiledTemplate = {}
   const serviceResources = {

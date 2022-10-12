@@ -38,7 +38,7 @@ The following is a checklist of steps that must be followed to add support for a
  a. Add support for the new dashboard widgets in [serverless-plugin/dashboard.js](./serverless-plugin/dashboard.js)
  b. Update [dashboard.test.js](./serverless-plugin/tests/dashboard.test.js) to add coverage for the new resource
 6. Update SLIC Watch configuration support:
- a. Add default values for your resource's alarm and dashboard configuration in [default-config.yml](./serverless-plugin/default-config.yaml).
+ a. Add default values for your resource's alarm and dashboard configuration in [default-config.js](./serverless-plugin/default-config.js).
  b. Update the JSON schema for SLIC Watch configuration ([config-schema.js](./serverless-plugin/config-schema.js)). Here, you can define the supported alarm metrics and widgets.
 7. Manually (or using automation) integration test the new feature
  a. The method will vary based on the resource type, but the idea is to trigger alarms and generate metrics to validate that both alarms and dashboards are working as expected. You can use the resource you added to `serverless-test-project` for this.
