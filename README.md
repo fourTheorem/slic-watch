@@ -297,12 +297,11 @@ Application Load Balancer alarms are created for:
 
 Application Load Balancer dashboard widgets show:
 
-|HTTP Code  ELB 5XX Count|Rejected Connection Count|HTTP Code Target 5XX Count| 
+|HTTP Code ELB 5XX Count|HTTP Code Target 5XX Count|Rejected Connection Count| 
 |--|--|--|
-|![HTTPCode_ELB_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeElb5XXCount.png)) |![RejectedConnectionCount]() |![HTTPCode_Target_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeTarget5XXCount.png)|
-|**UnHealthy Host Count**|**Lambda Internal Error**|**Lambda User Error**|
-|--|--|--|
-|![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaInternalError]() |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)|
+|![HTTPCode_ELB_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeElb5XXCount.png) |![HTTPCode_Target_5XX_Count](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/httpCodeTarget5XXCount.png)| |
+|**UnHealthy Host Count**|**Lambda User Error**|**Lambda Internal Error**|
+|![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)| |
 
 ## Configuration
 
