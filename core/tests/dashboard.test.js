@@ -310,12 +310,13 @@ test('A dashboard includes metrics for ALB', (t) => {
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
-    for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
-        namespaces.add(metric[0])
-      }
+    const metricNames = []
+    for (const metric of widgets[0].properties.metrics) {
+      namespaces.add(metric[0])
+      metricNames.push(metric[1])
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
+    t.same(metricNames.sort(), ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'].sort())
     // eslint-disable-next-line no-template-curly-in-string
     const expectedTitles = new Set(['Target Group ${alb.LoadBalancerName}/${AlbEventAlbTargetGrouphttpListener.TargetGroupName}'])
 
@@ -323,6 +324,46 @@ test('A dashboard includes metrics for ALB', (t) => {
       widgets.map((widget) => widget.properties.title)
     )
     t.same(actualTitles, expectedTitles)
+    t.end()
+  })
+
+  t.test('target groups with no Lambda targets are excluded from metrics', (t) => {
+    const tgDash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+    const tgTemplate = createTestCloudFormationTemplate({
+      Resources: {
+        listener: {
+          Type: 'AWS::ElasticLoadBalancingV2::Listener',
+          Properties: {
+            DefaultActions: [
+              {
+                TargetGroupArn: { Ref: 'tg' }
+              }
+            ],
+            LoadBalancerArn: { Ref: 'alb' }
+          }
+        },
+        tg: {
+          Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
+          Properties: {
+            TargetType: 'redirect'
+          }
+        },
+        alb: {}
+      }
+    })
+    tgDash.addDashboard(tgTemplate)
+    const tgDashResource = Object.values(tgTemplate.getResourcesByType('AWS::CloudWatch::Dashboard'))[0]
+    const tgDashBody = JSON.parse(tgDashResource.Properties.DashboardBody['Fn::Sub'])
+
+    const widgets = tgDashBody.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('Target')
+    )
+    t.equal(widgets.length, 1)
+    const metricNames = []
+    for (const metric of widgets[0].properties.metrics) {
+      metricNames.push(metric[1])
+    }
+    t.same(metricNames.sort(), ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount'].sort())
     t.end()
   })
 
