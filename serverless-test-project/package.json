@@ -1,6 +1,6 @@
 {
   "name": "serverless-test-project",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Test project for SLIC Watch serverless plugin",
   "main": "basic-handler.js",
   "repository": {
