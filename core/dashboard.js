@@ -602,14 +602,16 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createTargetGroupWidgets (targetGroupResources, cfTemplate) {
     const targetGroupWidgets = []
-    for (const tgLogicalId of Object.keys(targetGroupResources)) {
+    for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-          if (metricConfig.enabled) {
+          if (metricConfig.enabled &&
+            (targetGroupResource.Properties.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
+          ) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/ApplicationELB',
