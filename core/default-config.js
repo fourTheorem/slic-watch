@@ -183,6 +183,17 @@ const defaultConfig = {
         Statistic: 'Sum',
         Threshold: 0
       }
+    },
+    AppSync: {
+      // AppSync
+      '5XXError': {
+        Statistic: 'Sum',
+        Threshold: 0
+      },
+      Latency: {
+        Statistic: 'Average',
+        Threshold: 0
+      }
     }
   },
   dashboard: {
@@ -340,6 +351,15 @@ const defaultConfig = {
         },
         LambdaUserError: {
           Statistic: ['Sum']
+        }
+      },
+      AppSync: {
+        // AppSync
+        '5XXError': {
+          Statistic: ['Sum']
+        },
+        Latency: {
+          Statistic: ['Average']
         }
       }
     }

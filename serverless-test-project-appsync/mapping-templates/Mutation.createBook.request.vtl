@@ -1,0 +1,16 @@
+{
+    "version" : "2018-05-29",
+    "operation" : "PutItem",
+    "key": {
+        "bookId" : $util.dynamodb.toDynamoDBJson($util.autoId())
+    },
+    "attributeValues" : {
+        "title" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.title),
+        "description" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.description),
+        "imageUrl" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.imageUrl),
+        "author" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.author),
+        "price" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.price),
+        "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+        "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+    }
+}

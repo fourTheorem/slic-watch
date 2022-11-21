@@ -33,7 +33,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       SNS: snsDashConfig,
       Events: ruleDashConfig,
       ApplicationELB: albDashConfig,
-      ApplicationELBTarget: albTargetDashConfig
+      ApplicationELBTarget: albTargetDashConfig,
+      AppSync: appSyncDashConfig
     }
   } = cascade(dashboardConfig)
 
@@ -83,6 +84,10 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       'AWS::ElasticLoadBalancingV2::TargetGroup'
     )
 
+    const appSyncResources = cfTemplate.getResourcesByType(
+      'AWS::AppSync::GraphQLApi'
+    )
+
     const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
     const apiWidgets = createApiWidgets(apiResources)
     const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
@@ -98,6 +103,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
     const ruleWidgets = createRuleWidgets(ruleResources)
     const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
     const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, cfTemplate)
+    const appSyncWidgets = createAppSyncWidgets(appSyncResources)
 
     const positionedWidgets = layOutWidgets([
       ...apiWidgets,
@@ -110,7 +116,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       ...topicWidgets,
       ...ruleWidgets,
       ...loadBalancerWidgets,
-      ...targetGroupWidgets
+      ...targetGroupWidgets,
+      ...appSyncWidgets
     ])
 
     if (positionedWidgets.length > 0) {
@@ -636,6 +643,40 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
       }
     }
     return targetGroupWidgets
+  }
+
+  /**
+   * Create a set of CloudWatch Dashboard widgets for AppSync services.
+   *
+   * @param {object} appSyncResources Object of AppSync Service resources by resource name
+   */
+  function createAppSyncWidgets (appSyncResources) {
+    const graphQLAPIId = { 'Fn::GetAtt': [appSyncResources, 'GraphQLAPIId'] }
+    const appSyncWidgets = []
+    for (const logicalId of Object.entries(appSyncResources)) {
+      const widgetMetrics = []
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(appSyncDashConfig))) {
+        if (metricConfig.enabled) {
+          for (const stat of metricConfig.Statistic) {
+            widgetMetrics.push({
+              namespace: 'AWS/AppSync',
+              metric,
+              dimensions: { GraphQLAPIId: graphQLAPIId },
+              stat
+            })
+          }
+        }
+      }
+      if (widgetMetrics.length > 0) {
+        const metricStatWidget = createMetricWidget(
+          `AppSync \${${logicalId}}`,
+          widgetMetrics,
+          appSyncDashConfig
+        )
+        appSyncWidgets.push(metricStatWidget)
+      }
+    }
+    return appSyncWidgets
   }
 
   /**

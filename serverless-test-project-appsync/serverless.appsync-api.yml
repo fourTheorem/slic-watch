@@ -1,0 +1,23 @@
+name: awesome-appsync
+schema: schema.api.graphql
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  awsRegion: eu-west-1
+  defaultAction: ALLOW
+  userPoolId: !Ref CognitoUserPool
+mappingTemplatesLocation: mapping-templates
+mappingTemplates:
+  - type: Query
+    field: getBookById
+    dataSource: booksTable
+  - type: Mutation
+    field: createBook
+    dataSource: booksTable 
+
+dataSources:
+  - type: AMAZON_DYNAMODB
+    name: booksTable
+    config: 
+      tableName: !Ref BooksTable
+
+

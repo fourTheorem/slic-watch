@@ -207,6 +207,21 @@ function resolveRestApiNameForSub (restApiResource, restApiLogicalId) {
   return name
 }
 
+// /**
+//    * Given CloudFormation syntax for an Target Group, derive CloudFormation syntax for
+//    * the LoadBalancer LogicalId name
+//    *
+//    * @param  loadBalancerResources  syntax for an Load Balancer Application
+//    * @returns CloudFormation syntax for the Load Balancer Resources
+//    */
+// function getGraphQLAPIId (graphQLResources) {
+//   for (const key in graphQLResources) {
+//     if (graphQLResources[key].Type === 'Type": "AWS::AppSync::GraphQLSchema') {
+//       return key
+//     }
+//   }
+// }
+
 module.exports = {
   filterObject,
   makeResourceName,

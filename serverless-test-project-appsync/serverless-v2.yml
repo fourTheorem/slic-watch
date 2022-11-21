@@ -1,0 +1,191 @@
+service: serverless-test-project-appsync
+frameworkVersion: "2"
+configValidationMode: error
+variablesResolutionMode: 20210219
+
+plugins:
+    - serverless-slic-watch-plugin
+    - serverless-appsync-plugin
+    - serverless-iam-roles-per-function
+
+custom:
+  appSync:
+    - ${file(serverless.appsync-api.yml)}
+  slicWatch:
+    topicArn: ${env:ALARM_TOPIC}
+    alarms:
+      Lambda:
+        Invocations:
+          enabled: true
+          Threshold: 10
+      SQS:
+        AgeOfOldestMessage:
+          Statistic: Maximum
+          enabled: true
+          Threshold: 60
+        InFlightMessagesPc:
+          Statistic: Maximum
+          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-1
+  stage: dev
+  endpointType: REGIONAL
+
+resources:
+  Resources:
+    BooksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: bookId
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: bookId
+            AttributeType: S
+        Tags:
+          - Key: Name
+            Value: books-table
+    OrderTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: orderId
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: orderId
+            AttributeType: S
+          - AttributeName: bookId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: byOrder
+            KeySchema:
+              - AttributeName: bookId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        Tags:
+          - Key: Name
+            Value: order-table
+
+    #cognito users pool
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireUppercase: false
+            RequireSymbols: false
+        UsernameAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: name
+            Required: false
+            Mutable: true
+        UserPoolName: BookStoreUserPool
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId: !Ref CognitoUserPool
+        ClientName: web
+        ExplicitAuthFlows:
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        PreventUserExistenceErrors: ENABLED
+    
+    #Cognito users pool Admin group
+    CognitoAdminGroup:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        UserPoolId: !Ref CognitoUserPool
+        GroupName: Admin
+        RoleArn: !GetAtt CognitoAdminIAMrole.Arn
+        Description: "Admin users belong to this group"
+
+    #Cognito Admin IAM role
+    CognitoAdminIAMrole:
+      Type: AWS::IAM::Role
+      Properties: 
+        AssumeRolePolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: "Allow"
+              Principal: 
+                Federated: 
+                  - "cognito-identity.amazonaws.com"
+              Action: 
+                - "sts:AssumeRoleWithWebIdentity"
+        Description: "This is the IAM role that admin group users name"
+        Policies:
+          - PolicyName: "bookstore-admin-group-policy"
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement: 
+                - Effect: "Allow"
+                  Action: 
+                    - "dynamodb:*"
+                  Resource:
+                    - !GetAtt BooksTable.Arn
+                    - !GetAtt OrderTable.Arn
+        RoleName: "bookstore-admin-role"
+
+    #Cognito users pool Customer group
+    CognitoCustomerGroup:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        UserPoolId: !Ref CognitoUserPool
+        GroupName: Customer
+        RoleArn: !GetAtt CognitoUserIAMrole.Arn
+        Description: "Customer belongs to this group"
+
+    #Cognito Customer IAM role
+    CognitoUserIAMrole:
+      Type: AWS::IAM::Role
+      Properties: 
+        AssumeRolePolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: "Allow"
+              Principal: 
+                Federated: 
+                  - "cognito-identity.amazonaws.com"
+              Action: 
+                - "sts:AssumeRoleWithWebIdentity"
+        Description: "This is the IAM role that admin group users name"
+        Policies:
+          - PolicyName: "book-store-customer-group-policy"
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement: 
+                - Effect: "Allow"
+                  Action: 
+                    - "dynamodb:GetItem"
+                    - "dynamodb:Query"
+                    - "dynamodb:BatchGetItem"
+                  Resource:
+                    - !GetAtt BooksTable.Arn
+        RoleName: "bookstore-customer-role"
+
+  
