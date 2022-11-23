@@ -4,8 +4,8 @@ configValidationMode: error
 variablesResolutionMode: 20210219
 
 plugins:
-    - serverless-slic-watch-plugin
     - serverless-appsync-plugin
+    - serverless-slic-watch-plugin
     - serverless-iam-roles-per-function
 package:
   exclude:

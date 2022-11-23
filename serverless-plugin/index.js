@@ -41,19 +41,15 @@ class ServerlessPlugin {
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
     this.hooks = {
-      'before:aws:package:finalize:mergeCustomProviderResources': this.finalizeHook.bind(this)
-      // 'after:aws:package:finalize:mergeCustomProviderResources': () => this.cfTemplate
+      'after:aws:package:finalize:mergeCustomProviderResources': this.createSlicWatchResources.bind(this)
     }
   }
 
   /**
    * Modify the CloudFormation template before the package is finalized
    */
-  finalizeHook () {
-    // const appSyncConfig = (this.serverless.service.custom || {}).appSync || {}
-
+  createSlicWatchResources () {
     const slicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
-    // console.log(appSyncConfig)
 
     const ajv = new Ajv({
       unicodeRegExp: false
@@ -80,12 +76,9 @@ class ServerlessPlugin {
 
     const awsProvider = this.serverless.getProvider('aws')
 
-    // console.log(appSyncConfig)
     const cfTemplate = CloudFormationTemplate(
       this.serverless.service.provider.compiledCloudFormationTemplate,
-      this.serverless.service.resources ? this.serverless.service.resources.Resources : {},
-      (this.serverless.service.custom || {}).appSync || {}
-      // this.serverless.service.custom ? (this.serverless.service.custom || {}).appSync : {}
+      this.serverless.service.resources ? this.serverless.service.resources.Resources : {}
     )
 
     const functionAlarmConfigs = {}
