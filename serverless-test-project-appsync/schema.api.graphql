@@ -1,6 +1,11 @@
 schema{
   query: Query
-  mutation: Mutation
+  mutation: Mutation,
+  subscription: Subscription 
+}
+
+type Subscription {
+  onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
 }
 
 type Query {

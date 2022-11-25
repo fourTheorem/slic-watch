@@ -62,36 +62,6 @@ resources:
         Tags:
           - Key: Name
             Value: books-table
-    OrderTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        BillingMode: PAY_PER_REQUEST
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-          - AttributeName: orderId
-            KeyType: RANGE
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: orderId
-            AttributeType: S
-          - AttributeName: bookId
-            AttributeType: S
-          - AttributeName: createdAt
-            AttributeType: S
-        GlobalSecondaryIndexes:
-          - IndexName: byOrder
-            KeySchema:
-              - AttributeName: bookId
-                KeyType: HASH
-              - AttributeName: createdAt
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-        Tags:
-          - Key: Name
-            Value: order-table
 
     #cognito users pool
     CognitoUserPool:
@@ -159,7 +129,6 @@ resources:
                     - "dynamodb:*"
                   Resource:
                     - !GetAtt BooksTable.Arn
-                    - !GetAtt OrderTable.Arn
         RoleName: "bookstore-admin-role"
 
     #Cognito users pool Customer group

@@ -7,7 +7,7 @@ const { test } = require('tap')
 const dashboard = require('../dashboard')
 const defaultConfig = require('../default-config')
 
-const { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate } = require('./testing-utils')
+const { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } = require('./testing-utils')
 
 const context = {
   stackName: 'testStack',
@@ -367,19 +367,60 @@ test('A dashboard includes metrics for ALB', (t) => {
     t.end()
   })
 
-  test('No widgets are created if all ALB metrics are disabled', (t) => {
-    const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
-    const dashConfig = cloneDeep(defaultConfig.dashboard)
-    for (const service of services) {
-      for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-        metricConfig.enabled = false
-      }
-    }
-    const dash = dashboard(dashConfig, emptyFuncConfigs, context)
-    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
+  test('A dashboard includes metrics for AppSync', (t) => {
+    const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+    const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     dash.addDashboard(cfTemplate)
     const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
-    t.same(dashResources, {})
+    t.equal(Object.keys(dashResources).length, 1)
+    const [, dashResource] = Object.entries(dashResources)[0]
+    // eslint-disable-next-line no-template-curly-in-string
+    t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+    const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+
+    t.ok(dashBody.start)
+
+    t.test('dashboard includes AppSync metrics', (t) => {
+      const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+        title.startsWith('AppSync')
+      )
+      t.equal(widgets.length, 2)
+      const namespaces = new Set()
+      for (const widget of widgets) {
+        for (const metric of widget.properties.metrics) {
+          namespaces.add(metric[0])
+        }
+      }
+      t.same(namespaces, new Set(['AWS/AppSync']))
+      const expectedTitles = new Set([
+        'AppSync CloudWatch awesome-appsync',
+        'AppSync Real-time Subscriptions awesome-appsync'
+      ])
+      // eslint-disable-next-line no-template-curly-in-string
+
+      const actualTitles = new Set(
+        widgets.map((widget) => widget.properties.title)
+      )
+      t.same(actualTitles, expectedTitles)
+      t.end()
+    })
+
+    test('No widgets are created if all AppSync metrics are disabled', (t) => {
+      const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
+      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      for (const service of services) {
+        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          metricConfig.enabled = false
+        }
+      }
+      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
+      dash.addDashboard(cfTemplate)
+      const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+      t.same(dashResources, {})
+      t.end()
+    })
+
     t.end()
   })
 

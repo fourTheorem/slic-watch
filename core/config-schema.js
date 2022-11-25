@@ -38,7 +38,7 @@ const supportedWidgets = {
   Events: ['FailedInvocations', 'ThrottledRules', 'Invocations'],
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
   ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
-  AppSync: ['5XXError', 'Latency']
+  AppSync: ['5XXError', '4XXError', 'Latency', 'Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
 }
 
 const commonAlarmProperties = {

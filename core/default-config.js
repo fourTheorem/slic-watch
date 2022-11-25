@@ -358,8 +358,29 @@ const defaultConfig = {
         '5XXError': {
           Statistic: ['Sum']
         },
+        '4XXError': {
+          Statistic: ['Sum']
+        },
         Latency: {
           Statistic: ['Average']
+        },
+        Requests: {
+          Statistic: ['Maximum']
+        },
+        ConnectServerError: {
+          Statistic: ['Sum']
+        },
+        DisconnectServerError: {
+          Statistic: ['Sum']
+        },
+        SubscribeServerError: {
+          Statistic: ['Sum']
+        },
+        UnsubscribeServerError: {
+          Statistic: ['Sum']
+        },
+        PublishDataMessageServerError: {
+          Statistic: ['Sum']
         }
       }
     }

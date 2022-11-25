@@ -9,6 +9,7 @@ const { cascade } = require('../cascading-config')
 const CloudFormationTemplate = require('../cf-template')
 const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
 const albCfTemplate = require('./resources/alb-cloudformation-template-stack.json')
+const appSyncCfTemplate = require('./resources/appsync-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
   __dirname,
@@ -22,6 +23,7 @@ const testContext = { alarmActions: ['dummy-arn'] }
 module.exports = {
   slsYaml,
   albCfTemplate,
+  appSyncCfTemplate,
   defaultCfTemplate,
   testContext,
   assertCommonAlarmProperties,

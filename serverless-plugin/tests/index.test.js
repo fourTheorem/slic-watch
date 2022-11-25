@@ -96,9 +96,9 @@ test('index', t => {
     t.end()
   })
 
-  t.test('finalizeHook adds dashboard and alarms', (t) => {
+  t.test('createSlicWatchResources adds dashboard and alarms', (t) => {
     const plugin = new ServerlessPlugin(mockServerless, {})
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
 
     t.equal(testState.addDashboardCfTemplate.getSourceObject(), testCfTemplate)
     t.equal(testState.addAlarmsCfTemplate.getSourceObject(), testCfTemplate)
@@ -113,7 +113,7 @@ test('index', t => {
         custom: undefined
       }
     })
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
     t.end()
   })
 
@@ -143,7 +143,7 @@ test('index', t => {
         custom: {}
       }
     })
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
     t.ok(testState.alarmsCalled)
     t.end()
   })
@@ -161,7 +161,7 @@ test('index', t => {
       },
       {}
     )
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
     t.ok(testState.alarmsCalled)
     t.end()
   })
@@ -184,7 +184,7 @@ test('index', t => {
       },
       {}
     )
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
     t.ok(testState.alarmsCalled)
     t.end()
   })
@@ -202,7 +202,7 @@ test('index', t => {
       },
       {}
     )
-    t.throws(() => plugin.finalizeHook(), ServerlessError)
+    t.throws(() => plugin.createSlicWatchResources(), ServerlessError)
     t.end()
   })
 
@@ -219,7 +219,7 @@ test('index', t => {
       },
       {}
     )
-    plugin.finalizeHook()
+    plugin.createSlicWatchResources()
     t.notOk(testState.alarmsCalled)
     t.end()
   })

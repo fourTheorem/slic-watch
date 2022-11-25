@@ -6,7 +6,8 @@ const {
   resolveRestApiNameForSub,
   resolveLoadBalancerFullNameForSub,
   resolveTargetGroupFullNameForSub,
-  findLoadBalancersForTargetGroup
+  findLoadBalancersForTargetGroup,
+  resolveGraphlQLId
 } = require('./util')
 const { getLogger } = require('./logging')
 
@@ -651,29 +652,39 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    * @param {object} appSyncResources Object of AppSync Service resources by resource name
    */
   function createAppSyncWidgets (appSyncResources) {
-    const graphQLAPIId = { 'Fn::GetAtt': [appSyncResources, 'GraphQLAPIId'] }
     const appSyncWidgets = []
-    for (const logicalId of Object.entries(appSyncResources)) {
-      const widgetMetrics = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(appSyncDashConfig))) {
-        if (metricConfig.enabled) {
-          for (const stat of metricConfig.Statistic) {
-            widgetMetrics.push({
-              namespace: 'AWS/AppSync',
-              metric,
-              dimensions: { GraphQLAPIId: graphQLAPIId },
-              stat
-            })
+    const metricGroups = {
+      CloudWatch: ['5XXError', '4XXError', 'Latency', 'Requests'],
+      'Real-time Subscriptions': ['ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
+    }
+    const metricConfigs = getConfiguredMetrics(appSyncDashConfig)
+    for (const res of Object.values(appSyncResources)) {
+      const appSyncResourceName = res.Properties.Name
+      for (const [logicalId] of Object.entries(appSyncResources)) {
+        const graphQLAPIId = resolveGraphlQLId(logicalId)
+        for (const [group, metrics] of Object.entries(metricGroups)) {
+          const widgetMetrics = []
+          for (const metric of metrics) {
+            const metricConfig = metricConfigs[metric]
+            if (metricConfig.enabled) {
+              for (const stat of metricConfig.Statistic) {
+                widgetMetrics.push({
+                  namespace: 'AWS/AppSync',
+                  metric,
+                  dimensions: { GraphQLAPIId: graphQLAPIId },
+                  stat
+                })
+              }
+            }
+          }
+          if (widgetMetrics.length > 0) {
+            appSyncWidgets.push(createMetricWidget(
+              `AppSync ${group} ${appSyncResourceName}`,
+              widgetMetrics,
+              sqsDashConfig
+            ))
           }
         }
-      }
-      if (widgetMetrics.length > 0) {
-        const metricStatWidget = createMetricWidget(
-          `AppSync \${${logicalId}}`,
-          widgetMetrics,
-          appSyncDashConfig
-        )
-        appSyncWidgets.push(metricStatWidget)
       }
     }
     return appSyncWidgets

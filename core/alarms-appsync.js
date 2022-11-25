@@ -20,8 +20,6 @@ module.exports = function appSyncAlarms (appSyncAlarmConfig, context) {
     const appSyncResources = cfTemplate.getResourcesByType(
       'AWS::AppSync::GraphQLApi'
     )
-    // When I use AWS::DynamoDB::Table it creates the alarms it only doesn't retrieve appSync
-    console.log(appSyncResources)
 
     for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
       const alarms = []
@@ -48,22 +46,24 @@ module.exports = function appSyncAlarms (appSyncAlarmConfig, context) {
   function createAppSyncAlarm (
     alarmName,
     alarmDescription,
-    graphQLAPIId,
+    appSyncResourceName,
     comparisonOperator,
     threshold,
     metricName,
     statistic,
     period,
+    extendedStatistic,
     evaluationPeriods,
     treatMissingData
   ) {
-    // const graphQLAPIId = { 'Fn::GetAtt': [appSyncResourceName, 'GraphQLAPIId'] }
+    const graphQLAPIId = { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] }
     const metricProperties = {
       Dimensions: [{ Name: 'GraphQLAPIId', Value: graphQLAPIId }],
       MetricName: metricName,
       Namespace: 'AWS/AppSync',
       Period: period,
-      Statistic: statistic
+      Statistic: statistic,
+      ExtendedStatistic: extendedStatistic
     }
 
     return {
@@ -90,7 +90,7 @@ module.exports = function appSyncAlarms (appSyncAlarmConfig, context) {
       resource: createAppSyncAlarm(
         `AppSync5XXErrorAlarm_${graphQLName}`,
         `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-        graphQLName,
+        appSyncResourceName,
         config.ComparisonOperator,
         threshold,
         '5XXError',
@@ -111,7 +111,7 @@ module.exports = function appSyncAlarms (appSyncAlarmConfig, context) {
       resource: createAppSyncAlarm(
         `AppSyncLatencyAlarm_${graphQLName}`,
         `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-        graphQLName,
+        appSyncResourceName,
         config.ComparisonOperator,
         threshold,
         'Latency',
