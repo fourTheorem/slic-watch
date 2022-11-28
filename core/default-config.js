@@ -207,6 +207,7 @@ const defaultConfig = {
       metricPeriod: 300,
       width: 8,
       height: 6,
+      yAxis: 'left',
       Lambda: {
         // Metrics per Lambda Function
         Errors: {
@@ -362,7 +363,8 @@ const defaultConfig = {
           Statistic: ['Sum']
         },
         Latency: {
-          Statistic: ['Average']
+          Statistic: ['Average'],
+          yAxis: 'right'
         },
         Requests: {
           Statistic: ['Maximum']

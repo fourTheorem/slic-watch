@@ -8,7 +8,7 @@
 
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge and Application Load Balancer._  
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge, Application Load Balancer and AppSync._  
 
 Supported tools include:
  * ⚡️ **Serverless Framework** v2 and v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
@@ -33,6 +33,7 @@ Supported tools include:
     - [SNS](#sns)
     - [EventBridge](#eventbridge)
     - [Application Load Balancer](#application-load-balancer)
+    - [AppSync](#appsync) 
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
     - [Function-level configuration](#function-level-configuration)
@@ -303,6 +304,18 @@ Application Load Balancer dashboard widgets show:
 |**UnHealthy Host Count**|**Lambda User Error**|**Lambda Internal Error**|
 |![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)| |
 
+### AppSync
+AppSync alarms are created for:
+1. 5XX Error
+2. Latency
+
+AppSync dashboard widgets show:
+
+|5XX Error, Latency, 4XX Error, Request|
+|--|
+|![API Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncAPI.png)|
+|**Connect Server Error**, **Disconnect Server Error**, **Subscribe Server Error**, **Unsubscribe Server Error**,**PublishDataMessageServerError**|
+|![Real-time Subscriptions Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncRealTimeSubscriptions.png)|
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.

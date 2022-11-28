@@ -53,6 +53,7 @@ resources:
             Value: books-table
     
     #cognito users pool
+
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -86,6 +87,7 @@ resources:
         PreventUserExistenceErrors: ENABLED
     
     #Cognito users pool Admin group
+
     CognitoAdminGroup:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
@@ -95,6 +97,7 @@ resources:
         Description: "Admin users belong to this group"
 
     #Cognito Admin IAM role
+    
     CognitoAdminIAMrole:
       Type: AWS::IAM::Role
       Properties: 
@@ -121,6 +124,7 @@ resources:
         RoleName: "bookstore-admin-role"
 
     #Cognito users pool Customer group
+
     CognitoCustomerGroup:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
@@ -130,6 +134,7 @@ resources:
         Description: "Customer belongs to this group"
 
     #Cognito Customer IAM role
+
     CognitoUserIAMrole:
       Type: AWS::IAM::Role
       Properties: 

@@ -115,6 +115,7 @@ const commonWidgetProperties = {
   width: { type: ['integer', 'null'], minimum: 1, maximum: 24 },
   height: { type: ['integer', 'null'], minimum: 1, maximum: 1000 },
   metricPeriod: { type: ['integer', 'null'], minimum: 60, multipleOf: 60 },
+  yAxis: { type: ['string', 'null'], enum: ['left', 'right'] },
   Statistic: {
     type: 'array',
     items: {

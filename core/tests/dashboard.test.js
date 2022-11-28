@@ -325,6 +325,38 @@ test('A dashboard includes metrics for ALB', (t) => {
     )
     t.same(actualTitles, expectedTitles)
     t.end()
+
+    test('No widgets are created if all AppSync metrics are disabled', (t) => {
+      const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
+      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      for (const service of services) {
+        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          metricConfig.enabled = false
+        }
+      }
+      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
+      dash.addDashboard(cfTemplate)
+      const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+      t.same(dashResources, {})
+      t.end()
+    })
+
+    test('No widgets are created if all Application Load Balancer metrics are disabled', (t) => {
+      const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
+      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      for (const service of services) {
+        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          metricConfig.enabled = false
+        }
+      }
+      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
+      dash.addDashboard(cfTemplate)
+      const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
+      t.same(dashResources, {})
+      t.end()
+    })
   })
 
   t.test('target groups with no Lambda targets are excluded from metrics', (t) => {
@@ -393,7 +425,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       }
       t.same(namespaces, new Set(['AWS/AppSync']))
       const expectedTitles = new Set([
-        'AppSync CloudWatch awesome-appsync',
+        'AppSync API awesome-appsync',
         'AppSync Real-time Subscriptions awesome-appsync'
       ])
       // eslint-disable-next-line no-template-curly-in-string
@@ -458,7 +490,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 })
 
 test('No dashboard is created if all widgets are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     dashConfig.widgets[service].enabled = false
@@ -472,7 +504,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 })
 
 test('No dashboard is created if all metrics are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {

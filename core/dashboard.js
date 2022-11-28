@@ -146,17 +146,16 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
    */
   function createMetricWidget (title, metricDefs, config) {
     const metrics = metricDefs.map(
-      ({ namespace, metric, dimensions, stat }) => [
+      ({ namespace, metric, dimensions, stat, yAxis }) => [
         namespace,
         metric,
         ...Object.entries(dimensions).reduce(
           (acc, [name, value]) => [...acc, name, value],
           []
         ),
-        { stat }
+        { stat, yAxis }
       ]
     )
-
     return {
       type: 'metric',
       properties: {
@@ -654,7 +653,7 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
   function createAppSyncWidgets (appSyncResources) {
     const appSyncWidgets = []
     const metricGroups = {
-      CloudWatch: ['5XXError', '4XXError', 'Latency', 'Requests'],
+      API: ['5XXError', '4XXError', 'Latency', 'Requests'],
       'Real-time Subscriptions': ['ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
     }
     const metricConfigs = getConfiguredMetrics(appSyncDashConfig)
@@ -672,7 +671,8 @@ module.exports = function dashboard (dashboardConfig, functionDashboardConfigs, 
                   namespace: 'AWS/AppSync',
                   metric,
                   dimensions: { GraphQLAPIId: graphQLAPIId },
-                  stat
+                  stat,
+                  yAxis: metricConfig.yAxis
                 })
               }
             }
