@@ -12,7 +12,6 @@
     "@types/node": "10.17.27",
     "@types/prettier": "2.6.0",
     "aws-cdk": "2.37.0",
-    "eslint-config-standard-with-typescript": "^22.0.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",

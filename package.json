@@ -3,6 +3,7 @@
   "version": "2.1.2",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/fourTheorem/slic-watch.git"
@@ -22,22 +23,37 @@
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:lint": "eslint .",
-    "test:packages": "tap --coverage-report=html --no-browser --no-check-coverage */tests/**/*.test.js",
+    "test:packages": "tap --coverage-report=html --no-browser --no-check-coverage */tests/**/*.test.ts",
     "test": "npm run test:lint && npm run test:packages",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install"
   },
+  "tap": {
+    "node-arg": [
+      "--no-warnings",
+      "--loader=ts-node/esm",
+      "--loader=esmock",
+      "--experimental-specifier-resolution=node"
+    ]
+  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "eslint": "^7.26.0",
-    "eslint-config-standard": "^16.0.2",
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/prettier": "2.6.0",
+    "@types/serverless": "^3.12.9",
+    "@types/tap": "^15.0.7",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.30.0",
+    "eslint-config-standard-with-typescript": "^24.0.0",
     "eslint-plugin-import": "^2.23.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^5.0.0",
+    "esmock": "^2.1.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
-    "tap": "^16.3.0"
+    "prettier": "2.0.5",
+    "tap": "^16.3.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~3.9.7"
   },
   "engines": {
     "node": ">=12.0"
@@ -50,6 +66,8 @@
     ]
   },
   "dependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/yaml": "^1.9.7",
     "case": "^1.6.3",
     "lodash": "^4.17.21",
     "yaml": "^1.10.2"
