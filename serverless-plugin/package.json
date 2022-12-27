@@ -3,13 +3,14 @@
   "version": "2.1.2",
   "description": "Serverless plugin for automatic alarms and dashboards",
   "main": "index.js",
+  "type": "module",
   "repository": {
-    "type": "git",
+    "type": "module",
     "url": "https://github.com/fourTheorem/slic-watch.git",
     "directory": "serverless-plugin"
   },
   "scripts": {
-    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.js",
+    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
     "prepublish": "cp ../README.md README.md"
   },
   "devDependencies": {

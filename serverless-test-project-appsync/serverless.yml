@@ -4,14 +4,14 @@ configValidationMode: error
 variablesResolutionMode: 20210219
 
 plugins:
-    - serverless-appsync-plugin
-    - serverless-slic-watch-plugin
-    - serverless-iam-roles-per-function
+  - serverless-appsync-plugin
+  - serverless-slic-watch-plugin
+  - serverless-iam-roles-per-function
 package:
   exclude:
     - node_modules/**
     - venv/**
-    
+
 custom:
   resourceTags:
     - Key: ProjectName
@@ -21,7 +21,7 @@ custom:
   appSync:
     - ${file(serverless.appsync-api.yml)}
   slicWatch:
-    topicArn: ${env:ALARM_TOPIC}
+    # topicArn: ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:
@@ -96,7 +96,7 @@ resources:
           - ALLOW_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
         PreventUserExistenceErrors: ENABLED
-    
+
     #Cognito users pool Admin group
 
     CognitoAdminGroup:
@@ -111,24 +111,24 @@ resources:
 
     CognitoAdminIAMrole:
       Type: AWS::IAM::Role
-      Properties: 
-        AssumeRolePolicyDocument: 
+      Properties:
+        AssumeRolePolicyDocument:
           Version: "2012-10-17"
-          Statement: 
+          Statement:
             - Effect: "Allow"
-              Principal: 
-                Federated: 
+              Principal:
+                Federated:
                   - "cognito-identity.amazonaws.com"
-              Action: 
+              Action:
                 - "sts:AssumeRoleWithWebIdentity"
         Description: "This is the IAM role that admin group users name"
         Policies:
           - PolicyName: "bookstore-admin-group-policy"
-            PolicyDocument: 
+            PolicyDocument:
               Version: "2012-10-17"
-              Statement: 
+              Statement:
                 - Effect: "Allow"
-                  Action: 
+                  Action:
                     - "dynamodb:*"
                   Resource:
                     - !GetAtt BooksTable.Arn
@@ -145,31 +145,30 @@ resources:
         Description: "Customer belongs to this group"
 
     #Cognito Customer IAM role
-    
+
     CognitoUserIAMrole:
       Type: AWS::IAM::Role
-      Properties: 
-        AssumeRolePolicyDocument: 
+      Properties:
+        AssumeRolePolicyDocument:
           Version: "2012-10-17"
-          Statement: 
+          Statement:
             - Effect: "Allow"
-              Principal: 
-                Federated: 
+              Principal:
+                Federated:
                   - "cognito-identity.amazonaws.com"
-              Action: 
+              Action:
                 - "sts:AssumeRoleWithWebIdentity"
         Description: "This is the IAM role that admin group users name"
         Policies:
           - PolicyName: "book-store-customer-group-policy"
-            PolicyDocument: 
+            PolicyDocument:
               Version: "2012-10-17"
-              Statement: 
+              Statement:
                 - Effect: "Allow"
-                  Action: 
+                  Action:
                     - "dynamodb:GetItem"
                     - "dynamodb:Query"
                     - "dynamodb:BatchGetItem"
                   Resource:
                     - !GetAtt BooksTable.Arn
         RoleName: "bookstore-customer-role"
-

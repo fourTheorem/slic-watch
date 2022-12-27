@@ -2,6 +2,7 @@
     "name": "cf-macro-slic-watch",
     "description": "SLIC Watch CloudFormation Macro for automatic alarms and dashboards",
     "main": "index.js",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/fourTheorem/slic-watch.git",
@@ -10,7 +11,7 @@
     "version": "2.1.2",
     "private": true,
     "scripts": {
-        "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.js"
+        "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts"
     },
     "devDependencies": {
         "proxyquire": "^2.1.3"

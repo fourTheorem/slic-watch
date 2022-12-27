@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "ES2022",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+     "typeRoots": [
+      "./node_modules/@types"
+    ]
+
+  },
+  "extends": "@tsconfig/node-lts-strictest-esm/tsconfig.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "exclude": [
+    "node_modules",
+    "cdk.out",
+    "coverage"
+  ],
+  "include": [
+    "core"
+  ]
+}
