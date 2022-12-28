@@ -3,7 +3,6 @@
   "version": "2.1.2",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/fourTheorem/slic-watch.git"

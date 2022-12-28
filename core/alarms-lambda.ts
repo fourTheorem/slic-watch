@@ -1,7 +1,7 @@
 'use strict'
 
 
-import  getLogger from './logging'
+import { getLogger } from './logging'
 // @ts-ignore
 const logging = getLogger()
 

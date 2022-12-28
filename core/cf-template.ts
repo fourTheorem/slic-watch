@@ -4,7 +4,7 @@ import { type } from 'case';
 
 
 import { filterObject } from './util'
-import getLogger from './logging'
+import { getLogger } from './logging'
 
 // @ts-ignore
 const logger = getLogger()

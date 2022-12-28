@@ -131,7 +131,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID:string, config) {
+  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'HTTPCodeTarget5XXCount'),
@@ -152,7 +152,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID:string, config) {
+  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'UnHealthyHostCount'),
@@ -173,7 +173,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID:string, config) {
+  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaInternalError'),
@@ -194,7 +194,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
     }
   }
 
-  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID:string, config) {
+  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaUserError'),

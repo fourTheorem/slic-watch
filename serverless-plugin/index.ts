@@ -8,7 +8,7 @@ import dashboard from 'slic-watch-core/dashboard'
 import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from 'slic-watch-core/config-schema'
 import defaultConfig from 'slic-watch-core/default-config'
 import CloudFormationTemplate from 'slic-watch-core/cf-template'
-import logging from 'slic-watch-core/logging'
+import * as logging from 'slic-watch-core/logging'
 
 import ServerlessError from 'serverless/lib/serverless-error'
 

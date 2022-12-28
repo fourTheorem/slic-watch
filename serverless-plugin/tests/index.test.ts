@@ -4,7 +4,7 @@ import _ from 'lodash'
 import proxyrequire from 'proxyquire'
 import ServerlessError from 'serverless/lib/serverless-error'
 import { test } from 'tap'
-import getLogger from 'slic-watch-core/logging'
+import { getLogger } from 'slic-watch-core/logging'
 
 const slsYaml = {
   custom: {

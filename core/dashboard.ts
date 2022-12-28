@@ -1,15 +1,15 @@
 'use strict'
 
-const { cascade } = require('./cascading-config')
-const {
+import { cascade } from './cascading-config'
+import {
   resolveEcsClusterNameForSub,
   resolveRestApiNameForSub,
   resolveLoadBalancerFullNameForSub,
   resolveTargetGroupFullNameForSub,
   findLoadBalancersForTargetGroup,
   resolveGraphlQLId
-} = require('./util')
-const { getLogger } = require('./logging')
+} from './util'
+import { getLogger } from './logging'
 
 const MAX_WIDTH = 24
 

@@ -1,9 +1,9 @@
 import { test } from 'tap'
 
-import logging from '../logging'
+import { getLogger } from '../logging'
 
 test('default logger is used', (t) => {
-  const logger = logging.getLogger()
+  const logger = getLogger()
   t.ok(logger)
   t.ok(logger.info)
   t.end()

@@ -3,18 +3,13 @@ import pino from 'pino'
 
 let logger
 
-function setLogger (log) {
+export function setLogger (log) {
   logger = log
 }
 
-function getLogger (options = {}) {
+export function getLogger (options = {}) {
   if (!logger) {
     logger = pino(options)
   }
   return logger
-}
-
-export default {
-  getLogger,
-  setLogger
 }

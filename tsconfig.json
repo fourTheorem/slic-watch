@@ -8,7 +8,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "ESNext"
   },
   "exclude": [
     "node_modules",
