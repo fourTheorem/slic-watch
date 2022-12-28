@@ -28,6 +28,12 @@
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install"
   },
+  "tap": {
+    "node-arg": [
+      "--loader=ts-node/esm",
+      "--experimental-specifier-resolution=node"
+    ]
+  },
   "devDependencies": {
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "@types/prettier": "2.6.0",
@@ -42,6 +48,7 @@
     "lint-staged": "^11.0.0",
     "prettier": "2.0.5",
     "tap": "^16.3.0",
+    "ts-node": "^10.9.1",
     "typescript": "~3.9.7"
   },
   "engines": {
