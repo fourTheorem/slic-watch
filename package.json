@@ -62,6 +62,8 @@
     ]
   },
   "dependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/yaml": "^1.9.7",
     "case": "^1.6.3",
     "lodash": "^4.17.21",
     "yaml": "^1.10.2"

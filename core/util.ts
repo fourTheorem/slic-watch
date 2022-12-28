@@ -1,5 +1,5 @@
 'use strict'
-
+// @ts-ignore
 import stringcase from 'case'
 
 /**
@@ -84,9 +84,11 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTempla
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
+    // @ts-ignore
     for (const action of listener.Properties.DefaultActions || []) {
       const targetGroupArn = action?.TargetGroupArn
       if (targetGroupArn?.Ref === targetGroupLogicalId) {
+        // @ts-ignore
         const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
@@ -100,6 +102,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTempla
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
+    // @ts-ignore
     for (const action of listenerRule.Properties.Actions || []) {
       const targetGroupArn = action.TargetGroupArn
       if (targetGroupArn.Ref === targetGroupLogicalId) {
@@ -110,6 +113,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTempla
   }
 
   for (const listenerRule of Object.values(allListenerRules)) {
+    // @ts-ignore
     const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
     if (listenerLogicalId) {
       const listener = cfTemplate.getResourceByName(listenerLogicalId)
@@ -121,6 +125,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTempla
       }
     }
   }
+  // @ts-ignore
   return [...allLoadBalancerLogicalIds]
 }
 

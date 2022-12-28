@@ -29,7 +29,7 @@ test('SNS alarms are created', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const snsAlarmConfig = alarmConfig.SNS
 
   const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
@@ -45,6 +45,7 @@ test('SNS alarms are created', (t) => {
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
+    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -84,7 +85,7 @@ test('SNS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const snsAlarmConfig = alarmConfig.SNS
 
   const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)

@@ -26,7 +26,7 @@ test('Kinesis data stream alarms are created', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const kinesisAlarmConfig = alarmConfig.Kinesis
 
   const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)
@@ -46,6 +46,7 @@ test('Kinesis data stream alarms are created', (t) => {
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
+    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -84,7 +85,7 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
       }
     }
   )
-
+  // @ts-ignore
   const kinesisAlarmConfig = alarmConfig.Kinesis
 
   const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)

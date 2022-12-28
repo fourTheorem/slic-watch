@@ -96,6 +96,7 @@ test('Circular dependencies cause an error', (t) => {
       c: 4
     }
   }
+  // @ts-ignore
   input.sub1.sub2_1.sub_2_1_circ = input
 
   t.throws(() => cascade(input))

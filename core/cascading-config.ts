@@ -25,6 +25,7 @@ export function cascade (node:object, parentNode: object = {}, depth = 0) {
 
   const compiledChildren = {}
   for (const [key, value] of Object.entries(childNodes)) {
+    // @ts-ignore
     compiledChildren[key] = cascade(value, compiledNode, depth + 1)
   }
   return {

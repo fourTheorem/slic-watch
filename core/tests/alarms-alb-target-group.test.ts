@@ -43,7 +43,7 @@ test('ALB Target Group alarms are created', (t) => {
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-
+  // @ts-ignore
   const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
 
   const expectedTypesTargetGroup = {
@@ -55,12 +55,14 @@ test('ALB Target Group alarms are created', (t) => {
 
   t.equal(Object.keys(targeGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
   for (const alarmResource of Object.values(targeGroupAlarmResources)) {
+   // @ts-ignore 
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
     const expectedMetric = expectedTypesTargetGroup[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
+    // @ts-ignore
     t.equal(al.Threshold, alarmConfigTargetGroup.ApplicationELBTarget[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -111,7 +113,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-
+  // @ts-ignore
   const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
 
   t.same({}, targeGroupAlarmResources)

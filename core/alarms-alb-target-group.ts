@@ -64,6 +64,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
             )
             cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
           }
+           // @ts-ignore
           if (targetGroupResource.Properties.TargetType === 'lambda') {
             if (albTargetAlarmConfig.LambdaInternalError && albTargetAlarmConfig.LambdaInternalError.enabled) {
               const lambdaInternalError = createLambdaInternalErrorAlarm(

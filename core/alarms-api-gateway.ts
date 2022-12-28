@@ -98,6 +98,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig,  context) {
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createApiAlarm(
+         // @ts-ignore
         { 'Fn::Sub': `APIGW_5XXError_${apiNameForSub}` },
         { 'Fn::Sub': `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
@@ -120,6 +121,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig,  context) {
     return {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
       resource: createApiAlarm(
+         // @ts-ignore
         { 'Fn::Sub': `APIGW_4XXError_${apiNameForSub}` },
         { 'Fn::Sub': `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,
@@ -142,6 +144,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig,  context) {
     return {
       resourceName: makeResourceName('Api', apiName, 'Latency'),
       resource: createApiAlarm(
+         // @ts-ignore
         { 'Fn::Sub': `APIGW_Latency_${apiNameForSub}` },
         { 'Fn::Sub': `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
         apiName,

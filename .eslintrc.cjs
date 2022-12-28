@@ -17,6 +17,8 @@ module.exports = {
     'semi': 0,
     'no-undef':0, // todo remove later
     '@typescript-eslint/no-empty-function': 0, //todo remove later
+    'ts-nocheck': 0, //todo remove later
+    '@typescript-eslint/ban-ts-comment': 0
   },
   ignorePatterns: ['core/coverage'],
 }

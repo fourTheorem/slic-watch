@@ -96,6 +96,7 @@ export default function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${logicalId}`,
       resource: createSqsAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}` }, // alarmName
         { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` }, // alarmDescription
         { 'Fn::GetAtt': [logicalId, 'QueueName'] },
@@ -115,6 +116,7 @@ export default function sqsAlarms (sqsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,
       resource: createSqsAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}` }, // alarmName
         { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}` }, // alarmDescription
         { 'Fn::GetAtt': [logicalId, 'QueueName'] },

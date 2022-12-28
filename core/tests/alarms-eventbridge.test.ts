@@ -29,7 +29,7 @@ test('Events alarms are created', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const ruleAlarmConfig = alarmConfig.Events
 
   const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
@@ -45,6 +45,7 @@ test('Events alarms are created', (t) => {
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
+    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -81,7 +82,7 @@ test('Events alarms are not created when disabled globally', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const ruleAlarmConfig = alarmConfig.Events
 
   const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)

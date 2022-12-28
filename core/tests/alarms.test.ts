@@ -18,7 +18,9 @@ test('Alarms create all service alarms', (t) => {
   for (const resource of Object.values(
     cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   )) {
+    // @ts-ignore
     if (resource.Properties.Namespace) {
+      // @ts-ignore
       namespaces.add(resource.Properties.Namespace)
     }
   }
@@ -38,7 +40,9 @@ test('Alarms create all ALB service alarms', (t) => {
   for (const resource of Object.values(
     cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   )) {
+    // @ts-ignore
     if (resource.Properties.Namespace) {
+      // @ts-ignore
       namespaces.add(resource.Properties.Namespace)
     }
   }

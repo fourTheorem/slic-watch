@@ -1,8 +1,8 @@
 'use strict'
 
-const { test } = require('tap')
+import { test } from 'tap'
 
-const {
+import {
   filterObject,
   resolveEcsClusterNameAsCfn,
   resolveEcsClusterNameForSub,
@@ -10,10 +10,10 @@ const {
   resolveRestApiNameForSub,
   getStatisticName,
   findLoadBalancersForTargetGroup
-} = require('../util')
+} from '../util'
 
-const { albCfTemplate } = require('./testing-utils')
-const CloudFormationTemplate = require('../cf-template')
+import { albCfTemplate } from './testing-utils'
+import CloudFormationTemplate from '../cf-template'
 const albCfTemp = CloudFormationTemplate(albCfTemplate)
 
 test('findLoadBalancersForTargetGroup', (t) => {

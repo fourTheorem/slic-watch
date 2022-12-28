@@ -1,9 +1,12 @@
-import { type } from 'case';
 'use strict'
+// @ts-ignore
+import { type } from 'case';
 
-const { filterObject } = require('./util')
-const { getLogger } = require('./logging')
 
+import { filterObject } from './util'
+import getLogger from './logging'
+
+// @ts-ignore
 const logger = getLogger()
 
 // type ResourceType = {
@@ -32,7 +35,7 @@ const logger = getLogger()
  * compiledTemplate The compiled CloudFormation template
  * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
-export default function CloudFormationTemplate (compiledTemplate, additionalResources) {
+export default function CloudFormationTemplate (compiledTemplate, additionalResources?) {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -78,6 +81,7 @@ export default function CloudFormationTemplate (compiledTemplate, additionalReso
     const eventSourceMappingFunctions = {}
     for (const eventSourceMapping of Object.values(eventSourceMappings)) {
       const funcResourceName = resolveFunctionLogicalId(
+        // @ts-ignore
         eventSourceMapping.Properties.FunctionName
       )
       if (funcResourceName) {

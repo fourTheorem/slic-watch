@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import { cloneDeep } from 'lodash'
+import  cloneDeep  from 'lodash'
 import { test } from 'tap'
 
 import dashboard from '../dashboard'
@@ -39,7 +39,9 @@ test('A dashboard includes metrics', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   // eslint-disable-next-line no-template-curly-in-string
+  // @ts-ignore
   t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+  // @ts-ignore
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
   t.ok(dashBody.start)
@@ -278,7 +280,9 @@ test('A dashboard includes metrics for ALB', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   // eslint-disable-next-line no-template-curly-in-string
+  // @ts-ignore
   t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+  // @ts-ignore
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
   t.ok(dashBody.start)
@@ -331,7 +335,9 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          // @ts-ignore
           metricConfig.enabled = false
         }
       }
@@ -347,7 +353,9 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          // @ts-ignore
           metricConfig.enabled = false
         }
       }
@@ -386,6 +394,7 @@ test('A dashboard includes metrics for ALB', (t) => {
     })
     tgDash.addDashboard(tgTemplate)
     const tgDashResource = Object.values(tgTemplate.getResourcesByType('AWS::CloudWatch::Dashboard'))[0]
+    // @ts-ignores
     const tgDashBody = JSON.parse(tgDashResource.Properties.DashboardBody['Fn::Sub'])
 
     const widgets = tgDashBody.widgets.filter(({ properties: { title } }) =>
@@ -408,7 +417,9 @@ test('A dashboard includes metrics for ALB', (t) => {
     t.equal(Object.keys(dashResources).length, 1)
     const [, dashResource] = Object.entries(dashResources)[0]
     // eslint-disable-next-line no-template-curly-in-string
+    // @ts-ignore
     t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+    // @ts-ignore
     const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
     t.ok(dashBody.start)
@@ -442,7 +453,9 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+          // @ts-ignore
           metricConfig.enabled = false
         }
       }
@@ -463,6 +476,7 @@ test('A dashboard includes metrics for ALB', (t) => {
 test('DynamoDB widgets are created without GSIs', (t) => {
   const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
   const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
+  // @ts-ignore
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {
     Resources: {
@@ -474,6 +488,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]
+  // @ts-ignore
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
   const widgets = dashBody.widgets
 
@@ -494,6 +509,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
+    // @ts-ignore
     dashConfig.widgets[service].enabled = false
   }
   const dash = dashboard(dashConfig, emptyFuncConfigs, context)
@@ -508,7 +524,9 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
+    // @ts-ignore
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
+      // @ts-ignore
       metricConfig.enabled = false
     }
   }
@@ -534,6 +552,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
     dash.addDashboard(cfTemplate)
     const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
     const [, dashResource] = Object.entries(dashResources)[0]
+    // @ts-ignore
     const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
@@ -561,6 +580,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]
+  // @ts-ignore
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
 
   const widgets = dashBody.widgets.filter(({ properties: { title } }) =>

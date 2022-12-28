@@ -32,17 +32,21 @@ let testState = {}
 
 const ServerlessPlugin = proxyrequire('../index', {
   'slic-watch-core/dashboard': () => {
+    // @ts-ignore
     testState.dashboardCalled = true
     return {
       addDashboard: (cfTemplate) => {
+        // @ts-ignore
         testState.addDashboardCfTemplate = cfTemplate
       }
     }
   },
   'slic-watch-core/alarms': () => {
+    // @ts-ignore
     testState.alarmsCalled = true
     return {
       addAlarms: (cfTemplate) => {
+        // @ts-ignore
         testState.addAlarmsCfTemplate = cfTemplate
       }
     }
@@ -80,6 +84,7 @@ test('index', t => {
   t.test('plugin uses v3 logger if provided', (t) => {
     const dummyV3Logger = {}
     const plugin = new ServerlessPlugin(mockServerless, {}, { log: dummyV3Logger })
+    // @ts-ignore
     t.equal(getLogger(), dummyV3Logger)
     t.ok(plugin)
     t.end()
@@ -99,8 +104,9 @@ test('index', t => {
   t.test('createSlicWatchResources adds dashboard and alarms', (t) => {
     const plugin = new ServerlessPlugin(mockServerless, {})
     plugin.createSlicWatchResources()
-
+    // @ts-ignore
     t.equal(testState.addDashboardCfTemplate.getSourceObject(), testCfTemplate)
+    // @ts-ignore
     t.equal(testState.addAlarmsCfTemplate.getSourceObject(), testCfTemplate)
     t.end()
   })
@@ -124,13 +130,16 @@ test('index', t => {
       ...mockServerless,
       configSchemaHandler: {
         defineCustomProperties: (schema) => {
+          // @ts-ignore
           testData.schema = schema
         },
         defineFunctionProperties: (provider, schema) => {
+          // @ts-ignore
           testData.functionSchema = schema
         }
       }
     })
+    // @ts-ignore
     t.equal(typeof testData.schema, 'object')
     t.end()
   })
@@ -144,12 +153,14 @@ test('index', t => {
       }
     })
     plugin.createSlicWatchResources()
+    // @ts-ignore
     t.ok(testState.alarmsCalled)
     t.end()
   })
 
   t.test('Plugin execution succeeds if no SNS Topic is provided', (t) => {
     const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
+    // @ts-ignore
     delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
     const plugin = new ServerlessPlugin(
       {
@@ -162,6 +173,7 @@ test('index', t => {
       {}
     )
     plugin.createSlicWatchResources()
+    // @ts-ignore
     t.ok(testState.alarmsCalled)
     t.end()
   })
@@ -185,12 +197,14 @@ test('index', t => {
       {}
     )
     plugin.createSlicWatchResources()
+    // @ts-ignore
     t.ok(testState.alarmsCalled)
     t.end()
   })
 
   t.test('Plugin execution fails if an invalid SLIC Watch config is provided', (t) => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
+    // @ts-ignore
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
     const plugin = new ServerlessPlugin(
       {
@@ -208,6 +222,7 @@ test('index', t => {
 
   t.test('Plugin skips SLIC Watch if top-level enabled==false', (t) => {
     const serviceYmlWithDisabled = _.cloneDeep(slsYaml)
+    // @ts-ignore
     serviceYmlWithDisabled.custom.slicWatch.enabled = false
     const plugin = new ServerlessPlugin(
       {
@@ -220,6 +235,7 @@ test('index', t => {
       {}
     )
     plugin.createSlicWatchResources()
+    // @ts-ignore
     t.notOk(testState.alarmsCalled)
     t.end()
   })

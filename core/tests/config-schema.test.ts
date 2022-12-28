@@ -1,5 +1,5 @@
 'use strict'
-
+// @ts-ignore
 import Ajv from 'ajv'
 import { test } from 'tap'
 

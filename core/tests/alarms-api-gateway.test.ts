@@ -32,7 +32,7 @@ test('API Gateway alarms are created', (t) => {
       }
     }
   )
-
+    // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
@@ -44,6 +44,7 @@ test('API Gateway alarms are created', (t) => {
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 3)
   for (const alarmResource of Object.values(alarmResources)) {
+    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -56,8 +57,9 @@ test('API Gateway alarms are created', (t) => {
     'APIGW_5XXError',
     'APIGW_Latency'
   ])
-
+// @ts-ignore
   t.equal(alarmsByType.APIGW_5XXError.size, 1)
+  // @ts-ignore
   for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
@@ -74,7 +76,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
-
+  // @ts-ignore
   for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
@@ -91,7 +93,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
-
+  // @ts-ignore
   for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')
@@ -131,7 +133,7 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
@@ -167,7 +169,7 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)

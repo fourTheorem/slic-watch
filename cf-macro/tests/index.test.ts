@@ -1,26 +1,30 @@
 'use strict'
 
-const { test } = require('tap')
-const _ = require('lodash')
-const template = require('./event.json')
-const proxyrequire = require('proxyquire')
+import { test } from 'tap'
+import _ from 'lodash'
+import template from './event.json'
+import proxyrequire from 'proxyquire'
 const event = { fragment: template, templateParameterValues: { stack: 'sam-test-stack-project' } }
 
 let testState = {}
 
 const lambda = proxyrequire('../index', {
   'slic-watch-core/dashboard': () => {
+    // @ts-ignore
     testState.dashboardCalled = true
     return {
       addDashboard: (cfTemplate) => {
+        // @ts-ignore
         testState.addDashboardCfTemplate = cfTemplate
       }
     }
   },
   'slic-watch-core/alarms': () => {
+    // @ts-ignores
     testState.alarmsCalled = true
     return {
       addAlarms: (cfTemplate) => {
+        // @ts-ignore
         testState.addAlarmsCfTemplate = cfTemplate
       }
     }
@@ -69,12 +73,15 @@ test('index', t => {
     const testevent = _.cloneDeep(event)
     testevent.fragment.Metadata.slicWatch.enabled = false
     await lambda.handler(testevent, null)
+    // @ts-ignore
     t.notOk(testState.alarmsCalled)
   })
 
   t.test('Macro adds dashboard and alarms', async t => {
     await lambda.handler(event, null)
+    // @ts-ignore
     t.equal(testState.addDashboardCfTemplate.getSourceObject(), template)
+    // @ts-ignore
     t.equal(testState.addAlarmsCfTemplate.getSourceObject(), template)
   })
 
@@ -93,12 +100,15 @@ test('index', t => {
       }
     }
     await lambda.handler(testEvent, null)
+    // @ts-ignore
     t.equal(testState.addDashboardCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
+    // @ts-ignore
     t.equal(testState.addAlarmsCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
   })
 
   t.test('Macro execution fails if an invalid SLIC Watch config is provided', async t => {
     const testevent = _.cloneDeep(event)
+    // @ts-ignore
     testevent.fragment.Metadata.slicWatch.topicArrrrn = 'pirateTopic'
     const result = await lambda.handler(testevent, null)
     t.equal(result.status, 'fail')
@@ -106,20 +116,25 @@ test('index', t => {
 
   t.test('Macro execution succeeds with no slicWatch config', async t => {
     const testevent = _.cloneDeep(event)
+    // @ts-ignore
     delete testevent.fragment.Metadata.slicWatch
     await lambda.handler(testevent, null)
+    // @ts-ignore
     t.ok(testState.alarmsCalled)
   })
 
   t.test('Macro execution succeeds if no SNS Topic is provided', async t => {
     const testevent = _.cloneDeep(event)
+    // @ts-ignore
     delete testevent.fragment.Metadata.slicWatch.topicArn
     await lambda.handler(testevent, null)
+    // @ts-ignore
     t.ok(testState.alarmsCalled)
   })
 
   t.test('Macro succeeds with no custom section', async t => {
     const testevent = _.cloneDeep(event)
+    // @ts-ignore
     delete testevent.fragment.Metadata
     const result = await lambda.handler(testevent, null)
     t.equal(result.status, 'success')

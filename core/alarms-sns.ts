@@ -83,6 +83,7 @@ export default function snsAlarms (snsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicLogicalId}`,
       resource: createSNSAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
         { 'Fn::Sub': `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
         { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name
@@ -102,6 +103,7 @@ export default function snsAlarms (snsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,
       resource: createSNSAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
         { 'Fn::Sub': `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
         { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name

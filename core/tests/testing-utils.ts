@@ -3,6 +3,7 @@
 import path from 'path'
 import fs from 'fs'
 import _ from 'lodash'
+// @ts-ignore
 import YAML from 'yaml'
 
 import { cascade } from '../cascading-config'

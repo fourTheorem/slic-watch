@@ -83,6 +83,7 @@ export default function eventsAlarms (eventsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${logicalId}`,
       resource: createRuleAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `Events_FailedInvocationsAlarm_\${${logicalId}}` }, // alarmName
         { 'Fn::Sub': `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
         { Ref: logicalId },
@@ -102,6 +103,7 @@ export default function eventsAlarms (eventsAlarmsConfig, context) {
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,
       resource: createRuleAlarm(
+        // @ts-ignore
         { 'Fn::Sub': `Events_ThrottledRulesAlarm_\${${logicalId}}` }, // alarmName
         { 'Fn::Sub': `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
         { Ref: logicalId },

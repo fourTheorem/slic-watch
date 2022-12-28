@@ -17,7 +17,7 @@ const logger = getLogger({ name: 'macroHandler' })
 //   status: string
 //   fragment
 // }
-export async function handler (event) {
+export default async function handler (event) {
   let status = 'success'
   logger.info({ event })
   
@@ -40,17 +40,19 @@ export async function handler (event) {
       }
 
       const alarmActions = []
-
+      // @ts-ignore
       if (slicWatchConfig.topicArn) {
+        // @ts-ignore
         alarmActions.push(slicWatchConfig.topicArn)
       } else if (process.env.ALARM_SNS_TOPIC) {
+        // @ts-ignore
         alarmActions.push(process.env.ALARM_SNS_TOPIC)
       }
 
       const context = {
         alarmActions
       }
-
+      // @ts-ignore
       const cfTemplate = CloudFormationTemplate(
         outputFragment
       )
@@ -62,6 +64,7 @@ export async function handler (event) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
+        // @ts-ignore
         const funcConfig = funcResource.Metadata?.slicWatch || {}
         functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
         functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}

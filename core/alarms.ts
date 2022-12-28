@@ -18,17 +18,29 @@ import appSyncAlarms from './alarms-appsync'
 
 export default function alarms (alarmConfig, functionAlarmConfigs, context) {
   const {
+    // @ts-ignore
     ApiGateway: apiGwConfig,
+    // @ts-ignore
     States: sfConfig,
+    // @ts-ignore
     DynamoDB: dynamoDbConfig,
+    // @ts-ignore
     Kinesis: kinesisConfig,
+    // @ts-ignore
     SQS: sqsConfig,
+    // @ts-ignore
     Lambda: lambdaConfig,
+    // @ts-ignore
     ECS: ecsConfig,
+    // @ts-ignore
     SNS: snsConfig,
+    // @ts-ignore
     Events: ruleConfig,
+    // @ts-ignore
     ApplicationELB: albConfig,
+    // @ts-ignore
     ApplicationELBTarget: albTargetConfig,
+    // @ts-ignore
     AppSync: appSyncConfig
   } = cascade(alarmConfig)
 

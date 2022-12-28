@@ -224,6 +224,7 @@ const functionConfigSchema = {
           type: 'object',
           properties: {
             enabled: { type: 'boolean' },
+             // @ts-ignore
             Lambda: alarmSchemas.Lambda
           }
         },
@@ -231,6 +232,7 @@ const functionConfigSchema = {
           type: 'object',
           properties: {
             enabled: { type: 'boolean' },
+             // @ts-ignore
             Lambda: widgetSchemas.Lambda
           }
         }

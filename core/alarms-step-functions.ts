@@ -31,6 +31,7 @@ export default function StatesAlarms (sfAlarmConfig, context) {
           const config = sfAlarmConfig[metric]
           const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
           const alarmResource = createStateMachineAlarm(
+            // @ts-ignore
             { 'Fn::Sub': `StepFunctions_${metric}_\${${logicalId}.Name}` },
             { 'Fn::Sub': `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}` },
             { Ref: logicalId },

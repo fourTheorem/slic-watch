@@ -29,7 +29,7 @@ test('ECS MemoryUtilization is created', (t) => {
       }
     }
   )
-
+    // @ts-ignore
   const ecsAlarmConfig = alarmConfig.ECS
 
   const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
@@ -45,6 +45,7 @@ test('ECS MemoryUtilization is created', (t) => {
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
+    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -93,7 +94,7 @@ test('ECS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-
+  // @ts-ignore
   const ecsAlarmConfig = alarmConfig.ECS
 
   const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)

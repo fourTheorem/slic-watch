@@ -1,11 +1,11 @@
 /* eslint-disable no-template-curly-in-string */
 'use strict'
 
-const { test } = require('tap')
-const CloudFormationTemplate = require('../../core/cf-template')
+import { test } from 'tap'
+import CloudFormationTemplate from '../../core/cf-template'
 
-const cdkStack = require('./resources/cdk-ecs-cf.json')
-const cfMacroHandler = require('../index')
+import cdkStack from './resources/cdk-ecs-cf.json'
+import cfMacroHandler from '../index'
 
 /**
  * Test the synthesized output from the CDK ECS Stack in `cdk-test-project`
@@ -14,13 +14,16 @@ test('ECS CDK stack', async (t) => {
   const event = {
     fragment: cdkStack
   }
+  // @ts-ignore
   const handlerResponse = await cfMacroHandler.handler(event)
   t.equal(handlerResponse.status, 'success')
+  // @ts-ignore
   const transformedTemplate = CloudFormationTemplate(handlerResponse.fragment)
 
   test('alarms are generated', (t) => {
     const alarms = transformedTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
     t.equal(Object.keys(alarms).length, 6)
+    // @ts-ignore
     const alarmNames = Object.values(alarms).map(alarm => alarm.Properties.AlarmName).sort()
     t.same(alarmNames, [
       'LoadBalancerHTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',

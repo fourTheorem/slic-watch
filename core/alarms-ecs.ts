@@ -23,6 +23,7 @@ export default function ecsAlarms (ecsAlarmsConfig , context) {
     for (const [serviceResourceName, serviceResource] of Object.entries(
       serviceResources
     )) {
+       // @ts-ignore
       const cluster = serviceResource.Properties.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
       if (ecsAlarmsConfig.MemoryUtilization.enabled) {
@@ -87,6 +88,7 @@ export default function ecsAlarms (ecsAlarmsConfig , context) {
     return {
       resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
       resource: createEcsAlarm(
+         // @ts-ignore
         { 'Fn::Sub': `ECS_MemoryAlarm_\${${logicalId}.Name}` },
         { 'Fn::Sub': `ECS memory utilization for ${logicalId}.Name breaches ${threshold}` },
         { 'Fn::GetAtt': [logicalId, 'Name'] },
@@ -107,6 +109,7 @@ export default function ecsAlarms (ecsAlarmsConfig , context) {
     return {
       resourceName: `slicWatchECSCPUAlarm${logicalId}`,
       resource: createEcsAlarm(
+         // @ts-ignore
         { 'Fn::Sub': `ECS_CPUAlarm_\${${logicalId}.Name}` },
         { 'Fn::Sub': `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}` },
         { 'Fn::GetAtt': [logicalId, 'Name'] },

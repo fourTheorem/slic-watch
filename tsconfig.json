@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    // "strict": true, //todo remove later
+    // "noImplicitAny": true, //todo remove later
+    // "strictNullChecks": true, //todo remove later
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
