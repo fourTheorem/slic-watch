@@ -13,15 +13,18 @@ test('Default config conforms to the config schema', (t) => {
   }
 
   const ajv = new Ajv({
+    // @ts-ignore
     unicodeRegExp: false
   })
   const slicWatchValidate = ajv.compile(slicWatchSchema)
   const slicWatchValid = slicWatchValidate(slicWatchConfig)
+  // @ts-ignore
   t.ok(slicWatchValid, slicWatchValidate.errors)
 
   const pluginValidate = ajv.compile(pluginConfigSchema)
   const testConfig = { slicWatch: slicWatchConfig }
   const pluginValid = pluginValidate(testConfig)
+  // @ts-ignore
   t.ok(pluginValid, pluginValidate.errors)
 
   t.end()
@@ -33,15 +36,18 @@ test('Default config conforms to the config schema without topicArn', (t) => {
   }
 
   const ajv = new Ajv({
+    // @ts-ignore
     unicodeRegExp: false
   })
   const slicWatchValidate = ajv.compile(slicWatchSchema)
   const slicWatchValid = slicWatchValidate(slicWatchConfig)
+  // @ts-ignore
   t.ok(slicWatchValid, slicWatchValidate.errors)
 
   const pluginValidate = ajv.compile(pluginConfigSchema)
   const testConfig = { slicWatch: slicWatchConfig }
   const pluginValid = pluginValidate(testConfig)
+  // @ts-ignore
   t.ok(pluginValid, pluginValidate.errors)
 
   t.end()

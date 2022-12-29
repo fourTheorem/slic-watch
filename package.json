@@ -3,6 +3,7 @@
   "version": "2.1.2",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/fourTheorem/slic-watch.git"
@@ -29,7 +30,9 @@
   },
   "tap": {
     "node-arg": [
+      "--no-warnings",
       "--loader=ts-node/esm",
+      "--loader=esmock",
       "--experimental-specifier-resolution=node"
     ]
   },
@@ -43,6 +46,7 @@
     "eslint-plugin-import": "^2.23.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-standard": "^5.0.0",
+    "esmock": "^2.1.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.0.5",

@@ -18,7 +18,9 @@ test('logger override persists', (t) => {
     notice: () => {},
     debug: () => {}
   }
+  // @ts-ignore
   logging.setLogger(myLogger)
+  // @ts-ignore
   t.equal(logging.getLogger(), myLogger)
   t.end()
 })

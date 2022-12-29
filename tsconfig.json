@@ -1,9 +1,11 @@
 {
+  "esm": true,
   "compilerOptions": {
     "module": "ESNext",
     // "strict": true, //todo remove later
     // "noImplicitAny": true, //todo remove later
     // "strictNullChecks": true, //todo remove later
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
