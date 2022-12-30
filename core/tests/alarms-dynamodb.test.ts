@@ -3,7 +3,6 @@
 import dynamoDbAlarms from '../alarms-dynamodb'
 
 import { test } from 'tap'
-import cloneDeep from 'lodash'
 
 import defaultConfig from '../default-config'
 import {
@@ -46,7 +45,6 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
     const cfTemplate = createTestCloudFormationTemplate()
     if (!specifyTableName) {
       for (const tableResource of Object.values(cfTemplate.getResourcesByType('AWS::DynamoDB::Table'))) {
-        // @ts-ignore
         delete tableResource.Properties.TableName
       }
     }
@@ -103,10 +101,10 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
 
 test('DynamoDB alarms are created without GSI', (t) => {
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
-  const compiledTemplate = cloneDeep(defaultCfTemplate)
-  // @ts-ignore
-  delete compiledTemplate.Resources.dataTable.Properties.GlobalSecondaryIndexes
-  const cfTemplate = createTestCloudFormationTemplate(compiledTemplate)
+  const cfTemplate = createTestCloudFormationTemplate()
+  for (const tableResource of Object.values(cfTemplate.getResourcesByType('AWS::DynamoDB::Table'))) {
+    delete tableResource.Properties.GlobalSecondaryIndexes
+  }
   createDynamoDbAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')

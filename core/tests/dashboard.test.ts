@@ -485,17 +485,30 @@ test('DynamoDB widgets are created without GSIs', (t) => {
   }
 
   const cfTemplate = createTestCloudFormationTemplate(compiledTemplate)
+
+  // const cfTemplate = createTestCloudFormationTemplate(defaultCfTemplate)
+  // const tableResources = cfTemplate.getResourcesByType(
+  //   'AWS::DynamoDB::Table'
+  // )
+  // for (const [tableResourceName,tableResource] of Object.entries(tableResources)){
+  // delete tableResource.Properties.GlobalSecondaryIndexes
+  // const compiledTemplate = {
+  //   Resources: {
+  //     dataTable: tableResource.Properties.TableName
+  //   }
+  // }
+
+  // createTestCloudFormationTemplate(compiledTemplate)
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]
   // @ts-ignore
   const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
   const widgets = dashBody.widgets
-
   t.equal(widgets.length, 2)
   const expectedTitles = new Set([
     'ReadThrottleEvents Table ${dataTable}',
-    'WriteThrottleEvents Table ${dataTable}'
+    'WriteThrottleEvents Table ${dataTable}',
   ])
 
   const actualTitles = new Set(

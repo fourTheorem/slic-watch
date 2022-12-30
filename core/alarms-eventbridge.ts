@@ -1,5 +1,6 @@
 'use strict'
 
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * The fully resolved alarm configuration
@@ -15,7 +16,7 @@ export default function eventsAlarms (eventsAlarmsConfig, context) {
    *
    * cfTemplate A CloudFormation template object
    */
-  function createRuleAlarms (cfTemplate) {
+  function createRuleAlarms (cfTemplate:CloudFormationTemplate) {
     const ruleResources = cfTemplate.getResourcesByType(
       'AWS::Events::Rule'
     )

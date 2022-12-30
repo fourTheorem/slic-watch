@@ -1,5 +1,5 @@
 'use strict'
-
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} sfAlarmConfig The fully resolved States alarm configuration
@@ -15,7 +15,7 @@ export default function StatesAlarms (sfAlarmConfig, context) {
    *
    * A CloudFormation template object
    */
-  function createStatesAlarms (cfTemplate) {
+  function createStatesAlarms (cfTemplate:CloudFormationTemplate) {
     const smResources = cfTemplate.getResourcesByType(
       'AWS::StepFunctions::StateMachine'
     )

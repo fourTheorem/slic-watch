@@ -1,6 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName } from './util'
+import { CloudFormationTemplate } from "./cf-template.d";
 
 const kinesisAlarmTypes = {
   StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
@@ -25,7 +26,7 @@ export default function KinesisAlarms (kinesisAlarmConfig , context) {
    *
    *  A CloudFormation template object
    */
-  function createKinesisAlarms (cfTemplate) {
+  function createKinesisAlarms (cfTemplate:CloudFormationTemplate) {
     const streamResources = cfTemplate.getResourcesByType(
       'AWS::Kinesis::Stream'
     )

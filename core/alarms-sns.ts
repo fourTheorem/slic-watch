@@ -1,5 +1,6 @@
 'use strict'
 
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} snsAlarmsConfig The fully resolved alarm configuration
@@ -15,7 +16,7 @@ export default function snsAlarms (snsAlarmsConfig, context) {
    *
    * A CloudFormation template object
    */
-  function createSNSAlarms (cfTemplate) {
+  function createSNSAlarms (cfTemplate:CloudFormationTemplate) {
     const topicResources = cfTemplate.getResourcesByType(
       'AWS::SNS::Topic'
     )

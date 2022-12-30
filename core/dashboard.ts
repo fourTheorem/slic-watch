@@ -22,7 +22,9 @@ const logger = getLogger()
  */
 export default function dashboard (dashboardConfig, functionDashboardConfigs, context) {
   const {
+    // @ts-ignore
     timeRange,
+    // @ts-ignore
     widgets: {
       Lambda: lambdaDashConfig,
       ApiGateway: apiGwDashConfig,

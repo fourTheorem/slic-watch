@@ -1,8 +1,8 @@
 'use strict'
 
+import { CloudFormationTemplate } from "./cf-template.d";
 
 import { getLogger } from './logging'
-// @ts-ignore
 const logging = getLogger()
 
 
@@ -23,7 +23,7 @@ export default function LambdaAlarms (functionAlarmConfigs, context) {
    *
    *
    */
-  function createLambdaAlarms(cfTemplate) {
+  function createLambdaAlarms(cfTemplate:CloudFormationTemplate) {
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )

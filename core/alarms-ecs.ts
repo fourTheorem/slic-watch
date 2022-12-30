@@ -1,6 +1,7 @@
 'use strict'
 
 import { resolveEcsClusterNameAsCfn } from './util'
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} ecsAlarmsConfig The fully resolved alarm configuration
@@ -16,14 +17,13 @@ export default function ecsAlarms (ecsAlarmsConfig , context) {
    *
    * A CloudFormation template object
    */
-  function createECSAlarms (cfTemplate) {
+  function createECSAlarms (cfTemplate:CloudFormationTemplate) {
     const serviceResources = cfTemplate.getResourcesByType(
       'AWS::ECS::Service'
     )
     for (const [serviceResourceName, serviceResource] of Object.entries(
       serviceResources
     )) {
-       // @ts-ignore
       const cluster = serviceResource.Properties.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
       if (ecsAlarmsConfig.MemoryUtilization.enabled) {

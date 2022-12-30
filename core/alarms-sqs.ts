@@ -1,6 +1,6 @@
 'use strict'
 
-
+import { CloudFormationTemplate } from "./cf-template.d";
 /**
  * @param {object} sqsAlarmsConfig The fully resolved alarm configuration
  */
@@ -15,7 +15,7 @@ export default function sqsAlarms (sqsAlarmsConfig, context) {
    *
    * A CloudFormation template object
    */
-  function createSQSAlarms (cfTemplate) {
+  function createSQSAlarms (cfTemplate:CloudFormationTemplate) {
     const queueResources = cfTemplate.getResourcesByType(
       'AWS::SQS::Queue'
     )

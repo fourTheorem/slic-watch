@@ -1,5 +1,4 @@
 'use strict'
-// @ts-ignore
 import Ajv from 'ajv'
 import { test } from 'tap'
 
@@ -11,7 +10,7 @@ test('Default config conforms to the config schema', (t) => {
     ...defaultConfig,
     topicArn: 'dummy-topic-arn'
   }
-
+  
   const ajv = new Ajv({
     // @ts-ignore
     unicodeRegExp: false

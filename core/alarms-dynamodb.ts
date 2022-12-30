@@ -1,6 +1,9 @@
-'use strict'
+import { type } from 'case';
 
 import { makeResourceName } from './util'
+
+import { CloudFormationTemplate } from "./cf-template.d";
+
 
 /**
  * @param {object} dynamoDbAlarmConfig The fully resolved alarm configuration
@@ -16,11 +19,10 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
    *
    * cfTemplate A CloudFormation template object
    */
-  function createDynamoDbAlarms (cfTemplate) {
+  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate ) {
     const tableResources = cfTemplate.getResourcesByType(
       'AWS::DynamoDB::Table'
     )
-
     for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
       const tableDimensions = [{ Name: 'TableName', Value: { Ref: tableResourceName } }]
 
@@ -50,7 +52,6 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
           createAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
         )
       }
-       // @ts-ignore
       for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
         const gsiName = gsi.IndexName
         const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]

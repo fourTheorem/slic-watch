@@ -9,7 +9,8 @@ import { getLogger } from 'slic-watch-core/logging'
 const slsYaml = {
   custom: {
     slicWatch: {
-      topicArn: 'test-topic'
+      topicArn: 'test-topic',
+      enabled: true
     }
   },
   functions: {
@@ -224,7 +225,6 @@ test('should mock slic-watch-core/dashboard ', async () => {
 
     t.test('Plugin skips SLIC Watch if top-level enabled==false', (t) => {
       const serviceYmlWithDisabled = _.cloneDeep(slsYaml)
-      // @ts-ignore
       serviceYmlWithDisabled.custom.slicWatch.enabled = false
       const plugin = new ServerlessPlugin(
         {

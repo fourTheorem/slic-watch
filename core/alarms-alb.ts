@@ -1,6 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName }from './util'
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} albAlarmConfig The fully resolved alarm configuration
@@ -16,7 +17,7 @@ export default function ALBAlarms (albAlarmConfig , context) {
    *
    *  A CloudFormation template object
    */
-  function createALBAlarms (cfTemplate) {
+  function createALBAlarms (cfTemplate:CloudFormationTemplate) {
     const loadBalancerResources = cfTemplate.getResourcesByType(
       'AWS::ElasticLoadBalancingV2::LoadBalancer'
     )

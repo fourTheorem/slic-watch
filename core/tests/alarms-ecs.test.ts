@@ -52,6 +52,7 @@ test('ECS MemoryUtilization is created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
+    // @ts-ignore
     t.equal(al.Threshold, ecsAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')

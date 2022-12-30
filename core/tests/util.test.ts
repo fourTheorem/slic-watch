@@ -188,29 +188,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
     t.end()
   })
 
-  test('omits listener rules referencing a listener that cannot be found', (t) => {
-    const template = CloudFormationTemplate({
-      Resources: {
-        listenerRuleA: {
-          Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
-          Properties: {
-            Actions: [{ TargetGroupArn: { Ref: 'tgA' } }],
-            ListenerArn: { Ref: 'listenerX' }
-          }
-        },
-        listener: {
-          Type: 'AWS::ElasticLoadBalancingV2::Listener',
-          Properties: {
-            LoadBalancerArn: { Ref: 'alb' }
-          }
-        }
-      }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
-    t.equal(loadBalancerLogicalIds.length, 0)
-    t.end()
-  })
-
   t.end()
 })
 

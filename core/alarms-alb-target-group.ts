@@ -2,32 +2,33 @@
 
 import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from './util'
 
+import { CloudFormationTemplate } from "./cf-template.d";
 
 
-// type Config ={
-//   enabled: boolean,
-//   Period: number,
-//   EvaluationPeriods: number,
-//   ComparisonOperator: string,
-//   Static: string,
-//   Threshold: number
-// }
+type Config ={
+  enabled: boolean,
+  Period: number,
+  EvaluationPeriods: number,
+  ComparisonOperator: string,
+  Static: string,
+  Threshold: number
+}
 
-// type AlbTargetAlarmConfig = {
-//   enabled: boolean,
-//   Period: number,
-//   EvaluationPeriods: number,
-//   ComparisonOperator: string,
-//   HTTPCode_Target_5XX_Count: Config,
-//   UnHealthyHostCount: Config,
-//   LambdaInternalError: Config,
-//   LambdaUserError: Config
-// }
+export type AlbTargetAlarmConfig = {
+  enabled: boolean,
+  Period: number,
+  EvaluationPeriods: number,
+  ComparisonOperator: string,
+  HTTPCode_Target_5XX_Count: Config,
+  UnHealthyHostCount: Config,
+  LambdaInternalError: Config,
+  LambdaUserError: Config
+}
 
 /**
  * The fully resolved alarm configuration
  */
-export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
+export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConfig, context) {
   return {
     createALBTargetAlarms
   }
@@ -36,9 +37,9 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
    * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
    * based on the resources found within
    *
-   * @param {CloudFormationTemplate} cfTemplate A CloudFormation template object
+   * A CloudFormation template object
    */
-  function createALBTargetAlarms (cfTemplate) {
+  function createALBTargetAlarms (cfTemplate:CloudFormationTemplate) {
     const targetGroupResources = cfTemplate.getResourcesByType(
       'AWS::ElasticLoadBalancingV2::TargetGroup'
     )
@@ -64,7 +65,6 @@ export default function ALBTargetAlarms (albTargetAlarmConfig, context) {
             )
             cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
           }
-           // @ts-ignore
           if (targetGroupResource.Properties.TargetType === 'lambda') {
             if (albTargetAlarmConfig.LambdaInternalError && albTargetAlarmConfig.LambdaInternalError.enabled) {
               const lambdaInternalError = createLambdaInternalErrorAlarm(

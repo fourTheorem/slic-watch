@@ -1,6 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName, resolveRestApiNameAsCfn, resolveRestApiNameForSub } from './util'
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
@@ -15,7 +16,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig,  context) {
    * based on the resources found within
    *A CloudFormation template object
    */
-  function createApiGatewayAlarms (cfTemplate) {
+  function createApiGatewayAlarms (cfTemplate:CloudFormationTemplate) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )

@@ -1,15 +1,14 @@
 'use strict'
 // @ts-ignore
 import { type } from 'case';
-
+import { CloudFormationTemplate, ResourceType } from './cf-template.d'
 
 import { filterObject } from './util'
 import { getLogger } from './logging'
 
-// @ts-ignore
 const logger = getLogger()
 
-// type ResourceType = {
+// type Resource = {
 //   Name: string
 //   Type: string
 //   Properties: object
@@ -19,23 +18,17 @@ const logger = getLogger()
 // type CompiledTemplate = {
 //   AWSTemplateFormatVersion: string
 //   Description: string
-//   Resources: ResourceType[] 
+//   Resources: Resource[] 
 //   Outputs: object
 // }
 
 // type AdditionalResources = {
-//   Resources: ResourceType []
+//   Resources: Resource []
   
 // }
 
-/**
- * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
- * and directly-specified CloudFormation resources
- *
- * compiledTemplate The compiled CloudFormation template
- * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
- */
-export default function CloudFormationTemplate (compiledTemplate, additionalResources?) {
+
+export default function CloudFormationTemplate  (compiledTemplate, additionalResources?):CloudFormationTemplate  {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -63,7 +56,8 @@ export default function CloudFormationTemplate (compiledTemplate, additionalReso
     return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
   }
 
-  function getResourcesByType (type:string) {
+  function getResourcesByType (type:string):ResourceType  {
+    
     return filterObject(
       {
         ...compiledTemplate.Resources,

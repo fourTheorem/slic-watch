@@ -52,6 +52,7 @@ test('Events alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
+    // @ts-ignore
     t.equal(al.Threshold, ruleAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -59,7 +60,9 @@ test('Events alarms are created', (t) => {
     t.equal(al.Namespace, 'AWS/Events')
     t.equal(al.Period, 120)
     t.equal(al.Dimensions.length, 1)
+    // @ts-ignore
     t.equal(al.Dimensions[0].Name, 'RuleName')
+    // @ts-ignore
     t.ok(al.Dimensions[0].Value.Ref)
   }
 

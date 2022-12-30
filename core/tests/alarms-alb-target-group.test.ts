@@ -1,6 +1,6 @@
 'use strict'
 
-import albTargetAlarms from '../alarms-alb-target-group'
+import albTargetAlarms, {AlbTargetAlarmConfig} from '../alarms-alb-target-group'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {
@@ -37,7 +37,7 @@ test('ALB Target Group alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmConfig) {
+  function createAlarmResources (elbAlarmConfig:AlbTargetAlarmConfig) {
     const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)

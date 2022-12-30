@@ -53,6 +53,7 @@ test('Kinesis data stream alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
+    // @ts-ignore
     t.equal(al.Threshold, kinesisAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')

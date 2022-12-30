@@ -1,6 +1,6 @@
 import { test } from 'tap'
 
-import { getLogger } from '../logging'
+import { getLogger, setLogger  } from '../logging'
 
 test('default logger is used', (t) => {
   const logger = getLogger()
@@ -18,9 +18,8 @@ test('logger override persists', (t) => {
     notice: () => {},
     debug: () => {}
   }
-  // @ts-ignore
-  logging.setLogger(myLogger)
-  // @ts-ignore
-  t.equal(logging.getLogger(), myLogger)
+  
+  setLogger(myLogger)
+  t.equal(getLogger(), myLogger)
   t.end()
 })

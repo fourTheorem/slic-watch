@@ -1,6 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName } from './util'
+import { CloudFormationTemplate } from "./cf-template.d";
 
 /**
  * @param {object} appSyncAlarmConfig The fully resolved alarm configuration
@@ -16,7 +17,7 @@ export default function appSyncAlarms (appSyncAlarmConfig, context) {
    *
    * A CloudFormation template object
    */
-  function createAppSyncAlarms (cfTemplate) {
+  function createAppSyncAlarms (cfTemplate:CloudFormationTemplate) {
     const appSyncResources = cfTemplate.getResourcesByType(
       'AWS::AppSync::GraphQLApi'
     )
