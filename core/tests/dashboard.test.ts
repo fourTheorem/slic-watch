@@ -1,7 +1,6 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import  cloneDeep  from 'lodash'
+import  _  from 'lodash'
 import { test } from 'tap'
 
 import dashboard from '../dashboard'
@@ -333,9 +332,8 @@ test('A dashboard includes metrics for ALB', (t) => {
 
     test('No widgets are created if all AppSync metrics are disabled', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
-      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -351,9 +349,8 @@ test('A dashboard includes metrics for ALB', (t) => {
 
     test('No widgets are created if all Application Load Balancer metrics are disabled', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
-      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -451,9 +448,8 @@ test('A dashboard includes metrics for ALB', (t) => {
 
     test('No widgets are created if all AppSync metrics are disabled', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
-      const dashConfig = cloneDeep(defaultConfig.dashboard)
+      const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -475,8 +471,7 @@ test('A dashboard includes metrics for ALB', (t) => {
 
 test('DynamoDB widgets are created without GSIs', (t) => {
   const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
-  const tableResource = cloneDeep(defaultCfTemplate.Resources.dataTable)
-  // @ts-ignore
+  const tableResource = _.cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {
     Resources: {
@@ -520,9 +515,8 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 
 test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
-  const dashConfig = cloneDeep(defaultConfig.dashboard)
+  const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    // @ts-ignore
     dashConfig.widgets[service].enabled = false
   }
   const dash = dashboard(dashConfig, emptyFuncConfigs, context)
@@ -535,9 +529,8 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 
 test('No dashboard is created if all metrics are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
-  const dashConfig = cloneDeep(defaultConfig.dashboard)
+  const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    // @ts-ignore
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
       // @ts-ignore
       metricConfig.enabled = false

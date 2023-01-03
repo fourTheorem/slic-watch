@@ -14,6 +14,11 @@ export interface CloudFormationTemplate {
     resolveFunctionResourceName: (func: object) => object;
 }
 
+export type Metric = {
+  resourceName?: string
+  resource?: CfResource
+}
+
 export type CfResource = {
   Type?: string,
   Properties?: Properties

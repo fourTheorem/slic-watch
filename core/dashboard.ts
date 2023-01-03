@@ -1,6 +1,7 @@
 'use strict'
 
 import { cascade } from './cascading-config'
+import { CloudFormationTemplate } from "./cf-template.d";
 import {
   resolveEcsClusterNameForSub,
   resolveRestApiNameForSub,
@@ -51,7 +52,7 @@ export default function dashboard (dashboardConfig, functionDashboardConfigs, co
    *
    * A CloudFormation template
    */
-  function addDashboard (cfTemplate) {
+  function addDashboard (cfTemplate:CloudFormationTemplate) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )
