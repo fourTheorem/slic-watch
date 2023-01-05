@@ -1,7 +1,11 @@
 'use strict'
 
 import { cascade } from './cascading-config'
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CloudFormationTemplate } from './cf-template.d'
+import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig,
+  KinesisDashConfig, SqsDashConfig, EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig,AlbTargetDashConfig,AppSyncDashConfig,
+   } from './default-config-dashboard.d'
+import { Context } from './default-config-alarms'
 import {
   resolveEcsClusterNameForSub,
   resolveRestApiNameForSub,
@@ -21,7 +25,7 @@ const logger = getLogger()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig, functionDashboardConfigs, context) {
+export default function dashboard (dashboardConfig:DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs, context: Context) {
   const {
     // @ts-ignore
     timeRange,
@@ -97,6 +101,7 @@ export default function dashboard (dashboardConfig, functionDashboardConfigs, co
     const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
     const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
     const lambdaWidgets = createLambdaWidgets(
+      // @ts-ignore
       lambdaResources,
       Object.keys(eventSourceMappingFunctions)
     )
@@ -183,7 +188,7 @@ export default function dashboard (dashboardConfig, functionDashboardConfigs, co
    * eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
   function createLambdaWidgets (
-    functionResources: object,
+    functionResources: FunctionResources,
     eventSourceMappingFunctionResourceNames: string[]
   ) {
     const lambdaWidgets = []
@@ -254,7 +259,7 @@ export default function dashboard (dashboardConfig, functionDashboardConfigs, co
    *  The config object for a specific service within the dashboard
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
-  function getConfiguredMetrics (serviceDashConfig:object) {
+  function getConfiguredMetrics (serviceDashConfig:DashboardConfig) {
     const extractedConfig = {}
     for (const [metric, metricConfig] of Object.entries(serviceDashConfig)) {
       if (typeof metricConfig === 'object') {
@@ -303,7 +308,7 @@ export default function dashboard (dashboardConfig, functionDashboardConfigs, co
    *
    * Object of Step Function State Machine resources by resource name
    */
-  function createStateMachineWidgets (smResources: object) {
+  function createStateMachineWidgets (smResources) {
     const smWidgets = []
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics = []

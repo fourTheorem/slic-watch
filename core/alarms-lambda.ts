@@ -1,7 +1,7 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config.d'
+import { Config, Context } from './default-config-alarms'
 
 import { getLogger } from './logging'
 const logging = getLogger()

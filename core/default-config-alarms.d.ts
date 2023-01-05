@@ -30,16 +30,17 @@ export type AlarmsConfig = AlbTargetAlarmConfig & AlbAlarmConfig & ApiGwAlarmCon
 & EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmConfig & FunctionAlarmConfigs & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export type FunctionAlarmConfigs = {
-  HelloLambdaFunction: object
-  PingLambdaFunction: object
-  ThrottlerLambdaFunction: object
-  DriveStreamLambdaFunction: object
-  DriveQueueLambdaFunction: object
-  DriveTableLambdaFunction: object
-  StreamProcessorLambdaFunction: object
-  HttpGetterLambdaFunction: object
-  SubscriptionHandlerLambdaFunction: object
-  EventsRuleLambdaFunction: object
+  HelloLambdaFunction?: object
+  PingLambdaFunction?: object
+  ThrottlerLambdaFunction?: object
+  DriveStreamLambdaFunction?: object
+  DriveQueueLambdaFunction?: object
+  DriveTableLambdaFunction?: object
+  StreamProcessorLambdaFunction?: object
+  HttpGetterLambdaFunction?: object
+  SubscriptionHandlerLambdaFunction?: object
+  EventsRuleLambdaFunction?: object
+  AlbEventLambdaFunction?: object
 }
 
 export type Context = {

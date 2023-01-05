@@ -2,7 +2,7 @@
 
 import { makeResourceName, getStatisticName } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config.d'
+import { Config, Context } from './default-config-alarms'
 
 
 export type AppSyncAlarmConfig = {
