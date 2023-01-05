@@ -4,6 +4,7 @@ import { test } from 'tap'
 import _ from 'lodash'
 import template from './event.json'
 import esmock from 'esmock'
+import { CloudFormationTemplate } from "../../core/cf-template.d";
 const event = { fragment: template, templateParameterValues: { stack: 'sam-test-stack-project' } }
 
 let testState = {}
@@ -14,7 +15,7 @@ test('should mock slic-watch-core/dashboard ', async () => {
       // @ts-ignore
       testState.dashboardCalled = true
       return {
-        addDashboard: (cfTemplate) => {
+        addDashboard: (cfTemplate: CloudFormationTemplate) => {
           // @ts-ignore
           testState.addDashboardCfTemplate = cfTemplate
         }

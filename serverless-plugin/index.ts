@@ -9,8 +9,9 @@ import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from 'slic-
 import defaultConfig from 'slic-watch-core/default-config'
 import CloudFormationTemplate from 'slic-watch-core/cf-template'
 import * as logging from 'slic-watch-core/logging'
+import log from './serverless-v2-logger'
 
-import ServerlessError from 'serverless/lib/serverless-error'
+import Serverless from 'serverless'
 
 export default class ServerlessPlugin {
   /**
@@ -27,14 +28,13 @@ export default class ServerlessPlugin {
     if (logger) {
       logging.setLogger(logger)
     } else {
-      // Use serverless v2 logger
-      logging.setLogger(require('./serverless-v2-logger')(serverless))
+      logging.setLogger(log(serverless))
     }
     // @ts-ignore
     this.providerNaming = serverless.providers.aws.naming
 
     if (serverless.service.provider.name !== 'aws') {
-      throw new ServerlessError('SLIC Watch only supports AWS')
+      throw new Serverless('SLIC Watch only supports AWS')
     }
 
     if (serverless.configSchemaHandler) {
@@ -62,7 +62,7 @@ export default class ServerlessPlugin {
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
-      throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+      throw new Serverless('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
     const alarmActions = []

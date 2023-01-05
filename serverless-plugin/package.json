@@ -14,8 +14,9 @@
     "prepublish": "cp ../README.md README.md"
   },
   "devDependencies": {
+    "@types/serverless": "^3.12.9",
     "esmock": "^2.1.0",
-    "serverless": "^3.16.0"
+    "ts-node": "^10.9.1"
   },
   "peerDependencies": {
     "serverless": "^2.60 || ^3.16.0"
@@ -25,7 +26,7 @@
   },
   "license": "Apache",
   "dependencies": {
-    "ajv": "^8.9.0",
+    "ajv": "^8.11.0",
     "case": "^1.6.3",
     "lodash": "^4.17.21",
     "slic-watch-core": "^2.0.0-rc4",

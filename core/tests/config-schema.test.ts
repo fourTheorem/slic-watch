@@ -1,5 +1,5 @@
 'use strict'
-import Ajv from 'ajv'
+import Ajv from 'ajv/lib/core'
 import { test } from 'tap'
 
 import defaultConfig from '../default-config'
@@ -12,7 +12,6 @@ test('Default config conforms to the config schema', (t) => {
   }
   
   const ajv = new Ajv({
-    // @ts-ignore
     unicodeRegExp: false
   })
   const slicWatchValidate = ajv.compile(slicWatchSchema)
@@ -35,7 +34,6 @@ test('Default config conforms to the config schema without topicArn', (t) => {
   }
 
   const ajv = new Ajv({
-    // @ts-ignore
     unicodeRegExp: false
   })
   const slicWatchValidate = ajv.compile(slicWatchSchema)

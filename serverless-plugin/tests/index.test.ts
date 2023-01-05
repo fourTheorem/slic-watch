@@ -2,7 +2,7 @@
 
 import _ from 'lodash'
 import esmock from 'esmock'
-import ServerlessError from 'serverless/lib/serverless-error'
+import Serverless from 'serverless'
 import { test } from 'tap'
 import { getLogger } from 'slic-watch-core/logging'
 
@@ -32,7 +32,7 @@ const testCfTemplate = {
 let testState = {}
 test('should mock slic-watch-core/dashboard ', async () => {
   
-  const ServerlessPlugin = esmock('../index', {
+  const ServerlessPlugin = await esmock('../index', {
     'slic-watch-core/dashboard': () => {
       // @ts-ignore
       testState.dashboardCalled = true
@@ -219,7 +219,7 @@ test('should mock slic-watch-core/dashboard ', async () => {
         },
         {}
       )
-      t.throws(() => plugin.createSlicWatchResources(), ServerlessError)
+      t.throws(() => plugin.createSlicWatchResources(), Serverless)
       t.end()
     })
 
