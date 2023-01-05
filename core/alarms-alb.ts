@@ -2,11 +2,19 @@
 
 import { makeResourceName, getStatisticName }from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type AlbAlarmConfig = {
+  config?: Config
+  HTTPCode_ELB_5XX_Count: Config,
+  RejectedConnectionCount: Config
+}
+
 
 /**
- * @param {object} albAlarmConfig The fully resolved alarm configuration
+ * albAlarmConfig The fully resolved alarm configuration
  */
-export default function ALBAlarms (albAlarmConfig , context) {
+export default function ALBAlarms (albAlarmConfig: AlbAlarmConfig, context: Context) {
   return {
     createALBAlarms
   }

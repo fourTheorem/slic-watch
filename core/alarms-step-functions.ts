@@ -1,10 +1,18 @@
 'use strict'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type SfAlarmsConfig = {
+  config?: Config
+  ExecutionThrottled: Config
+  ExecutionsFailed: Config
+  ExecutionsTimedOut: Config
+}
 
 /**
  * @param {object} sfAlarmConfig The fully resolved States alarm configuration
  */
-export default function StatesAlarms (sfAlarmConfig, context) {
+export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Context) {
   return {
     createStatesAlarms
   }

@@ -1,6 +1,6 @@
 'use strict'
 
-import albAlarms from '../alarms-alb'
+import albAlarms, { AlbAlarmConfig } from '../alarms-alb'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {
@@ -31,7 +31,7 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmConfig) {
+  function createAlarmResources (elbAlarmConfig: AlbAlarmConfig) {
     const { createALBAlarms } = albAlarms(elbAlarmConfig, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBAlarms(cfTemplate)

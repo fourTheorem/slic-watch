@@ -3,32 +3,21 @@
 import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from './util'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
 
-
-type Config ={
-  enabled: boolean,
-  Period: number,
-  EvaluationPeriods: number,
-  ComparisonOperator: string,
-  Static: string,
-  Threshold: number
-}
 
 export type AlbTargetAlarmConfig = {
-  enabled: boolean,
-  Period: number,
-  EvaluationPeriods: number,
-  ComparisonOperator: string,
-  HTTPCode_Target_5XX_Count: Config,
-  UnHealthyHostCount: Config,
-  LambdaInternalError: Config,
+  config?: Config
+  HTTPCode_Target_5XX_Count: Config
+  UnHealthyHostCount: Config
+  LambdaInternalError: Config
   LambdaUserError: Config
 }
 
 /**
  * The fully resolved alarm configuration
  */
-export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConfig, context) {
+export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConfig, context: Context) {
   return {
     createALBTargetAlarms
   }

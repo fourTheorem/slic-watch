@@ -1,11 +1,18 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type EventsAlarmsConfig = {
+  config?: Config
+  FailedInvocations: Config,
+  ThrottledRules: Config
+}
 
 /**
  * The fully resolved alarm configuration
  */
-export default function eventsAlarms (eventsAlarmsConfig, context) {
+export default function eventsAlarms (eventsAlarmsConfig:EventsAlarmsConfig, context: Context) {
   return {
     createRuleAlarms
   }

@@ -2,6 +2,18 @@
 
 import { makeResourceName, getStatisticName } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+
+export type KinesisAlarmConfig = {
+  config?: Config
+  'GetRecords.IteratorAgeMilliseconds': Config,
+  ReadProvisionedThroughputExceeded: Config
+  WriteProvisionedThroughputExceeded: Config
+  'PutRecord.Success': Config
+  'PutRecords.Success': Config
+  'GetRecords.Success': Config
+}
 
 const kinesisAlarmTypes = {
   StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
@@ -15,7 +27,9 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmConfig , context) {
+export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig
+
+   , context: Context) {
   return {
     createKinesisAlarms
   }

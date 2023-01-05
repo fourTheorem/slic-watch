@@ -2,11 +2,18 @@
 
 import { resolveEcsClusterNameAsCfn } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type EcsAlarmsConfig = {
+  config?: Config
+  MemoryUtilization: Config
+  CPUUtilization: Config
+}
 
 /**
- * @param {object} ecsAlarmsConfig The fully resolved alarm configuration
+ * ecsAlarmsConfig The fully resolved alarm configuration
  */
-export default function ecsAlarms (ecsAlarmsConfig , context) {
+export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context) {
   return {
     createECSAlarms
   }

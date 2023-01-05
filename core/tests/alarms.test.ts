@@ -12,6 +12,7 @@ test('Alarms create all service alarms', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
+  // @ts-ignore
   const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
@@ -34,6 +35,7 @@ test('Alarms create all ALB service alarms', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
+  // @ts-ignore
   const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
@@ -62,6 +64,7 @@ test('Alarms are not created when disabled globally', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
+  // @ts-ignore
   const { addAlarms } = alarms(config, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
 

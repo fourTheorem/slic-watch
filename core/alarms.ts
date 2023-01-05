@@ -2,6 +2,8 @@
 
 import { cascade } from './cascading-config'
 import { applyAlarmConfig } from './function-config'
+import {  AllAlarmsConfig, FunctionAlarmConfigs, Context } from "./default-config.d";
+import { CloudFormationTemplate } from "./cf-template.d";
 
 import lambdaAlarms from './alarms-lambda'
 import apiGatewayAlarms from './alarms-api-gateway'
@@ -16,7 +18,7 @@ import albAlarms from './alarms-alb'
 import albTargetAlarms from './alarms-alb-target-group'
 import appSyncAlarms from './alarms-appsync'
 
-export default function alarms (alarmConfig, functionAlarmConfigs, context) {
+export default function alarms (alarmConfig:AllAlarmsConfig , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   const {
     // @ts-ignore
     ApiGateway: apiGwConfig,
@@ -44,7 +46,8 @@ export default function alarms (alarmConfig, functionAlarmConfigs, context) {
     AppSync: appSyncConfig
   } = cascade(alarmConfig)
 
-  const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs)
+  const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs )
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
@@ -67,7 +70,8 @@ export default function alarms (alarmConfig, functionAlarmConfigs, context) {
    *
    * A CloudFormation template object
    */
-  function addAlarms (cfTemplate) {
+  function addAlarms (cfTemplate: CloudFormationTemplate) {
+    // @ts-ignore
     if (alarmConfig.enabled) {
       createLambdaAlarms(cfTemplate)
       apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)

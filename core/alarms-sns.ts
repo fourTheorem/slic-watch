@@ -1,11 +1,18 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type SnsAlarmsConfig = {
+  config?: Config
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': Config,
+  NumberOfNotificationsFailed: Config
+}
 
 /**
- * @param {object} snsAlarmsConfig The fully resolved alarm configuration
+ * snsAlarmsConfig The fully resolved alarm configuration
  */
-export default function snsAlarms (snsAlarmsConfig, context) {
+export default function snsAlarms (snsAlarmsConfig:SnsAlarmsConfig, context: Context) {
   return {
     createSNSAlarms
   }

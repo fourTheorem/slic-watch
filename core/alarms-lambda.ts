@@ -1,18 +1,27 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
 
 import { getLogger } from './logging'
 const logging = getLogger()
 
+export type FunctionAlarmConfigs = {
+  config?: Config
+  Errors: Config,
+  ThrottlesPc: Config
+  DurationPc: Config
+  Invocations: Config
+  IteratorAge: Config
+}
 
 
 /**
- * @param {object} functionAlarmConfigs The cascaded Lambda alarm configuration with
+ * functionAlarmConfigs The cascaded Lambda alarm configuration with
  *                                      function-specific overrides by function logical ID
- * @param {object} context Deployment context (alarmActions)
+ * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmConfigs, context) {
+export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   return {
     createLambdaAlarms
   }

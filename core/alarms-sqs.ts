@@ -1,10 +1,18 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type SqsAlarmsConfig = {
+  config?: Config
+  AgeOfOldestMessage: Config,
+  InFlightMessagesPc: Config
+}
+
 /**
  * @param {object} sqsAlarmsConfig The fully resolved alarm configuration
  */
-export default function sqsAlarms (sqsAlarmsConfig, context) {
+export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Context) {
   return {
     createSQSAlarms
   }

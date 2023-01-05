@@ -46,6 +46,7 @@ test('AWS Lambda alarms are created', (t) => {
     // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -169,6 +170,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     // @ts-ignore
     albFuncAlarmConfigs[funcLogicalId] = albAlarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmConfigs, testContext)
   createLambdaAlarms(albCf)
   const albAlarmResources = albCf.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -272,6 +274,7 @@ test('Invocation alarms are created if configured', (t) => {
     // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -324,6 +327,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   t.throws(() => createLambdaAlarms(cfTemplate), { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
@@ -382,6 +386,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
       // @ts-ignore
       funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
     }
+    // @ts-ignore
     const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
     createLambdaAlarms(cfTemplate)
     const alarmResources = cfTemplate.getResourcesByType(
@@ -421,6 +426,7 @@ test('Lambda alarms are not created when disabled globally', (t) => {
     // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
@@ -463,6 +469,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
     // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -502,6 +509,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
     alarmConfig.Lambda, {
       HelloLambdaFunction: { Lambda: { enabled: false } }
     })
+    // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(disabledFuncAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -522,6 +530,7 @@ test('AWS Lambda alarms are not created if function configuration is not provide
     }
   })
   const funcAlarmConfigs = {} // No function configuration as in the case where functions are not defined in serverless.yml:functions
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -541,6 +550,7 @@ test('Duration alarms are created if no timeout is specified', (t) => {
     // @ts-ignore
     delete resource.Properties.Timeout
   }
+  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 

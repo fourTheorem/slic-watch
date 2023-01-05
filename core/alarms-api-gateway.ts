@@ -2,11 +2,19 @@
 
 import { makeResourceName, getStatisticName, resolveRestApiNameAsCfn, resolveRestApiNameForSub } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type ApiGwAlarmConfig = {
+  config?: Config
+  '5XXError': Config
+  '4XXError': Config
+  Latency: Config
+}
 
 /**
- * @param {object} apiGwAlarmConfig The fully resolved alarm configuration
+ * apiGwAlarmConfig The fully resolved alarm configuration
  */
-export default function ApiGatewayAlarms (apiGwAlarmConfig,  context) {
+export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  context: Context) {
   return {
     createApiGatewayAlarms
   }

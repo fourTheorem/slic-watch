@@ -2,11 +2,19 @@
 
 import { makeResourceName, getStatisticName } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+
+export type AppSyncAlarmConfig = {
+  config?: Config
+  '5XXError': Config
+  Latency: Config
+}
 
 /**
- * @param {object} appSyncAlarmConfig The fully resolved alarm configuration
+ * appSyncAlarmConfig The fully resolved alarm configuration
  */
-export default function appSyncAlarms (appSyncAlarmConfig, context) {
+export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, context: Context) {
   return {
     createAppSyncAlarms
   }

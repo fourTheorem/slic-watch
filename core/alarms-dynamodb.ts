@@ -3,12 +3,22 @@ import { type } from 'case';
 import { makeResourceName } from './util'
 
 import { CloudFormationTemplate } from "./cf-template.d";
+import { Config, Context } from './default-config.d'
+
+export type DynamoDbAlarmConfig = {
+  config?: Config
+  ReadThrottleEvents: Config
+  WriteThrottleEvents: Config
+  UserErrors: Config
+  SystemErrors: Config
+}
+
 
 
 /**
- * @param {object} dynamoDbAlarmConfig The fully resolved alarm configuration
+ * dynamoDbAlarmConfig The fully resolved alarm configuration
  */
-export default function DynamoDbAlarms (dynamoDbAlarmConfig, context) {
+export default function DynamoDbAlarms (dynamoDbAlarmConfig:DynamoDbAlarmConfig, context: Context) {
   return {
     createDynamoDbAlarms
   }
