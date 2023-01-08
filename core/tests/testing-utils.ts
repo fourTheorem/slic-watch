@@ -5,7 +5,6 @@ import fs from 'fs'
 import _ from 'lodash'
 import { createRequire } from 'module'
 import {fileURLToPath} from 'url'
-// @ts-ignore
 import YAML from 'yaml'
 
 import { cascade } from '../cascading-config'

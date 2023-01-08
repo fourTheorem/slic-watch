@@ -12,12 +12,12 @@ import { getLogger } from 'slic-watch-core/logging'
 
 const logger = getLogger({ name: 'macroHandler' })
 
-// type Event = {
-//   requestId
-//   status: string
-//   fragment
-// }
-export default async function handler (event) {
+type Event = {
+  requestId
+  status: string
+  fragment
+}
+export async function handler (event: Event) {
   let status = 'success'
   logger.info({ event })
   

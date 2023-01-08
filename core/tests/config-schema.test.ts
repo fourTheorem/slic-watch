@@ -1,32 +1,38 @@
 'use strict'
-import Ajv from 'ajv/lib/core'
+import Ajv from 'ajv'
 import { test } from 'tap'
-
 import defaultConfig from '../default-config'
 import { pluginConfigSchema, slicWatchSchema } from '../config-schema'
 
-test('Default config conforms to the config schema', (t) => {
-  const slicWatchConfig = {
-    ...defaultConfig,
-    topicArn: 'dummy-topic-arn'
-  }
+try {
+  test('Default config conforms to the config schema', (t) => {
+    const slicWatchConfig = {
+      ...defaultConfig,
+      topicArn: 'dummy-topic-arn'
+    }
+    
+    const ajv = new Ajv({
+      unicodeRegExp: false
+    })
+    const slicWatchValidate = ajv.compile(slicWatchSchema)
+    const slicWatchValid = slicWatchValidate(slicWatchConfig)
+    // @ts-ignore
+    t.ok(slicWatchValid, slicWatchValidate.errors)
   
-  const ajv = new Ajv({
-    unicodeRegExp: false
+    const pluginValidate = ajv.compile(pluginConfigSchema)
+    const testConfig = { slicWatch: slicWatchConfig }
+    const pluginValid = pluginValidate(testConfig)
+    // @ts-ignore
+    t.ok(pluginValid, pluginValidate.errors)
+  
+    t.end()
   })
-  const slicWatchValidate = ajv.compile(slicWatchSchema)
-  const slicWatchValid = slicWatchValidate(slicWatchConfig)
-  // @ts-ignore
-  t.ok(slicWatchValid, slicWatchValidate.errors)
+  
+} catch (error) {
+  throw new Error(error);
+  
+}
 
-  const pluginValidate = ajv.compile(pluginConfigSchema)
-  const testConfig = { slicWatch: slicWatchConfig }
-  const pluginValid = pluginValidate(testConfig)
-  // @ts-ignore
-  t.ok(pluginValid, pluginValidate.errors)
-
-  t.end()
-})
 
 test('Default config conforms to the config schema without topicArn', (t) => {
   const slicWatchConfig = {

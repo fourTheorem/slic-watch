@@ -1,7 +1,7 @@
 'use strict'
 // @ts-ignore
 import { type } from 'case';
-import { CloudFormationTemplate, ResourceType } from './cf-template.d'
+import { CloudFormationTemplate, ResourceType, Properties } from './cf-template.d'
 
 import { filterObject } from './util'
 import { getLogger } from './logging'
@@ -9,10 +9,10 @@ import { getLogger } from './logging'
 const logger = getLogger()
 
 // type Resource = {
-//   Name: string
+//   Name?: string
 //   Type: string
-//   Properties: object
-//   DependsOn: []
+//   Properties: Properties
+//   DependsOn?: []
 // }
 
 // type CompiledTemplate = {
@@ -26,7 +26,6 @@ const logger = getLogger()
 //   Resources: Resource []
   
 // }
-
 
 export default function CloudFormationTemplate  (compiledTemplate, additionalResources?):CloudFormationTemplate  {
   /**

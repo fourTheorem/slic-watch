@@ -22,7 +22,8 @@ const supportedAlarms = {
   SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
   Events: ['FailedInvocations', 'ThrottledRules'],
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
-  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
+  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
+  AppSync: ['5XXError', 'Latency']
 }
 
 const supportedWidgets = {
@@ -36,7 +37,8 @@ const supportedWidgets = {
   SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
   Events: ['FailedInvocations', 'ThrottledRules', 'Invocations'],
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
-  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError']
+  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
+  AppSync: ['5XXError', '4XXError', 'Latency','Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
 }
 
 const commonAlarmProperties = {
@@ -113,6 +115,7 @@ const commonWidgetProperties = {
   width: { type: ['integer', 'null'], minimum: 1, maximum: 24 },
   height: { type: ['integer', 'null'], minimum: 1, maximum: 1000 },
   metricPeriod: { type: ['integer', 'null'], minimum: 60, multipleOf: 60 },
+  yAxis: { type: ['string', 'null'], enum: ['left', 'right'] },
   Statistic: {
     type: 'array',
     items: {
