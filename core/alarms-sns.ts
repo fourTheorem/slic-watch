@@ -12,7 +12,7 @@ export type SnsAlarmsConfig = {
 /**
  * snsAlarmsConfig The fully resolved alarm configuration
  */
-export default function snsAlarms (snsAlarmsConfig:SnsAlarmsConfig, context: Context) {
+export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context) {
   return {
     createSNSAlarms
   }
@@ -23,7 +23,7 @@ export default function snsAlarms (snsAlarmsConfig:SnsAlarmsConfig, context: Con
    *
    * A CloudFormation template object
    */
-  function createSNSAlarms (cfTemplate:CloudFormationTemplate) {
+  function createSNSAlarms (cfTemplate: CloudFormationTemplate) {
     const topicResources = cfTemplate.getResourcesByType(
       'AWS::SNS::Topic'
     )
@@ -85,7 +85,7 @@ export default function snsAlarms (snsAlarmsConfig:SnsAlarmsConfig, context: Con
     }
   }
 
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource, config) {
+  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     return {
@@ -106,7 +106,7 @@ export default function snsAlarms (snsAlarmsConfig:SnsAlarmsConfig, context: Con
     }
   }
 
-  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource, config) {
+  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,

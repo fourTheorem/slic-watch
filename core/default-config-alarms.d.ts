@@ -12,17 +12,18 @@ import { SqsAlarmsConfig } from './alarms-sqs'
 import { SfAlarmsConfig } from './alarms-step-functions'
 
 export type AlarmConfig ={
-  enabled?: boolean,
-  Period?: number,
-  EvaluationPeriods?: number,
-  ComparisonOperator?: string,
-  Static?: string,
+  enabled?: boolean
+  Period?: number
+  EvaluationPeriods?: number
+  TreatMissingData: string
+  ComparisonOperator?: string
+  Statistic?: string
   ExtendedStatistic?: string
   Threshold?: number
 }
 
 export type AllAlarmsConfig = {
-  config: Config
+  config: AlarmConfig
   alarmsConfig: AlarmsConfig
 }
 

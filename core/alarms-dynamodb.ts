@@ -18,7 +18,7 @@ export type DynamoDbAlarmConfig = {
 /**
  * dynamoDbAlarmConfig The fully resolved alarm configuration
  */
-export default function DynamoDbAlarms (dynamoDbAlarmConfig:DynamoDbAlarmConfig, context: Context) {
+export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig, context: Context) {
   return {
     createDynamoDbAlarms
   }

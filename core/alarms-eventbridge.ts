@@ -12,7 +12,7 @@ export type EventsAlarmsConfig = {
 /**
  * The fully resolved alarm configuration
  */
-export default function eventsAlarms (eventsAlarmsConfig:EventsAlarmsConfig, context: Context) {
+export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, context: Context) {
   return {
     createRuleAlarms
   }
@@ -85,7 +85,7 @@ export default function eventsAlarms (eventsAlarmsConfig:EventsAlarmsConfig, con
     }
   }
 
-  function createFailedInvocationsAlarm (logicalId: string, ruleResource, config) {
+  function createFailedInvocationsAlarm (logicalId: string, ruleResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     return {
@@ -106,7 +106,7 @@ export default function eventsAlarms (eventsAlarmsConfig:EventsAlarmsConfig, con
     }
   }
 
-  function createThrottledRulesAlarm (logicalId: string, ruleResource, config) {
+  function createThrottledRulesAlarm (logicalId: string, ruleResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,

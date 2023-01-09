@@ -14,7 +14,7 @@ export type ApiGwAlarmConfig = {
 /**
  * apiGwAlarmConfig The fully resolved alarm configuration
  */
-export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  context: Context) {
+export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, context: Context) {
   return {
     createApiGatewayAlarms
   }
@@ -24,7 +24,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  c
    * based on the resources found within
    *A CloudFormation template object
    */
-  function createApiGatewayAlarms (cfTemplate:CloudFormationTemplate) {
+  function createApiGatewayAlarms (cfTemplate: CloudFormationTemplate) {
     const apiResources = cfTemplate.getResourcesByType(
       'AWS::ApiGateway::RestApi'
     )
@@ -100,7 +100,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  c
     }
   }
 
-  function create5XXAlarm (apiResourceName: string, apiResource, config) {
+  function create5XXAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -123,7 +123,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  c
     }
   }
 
-  function create4XXAlarm (apiResourceName: string, apiResource, config) {
+  function create4XXAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -146,7 +146,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig:ApiGwAlarmConfig ,  c
     }
   }
 
-  function createLatencyAlarm (apiResourceName: string, apiResource, config) {
+  function createLatencyAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold

@@ -23,7 +23,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
    *
    * A CloudFormation template object
    */
-  function createSQSAlarms (cfTemplate:CloudFormationTemplate) {
+  function createSQSAlarms (cfTemplate: CloudFormationTemplate) {
     const queueResources = cfTemplate.getResourcesByType(
       'AWS::SQS::Queue'
     )
@@ -94,7 +94,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     }
   }
 
-  function createInFlightMsgsAlarm (logicalId: string, queueResource, config) {
+  function createInFlightMsgsAlarm (logicalId: string, queueResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
@@ -119,7 +119,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     }
   }
 
-  function createOldestMsgAgeAlarm (logicalId: string, queueResource, config) {
+  function createOldestMsgAgeAlarm (logicalId: string, queueResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,

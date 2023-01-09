@@ -18,7 +18,7 @@ import albAlarms from './alarms-alb'
 import albTargetAlarms from './alarms-alb-target-group'
 import appSyncAlarms from './alarms-appsync'
 
-export default function alarms (alarmConfig:AllAlarmsConfig , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function alarms (alarmConfig: AllAlarmsConfig , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   const {
     // @ts-ignore
     ApiGateway: apiGwConfig,

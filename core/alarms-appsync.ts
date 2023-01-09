@@ -25,7 +25,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
    *
    * A CloudFormation template object
    */
-  function createAppSyncAlarms (cfTemplate:CloudFormationTemplate) {
+  function createAppSyncAlarms (cfTemplate: CloudFormationTemplate) {
     const appSyncResources = cfTemplate.getResourcesByType(
       'AWS::AppSync::GraphQLApi'
     )
@@ -91,7 +91,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     }
   }
 
-  function create5XXAlarm (appSyncResourceName: string, appSyncResource, config) {
+  function create5XXAlarm (appSyncResourceName: string, appSyncResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     return {
@@ -112,7 +112,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     }
   }
 
-  function createLatencyAlarm (appSyncResourceName: string, appSyncResource, config) {
+  function createLatencyAlarm (appSyncResourceName: string, appSyncResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     return {

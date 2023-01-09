@@ -24,7 +24,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
    *
    * A CloudFormation template object
    */
-  function createECSAlarms (cfTemplate:CloudFormationTemplate) {
+  function createECSAlarms (cfTemplate: CloudFormationTemplate) {
     const serviceResources = cfTemplate.getResourcesByType(
       'AWS::ECS::Service'
     )
@@ -90,7 +90,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config) {
+  function createMemoryUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
@@ -111,7 +111,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config) {
+  function createCPUUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchECSCPUAlarm${logicalId}`,

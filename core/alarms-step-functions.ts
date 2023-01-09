@@ -23,7 +23,7 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
    *
    * A CloudFormation template object
    */
-  function createStatesAlarms (cfTemplate:CloudFormationTemplate) {
+  function createStatesAlarms (cfTemplate: CloudFormationTemplate) {
     const smResources = cfTemplate.getResourcesByType(
       'AWS::StepFunctions::StateMachine'
     )

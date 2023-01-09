@@ -17,7 +17,7 @@ export type AlbTargetAlarmConfig = {
 /**
  * The fully resolved alarm configuration
  */
-export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConfig, context: Context) {
+export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmConfig, context: Context) {
   return {
     createALBTargetAlarms
   }
@@ -28,7 +28,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
    *
    * A CloudFormation template object
    */
-  function createALBTargetAlarms (cfTemplate:CloudFormationTemplate) {
+  function createALBTargetAlarms (cfTemplate: CloudFormationTemplate) {
     const targetGroupResources = cfTemplate.getResourcesByType(
       'AWS::ElasticLoadBalancingV2::TargetGroup'
     )
@@ -80,7 +80,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
   }
 
   function createLoadBalancerTargetAlarm (
-    alarmName:string,
+    alarmName: string,
     alarmDescription: string,
     targetGroupResourceName: string, // Logical ID of the CloudFormation Target Group Resource
     loadBalancerLogicalId: string,
@@ -120,7 +120,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
     }
   }
 
-  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
+  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'HTTPCodeTarget5XXCount'),
@@ -141,7 +141,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
     }
   }
 
-  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
+  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'UnHealthyHostCount'),
@@ -162,7 +162,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
     }
   }
 
-  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
+  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaInternalError'),
@@ -183,7 +183,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig:AlbTargetAlarmConf
     }
   }
 
-  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config) {
+  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource, loadBalancerLogicalID, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaUserError'),

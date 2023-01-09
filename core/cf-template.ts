@@ -1,6 +1,6 @@
 'use strict'
 
-import { CloudFormationTemplate, ResourceType, Properties } from './cf-template.d'
+import { CloudFormationTemplate, ResourceType, Properties, AlarmMetric } from './cf-template.d'
 
 import { filterObject } from './util'
 import { getLogger } from './logging'
@@ -25,7 +25,7 @@ export type AdditionalResources = {
   
 }
 
-export default function CloudFormationTemplate  (compiledTemplate: CompiledTemplate, additionalResources?: AdditionalResources):CloudFormationTemplate  {
+export default function CloudFormationTemplate  (compiledTemplate: CompiledTemplate, additionalResources?: AdditionalResources): CloudFormationTemplate  {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -45,15 +45,15 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
   }
 
-  function addResource(resourceName: string, resource: object) {
-    compiledTemplate.Resources[resourceName] = resource
+  function addResource(resourceName: string, resource: object): AlarmMetric {
+    return compiledTemplate.Resources[resourceName] = resource
   }
 
-  function getResourceByName (resourceName:string):ResourceType {
+  function getResourceByName (resourceName:string): ResourceType {
     return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
   }
 
-  function getResourcesByType (type:string):ResourceType  {
+  function getResourcesByType (type:string): ResourceType  {
     
     return filterObject(
       {

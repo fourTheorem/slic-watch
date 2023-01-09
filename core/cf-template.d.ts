@@ -6,7 +6,7 @@
  * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
 export interface CloudFormationTemplate {
-    addResource: (resourceName: string, resource: object) => void;
+    addResource: (resourceName: string, resource: object) => AlarmMetric;
     getResourceByName: (resourceName: string) => ResourceType;
     getResourcesByType: (type: string) => ResourceType;
     getSourceObject: () => object;
@@ -14,7 +14,7 @@ export interface CloudFormationTemplate {
     resolveFunctionResourceName: (func: object) => object;
 }
 
-export type Metric = {
+export type AlarmMetric = {
   resourceName?: string
   resource?: CfResource
 }
@@ -33,7 +33,7 @@ export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayPro
  & EventBridgeProperties & KinesisProperties & LambdaProperties & SnsProperties & SqsProperties & CommonAlarmProperties
 
 
- // Common Alarm
+ // Common Alarm Properties
  export type CommonAlarmProperties = {
   ActionsEnabled: boolean
   AlarmActions: string[]
@@ -41,6 +41,7 @@ export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayPro
   AlarmDescription: string
   EvaluationPeriods: number
   ComparisonOperator: string
+  Threshold: number
   TreatMissingData: string
   Dimensions: string[]
   MetricName: string
@@ -48,7 +49,6 @@ export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayPro
   Period: number
   Statistic: string
   ExtendedStatistic?: string
-
 }
 
 

@@ -25,7 +25,7 @@ export default function ALBAlarms (albAlarmConfig: AlbAlarmConfig, context: Cont
    *
    *  A CloudFormation template object
    */
-  function createALBAlarms (cfTemplate:CloudFormationTemplate) {
+  function createALBAlarms (cfTemplate: CloudFormationTemplate) {
     const loadBalancerResources = cfTemplate.getResourcesByType(
       'AWS::ElasticLoadBalancingV2::LoadBalancer'
     )
@@ -90,7 +90,7 @@ export default function ALBAlarms (albAlarmConfig: AlbAlarmConfig, context: Cont
     }
   }
 
-  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName:string, loadBalancerResource, config) {
+  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', loadBalancerResourceName, 'HTTPCodeELB5XXCount'),
@@ -110,7 +110,7 @@ export default function ALBAlarms (albAlarmConfig: AlbAlarmConfig, context: Cont
     }
   }
 
-  function createRejectedConnectionCountAlarm (loadBalancerResourceName:string, loadBalancerResource, config) {
+  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: makeResourceName('LoadBalancer', loadBalancerResourceName, 'RejectedConnectionCount'),

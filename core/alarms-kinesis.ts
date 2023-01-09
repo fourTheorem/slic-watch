@@ -27,9 +27,7 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig
-
-   , context: Context) {
+export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, context: Context) {
   return {
     createKinesisAlarms
   }
@@ -40,7 +38,7 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig
    *
    *  A CloudFormation template object
    */
-  function createKinesisAlarms (cfTemplate:CloudFormationTemplate) {
+  function createKinesisAlarms (cfTemplate: CloudFormationTemplate) {
     const streamResources = cfTemplate.getResourcesByType(
       'AWS::Kinesis::Stream'
     )
@@ -61,7 +59,7 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig
     }
   }
 
-  function createStreamAlarm (streamLogicalId: string, streamResource, type: string, metric: string, config) {
+  function createStreamAlarm (streamLogicalId: string, streamResource, type: string, metric: string, config: AlarmConfig) {
     const threshold = config.Threshold
     const metricProperties = {
       Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } }],

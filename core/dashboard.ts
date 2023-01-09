@@ -25,7 +25,7 @@ const logger = getLogger()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig:DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs, context: Context) {
+export default function dashboard (dashboardConfig: DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs, context: Context) {
   const {
     // @ts-ignore
     timeRange,
@@ -259,7 +259,7 @@ export default function dashboard (dashboardConfig:DashboardConfig , functionDas
    *  The config object for a specific service within the dashboard
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
-  function getConfiguredMetrics (serviceDashConfig:DashboardConfig) {
+  function getConfiguredMetrics (serviceDashConfig: DashboardConfig) {
     const extractedConfig = {}
     for (const [metric, metricConfig] of Object.entries(serviceDashConfig)) {
       if (typeof metricConfig === 'object') {
