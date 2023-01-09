@@ -2,13 +2,13 @@
 
 import { makeResourceName, getStatisticName } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 
 export type AppSyncAlarmConfig = {
-  config?: Config
-  '5XXError': Config
-  Latency: Config
+  config?: AlarmConfig
+  '5XXError': AlarmConfig
+  Latency: AlarmConfig
 }
 
 /**

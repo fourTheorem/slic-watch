@@ -2,12 +2,12 @@
 
 import { makeResourceName, getStatisticName }from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type AlbAlarmConfig = {
-  config?: Config
-  HTTPCode_ELB_5XX_Count: Config,
-  RejectedConnectionCount: Config
+  config?: AlarmConfig
+  HTTPCode_ELB_5XX_Count: AlarmConfig,
+  RejectedConnectionCount: AlarmConfig
 }
 
 

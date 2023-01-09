@@ -2,13 +2,13 @@
 
 import { makeResourceName, getStatisticName, resolveRestApiNameAsCfn, resolveRestApiNameForSub } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type ApiGwAlarmConfig = {
-  config?: Config
-  '5XXError': Config
-  '4XXError': Config
-  Latency: Config
+  config?: AlarmConfig
+  '5XXError': AlarmConfig
+  '4XXError': AlarmConfig
+  Latency: AlarmConfig
 }
 
 /**

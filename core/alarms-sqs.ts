@@ -1,12 +1,12 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SqsAlarmsConfig = {
-  config?: Config
-  AgeOfOldestMessage: Config,
-  InFlightMessagesPc: Config
+  config?: AlarmConfig
+  AgeOfOldestMessage: AlarmConfig,
+  InFlightMessagesPc: AlarmConfig
 }
 
 /**

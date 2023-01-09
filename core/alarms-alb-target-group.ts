@@ -3,15 +3,15 @@
 import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from './util'
 
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 
 export type AlbTargetAlarmConfig = {
-  config?: Config
-  HTTPCode_Target_5XX_Count: Config
-  UnHealthyHostCount: Config
-  LambdaInternalError: Config
-  LambdaUserError: Config
+  config?: AlarmConfig
+  HTTPCode_Target_5XX_Count: AlarmConfig
+  UnHealthyHostCount: AlarmConfig
+  LambdaInternalError: AlarmConfig
+  LambdaUserError: AlarmConfig
 }
 
 /**

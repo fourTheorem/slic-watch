@@ -1,28 +1,28 @@
 'use strict'
 
-import CloudFormationTemplate from '../cf-template'
+import CloudFormationTemplate, {CompiledTemplate,AdditionalResources } from '../cf-template'
 
 import { test } from 'tap'
 
-const emptyTemplate = {
-  Resources: {}
+const emptyTemplate:CompiledTemplate  = {
+  Resources: []
 }
 
 test('Source is returned', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate, {})
+  const template = CloudFormationTemplate(emptyTemplate)
   t.same(template.getSourceObject(), emptyTemplate)
   t.end()
 })
 
 test('Function resource name can be resolved using Ref', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate, {})
+  const template = CloudFormationTemplate(emptyTemplate)
   const resName = template.resolveFunctionResourceName({ Ref: 'res1' })
   t.equal(resName, 'res1')
   t.end()
 })
 
 test('Function resource name can be resolved using name', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate, {})
+  const template = CloudFormationTemplate(emptyTemplate)
   // @ts-ignore
   const resName = template.resolveFunctionResourceName('resName1')
   t.equal(resName, 'resName1')
@@ -30,10 +30,10 @@ test('Function resource name can be resolved using name', (t) => {
 })
 
 test('Resource can be resolved by type from compiled template', (t) => {
-  const compiledTemplate = {
-    Resources: {
-      a: { Type: 'AWS::DynamoDB::Table' }
-    }
+  const compiledTemplate:CompiledTemplate = {
+    Resources: [
+      { Type: 'AWS::DynamoDB::Table' }
+    ]
   }
   const template = CloudFormationTemplate(compiledTemplate, {})
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')
@@ -44,39 +44,45 @@ test('Resource can be resolved by type from compiled template', (t) => {
 
 test('Resource can be resolved by type from template with additional resource ', (t) => {
   const compiledTemplate = {
-    Resources: {
-      a: { Type: 'AWS::DynamoDB::Table' }
-    }
+    Resources: [
+      { Type: 'AWS::DynamoDB::Table' }
+    ]
   }
-  const template = CloudFormationTemplate(compiledTemplate, {b: { Type: 'AWS::SQS::Queue' }}) 
-
+  const additionalResources: AdditionalResources = {
+    Resources:[
+      { Type: 'AWS::SQS::Queue' }
+    ]
+  }
+  const template = CloudFormationTemplate(compiledTemplate, additionalResources) 
+  
   const tableResources = template.getResourcesByType('AWS::DynamoDB::Table')
-  t.equal(Object.keys(tableResources).length, 1)
-  t.equal(Object.values(tableResources)[0].Type, 'AWS::DynamoDB::Table')
+  for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
+    t.equal(tableResource.Type, 'AWS::DynamoDB::Table')
+  }
   const queueResources = template.getResourcesByType('AWS::SQS::Queue')
-  t.equal(Object.keys(queueResources).length, 1)
-  t.equal(Object.values(queueResources)[0].Type, 'AWS::SQS::Queue')
-
-  const queueResource = template.getResourceByName('b')
-  // @ts-ignore
-  t.equal(queueResource.Type, 'AWS::SQS::Queue')
+  for (const [queueResourceeName, queueResource] of Object.entries(queueResources)) {
+    t.equal(queueResource.Type, 'AWS::SQS::Queue')
+  } 
   t.end()
 })
 
 test('Resource can be resolved by type from service resources', (t) => {
-  const compiledTemplate = {}
-  const serviceResources = {
-    a: { Type: 'AWS::DynamoDB::Table' }
+  const compiledTemplate: CompiledTemplate = {}
+  const serviceResources:AdditionalResources = {
+    Resources: [
+      { Type: 'AWS::DynamoDB::Table' }
+    ]
   }
   const template = CloudFormationTemplate(compiledTemplate, serviceResources)
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')
-  t.equal(Object.keys(resources).length, 1)
-  t.equal(Object.values(resources)[0].Type, 'AWS::DynamoDB::Table')
+  for (const [tableResourceName, tableResource] of Object.entries(resources)) {
+    t.equal(tableResource.Type, 'AWS::DynamoDB::Table')
+  }
   t.end()
 })
 
 test('Function resource name can be resolved using GetAtt', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate, {})
+  const template = CloudFormationTemplate(emptyTemplate)
   const resName = template.resolveFunctionResourceName({
     'Fn::GetAtt': ['resName2', 'Arn']
   })
@@ -85,7 +91,7 @@ test('Function resource name can be resolved using GetAtt', (t) => {
 })
 
 test('Function resource name is undefined otherwise', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate, {})
+  const template = CloudFormationTemplate(emptyTemplate)
   const resName = template.resolveFunctionResourceName({})
   t.equal(typeof resName, 'undefined')
   t.end()

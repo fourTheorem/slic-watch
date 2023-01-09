@@ -25,6 +25,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   })
 
   test('returns empty list for non-existent listener', (t) => {
+    // @ts-ignore
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', CloudFormationTemplate({}))
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
@@ -33,6 +34,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('includes an ALB from the DefaultActions', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
           Properties: {
@@ -59,6 +61,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('excludes DefaultActions with a literal load balancer ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
           Properties: {
@@ -84,6 +87,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('finds load balancers through listener rule target groups', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -114,6 +118,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules with no load balancer', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -135,6 +140,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules with no actions', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -151,6 +157,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules a literal listener ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -168,6 +175,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listeners with a literal load balancer ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
+        // @ts-ignore
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {

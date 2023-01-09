@@ -1,12 +1,12 @@
 'use strict'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SfAlarmsConfig = {
-  config?: Config
-  ExecutionThrottled: Config
-  ExecutionsFailed: Config
-  ExecutionsTimedOut: Config
+  config?: AlarmConfig
+  ExecutionThrottled: AlarmConfig
+  ExecutionsFailed: AlarmConfig
+  ExecutionsTimedOut: AlarmConfig
 }
 
 /**

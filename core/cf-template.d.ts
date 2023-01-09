@@ -7,7 +7,7 @@
  */
 export interface CloudFormationTemplate {
     addResource: (resourceName: string, resource: object) => void;
-    getResourceByName: (resourceName: string) => object;
+    getResourceByName: (resourceName: string) => ResourceType;
     getResourcesByType: (type: string) => ResourceType;
     getSourceObject: () => object;
     getEventSourceMappingFunctions: () => object;

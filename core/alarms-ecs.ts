@@ -2,12 +2,12 @@
 
 import { resolveEcsClusterNameAsCfn } from './util'
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
-  config?: Config
-  MemoryUtilization: Config
-  CPUUtilization: Config
+  config?: AlarmConfig
+  MemoryUtilization: AlarmConfig
+  CPUUtilization: AlarmConfig
 }
 
 /**

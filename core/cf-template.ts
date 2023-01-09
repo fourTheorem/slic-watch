@@ -1,6 +1,5 @@
 'use strict'
-// @ts-ignore
-import { type } from 'case';
+
 import { CloudFormationTemplate, ResourceType, Properties } from './cf-template.d'
 
 import { filterObject } from './util'
@@ -8,26 +7,25 @@ import { getLogger } from './logging'
 
 const logger = getLogger()
 
-// type Resource = {
-//   Name?: string
-//   Type: string
-//   Properties: Properties
-//   DependsOn?: []
-// }
+type Resource = {
+  Type?: string
+  Properties?: Properties
+  DependsOn?: []
+}
 
-// type CompiledTemplate = {
-//   AWSTemplateFormatVersion: string
-//   Description: string
-//   Resources: Resource[] 
-//   Outputs: object
-// }
+export type CompiledTemplate = {
+  AWSTemplateFormatVersion?: string
+  Description?: string
+  Resources?: Resource[] 
+  Outputs?: object
+}
 
-// type AdditionalResources = {
-//   Resources: Resource []
+export type AdditionalResources = {
+  Resources?: Resource []
   
-// }
+}
 
-export default function CloudFormationTemplate  (compiledTemplate, additionalResources?):CloudFormationTemplate  {
+export default function CloudFormationTemplate  (compiledTemplate: CompiledTemplate, additionalResources?: AdditionalResources):CloudFormationTemplate  {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -51,7 +49,7 @@ export default function CloudFormationTemplate  (compiledTemplate, additionalRes
     compiledTemplate.Resources[resourceName] = resource
   }
 
-  function getResourceByName (resourceName:string) {
+  function getResourceByName (resourceName:string):ResourceType {
     return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
   }
 

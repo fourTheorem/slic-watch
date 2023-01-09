@@ -3,14 +3,14 @@ import { type } from 'case';
 import { makeResourceName } from './util'
 
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 export type DynamoDbAlarmConfig = {
-  config?: Config
-  ReadThrottleEvents: Config
-  WriteThrottleEvents: Config
-  UserErrors: Config
-  SystemErrors: Config
+  config?: AlarmConfig
+  ReadThrottleEvents: AlarmConfig
+  WriteThrottleEvents: AlarmConfig
+  UserErrors: AlarmConfig
+  SystemErrors: AlarmConfig
 }
 
 

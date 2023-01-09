@@ -1,18 +1,18 @@
 'use strict'
 
 import { CloudFormationTemplate } from "./cf-template.d";
-import { Config, Context } from './default-config-alarms'
+import { AlarmConfig, Context } from './default-config-alarms'
 
 import { getLogger } from './logging'
 const logging = getLogger()
 
 export type FunctionAlarmConfigs = {
-  config?: Config
-  Errors: Config,
-  ThrottlesPc: Config
-  DurationPc: Config
-  Invocations: Config
-  IteratorAge: Config
+  config?: AlarmConfig
+  Errors: AlarmConfig,
+  ThrottlesPc: AlarmConfig
+  DurationPc: AlarmConfig
+  Invocations: AlarmConfig
+  IteratorAge: AlarmConfig
 }
 
 

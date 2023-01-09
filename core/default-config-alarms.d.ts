@@ -11,7 +11,7 @@ import { SnsAlarmsConfig } from './alarms-sns'
 import { SqsAlarmsConfig } from './alarms-sqs'
 import { SfAlarmsConfig } from './alarms-step-functions'
 
-export type Config ={
+export type AlarmConfig ={
   enabled?: boolean,
   Period?: number,
   EvaluationPeriods?: number,
