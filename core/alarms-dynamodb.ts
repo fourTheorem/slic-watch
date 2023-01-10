@@ -81,7 +81,7 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig
     }
   }
 
-  function createAlarm (identifierSub: string, dimensions , metricName: string, resourceName: string) {
+  function createAlarm (identifierSub: string, dimensions: object[] , metricName: string, resourceName: string) {
     const config = dynamoDbAlarmConfig[metricName]
 
     const resource = {

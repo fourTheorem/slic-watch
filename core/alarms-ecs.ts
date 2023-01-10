@@ -1,7 +1,7 @@
 'use strict'
 
 import { resolveEcsClusterNameAsCfn } from './util'
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
@@ -90,7 +90,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config: AlarmConfig) {
+  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
@@ -111,7 +111,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource, clusterName: string, config: AlarmConfig) {
+  function createCPUUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchECSCPUAlarm${logicalId}`,

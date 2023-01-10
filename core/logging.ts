@@ -1,4 +1,3 @@
-// @ts-ignore
 import pino from 'pino'
 
 let logger

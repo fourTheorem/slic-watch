@@ -1,12 +1,12 @@
 'use strict'
 
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 import { getLogger } from './logging'
 const logging = getLogger()
 
-export type FunctionAlarmConfigs = {
+export type LambdaFunctionAlarmConfigs = {
   config?: AlarmConfig
   Errors: AlarmConfig,
   ThrottlesPc: AlarmConfig
@@ -21,7 +21,7 @@ export type FunctionAlarmConfigs = {
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function LambdaAlarms (functionAlarmConfigs: LambdaFunctionAlarmConfigs, context: Context) {
   return {
     createLambdaAlarms
   }
@@ -155,7 +155,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
    * The Lambda function name
    */
-  function createIteratorAgeAlarm (funcLogicalId: string, funcResource, config: AlarmConfig) {
+  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcLogicalId}`,
@@ -176,7 +176,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource, config: AlarmConfig) {
+  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcLogicalId}`,
@@ -197,7 +197,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource, config: AlarmConfig) {
+  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     const period = config.Period
 
@@ -255,7 +255,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaDurationAlarm (funcLogicalId: string, funcResource, config: AlarmConfig) {
+  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
     const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
 
@@ -278,7 +278,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource, config: AlarmConfig) {
+  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchLambdaInvocationsAlarm${funcLogicalId}`,

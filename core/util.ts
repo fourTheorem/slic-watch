@@ -1,6 +1,6 @@
 'use strict'
-// @ts-ignore
 import stringcase from 'case'
+import { CloudFormationTemplate } from './cf-template.d'
 
 /**
  * Filter an object to produce a new object with entries matching the supplied predicate
@@ -75,7 +75,7 @@ function resolveEcsClusterNameForSub (cluster) {
  * A CloudFormation template instance
  * All Load Balancers CloudFormation logicalIDs
  */
-function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate) {
+function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate) {
   const allLoadBalancerLogicalIds = new Set()
   const allListenerRules = {}
   const listenerResources = cfTemplate.getResourcesByType(
@@ -118,6 +118,7 @@ function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTempla
     if (listenerLogicalId) {
       const listener = cfTemplate.getResourceByName(listenerLogicalId)
       if (listener) {
+        // @ts-ignore
         const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)

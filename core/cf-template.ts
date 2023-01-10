@@ -1,7 +1,7 @@
 'use strict'
 
-import { CloudFormationTemplate, ResourceType, Properties, AlarmMetric } from './cf-template.d'
-
+import { CloudFormationTemplate, ResourceType, Properties, Metric } from './cf-template.d'
+import { FunctionAlarmConfigs } from "./default-config-alarms";
 import { filterObject } from './util'
 import { getLogger } from './logging'
 
@@ -45,7 +45,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
   }
 
-  function addResource(resourceName: string, resource: object): AlarmMetric {
+  function addResource(resourceName: string, resource: object): Metric {
     return compiledTemplate.Resources[resourceName] = resource
   }
 
@@ -64,7 +64,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     )
   }
 
-  function getEventSourceMappingFunctions () {
+  function getEventSourceMappingFunctions ():FunctionAlarmConfigs {
     const eventSourceMappings = getResourcesByType(
       'AWS::Lambda::EventSourceMapping'
     )
@@ -85,7 +85,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     return eventSourceMappingFunctions
   }
 
-  function getSourceObject () {
+  function getSourceObject ():CompiledTemplate {
     return compiledTemplate
   }
 

@@ -1,7 +1,7 @@
 'use strict'
 
 import { cascade } from './cascading-config'
-import { CloudFormationTemplate } from './cf-template.d'
+import { CloudFormationTemplate, ResourceType } from './cf-template.d'
 import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig,
   KinesisDashConfig, SqsDashConfig, EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig,AlbTargetDashConfig,AppSyncDashConfig,
    } from './default-config-dashboard.d'
@@ -275,7 +275,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of CloudFormation RestApi resources by resource name
    */
-  function createApiWidgets (apiResources: object) {
+  function createApiWidgets (apiResources: ResourceType) {
     const apiWidgets = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
@@ -308,7 +308,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of Step Function State Machine resources by resource name
    */
-  function createStateMachineWidgets (smResources) {
+  function createStateMachineWidgets (smResources: ResourceType) {
     const smWidgets = []
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics = []
@@ -345,7 +345,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of DynamoDB table resources by resource name
    */
-  function createDynamoDbWidgets (tableResources: object) {
+  function createDynamoDbWidgets (tableResources: ResourceType) {
     const ddbWidgets = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
@@ -392,7 +392,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object with CloudFormation Kinesis Data Stream resources by resource name
    */
-  function createStreamWidgets (streamResources: object) {
+  function createStreamWidgets (streamResources: ResourceType) {
     const streamWidgets = []
 
     const metricGroups = {
@@ -434,7 +434,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    * Create a set of CloudWatch Dashboard widgets for the SQS resources provided
    * Object with CloudFormation SQS resources by resource name
    */
-  function createQueueWidgets (queueResources: object) {
+  function createQueueWidgets (queueResources: ResourceType) {
     const queueWidgets = []
 
     const metricGroups = {
@@ -480,7 +480,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of ECS Service resources by resource name
    */
-  function createEcsWidgets (ecsServiceResources: object) {
+  function createEcsWidgets (ecsServiceResources: ResourceType) {
     const ecsWidgets = []
     for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties.Cluster)
@@ -520,7 +520,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of SNS Service resources by resource name
    */
-  function createTopicWidgets (topicResources: object) {
+  function createTopicWidgets (topicResources: ResourceType) {
     const topicWidgets = []
     for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics = []
@@ -557,7 +557,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    *  Object of EventBridge Service resources by resource name
    */
-  function createRuleWidgets (ruleResources: object) {
+  function createRuleWidgets (ruleResources: ResourceType) {
     const ruleWidgets = []
     for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics = []
@@ -592,7 +592,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of Application Load Balancer Service resources by resource name
    */
-  function createLoadBalancerWidgets (loadBalancerResources: object) {
+  function createLoadBalancerWidgets (loadBalancerResources: ResourceType) {
     const loadBalancerWidgets = []
     for (const [logicalId] of Object.entries(loadBalancerResources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
@@ -633,7 +633,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: object, cfTemplate) {
+  function createTargetGroupWidgets (targetGroupResources: ResourceType, cfTemplate:CloudFormationTemplate ) {
     const targetGroupWidgets = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
@@ -678,7 +678,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *
    * Object of AppSync Service resources by resource name
    */
-  function createAppSyncWidgets (appSyncResources: object) {
+  function createAppSyncWidgets (appSyncResources: ResourceType) {
     const appSyncWidgets = []
     const metricGroups = {
       API: ['5XXError', '4XXError', 'Latency', 'Requests'],

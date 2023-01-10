@@ -1,6 +1,6 @@
 'use strict'
 
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SqsAlarmsConfig = {
@@ -94,7 +94,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     }
   }
 
-  function createInFlightMsgsAlarm (logicalId: string, queueResource, config: AlarmConfig) {
+  function createInFlightMsgsAlarm (logicalId: string, queueResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
@@ -119,7 +119,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     }
   }
 
-  function createOldestMsgAgeAlarm (logicalId: string, queueResource, config: AlarmConfig) {
+  function createOldestMsgAgeAlarm (logicalId: string, queueResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,

@@ -144,6 +144,10 @@ export type FunctionResources = {
   DependsOn: string[]
 }
 
+export type ApiResources = {
+  Type: string
+}
+
 
 
 

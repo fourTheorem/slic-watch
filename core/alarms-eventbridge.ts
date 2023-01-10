@@ -1,6 +1,6 @@
 'use strict'
 
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EventsAlarmsConfig = {
@@ -85,7 +85,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     }
   }
 
-  function createFailedInvocationsAlarm (logicalId: string, ruleResource, config: AlarmConfig) {
+  function createFailedInvocationsAlarm (logicalId: string, ruleResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     return {
@@ -106,7 +106,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     }
   }
 
-  function createThrottledRulesAlarm (logicalId: string, ruleResource, config: AlarmConfig) {
+  function createThrottledRulesAlarm (logicalId: string, ruleResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,

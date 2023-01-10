@@ -1,6 +1,6 @@
 'use strict'
 
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SnsAlarmsConfig = {
@@ -85,7 +85,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
   }
 
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource, config: AlarmConfig) {
+  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
 
     return {
@@ -106,7 +106,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
   }
 
-  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource, config: AlarmConfig) {
+  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,

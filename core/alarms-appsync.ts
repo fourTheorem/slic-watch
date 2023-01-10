@@ -1,7 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName } from './util'
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 
@@ -91,7 +91,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     }
   }
 
-  function create5XXAlarm (appSyncResourceName: string, appSyncResource, config: AlarmConfig) {
+  function create5XXAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     return {
@@ -112,7 +112,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     }
   }
 
-  function createLatencyAlarm (appSyncResourceName: string, appSyncResource, config: AlarmConfig) {
+  function createLatencyAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     return {

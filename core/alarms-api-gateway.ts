@@ -1,7 +1,7 @@
 'use strict'
 
 import { makeResourceName, getStatisticName, resolveRestApiNameAsCfn, resolveRestApiNameForSub } from './util'
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type ApiGwAlarmConfig = {
@@ -100,7 +100,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     }
   }
 
-  function create5XXAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
+  function create5XXAlarm (apiResourceName: string, apiResource: CfResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -123,7 +123,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     }
   }
 
-  function create4XXAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
+  function create4XXAlarm (apiResourceName: string, apiResource: CfResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -146,7 +146,7 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     }
   }
 
-  function createLatencyAlarm (apiResourceName: string, apiResource, config: AlarmConfig) {
+  function createLatencyAlarm (apiResourceName: string, apiResource: CfResource, config: AlarmConfig) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
