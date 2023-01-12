@@ -41,6 +41,7 @@ const lambda = await esmock('../index', {
 
 test('index', t => {
   t.beforeEach(t => {
+   t.ok(true)
     testState = {}
   })
 

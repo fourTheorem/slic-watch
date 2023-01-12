@@ -10,7 +10,6 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  defaultCfTemplate,
   testContext
 } from './testing-utils'
 

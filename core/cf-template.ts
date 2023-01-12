@@ -72,7 +72,6 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     const eventSourceMappingFunctions = {}
     for (const eventSourceMapping of Object.values(eventSourceMappings)) {
       const funcResourceName = resolveFunctionLogicalId(
-        // @ts-ignore
         eventSourceMapping.Properties.FunctionName
       )
       if (funcResourceName) {

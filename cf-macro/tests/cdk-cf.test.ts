@@ -17,10 +17,8 @@ test('ECS CDK stack', async (t) => {
   const event = {
     fragment: cdkStack
   }
-  // @ts-ignore
   const handlerResponse = await cfMacroHandler.handler(event)
   t.equal(handlerResponse.status, 'success')
-  // @ts-ignore
   const transformedTemplate = CloudFormationTemplate(handlerResponse.fragment)
 
   test('alarms are generated', (t) => {

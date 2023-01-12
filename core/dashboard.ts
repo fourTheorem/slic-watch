@@ -2,9 +2,7 @@
 
 import { cascade } from './cascading-config'
 import { CloudFormationTemplate, ResourceType } from './cf-template.d'
-import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig,
-  KinesisDashConfig, SqsDashConfig, EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig,AlbTargetDashConfig,AppSyncDashConfig,
-   } from './default-config-dashboard.d'
+import { DashboardConfig, FunctionDashboardConfigs,FunctionResources} from './default-config-dashboard.d'
 import { Context } from './default-config-alarms'
 import {
   resolveEcsClusterNameForSub,
@@ -260,7 +258,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
   function getConfiguredMetrics (serviceDashConfig: DashboardConfig) {
-    const extractedConfig = {}
+    const extractedConfig= {}
     for (const [metric, metricConfig] of Object.entries(serviceDashConfig)) {
       if (typeof metricConfig === 'object') {
         extractedConfig[metric] = metricConfig

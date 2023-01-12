@@ -1,5 +1,3 @@
-import { type } from 'case';
-
 import { makeResourceName } from './util'
 
 import { CloudFormationTemplate } from "./cf-template.d";

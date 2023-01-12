@@ -52,7 +52,6 @@ export async function handler (event: Event) {
       const context = {
         alarmActions
       }
-      // @ts-ignore
       const cfTemplate = CloudFormationTemplate(
         outputFragment
       )

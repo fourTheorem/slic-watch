@@ -1,8 +1,8 @@
-import { Properties } from './cf-template.d';
 export type DashboardConfig = {
   enabled: boolean
   timeRange: object
   widgets: Widgets
+  dashConfig?: DashConfig
 }
 
 type DashConfig = {
