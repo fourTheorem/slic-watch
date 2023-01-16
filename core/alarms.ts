@@ -5,7 +5,7 @@ import { applyAlarmConfig } from './function-config'
 import {  AllAlarmsConfig, FunctionAlarmConfigs, Context } from "./default-config-alarms";
 import { CloudFormationTemplate } from "./cf-template.d";
 
-import lambdaAlarms from './alarms-lambda'
+import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './alarms-lambda'
 import apiGatewayAlarms from './alarms-api-gateway'
 import stepFunctionAlarms from './alarms-step-functions'
 import dynamoDbAlarms from './alarms-dynamodb'
@@ -20,29 +20,17 @@ import appSyncAlarms from './alarms-appsync'
 
 export default function alarms (alarmConfig: AllAlarmsConfig , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   const {
-    // @ts-ignore
-    ApiGateway: apiGwConfig,
-    // @ts-ignore
-    States: sfConfig,
-    // @ts-ignore
-    DynamoDB: dynamoDbConfig,
-    // @ts-ignore
-    Kinesis: kinesisConfig,
-    // @ts-ignore
-    SQS: sqsConfig,
-    // @ts-ignore
     Lambda: lambdaConfig,
-    // @ts-ignore
+    ApiGateway: apiGwConfig,
+    States: sfConfig,
+    DynamoDB: dynamoDbConfig,
+    Kinesis: kinesisConfig,
+    SQS: sqsConfig,
     ECS: ecsConfig,
-    // @ts-ignore
     SNS: snsConfig,
-    // @ts-ignore
     Events: ruleConfig,
-    // @ts-ignore
     ApplicationELB: albConfig,
-    // @ts-ignore
     ApplicationELBTarget: albTargetConfig,
-    // @ts-ignore
     AppSync: appSyncConfig
   } = cascade(alarmConfig)
 
@@ -71,7 +59,6 @@ export default function alarms (alarmConfig: AllAlarmsConfig , functionAlarmConf
    * A CloudFormation template object
    */
   function addAlarms (cfTemplate: CloudFormationTemplate) {
-    // @ts-ignore
     if (alarmConfig.enabled) {
       createLambdaAlarms(cfTemplate)
       apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)

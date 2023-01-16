@@ -1,6 +1,6 @@
 'use strict'
 
-import { cascade } from './cascading-config'
+import { cascade, DashboardsCascade } from './cascading-config'
 import { CloudFormationTemplate, ResourceType } from './cf-template.d'
 import { DashboardConfig, FunctionDashboardConfigs,FunctionResources} from './default-config-dashboard.d'
 import { Context } from './default-config-alarms'
@@ -25,9 +25,7 @@ const logger = getLogger()
  */
 export default function dashboard (dashboardConfig: DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs, context: Context) {
   const {
-    // @ts-ignore
     timeRange,
-    // @ts-ignore
     widgets: {
       Lambda: lambdaDashConfig,
       ApiGateway: apiGwDashConfig,
@@ -128,6 +126,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     ])
 
     if (positionedWidgets.length > 0) {
+      // @ts-ignore
       const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
       const dashboardResource = {
         Type: 'AWS::CloudWatch::Dashboard',

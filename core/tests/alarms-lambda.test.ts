@@ -14,6 +14,7 @@ import {
   testContext
 } from './testing-utils'
 import { applyAlarmConfig } from '../function-config'
+import { AlarmsCascade } from '../cascading-config'
 
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {

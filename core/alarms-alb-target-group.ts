@@ -7,6 +7,7 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 
 export type AlbTargetAlarmConfig = {
+  enabled?: boolean
   config?: AlarmConfig
   HTTPCode_Target_5XX_Count: AlarmConfig
   UnHealthyHostCount: AlarmConfig

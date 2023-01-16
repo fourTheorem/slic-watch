@@ -11,13 +11,16 @@ type DashConfig = {
   width: number
   height: number
   yAxis: string
-  Statistic: string[]
+  Statistic?: string[]
 }
 
 export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig
 & EcsDashConfig & SnsDashConfig & RuleDashConfig & AlbDashConfig & AlbTargetDashConfig & AppSyncDashConfig
 
 export type LambdaDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig 
   Errors: DashConfig
   Throttles: DashConfig
@@ -28,6 +31,9 @@ export type LambdaDashConfig = {
 } 
 
 export type ApiGwDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   '5XXError': DashConfig 
   '4XXError': DashConfig
@@ -36,6 +42,9 @@ export type ApiGwDashConfig = {
 }
 
 export type SfDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   ExecutionsFailed: DashConfig 
   ExecutionThrottled: DashConfig
@@ -43,12 +52,18 @@ export type SfDashConfig = {
 }
 
 export type DynamoDbDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   ReadThrottleEvents: DashConfig 
   WriteThrottleEvents: DashConfig
 }
 
 export type KinesisDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   'GetRecords.IteratorAgeMilliseconds': DashConfig 
   ReadProvisionedThroughputExceeded: DashConfig
@@ -59,6 +74,9 @@ export type KinesisDashConfig = {
 }
 
 export type SqsDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   NumberOfMessagesSent: DashConfig 
   NumberOfMessagesReceived: DashConfig
@@ -68,18 +86,27 @@ export type SqsDashConfig = {
 }
 
 export type EcsDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   MemoryUtilization: DashConfig 
   CPUUtilization: DashConfig
 }
 
 export type SnsDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   'NumberOfNotificationsFilteredOut-InvalidAttributes': DashConfig 
   NumberOfNotificationsFailed: DashConfig
 }
 
 export type RuleDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   FailedInvocations: DashConfig 
   ThrottledRules: DashConfig
@@ -87,12 +114,18 @@ export type RuleDashConfig = {
 }
 
 export type AlbDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   HTTPCode_ELB_5XX_Count: DashConfig 
   RejectedConnectionCount: DashConfig
 }
 
 export type AlbTargetDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   HTTPCode_Target_5XX_Count: DashConfig 
   UnHealthyHostCount: DashConfig
@@ -101,6 +134,9 @@ export type AlbTargetDashConfig = {
 }
 
 export type AppSyncDashConfig = {
+  enabled: boolean
+  timeRange
+  widgets
   dashcConfig: DashConfig  
   '5XXError': DashConfig 
   '4XXError': DashConfig
@@ -114,17 +150,17 @@ export type AppSyncDashConfig = {
 }
 
 export type FunctionDashboardConfigs = {
-    HelloLambdaFunction?: FunctionResources
-    PingLambdaFunction?: FunctionResources
-    ThrottlerLambdaFunction?: FunctionResources
-    DriveStreamLambdaFunction?: FunctionResources
-    DriveQueueLambdaFunction?: FunctionResources
-    DriveTableLambdaFunction?: FunctionResources
-    StreamProcessorLambdaFunction?: FunctionResources
-    HttpGetterLambdaFunction?: FunctionResources
-    SubscriptionHandlerLambdaFunction?: FunctionResources
-    EventsRuleLambdaFunction?: FunctionResources
-    AlbEventLambdaFunction?: FunctionResources
+  HelloLambdaFunction?: FunctionResources
+  PingLambdaFunction?: FunctionResources
+  ThrottlerLambdaFunction?: FunctionResources
+  DriveStreamLambdaFunction?: FunctionResources
+  DriveQueueLambdaFunction?: FunctionResources
+  DriveTableLambdaFunction?: FunctionResources
+  StreamProcessorLambdaFunction?: FunctionResources
+  HttpGetterLambdaFunction?: FunctionResources
+  SubscriptionHandlerLambdaFunction?: FunctionResources
+  EventsRuleLambdaFunction?: FunctionResources
+  AlbEventLambdaFunction?: FunctionResources
 }
 
 // Lambda resources

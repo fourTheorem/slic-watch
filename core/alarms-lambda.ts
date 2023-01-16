@@ -7,6 +7,7 @@ import { getLogger } from './logging'
 const logging = getLogger()
 
 export type LambdaFunctionAlarmConfigs = {
+  enabled?: boolean
   config?: AlarmConfig
   Errors: AlarmConfig,
   ThrottlesPc: AlarmConfig

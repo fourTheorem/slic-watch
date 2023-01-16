@@ -6,7 +6,7 @@ import { DynamoDbAlarmConfig } from './alarms-dynamodb'
 import { EcsAlarmsConfig } from './alarms-ecs'
 import { EventsAlarmsConfig } from './alarms-eventbridge'
 import { KinesisAlarmConfig } from './alarms-kinesis'
-import { FunctionAlarmConfigs } from './alarms-lambda'
+import { LambdaFunctionAlarmConfigs } from './alarms-lambda'
 import { SnsAlarmsConfig } from './alarms-sns'
 import { SqsAlarmsConfig } from './alarms-sqs'
 import { SfAlarmsConfig } from './alarms-step-functions'
@@ -23,16 +23,16 @@ export type AlarmConfig ={
 }
 
 export type AllAlarmsConfig = {
+  enabled?: boolean
   config: AlarmConfig
   alarmsConfig: AlarmsConfig
 }
 
 export type AlarmsConfig = AlbTargetAlarmConfig & AlbAlarmConfig & ApiGwAlarmConfig & AppSyncAlarmConfig & DynamoDbAlarmConfig
-& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmConfig & FunctionAlarmConfigs & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
+& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmConfig & LambdaFunctionAlarmConfigs & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export type FunctionAlarmConfigs = {
   HelloLambdaFunction?: object
-  PingLambdaFunction?: object
   ThrottlerLambdaFunction?: object
   DriveStreamLambdaFunction?: object
   DriveQueueLambdaFunction?: object

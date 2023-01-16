@@ -4,6 +4,7 @@ import { CfResource, CloudFormationTemplate } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SnsAlarmsConfig = {
+  enabled?: boolean
   config?: AlarmConfig
   'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmConfig,
   NumberOfNotificationsFailed: AlarmConfig
