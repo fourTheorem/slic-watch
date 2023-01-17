@@ -1,5 +1,8 @@
 'use strict'
 
+import { AllAlarmsConfig } from "./default-config-alarms"
+import { DashboardConfig } from "./default-config-dashboard"
+
 /**
  * This is the default configuration for Alarms and Dashboard widgets for all supported AWS services.
  * Any values here can be overridden in the SLIC Watch configuration. See the main README.md for details on how
@@ -195,7 +198,7 @@ const defaultConfig = {
         Threshold: 0
       }
     }
-  },
+  } as AllAlarmsConfig,
   dashboard: {
     enabled: true,
     timeRange: {
@@ -386,7 +389,7 @@ const defaultConfig = {
         }
       }
     }
-  }
+  } as DashboardConfig
 }
 
 export default defaultConfig

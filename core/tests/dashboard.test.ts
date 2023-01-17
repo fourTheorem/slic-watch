@@ -337,6 +337,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        //@ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -355,6 +356,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -457,6 +459,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
+        // @ts-ignore
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
           metricConfig.enabled = false
@@ -526,6 +529,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
+    //@ts-ignore
     dashConfig.widgets[service].enabled = false
   }
   // @ts-ignore
@@ -541,6 +545,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
+    // @ts-ignore
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
       // @ts-ignore
       metricConfig.enabled = false

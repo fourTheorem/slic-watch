@@ -10,6 +10,7 @@ import { LambdaFunctionAlarmConfigs } from './alarms-lambda'
 import { SnsAlarmsConfig } from './alarms-sns'
 import { SqsAlarmsConfig } from './alarms-sqs'
 import { SfAlarmsConfig } from './alarms-step-functions'
+import { AlarmsCascade } from './cascading-config'
 
 export type AlarmConfig ={
   enabled?: boolean
@@ -24,24 +25,24 @@ export type AlarmConfig ={
 
 export type AllAlarmsConfig = {
   enabled?: boolean
-  config: AlarmConfig
-  alarmsConfig: AlarmsConfig
+  alarmConfig?: AlarmConfig
+  alarms?: AlarmsCascade
 }
 
 export type AlarmsConfig = AlbTargetAlarmConfig & AlbAlarmConfig & ApiGwAlarmConfig & AppSyncAlarmConfig & DynamoDbAlarmConfig
 & EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmConfig & LambdaFunctionAlarmConfigs & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export type FunctionAlarmConfigs = {
-  HelloLambdaFunction?: object
-  ThrottlerLambdaFunction?: object
-  DriveStreamLambdaFunction?: object
-  DriveQueueLambdaFunction?: object
-  DriveTableLambdaFunction?: object
-  StreamProcessorLambdaFunction?: object
-  HttpGetterLambdaFunction?: object
-  SubscriptionHandlerLambdaFunction?: object
-  EventsRuleLambdaFunction?: object
-  AlbEventLambdaFunction?: object
+  HelloLambdaFunction?: LambdaFunctionAlarmConfigs
+  ThrottlerLambdaFunction?: LambdaFunctionAlarmConfigs
+  DriveStreamLambdaFunction?: LambdaFunctionAlarmConfigs
+  DriveQueueLambdaFunction?: LambdaFunctionAlarmConfigs
+  DriveTableLambdaFunction?: LambdaFunctionAlarmConfigs
+  StreamProcessorLambdaFunction?: LambdaFunctionAlarmConfigs
+  HttpGetterLambdaFunction?: LambdaFunctionAlarmConfigs
+  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmConfigs
+  EventsRuleLambdaFunction?: LambdaFunctionAlarmConfigs
+  AlbEventLambdaFunction?: LambdaFunctionAlarmConfigs
 }
 
 export type Context = {

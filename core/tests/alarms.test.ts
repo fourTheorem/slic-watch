@@ -12,16 +12,13 @@ test('Alarms create all service alarms', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
-  // @ts-ignore
   const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   )) {
-    // @ts-ignore
     if (resource.Properties.Namespace) {
-      // @ts-ignore
       namespaces.add(resource.Properties.Namespace)
     }
   }
@@ -35,16 +32,13 @@ test('Alarms create all ALB service alarms', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
-  // @ts-ignore
   const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   )) {
-    // @ts-ignore
     if (resource.Properties.Namespace) {
-      // @ts-ignore
       namespaces.add(resource.Properties.Namespace)
     }
   }
@@ -64,7 +58,6 @@ test('Alarms are not created when disabled globally', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
-  // @ts-ignore
   const { addAlarms } = alarms(config, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
 

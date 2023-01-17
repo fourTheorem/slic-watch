@@ -1,6 +1,6 @@
 'use strict'
 
-import lambdaAlarms from '../alarms-lambda'
+import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../alarms-lambda'
 import { test } from 'tap'
 import { filterObject } from '../util'
 import defaultConfig from '../default-config'
@@ -14,10 +14,10 @@ import {
   testContext
 } from './testing-utils'
 import { applyAlarmConfig } from '../function-config'
-import { AlarmsCascade } from '../cascading-config'
+import { AllAlarmsConfig, FunctionAlarmConfigs } from '../default-config-alarms'
 
 test('AWS Lambda alarms are created', (t) => {
-  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+  const alarmConfig: AllAlarmsConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Period: 120,
       EvaluationPeriods: 2,
@@ -56,7 +56,6 @@ test('AWS Lambda alarms are created', (t) => {
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 25)
   for (const alarmResource of Object.values(alarmResources)) {
-    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -481,7 +480,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
 })
 
 test('AWS Lambda alarms are not created if disabled at function level', (t) => {
-  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+  const alarmConfig:AllAlarmsConfig  = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Invocations: {
         enabled: true,
@@ -508,6 +507,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
   const disabledFuncAlarmConfigs = applyAlarmConfig(
     // @ts-ignore
     alarmConfig.Lambda, {
+      // @ts-ignore
       HelloLambdaFunction: { Lambda: { enabled: false } }
     })
     // @ts-ignore

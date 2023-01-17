@@ -36,7 +36,7 @@ export type DashboardsCascade ={
   dashConfig?: DashConfig
  }
 
-type Widgets = {
+export type Widgets = {
   Lambda: LambdaDashConfig 
   ApiGateway: ApiGwDashConfig
   States: SfDashConfig,
@@ -52,18 +52,18 @@ type Widgets = {
 }
 
 export type AlarmsCascade ={
-  Lambda: LambdaFunctionAlarmConfigs 
-  ApiGateway: ApiGwAlarmConfig
-  States: SfAlarmsConfig,
-  DynamoDB: DynamoDbAlarmConfig 
-  Kinesis: KinesisAlarmConfig
-  SQS: SqsAlarmsConfig
-  ECS: EcsAlarmsConfig
-  SNS: SnsAlarmsConfig  
-  Events: EventsAlarmsConfig
-  ApplicationELB: AlbAlarmConfig
-  ApplicationELBTarget: AlbTargetAlarmConfig
-  AppSync: AppSyncAlarmConfig  
+  Lambda?: LambdaFunctionAlarmConfigs 
+  ApiGateway?: ApiGwAlarmConfig
+  States?: SfAlarmsConfig,
+  DynamoDB?: DynamoDbAlarmConfig 
+  Kinesis?: KinesisAlarmConfig
+  SQS?: SqsAlarmsConfig
+  ECS?: EcsAlarmsConfig
+  SNS?: SnsAlarmsConfig  
+  Events?: EventsAlarmsConfig
+  ApplicationELB?: AlbAlarmConfig
+  ApplicationELBTarget?: AlbTargetAlarmConfig
+  AppSync?: AppSyncAlarmConfig  
 }
 
 /**

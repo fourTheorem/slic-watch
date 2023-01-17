@@ -19,15 +19,16 @@ export {
  * Merges the global Lambda alarm configuration with any function-specific overrides, ensuring
  * that function overrides take precedence over any global configuration
  *
- * @param {object} cascadedLambdaAlarmConfig
- * @param {object} functionAlarmConfig An object per function name specifying any function-specific alarm configuration overrides
- * @returns {object} A per-function configuration consolidating all inputs
+ * cascadedLambdaAlarmConfig
+ * functionAlarmConfig An object per function name specifying any function-specific alarm configuration overrides
+ * A per-function configuration consolidating all inputs
  */
 function applyAlarmConfig (cascadedLambdaAlarmConfig: LambdaFunctionAlarmConfigs, functionAlarmConfigs:FunctionAlarmConfigs) {
   // Add all alarm properties to functionAlarmConfig so we can cascade top-level configuration down
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
+    // @ts-ignore
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
       funcConfig[metric] = get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }

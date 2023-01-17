@@ -7,8 +7,10 @@ import { createRequire } from 'module'
 import {fileURLToPath} from 'url'
 import YAML from 'yaml'
 
-import { cascade } from '../cascading-config'
 import CloudFormationTemplate from '../cf-template'
+import { AllAlarmsConfig } from '../default-config-alarms'
+import { DashboardConfig } from '../default-config-dashboard'
+import { cascade } from '../cascading-config'
 
 const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
@@ -59,7 +61,7 @@ function alarmNameToType (alarmName) {
   return components.join('_')
 }
 
-function createTestConfig (from, cascadingChanges) {
+function createTestConfig (from, cascadingChanges):AllAlarmsConfig | DashboardConfig  {
   return cascade(
     _.merge(
       {},

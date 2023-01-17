@@ -1,27 +1,30 @@
+import { dashboard } from 'slic-watch-core/dashboard';
+import { Widgets } from './cascading-config'
+
 export type DashboardConfig = {
-  enabled: boolean
-  timeRange: object
-  widgets: Widgets
+  enabled?: boolean
+  timeRange?
   dashConfig?: DashConfig
 }
 
 type DashConfig = {
-  enabled: boolean
-  metricPeriod: object
-  width: number
-  height: number
-  yAxis: string
+  enabled?: boolean
+  metricPeriod?: object
+  width?: number
+  height?: number
+  yAxis?: string
   Statistic?: string[]
+  widgets?: Widgets
 }
 
-export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig
-& EcsDashConfig & SnsDashConfig & RuleDashConfig & AlbDashConfig & AlbTargetDashConfig & AppSyncDashConfig
+// export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig
+// & EcsDashConfig & SnsDashConfig & RuleDashConfig & AlbDashConfig & AlbTargetDashConfig & AppSyncDashConfig
 
 export type LambdaDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig 
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   Errors: DashConfig
   Throttles: DashConfig
   Duration: DashConfig
@@ -31,10 +34,10 @@ export type LambdaDashConfig = {
 } 
 
 export type ApiGwDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig    
   '5XXError': DashConfig 
   '4XXError': DashConfig
   Latency: DashConfig
@@ -42,29 +45,29 @@ export type ApiGwDashConfig = {
 }
 
 export type SfDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   ExecutionsFailed: DashConfig 
   ExecutionThrottled: DashConfig
   ExecutionsTimedOut: DashConfig
 }
 
 export type DynamoDbDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   ReadThrottleEvents: DashConfig 
   WriteThrottleEvents: DashConfig
 }
 
 export type KinesisDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   'GetRecords.IteratorAgeMilliseconds': DashConfig 
   ReadProvisionedThroughputExceeded: DashConfig
   WriteProvisionedThroughputExceeded: DashConfig
@@ -74,10 +77,10 @@ export type KinesisDashConfig = {
 }
 
 export type SqsDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   NumberOfMessagesSent: DashConfig 
   NumberOfMessagesReceived: DashConfig
   NumberOfMessagesDeleted: DashConfig
@@ -86,47 +89,47 @@ export type SqsDashConfig = {
 }
 
 export type EcsDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   MemoryUtilization: DashConfig 
   CPUUtilization: DashConfig
 }
 
 export type SnsDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   'NumberOfNotificationsFilteredOut-InvalidAttributes': DashConfig 
   NumberOfNotificationsFailed: DashConfig
 }
 
 export type RuleDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig  
   FailedInvocations: DashConfig 
   ThrottledRules: DashConfig
   Invocations: DashConfig
 }
 
 export type AlbDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig  
   HTTPCode_ELB_5XX_Count: DashConfig 
   RejectedConnectionCount: DashConfig
 }
 
 export type AlbTargetDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashcConfig?: DashConfig 
   HTTPCode_Target_5XX_Count: DashConfig 
   UnHealthyHostCount: DashConfig
   LambdaInternalError: DashConfig 
@@ -134,10 +137,10 @@ export type AlbTargetDashConfig = {
 }
 
 export type AppSyncDashConfig = {
-  enabled: boolean
-  timeRange
-  widgets
-  dashcConfig: DashConfig  
+  enabled?: boolean
+  timeRange?
+  dashboard?
+  dashConfig?: DashConfig 
   '5XXError': DashConfig 
   '4XXError': DashConfig
   Latency: DashConfig 
