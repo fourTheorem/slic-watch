@@ -15,6 +15,19 @@ import {
 } from './testing-utils'
 import { applyAlarmConfig } from '../function-config'
 
+export type AlarmsByType = {
+  Lambda_Duration
+  Lambda_Errors
+  Lambda_IteratorAge 
+  Lambda_Throttles
+}
+
+export type MetricsById = {
+  throttles_pc
+  throttles
+  invocations
+}
+
 test('AWS Lambda alarms are created', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
@@ -50,15 +63,20 @@ test('AWS Lambda alarms are created', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 25)
-  for (const alarmResource of Object.values(alarmResources)) {
-    const al = alarmResource.Properties
-    assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
-    alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-    alarmsByType[alarmType].add(al)
+  function getAlarmsByType():AlarmsByType  {
+      const alarmsByType = {}
+      for (const alarmResource of Object.values(alarmResources)) {
+      const al = alarmResource.Properties
+      assertCommonAlarmProperties(t, al)
+      const alarmType = alarmNameToType(al.AlarmName)
+      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType].add(al)
+    }
+    return alarmsByType as AlarmsByType
   }
+
+  const alarmsByType = getAlarmsByType()
+  t.equal(Object.keys(alarmResources).length, 25)
 
   t.same(Object.keys(alarmsByType).sort(), [
     'Lambda_Duration',
@@ -66,11 +84,9 @@ test('AWS Lambda alarms are created', (t) => {
     'Lambda_IteratorAge',
     'Lambda_Throttles'
   ])
-  // @ts-ignore
   for (const al of alarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    // @ts-ignore
     t.equal(al.Threshold, alarmConfig.Lambda.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -81,7 +97,6 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Dimensions[0].Name, 'FunctionName')
     t.ok(al.Dimensions[0].Value)
   }
-  // @ts-ignore
   for (const al of alarmsByType.Lambda_Duration) {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
@@ -92,35 +107,29 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, 120)
   }
-  // @ts-ignore
-  for (const al of alarmsByType.Lambda_Throttles) {
-    t.equal(al.Metrics.length, 3)
+  function getMetricsById():MetricsById  {
     const metricsById = {}
-    for (const metric of al.Metrics) {
-      metricsById[metric.Id] = metric
+    for (const al of alarmsByType.Lambda_Throttles) {
+      t.equal(al.Metrics.length, 3)
+      for (const metric of al.Metrics) {
+        metricsById[metric.Id] = metric
+      } 
     }
-    // @ts-ignore
+    return metricsById as MetricsById 
+  }
+  for (const al of alarmsByType.Lambda_Throttles) {
+    const metricsById = getMetricsById() 
     t.ok(metricsById.throttles_pc.Expression)
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Period, 120)
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Period, 120)
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
-  // @ts-ignore
   t.equal(alarmsByType.Lambda_IteratorAge.size, 1)
-  // @ts-ignore
   for (const al of alarmsByType.Lambda_IteratorAge) {
     t.equal(al.MetricName, 'IteratorAge')
     t.equal(al.Statistic, 'Maximum')
@@ -161,6 +170,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
       }
     }
   })
+
   const albCf = createTestCloudFormationTemplate(albCfTemplate)
   const albFuncAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(albCf.getResourcesByType('AWS::Lambda::Function'))) {
@@ -169,27 +179,29 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmConfigs, testContext)
   createLambdaAlarms(albCf)
   const albAlarmResources = albCf.getResourcesByType('AWS::CloudWatch::Alarm')
-
-  const albAlarmsByType = {}
-  t.equal(Object.keys(albAlarmResources).length, 3)
-  for (const alarmResource of Object.values(albAlarmResources)) {
-    const al = alarmResource.Properties
-    assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
-    albAlarmsByType[alarmType] = albAlarmsByType[alarmType] || new Set()
-    albAlarmsByType[alarmType].add(al)
+  
+  function getAlarmsByType(): AlarmsByType {
+    const albAlarmsByType = {}
+    for (const alarmResource of Object.values(albAlarmResources)) {
+      const al = alarmResource.Properties
+      assertCommonAlarmProperties(t, al)
+      const alarmType = alarmNameToType(al.AlarmName)
+      albAlarmsByType[alarmType] = albAlarmsByType[alarmType] || new Set()
+      albAlarmsByType[alarmType].add(al)
+    }
+    return albAlarmsByType as AlarmsByType 
   }
-
+  const albAlarmsByType = getAlarmsByType()
+  t.equal(Object.keys(albAlarmResources).length, 3)
+  
   t.same(Object.keys(albAlarmsByType).sort(), [
     'Lambda_Duration',
     'Lambda_Errors',
     'Lambda_Throttles'
   ])
-  // @ts-ignore
   for (const al of albAlarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    //@ts-ignore
     t.equal(al.Threshold, albAlarmConfig.Lambda.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -198,7 +210,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(al.Period, 120)
     t.equal(al.Dimensions.length, 1)
   }
-  // @ts-ignore
   for (const al of albAlarmsByType.Lambda_Duration) {
     t.equal(al.MetricName, 'Duration')
     t.equal(al.Statistic, 'Maximum')
@@ -209,30 +220,28 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, 120)
   }
-// @ts-ignore
-  for (const al of albAlarmsByType.Lambda_Throttles) {
-    t.equal(al.Metrics.length, 3)
+
+  function getMetricsById(): MetricsById  {
     const metricsById = {}
-    for (const metric of al.Metrics) {
-      metricsById[metric.Id] = metric
+    for (const al of albAlarmsByType.Lambda_Throttles) {
+      t.equal(al.Metrics.length, 3)
+      for (const metric of al.Metrics) {
+        metricsById[metric.Id] = metric
+      } 
+      return metricsById as MetricsById 
     }
-    // @ts-ignore
+  }
+  
+  for (const al of albAlarmsByType.Lambda_Throttles) {
+    const metricsById = getMetricsById()
     t.ok(metricsById.throttles_pc.Expression)
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Period, 120)
-    // @ts-ignore
     t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Period, 120)
-    // @ts-ignore
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   }
 
@@ -284,7 +293,6 @@ test('Invocation alarms are created if configured', (t) => {
     t.equal(al.Threshold, 900)
     t.equal(al.EvaluationPeriods, 1)
     t.equal(al.Namespace, 'AWS/Lambda')
-    // @ts-ignore
     t.equal(al.Period, alarmConfig.Lambda.Period)
   }
   t.end()
@@ -512,7 +520,6 @@ test('AWS Lambda alarms are not created if function configuration is not provide
     }
   })
   const funcAlarmConfigs = {} // No function configuration as in the case where functions are not defined in serverless.yml:functions
-  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 
@@ -528,10 +535,8 @@ test('Duration alarms are created if no timeout is specified', (t) => {
   const funcAlarmConfigs = {}
   for (const [funcLogicalId, resource] of Object.entries(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
-    // @ts-ignore
     delete resource.Properties.Timeout
   }
-  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)
 

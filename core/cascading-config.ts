@@ -15,6 +15,7 @@ import { SfAlarmsConfig } from "./alarms-step-functions"
 import { AlarmConfig, AllAlarmsConfig } from "./default-config-alarms.d"
 import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
    EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from "./default-config-dashboard.d"
+import { LambdaFunctionAlarmConfigs } from "./alarms-lambda"
 
 
 const MAX_DEPTH = 10
@@ -50,7 +51,7 @@ export type Widgets = {
 
 export type AlarmsCascade ={
   enabled?: boolean
-  Lambda?: FunctionAlarmConfigs 
+  Lambda?:  LambdaFunctionAlarmConfigs 
   ApiGateway?: ApiGwAlarmConfig
   States?: SfAlarmsConfig,
   DynamoDB?: DynamoDbAlarmConfig 
