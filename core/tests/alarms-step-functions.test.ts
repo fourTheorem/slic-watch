@@ -33,7 +33,6 @@ test('Step Function alarms are created', (t) => {
       }
     }
   )
-  // @ts-ignore
   const sfAlarmConfig = alarmConfig.States
 
   const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
@@ -47,7 +46,6 @@ test('Step Function alarms are created', (t) => {
   for (const [resourceName, alarmResource] of Object.entries(alarmResources)) {
     // Just test the standard workflow alarms
     if (!resourceName.endsWith('ExpressWorkflow')) {
-      // @ts-ignore
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al.AlarmName)
@@ -106,7 +104,6 @@ test('Step function alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  // @ts-ignore
   const sfAlarmConfig = alarmConfig.States
 
   const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
@@ -141,7 +138,6 @@ test('Step function alarms are not created when disabled individually', (t) => {
       }
     }
   )
-  // @ts-ignore
   const sfAlarmConfig = alarmConfig.States
 
   const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)

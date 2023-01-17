@@ -35,7 +35,6 @@ const alarmConfig = createTestConfig(
       }
     }
   })
-// @ts-ignore
 const dynamoDbAlarmConfig = alarmConfig.DynamoDB
 
 ;[true, false].forEach(specifyTableName => {
@@ -55,7 +54,6 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
     const alarmsByType = {}
     t.equal(Object.keys(alarmResources).length, 6)
     for (const alarmResource of Object.values(alarmResources)) {
-      // @ts-ignore
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al.AlarmName)
@@ -117,7 +115,6 @@ test('DynamoDB alarms are not created when disabled', (t) => {
       enabled: false
     }
   })
-  // @ts-ignore
   const dynamoDbAlarmConfig = alarmConfig.DynamoDB
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()

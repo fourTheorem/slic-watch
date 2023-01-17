@@ -61,7 +61,7 @@ function alarmNameToType (alarmName) {
   return components.join('_')
 }
 
-function createTestConfig (from, cascadingChanges):AllAlarmsConfig | DashboardConfig  {
+function createTestConfig (from, cascadingChanges) {
   return cascade(
     _.merge(
       {},

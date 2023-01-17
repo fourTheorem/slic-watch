@@ -14,10 +14,9 @@ import {
   testContext
 } from './testing-utils'
 import { applyAlarmConfig } from '../function-config'
-import { AllAlarmsConfig, FunctionAlarmConfigs } from '../default-config-alarms'
 
 test('AWS Lambda alarms are created', (t) => {
-  const alarmConfig: AllAlarmsConfig = createTestConfig(defaultConfig.alarms, {
+  const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Period: 120,
       EvaluationPeriods: 2,
@@ -44,7 +43,6 @@ test('AWS Lambda alarms are created', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
   // @ts-ignore
@@ -73,7 +71,6 @@ test('AWS Lambda alarms are created', (t) => {
   for (const al of alarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    // @ts-ignore
     t.equal(al.Threshold, alarmConfig.Lambda.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -167,7 +164,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   const albCf = createTestCloudFormationTemplate(albCfTemplate)
   const albFuncAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(albCf.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     albFuncAlarmConfigs[funcLogicalId] = albAlarmConfig.Lambda
   }
   // @ts-ignore
@@ -178,7 +174,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   const albAlarmsByType = {}
   t.equal(Object.keys(albAlarmResources).length, 3)
   for (const alarmResource of Object.values(albAlarmResources)) {
-    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -195,7 +190,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   for (const al of albAlarmsByType.Lambda_Errors) {
     t.equal(al.MetricName, 'Errors')
     t.equal(al.Statistic, 'Sum')
-    // @ts-ignore
     t.equal(al.Threshold, albAlarmConfig.Lambda.Errors.Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -271,7 +265,6 @@ test('Invocation alarms are created if configured', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
   // @ts-ignore
@@ -324,7 +317,6 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
   // @ts-ignore
@@ -383,7 +375,6 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
 
     const funcAlarmConfigs = {}
     for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-      // @ts-ignore
       funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
     }
     // @ts-ignore
@@ -423,7 +414,6 @@ test('Lambda alarms are not created when disabled globally', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
   // @ts-ignore
@@ -466,7 +456,6 @@ test('Lambda alarms are not created when disabled individually', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
   }
   // @ts-ignore
@@ -480,7 +469,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
 })
 
 test('AWS Lambda alarms are not created if disabled at function level', (t) => {
-  const alarmConfig:AllAlarmsConfig  = createTestConfig(defaultConfig.alarms, {
+  const alarmConfig  = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Invocations: {
         enabled: true,
@@ -505,7 +494,6 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
     }
   })
   const disabledFuncAlarmConfigs = applyAlarmConfig(
-    // @ts-ignore
     alarmConfig.Lambda, {
       // @ts-ignore
       HelloLambdaFunction: { Lambda: { enabled: false } }
@@ -546,7 +534,6 @@ test('Duration alarms are created if no timeout is specified', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
   const funcAlarmConfigs = {}
   for (const [funcLogicalId, resource] of Object.entries(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    // @ts-ignore
     funcAlarmConfigs[funcLogicalId] = alarmConfig.Lambda
     // @ts-ignore
     delete resource.Properties.Timeout

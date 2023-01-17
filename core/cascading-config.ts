@@ -73,10 +73,9 @@ export type AlarmsCascade ={
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-// @ts-ignore
-export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
 export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number): AlarmsCascade
-export function cascade(node:ConfigNode, parentNode?: ParentNode, depth=0 ): DashboardsCascade | AlarmsCascade {
+export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
+export function cascade(node:DashboardConfig| AllAlarmsConfig, parentNode?: ParentNode, depth=0 ):AlarmsCascade | DashboardsCascade {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }

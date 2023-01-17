@@ -32,7 +32,6 @@ test('API Gateway alarms are created', (t) => {
       }
     }
   )
-    // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
@@ -44,7 +43,6 @@ test('API Gateway alarms are created', (t) => {
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 3)
   for (const alarmResource of Object.values(alarmResources)) {
-    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -133,7 +131,6 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
@@ -169,7 +166,6 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
       }
     }
   )
-  // @ts-ignore
   const apiGwAlarmConfig = alarmConfig.ApiGateway
 
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)

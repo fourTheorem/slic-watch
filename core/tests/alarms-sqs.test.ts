@@ -31,7 +31,6 @@ test('SQS alarms are created', (t) => {
         }
       }
     })
-  // @ts-ignore
   const sqsAlarmConfig = alarmConfig.SQS
 
   const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
@@ -46,7 +45,6 @@ test('SQS alarms are created', (t) => {
 
   const alarmsByType = {}
   for (const alarmResource of Object.values(alarmResources)) {
-    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
@@ -172,7 +170,6 @@ test('SQS alarms are not created when disabled globally', (t) => {
         }
       }
     })
-  // @ts-ignore
   const sqsAlarmConfig = alarmConfig.SQS
 
   const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
@@ -203,7 +200,6 @@ test('SQS alarms are not created when disabled individually', (t) => {
         }
       }
     })
-  // @ts-ignore
   const sqsAlarmConfig = alarmConfig.SQS
 
   const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
@@ -233,7 +229,6 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
         }
       }
     })
-  // @ts-ignore
   const sqsAlarmConfig = alarmConfig.SQS
 
   const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)

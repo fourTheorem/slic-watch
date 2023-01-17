@@ -37,7 +37,6 @@ test('AppSync alarms are created', (t) => {
     createAppSyncAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  // @ts-ignore
   const appSyncAlarmResources = createAlarmResources(alarmConfigAppSync.AppSync)
 
   const expectedTypesAppSync = {
@@ -47,14 +46,12 @@ test('AppSync alarms are created', (t) => {
 
   t.equal(Object.keys(appSyncAlarmResources).length, Object.keys(expectedTypesAppSync).length)
   for (const alarmResource of Object.values(appSyncAlarmResources)) {
-    // @ts-ignore
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al.AlarmName)
     const expectedMetric = expectedTypesAppSync[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    // @ts-ignore
     t.equal(al.Threshold, alarmConfigAppSync.AppSync[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
@@ -95,7 +92,6 @@ test('AppSync alarms are not created when disabled globally', (t) => {
     createAppSyncAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  // @ts-ignore
   const appSyncAlarmResources = createAlarmResources(alarmConfigAppSync.AppSync)
 
   t.same({}, appSyncAlarmResources)
