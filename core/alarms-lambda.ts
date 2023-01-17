@@ -1,7 +1,7 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from "./cf-template.d";
-import { AlarmConfig, Context } from './default-config-alarms'
+import { AlarmConfig, Context, FunctionAlarmConfigs } from './default-config-alarms'
 
 import { getLogger } from './logging'
 const logging = getLogger()
@@ -22,7 +22,7 @@ export type LambdaFunctionAlarmConfigs = {
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmConfigs: LambdaFunctionAlarmConfigs, context: Context) {
+export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   return {
     createLambdaAlarms
   }

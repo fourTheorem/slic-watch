@@ -58,7 +58,6 @@ test('Alarms are not created when disabled globally', (t) => {
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
     funcAlarmConfigs[funcLogicalId] = {}
   }
-  // @ts-ignore
   const { addAlarms } = alarms(config, funcAlarmConfigs, testContext)
   addAlarms(cfTemplate)
 

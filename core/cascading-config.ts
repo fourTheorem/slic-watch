@@ -8,7 +8,7 @@ import { DynamoDbAlarmConfig } from "./alarms-dynamodb"
 import { EcsAlarmsConfig } from "./alarms-ecs"
 import { EventsAlarmsConfig } from "./alarms-eventbridge"
 import { KinesisAlarmConfig } from "./alarms-kinesis"
-import { LambdaFunctionAlarmConfigs } from "./alarms-lambda"
+import { FunctionAlarmConfigs } from "./default-config-alarms.d"
 import { SnsAlarmsConfig } from "./alarms-sns"
 import { SqsAlarmsConfig } from "./alarms-sqs"
 import { SfAlarmsConfig } from "./alarms-step-functions"
@@ -19,10 +19,7 @@ import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashC
 
 const MAX_DEPTH = 10
 
-type ConfigNode = {
-  dashboardConfig?: DashboardConfig
-  alarmConfig?: AllAlarmsConfig
-}
+type ConfigNode =  DashboardConfig | AllAlarmsConfig
 
 type ParentNode ={
   dashConfig: DashConfig
@@ -52,7 +49,8 @@ export type Widgets = {
 }
 
 export type AlarmsCascade ={
-  Lambda?: LambdaFunctionAlarmConfigs 
+  enabled?: boolean
+  Lambda?: FunctionAlarmConfigs 
   ApiGateway?: ApiGwAlarmConfig
   States?: SfAlarmsConfig,
   DynamoDB?: DynamoDbAlarmConfig 
@@ -75,7 +73,7 @@ export type AlarmsCascade ={
  */
 export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number): AlarmsCascade
 export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
-export function cascade(node:DashboardConfig| AllAlarmsConfig, parentNode?: ParentNode, depth=0 ):AlarmsCascade | DashboardsCascade {
+export function cascade(node:ConfigNode, parentNode?: ParentNode, depth=0 ):AlarmsCascade | DashboardsCascade {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }

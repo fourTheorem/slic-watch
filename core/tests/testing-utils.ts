@@ -8,8 +8,6 @@ import {fileURLToPath} from 'url'
 import YAML from 'yaml'
 
 import CloudFormationTemplate from '../cf-template'
-import { AllAlarmsConfig } from '../default-config-alarms'
-import { DashboardConfig } from '../default-config-dashboard'
 import { cascade } from '../cascading-config'
 
 const require = createRequire(import.meta.url)

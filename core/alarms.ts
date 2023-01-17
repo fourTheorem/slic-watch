@@ -1,8 +1,8 @@
 'use strict'
 
-import { cascade } from './cascading-config'
+import { AlarmsCascade, cascade } from './cascading-config'
 import { applyAlarmConfig } from './function-config'
-import {  AllAlarmsConfig, FunctionAlarmConfigs, Context } from "./default-config-alarms";
+import { FunctionAlarmConfigs, Context } from "./default-config-alarms";
 import { CloudFormationTemplate } from "./cf-template.d";
 
 import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './alarms-lambda'
@@ -18,7 +18,7 @@ import albAlarms from './alarms-alb'
 import albTargetAlarms from './alarms-alb-target-group'
 import appSyncAlarms from './alarms-appsync'
 
-export default function alarms (alarmConfig: AllAlarmsConfig , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
