@@ -2,9 +2,11 @@ import { dashboard } from 'slic-watch-core/dashboard';
 import { Widgets } from './cascading-config'
 import { Statistic } from './cf-template.d'
 
+export type YAxis = 'left' | 'right'
+
 export type DashboardConfig = {
   enabled?: boolean
-  timeRange?
+  timeRange?: object
   widgets?: Widgets
   dashConfig?: DashConfig
 }
@@ -14,7 +16,7 @@ type DashConfig = {
   metricPeriod?: object
   width?: number
   height?: number
-  yAxis?: string
+  yAxis?: YAxis
 }
 
 // export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig

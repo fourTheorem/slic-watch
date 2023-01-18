@@ -15,7 +15,6 @@ export interface CloudFormationTemplate {
 }
 
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum'
-// export enum Statistic {'Average', 'Maximum', 'Minimum', 'SampleCount', 'Sum'}
 
 export type Metric = {
   resourceName?: string

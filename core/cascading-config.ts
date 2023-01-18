@@ -28,7 +28,7 @@ type ParentNode ={
 }
 export type DashboardsCascade ={
   enabled?: boolean
-  timeRange: number
+  timeRange: object
   widgets: Widgets
  }
 
