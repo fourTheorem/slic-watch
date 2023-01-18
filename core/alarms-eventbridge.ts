@@ -5,7 +5,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EventsAlarmsConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   FailedInvocations: AlarmConfig,
   ThrottledRules: AlarmConfig
 }

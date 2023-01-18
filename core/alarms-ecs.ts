@@ -6,7 +6,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   MemoryUtilization: AlarmConfig
   CPUUtilization: AlarmConfig
 }

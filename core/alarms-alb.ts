@@ -6,7 +6,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type AlbAlarmConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   HTTPCode_ELB_5XX_Count: AlarmConfig,
   RejectedConnectionCount: AlarmConfig
 }

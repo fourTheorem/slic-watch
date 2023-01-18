@@ -9,7 +9,6 @@ const logging = getLogger()
 export type LambdaFunctionAlarmConfigs = {
   enabled?: boolean
   Period?: number
-  config?: AlarmConfig
   Errors: AlarmConfig,
   ThrottlesPc: AlarmConfig
   DurationPc: AlarmConfig

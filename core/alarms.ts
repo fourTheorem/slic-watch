@@ -35,7 +35,6 @@ export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs
   } = cascade(alarmConfig)
 
   const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs )
-  // @ts-ignore
   const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)

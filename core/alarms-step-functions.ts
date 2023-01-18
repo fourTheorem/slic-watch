@@ -4,7 +4,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SfAlarmsConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   ExecutionThrottled: AlarmConfig
   ExecutionsFailed: AlarmConfig
   ExecutionsTimedOut: AlarmConfig

@@ -5,7 +5,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type DynamoDbAlarmConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   ReadThrottleEvents: AlarmConfig
   WriteThrottleEvents: AlarmConfig
   UserErrors: AlarmConfig

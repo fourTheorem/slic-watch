@@ -8,7 +8,6 @@ import { DynamoDbAlarmConfig } from "./alarms-dynamodb"
 import { EcsAlarmsConfig } from "./alarms-ecs"
 import { EventsAlarmsConfig } from "./alarms-eventbridge"
 import { KinesisAlarmConfig } from "./alarms-kinesis"
-import { FunctionAlarmConfigs } from "./default-config-alarms.d"
 import { SnsAlarmsConfig } from "./alarms-sns"
 import { SqsAlarmsConfig } from "./alarms-sqs"
 import { SfAlarmsConfig } from "./alarms-step-functions"
@@ -31,22 +30,22 @@ export type DashboardsCascade ={
   enabled?: boolean
   timeRange: number
   widgets: Widgets
-  dashConfig?: DashConfig
  }
 
 export type Widgets = {
-  Lambda: LambdaDashConfig 
-  ApiGateway: ApiGwDashConfig
-  States: SfDashConfig,
-  DynamoDB: DynamoDbDashConfig 
-  Kinesis: KinesisDashConfig
-  SQS: SqsDashConfig
-  ECS: EcsDashConfig
-  SNS: SnsDashConfig  
-  Events: RuleDashConfig
-  ApplicationELB: AlbDashConfig
-  ApplicationELBTarget: AlbTargetDashConfig
-  AppSync: AppSyncDashConfig 
+  enabled?:boolean
+  Lambda?: LambdaDashConfig 
+  ApiGateway?: ApiGwDashConfig
+  States?: SfDashConfig,
+  DynamoDB?: DynamoDbDashConfig 
+  Kinesis?: KinesisDashConfig
+  SQS?: SqsDashConfig
+  ECS?: EcsDashConfig
+  SNS?: SnsDashConfig  
+  Events?: RuleDashConfig
+  ApplicationELB?: AlbDashConfig
+  ApplicationELBTarget?: AlbTargetDashConfig
+  AppSync?: AppSyncDashConfig 
 }
 
 export type AlarmsCascade ={
@@ -80,7 +79,6 @@ export function cascade(node:ConfigNode, parentNode?: ParentNode, depth=0 ):Alar
   }
   const childNodes = {}
   const compiledNode = {}
-  // @ts-ignore
   for (const [key, value] of Object.entries({ ...parentNode, ...node })) {
     if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
       childNodes[key] = value

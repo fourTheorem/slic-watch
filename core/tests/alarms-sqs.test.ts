@@ -11,6 +11,10 @@ import {
   testContext
 } from './testing-utils'
 
+export type AlarmsByType ={
+  SQS_ApproximateAgeOfOldestMessage
+  SQS_ApproximateNumberOfMessagesNotVisible
+}
 test('SQS alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
@@ -43,26 +47,27 @@ test('SQS alarms are created', (t) => {
   // we expect 2 alarms per queue
   t.equal(Object.keys(alarmResources).length, 4)
 
-  const alarmsByType = {}
-  for (const alarmResource of Object.values(alarmResources)) {
-    const al = alarmResource.Properties
-    assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
-    alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-    alarmsByType[alarmType].add(al)
-  }
+  function getAlarmsByType(): AlarmsByType {
+    const alarmsByType = {}
+    for (const alarmResource of Object.values(alarmResources)) {
+      const al = alarmResource.Properties
+      assertCommonAlarmProperties(t, al)
+      const alarmType = alarmNameToType(al.AlarmName)
+      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType].add(al)
+    }
+    return alarmsByType as AlarmsByType 
+  } 
 
+  const alarmsByType = getAlarmsByType()
   t.same(Object.keys(alarmsByType).sort(), [
     'SQS_ApproximateAgeOfOldestMessage',
     'SQS_ApproximateNumberOfMessagesNotVisible'
   ])
 
   // we expect one alarm type per queue (and we have 2 queues)
-  // @ts-ignore
   t.equal(alarmsByType.SQS_ApproximateAgeOfOldestMessage.size, 2)
-  // @ts-ignore
   t.equal(alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible.size, 2)
-  // @ts-ignore
   const approximateAgeOfOldMessageAlarms = [...alarmsByType.SQS_ApproximateAgeOfOldestMessage]
 
   // regular queue
@@ -106,7 +111,6 @@ test('SQS alarms are created', (t) => {
       }
     }
   ])
-  // @ts-ignore
   const approximateNumberOfMessagesNotVisibileAlarms = [...alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible]
 
   // regular queue

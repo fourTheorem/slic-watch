@@ -7,7 +7,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type KinesisAlarmConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   'GetRecords.IteratorAgeMilliseconds': AlarmConfig,
   ReadProvisionedThroughputExceeded: AlarmConfig
   WriteProvisionedThroughputExceeded: AlarmConfig

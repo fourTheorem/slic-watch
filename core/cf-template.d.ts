@@ -50,6 +50,8 @@ export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayPro
   Period: number
   Statistic: string
   ExtendedStatistic?: string
+  DashboardName?: string
+  DashboardBody?:object
 }
 
 

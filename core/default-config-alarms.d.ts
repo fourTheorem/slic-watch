@@ -46,5 +46,5 @@ export type FunctionAlarmConfigs = {
 }
 
 export type Context = {
-  alarmActions: string[]
+  alarmActions?: string[]
 }

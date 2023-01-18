@@ -11,6 +11,14 @@ import {
   testContext
 } from './testing-utils'
 
+export type AlarmsByType ={
+  APIGW_4XXError
+  APIGW_5XXError
+  APIGW_Latency
+} 
+
+
+
 test('API Gateway alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
@@ -40,24 +48,27 @@ test('API Gateway alarms are created', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  const alarmsByType = {}
-  t.equal(Object.keys(alarmResources).length, 3)
-  for (const alarmResource of Object.values(alarmResources)) {
-    const al = alarmResource.Properties
-    assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
-    alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-    alarmsByType[alarmType].add(al)
+  
+  function getAlarmByType():AlarmsByType {
+    const alarmsByType = {}
+    for (const alarmResource of Object.values(alarmResources)) {
+      const al = alarmResource.Properties
+      assertCommonAlarmProperties(t, al)
+      const alarmType = alarmNameToType(al.AlarmName)
+      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType].add(al)
+    }
+    return alarmsByType as AlarmsByType 
   }
-
+  t.equal(Object.keys(alarmResources).length, 3)
+  
+  const alarmsByType = getAlarmByType()
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
     'APIGW_5XXError',
     'APIGW_Latency'
   ])
-// @ts-ignore
   t.equal(alarmsByType.APIGW_5XXError.size, 1)
-  // @ts-ignore
   for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
@@ -74,7 +85,6 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
-  // @ts-ignore
   for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
@@ -91,7 +101,6 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
-  // @ts-ignore
   for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')

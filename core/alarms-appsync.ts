@@ -7,7 +7,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type AppSyncAlarmConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   '5XXError': AlarmConfig
   Latency: AlarmConfig
 }

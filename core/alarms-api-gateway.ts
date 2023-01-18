@@ -6,7 +6,6 @@ import { AlarmConfig, Context } from './default-config-alarms'
 
 export type ApiGwAlarmConfig = {
   enabled?: boolean
-  config?: AlarmConfig
   '5XXError': AlarmConfig
   '4XXError': AlarmConfig
   Latency: AlarmConfig
