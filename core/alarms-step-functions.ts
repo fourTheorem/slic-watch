@@ -1,5 +1,5 @@
 'use strict'
-import { CloudFormationTemplate } from "./cf-template.d";
+import { CloudFormationTemplate, Statistic } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SfAlarmsConfig = {
@@ -64,7 +64,7 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
     comparisonOperator: string,
     threshold: number,
     metricName: string,
-    statistic: string,
+    statistic: Statistic,
     period: number,
     evaluationPeriods: number,
     treatMissingData: string

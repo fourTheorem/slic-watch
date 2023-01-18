@@ -14,6 +14,9 @@ export interface CloudFormationTemplate {
     resolveFunctionResourceName: (func: object) => object;
 }
 
+export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum'
+// export enum Statistic {'Average', 'Maximum', 'Minimum', 'SampleCount', 'Sum'}
+
 export type Metric = {
   resourceName?: string
   resource?: CfResource
@@ -48,7 +51,7 @@ export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayPro
   MetricName: string
   Namespace: string
   Period: number
-  Statistic: string
+  Statistic: Statistic
   ExtendedStatistic?: string
   DashboardName?: string
   DashboardBody?:object

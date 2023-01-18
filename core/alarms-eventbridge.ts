@@ -1,6 +1,6 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate, Statistic } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EventsAlarmsConfig = {
@@ -56,7 +56,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     comparisonOperator: string,
     threshold: number,
     metricName: string,
-    statistic: string,
+    statistic: Statistic,
     period: number,
     evaluationPeriods: number,
     treatMissingData: string

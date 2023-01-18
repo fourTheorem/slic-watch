@@ -2,7 +2,7 @@
 
 import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from './util'
 
-import { CfResource, CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate, Statistic } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 
@@ -87,7 +87,7 @@ export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmCon
     comparisonOperator: string,
     threshold: number,
     metricName: string,
-    statistic: string,
+    statistic: Statistic,
     period: number,
     extendedStatistic: string,
     evaluationPeriods: number,

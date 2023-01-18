@@ -1,5 +1,6 @@
 import { dashboard } from 'slic-watch-core/dashboard';
 import { Widgets } from './cascading-config'
+import { Statistic } from './cf-template.d'
 
 export type DashboardConfig = {
   enabled?: boolean
@@ -14,7 +15,6 @@ type DashConfig = {
   width?: number
   height?: number
   yAxis?: string
-  Statistic?: string[]
 }
 
 // export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig

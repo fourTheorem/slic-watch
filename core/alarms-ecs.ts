@@ -1,7 +1,7 @@
 'use strict'
 
 import { resolveEcsClusterNameAsCfn } from './util'
-import { CfResource, CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate, Statistic } from "./cf-template.d";
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
@@ -62,7 +62,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     comparisonOperator: string,
     threshold: number,
     metricName: string,
-    statistic: string,
+    statistic: Statistic,
     period: number,
     evaluationPeriods: number,
     treatMissingData: string

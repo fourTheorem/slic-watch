@@ -1,6 +1,6 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from "./cf-template.d";
+import { CfResource, CloudFormationTemplate, Statistic } from "./cf-template.d";
 import { AlarmConfig, Context, FunctionAlarmConfigs } from './default-config-alarms'
 
 import { getLogger } from './logging'
@@ -121,7 +121,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     threshold: number,
     metrics: string,
     metricName: string,
-    statistic: string,
+    statistic: Statistic,
     period: number,
     evaluationPeriods: number,
     treatMissingData: string

@@ -11,6 +11,7 @@ import { SnsAlarmsConfig } from './alarms-sns'
 import { SqsAlarmsConfig } from './alarms-sqs'
 import { SfAlarmsConfig } from './alarms-step-functions'
 import { AlarmsCascade } from './cascading-config'
+import { Statistic } from './cf-template.d'
 
 export type AlarmConfig ={
   enabled?: boolean
@@ -18,7 +19,7 @@ export type AlarmConfig ={
   EvaluationPeriods?: number
   TreatMissingData: string
   ComparisonOperator?: string
-  Statistic?: string
+  Statistic?: Statistic
   ExtendedStatistic?: string
   Threshold?: number
 }
