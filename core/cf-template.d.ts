@@ -14,7 +14,7 @@ export interface CloudFormationTemplate {
     resolveFunctionResourceName: (func: object) => object;
 }
 
-export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum'
+export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
 export type Metric = {
   resourceName?: string

@@ -3,12 +3,12 @@
 import _ from 'lodash'
 import Ajv from 'ajv'
 
-import alarms from 'slic-watch-core/alarms'
-import dashboard from 'slic-watch-core/dashboard'
-import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from 'slic-watch-core/config-schema'
-import defaultConfig from 'slic-watch-core/default-config'
-import CloudFormationTemplate from 'slic-watch-core/cf-template'
-import * as logging from 'slic-watch-core/logging'
+import alarms from '../core/alarms'
+import dashboard from '../core/dashboard'
+import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/config-schema'
+import defaultConfig from '../core/default-config'
+import CloudFormationTemplate from '../core/cf-template'
+import * as logging from '../core/logging'
 import log from './serverless-v2-logger'
 
 import Serverless from 'serverless'

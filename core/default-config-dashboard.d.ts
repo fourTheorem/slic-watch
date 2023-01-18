@@ -11,12 +11,18 @@ export type DashboardConfig = {
   dashConfig?: DashConfig
 }
 
-type DashConfig = {
+export type DashConfig = {
   enabled?: boolean
   metricPeriod?: object
   width?: number
   height?: number
   yAxis?: YAxis
+  Statistic?: Statistic[] 
+}
+
+export type ServiceDashConfig = {
+  dashConfig?: DashConfig
+  widgets?: Widgets
 }
 
 // export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig

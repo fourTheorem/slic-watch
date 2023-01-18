@@ -1,8 +1,8 @@
 'use strict'
 
-import { cascade, DashboardsCascade } from './cascading-config'
+import { cascade, Widgets} from './cascading-config'
 import { CloudFormationTemplate, ResourceType } from './cf-template.d'
-import { DashboardConfig, FunctionDashboardConfigs,FunctionResources} from './default-config-dashboard.d'
+import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard.d'
 import { Context } from './default-config-alarms'
 import {
   resolveEcsClusterNameForSub,
@@ -191,7 +191,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     const lambdaWidgets = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
           if (metric !== 'IteratorAge') {
              // @ts-ignore
@@ -256,14 +255,14 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    *  The config object for a specific service within the dashboard
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
-  function getConfiguredMetrics (serviceDashConfig: DashboardConfig) {
+  function getConfiguredMetrics (serviceDashConfig) {
     const extractedConfig= {}
     for (const [metric, metricConfig] of Object.entries(serviceDashConfig)) {
       if (typeof metricConfig === 'object') {
         extractedConfig[metric] = metricConfig
       }
     }
-    return extractedConfig
+    return extractedConfig as ServiceDashConfig
   }
 
   /**
@@ -277,7 +276,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
           const metricStatWidget = createMetricWidget(
             `${metric} API ${apiName}`,
@@ -310,7 +308,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
            // @ts-ignore
           for (const stat of metricConfig.Statistic) {
@@ -346,7 +343,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     const ddbWidgets = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
           ddbWidgets.push(createMetricWidget(
             `${metric} Table $\{${logicalId}}`,
@@ -484,7 +480,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
 
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
            // @ts-ignore
           for (const stat of metricConfig.Statistic) {
@@ -522,7 +517,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
            // @ts-ignore
           for (const stat of metricConfig.Statistic) {
@@ -559,7 +553,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
            // @ts-ignore
           for (const stat of metricConfig.Statistic) {
@@ -597,7 +590,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
-         // @ts-ignore
         if (metricConfig.enabled) {
            // @ts-ignore
           for (const stat of metricConfig.Statistic) {
@@ -639,7 +631,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-           // @ts-ignore
           if (metricConfig.enabled &&
             (targetGroupResource.Properties.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
