@@ -12,7 +12,7 @@
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
     "prepublish": "cp ../README.md README.md",
-    "build": "esbuild ./index.ts --outfile=index.cjs --platform=node --packages=external --sourcemap --bundle --minify --target=node18"
+    "build": "esbuild ./index.ts --outfile=index.js --platform=node --format=esm --packages=external --bundle --sourcemap"
   },
   "devDependencies": {
     "@types/serverless": "^3.12.9",

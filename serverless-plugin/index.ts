@@ -13,7 +13,7 @@ import log from './serverless-v2-logger'
 
 import Serverless from 'serverless'
 
-export default class ServerlessPlugin {
+class ServerlessPlugin {
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
    * @param {*} serverless The Serverless isntance
@@ -110,3 +110,5 @@ export default class ServerlessPlugin {
     this.alarms.addAlarms(cfTemplate)
   }
 }
+
+export default ServerlessPlugin

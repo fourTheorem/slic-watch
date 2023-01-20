@@ -1,7 +1,6 @@
 'use strict'
 
-import merge from 'lodash/merge'
-import get from 'lodash/get'
+import _ from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
@@ -30,9 +29,9 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
     // @ts-ignore
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
-      funcConfig[metric] = get(functionAlarmConfigs, [func, 'Lambda', metric], {})
+      funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
-    mergedFuncAlarmConfigs[func] = merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
+    mergedFuncAlarmConfigs[func] = _.merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
   }
   return mergedFuncAlarmConfigs
 }
