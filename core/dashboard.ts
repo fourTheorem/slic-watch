@@ -1,7 +1,7 @@
 'use strict'
 
 import { cascade, Widgets} from './cascading-config'
-import { CloudFormationTemplate, ResourceType } from './cf-template.d'
+import { CloudFormationTemplate, ResourceType, Statistic } from './cf-template.d'
 import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard.d'
 import { Context } from './default-config-alarms'
 import {
@@ -96,11 +96,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     const apiWidgets = createApiWidgets(apiResources)
     const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
     const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
-    const lambdaWidgets = createLambdaWidgets(
-      // @ts-ignore
-      lambdaResources,
-      Object.keys(eventSourceMappingFunctions)
-    )
+    const lambdaWidgets = createLambdaWidgets(lambdaResources, Object.keys(eventSourceMappingFunctions))
     const streamWidgets = createStreamWidgets(streamResources)
     const queueWidgets = createQueueWidgets(queueResources)
     const ecsWidgets = createEcsWidgets(ecsServiceResources)
@@ -126,7 +122,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     ])
 
     if (positionedWidgets.length > 0) {
-      // @ts-ignore
       const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
       const dashboardResource = {
         Type: 'AWS::CloudWatch::Dashboard',
@@ -141,7 +136,13 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
     }
   }
-
+  type MetricDefs = {
+    namespace: string
+    metric : string
+    dimensions: object
+    stat: Statistic
+    yAxis? : string
+  }
   /**
    * Create a metric for the specified metrics
    *
@@ -149,9 +150,8 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    * @param {Array.<object>} metrics The metric definitions to render
    * @param {Object} Cascaded widget/metric configuration
    */
-  function createMetricWidget (title: string, metricDefs: Array<object>, config) {
+  function createMetricWidget (title: string, metricDefs: Array<MetricDefs>, config) {
     const metrics = metricDefs.map(
-      // @ts-ignore
       ({ namespace, metric, dimensions, stat, yAxis }) => [
         namespace,
         metric,
@@ -168,7 +168,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         metrics,
         title,
         view: 'timeSeries',
-        // eslint-disable-next-line no-template-curly-in-string
         region: '${AWS::Region}',
         period: config.metricPeriod
       },
@@ -185,7 +184,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
    * eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
   function createLambdaWidgets (
-    functionResources: FunctionResources,
+    functionResources: FunctionDashboardConfigs,
     eventSourceMappingFunctionResourceNames: string[]
   ) {
     const lambdaWidgets = []
@@ -193,7 +192,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
         if (metricConfig.enabled) {
           if (metric !== 'IteratorAge') {
-             // @ts-ignore
             for (const stat of metricConfig.Statistic) {
               const metricDefs = []
               for (const logicalId of Object.keys(functionResources)) {
@@ -224,7 +222,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
               const functionConfig = functionDashboardConfigs[logicalId] || {}
               const functionMetricConfig = functionConfig[metric] || {}
               if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
-                 // @ts-ignore
                 const stats = metricConfig.Statistic
                 const iteratorAgeWidget = createMetricWidget(
                   `Lambda IteratorAge \${${logicalId}} ${stats.join(',')}`,
@@ -279,7 +276,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         if (metricConfig.enabled) {
           const metricStatWidget = createMetricWidget(
             `${metric} API ${apiName}`,
-             // @ts-ignore
             Object.values(metricConfig.Statistic).map((stat) => ({
               namespace: 'AWS/ApiGateway',
               metric,
@@ -309,7 +305,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
         if (metricConfig.enabled) {
-           // @ts-ignore
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/States',
@@ -346,7 +341,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         if (metricConfig.enabled) {
           ddbWidgets.push(createMetricWidget(
             `${metric} Table $\{${logicalId}}`,
-             // @ts-ignore
             Object.values(metricConfig.Statistic).map((stat) => ({
               namespace: 'AWS/DynamoDB',
               metric,
@@ -361,7 +355,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
             const gsiName = gsi.IndexName
             ddbWidgets.push(createMetricWidget(
               `${metric} GSI ${gsiName} in \${${logicalId}}`,
-               // @ts-ignore
               Object.values(metricConfig.Statistic).map((stat) => ({
                 namespace: 'AWS/DynamoDB',
                 metric,
@@ -481,7 +474,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
         if (metricConfig.enabled) {
-           // @ts-ignore
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/ECS',
@@ -518,7 +510,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
         if (metricConfig.enabled) {
-           // @ts-ignore
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/SNS',
@@ -554,7 +545,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
         if (metricConfig.enabled) {
-           // @ts-ignore
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/Events',
@@ -591,7 +581,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig.enabled) {
-           // @ts-ignore
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/ApplicationELB',
@@ -634,7 +623,6 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
           if (metricConfig.enabled &&
             (targetGroupResource.Properties.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
-             // @ts-ignore
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/ApplicationELB',
@@ -706,18 +694,21 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     return appSyncWidgets
   }
 
+  type Widgets = {
+    width:  number
+    height: number
+  }
   /**
    * Set the location and dimension properties of each provided widget
    *
    * A set of dashboard widgets
    * A set of dashboard widgets with layout properties set
    */
-  function layOutWidgets (widgets: Array<object>) {
+  function layOutWidgets (widgets: Array<Widgets>) {
     let x = 0
     let y = 0
 
     return widgets.map((widget) => {
-       // @ts-ignore
       const { width, height } = widget
       if (x + width > MAX_WIDTH) {
         y += height

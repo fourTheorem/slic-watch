@@ -15,6 +15,7 @@ import { AlarmConfig, AllAlarmsConfig } from "./default-config-alarms.d"
 import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
    EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from "./default-config-dashboard.d"
 import { LambdaFunctionAlarmConfigs } from "./alarms-lambda"
+import { Statistic } from "./cf-template.d"
 
 
 const MAX_DEPTH = 10
@@ -28,12 +29,17 @@ type ParentNode ={
 }
 export type DashboardsCascade ={
   enabled?: boolean
-  timeRange: object
+  timeRange: TimeRange
   widgets: Widgets
  }
+ type TimeRange = {
+  start: string
+  end: string
+ } 
 
 export type Widgets = {
   enabled?:boolean // remove later ? mark 
+  Statistic?: Statistic[]
   Lambda?: LambdaDashConfig 
   ApiGateway?: ApiGwDashConfig
   States?: SfDashConfig,
