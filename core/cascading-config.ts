@@ -33,7 +33,7 @@ export type DashboardsCascade ={
  }
 
 export type Widgets = {
-  enabled?:boolean
+  enabled?:boolean // remove later ? mark 
   Lambda?: LambdaDashConfig 
   ApiGateway?: ApiGwDashConfig
   States?: SfDashConfig,
@@ -49,7 +49,7 @@ export type Widgets = {
 }
 
 export type AlarmsCascade ={
-  enabled?: boolean
+  enabled?: boolean // remove later ? mark
   Lambda?:  LambdaFunctionAlarmConfigs 
   ApiGateway?: ApiGwAlarmConfig
   States?: SfAlarmsConfig,

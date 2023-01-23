@@ -8,16 +8,16 @@ import { getLogger } from './logging'
 const logger = getLogger()
 
 type Resource = {
-  Type?: string
-  Properties?: Properties
+  Type: string
+  Properties?: { [key: string]: Properties } 
   DependsOn?: []
 }
 
 export type CompiledTemplate = {
   AWSTemplateFormatVersion?: string
   Description?: string
-  Resources?: Resource[] 
-  Outputs?: object
+  Resources?: Resource[] | {[key: string]: object} | undefined 
+  Outputs?: {[key: string]: object} | undefined | object
 }
 
 export type AdditionalResources = {
