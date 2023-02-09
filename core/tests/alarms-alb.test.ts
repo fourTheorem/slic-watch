@@ -1,6 +1,6 @@
 'use strict'
 
-import albAlarms, { AlbAlarmConfig } from '../alarms-alb'
+import albAlarms, { AlbAlarmConfig } from '../alarms/alb'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

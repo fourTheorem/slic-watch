@@ -1,21 +1,21 @@
 'use strict'
 
-import { AlbAlarmConfig } from "./alarms-alb"
-import { AlbTargetAlarmConfig } from "./alarms-alb-target-group"
-import { ApiGwAlarmConfig } from "./alarms-api-gateway"
-import { AppSyncAlarmConfig } from "./alarms-appsync"
-import { DynamoDbAlarmConfig } from "./alarms-dynamodb"
-import { EcsAlarmsConfig } from "./alarms-ecs"
-import { EventsAlarmsConfig } from "./alarms-eventbridge"
-import { KinesisAlarmConfig } from "./alarms-kinesis"
-import { SnsAlarmsConfig } from "./alarms-sns"
-import { SqsAlarmsConfig } from "./alarms-sqs"
-import { SfAlarmsConfig } from "./alarms-step-functions"
-import { AlarmConfig, AllAlarmsConfig } from "./default-config-alarms.d"
+import { AlbAlarmConfig } from './alarms/alb'
+import { AlbTargetAlarmConfig } from './alarms/alb-target-group'
+import { ApiGwAlarmConfig } from './alarms/api-gateway'
+import { AppSyncAlarmConfig } from './alarms/appsync'
+import { DynamoDbAlarmConfig } from './alarms/dynamodb'
+import { EcsAlarmsConfig } from './alarms/ecs'
+import { EventsAlarmsConfig } from './alarms/eventbridge'
+import { KinesisAlarmConfig } from './alarms/kinesis'
+import { SnsAlarmsConfig } from './alarms/sns'
+import { SqsAlarmsConfig } from './alarms/sqs'
+import { SfAlarmsConfig } from './alarms/step-functions'
+import { AlarmConfig, AllAlarmsConfig } from './alarms/default-config-alarms'
 import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
-   EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from "./default-config-dashboard.d"
-import { LambdaFunctionAlarmConfigs } from "./alarms-lambda"
-import { Statistic } from "./cf-template.d"
+   EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from './dashboards/default-config-dashboard'
+import { LambdaFunctionAlarmConfigs } from './alarms/lambda'
+import { Statistic } from './cf-template.d'
 
 
 const MAX_DEPTH = 10

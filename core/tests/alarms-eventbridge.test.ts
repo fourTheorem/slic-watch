@@ -1,6 +1,6 @@
 'use strict'
 
-import ruleAlarms from '../alarms-eventbridge'
+import ruleAlarms from '../alarms/eventbridge'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

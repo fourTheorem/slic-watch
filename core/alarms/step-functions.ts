@@ -1,5 +1,5 @@
 'use strict'
-import { CloudFormationTemplate, Statistic } from "./cf-template.d";
+import { CloudFormationTemplate, Statistic } from '../cf-template.d'
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type SfAlarmsConfig = {

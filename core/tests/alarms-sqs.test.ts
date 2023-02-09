@@ -1,6 +1,6 @@
 'use strict'
 
-import sqsAlarms from '../alarms-sqs'
+import sqsAlarms from '../alarms/sqs'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

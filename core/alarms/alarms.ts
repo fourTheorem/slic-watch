@@ -1,22 +1,22 @@
 'use strict'
 
-import { AlarmsCascade, cascade } from './cascading-config'
-import { applyAlarmConfig } from './function-config'
-import { FunctionAlarmConfigs, Context } from "./default-config-alarms";
-import { CloudFormationTemplate } from "./cf-template.d";
+import { AlarmsCascade, cascade } from '../cascading-config'
+import { applyAlarmConfig } from '../function-config'
+import { FunctionAlarmConfigs, Context } from './default-config-alarms'
+import { CloudFormationTemplate } from '../cf-template.d'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './alarms-lambda'
-import apiGatewayAlarms from './alarms-api-gateway'
-import stepFunctionAlarms from './alarms-step-functions'
-import dynamoDbAlarms from './alarms-dynamodb'
-import kinesisAlarms from './alarms-kinesis'
-import sqsAlarms from './alarms-sqs'
-import ecsAlarms from './alarms-ecs'
-import snsAlarms from './alarms-sns'
-import ruleAlarms from './alarms-eventbridge'
-import albAlarms from './alarms-alb'
-import albTargetAlarms from './alarms-alb-target-group'
-import appSyncAlarms from './alarms-appsync'
+import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './lambda'
+import apiGatewayAlarms from './api-gateway'
+import stepFunctionAlarms from './step-functions'
+import dynamoDbAlarms from './dynamodb'
+import kinesisAlarms from './kinesis'
+import sqsAlarms from './sqs'
+import ecsAlarms from './ecs'
+import snsAlarms from './sns'
+import ruleAlarms from './eventbridge'
+import albAlarms from './alb'
+import albTargetAlarms from './alb-target-group'
+import appSyncAlarms from './appsync'
 
 export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
   const {

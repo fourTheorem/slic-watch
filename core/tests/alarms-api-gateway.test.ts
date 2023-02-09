@@ -1,6 +1,6 @@
 'use strict'
 
-import apiGatewayAlarms from '../alarms-api-gateway'
+import apiGatewayAlarms from '../alarms/api-gateway'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

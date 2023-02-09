@@ -1,9 +1,9 @@
 'use strict'
 
-import { cascade, Widgets} from './cascading-config'
-import { CloudFormationTemplate, ResourceType, Statistic } from './cf-template.d'
-import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard.d'
-import { Context } from './default-config-alarms'
+import { cascade, Widgets} from '../cascading-config'
+import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template.d'
+import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard'
+import { Context } from '../alarms/default-config-alarms'
 import {
   resolveEcsClusterNameForSub,
   resolveRestApiNameForSub,
@@ -11,8 +11,8 @@ import {
   resolveTargetGroupFullNameForSub,
   findLoadBalancersForTargetGroup,
   resolveGraphlQLId
-} from './util'
-import { getLogger } from './logging'
+} from '../util'
+import { getLogger } from '../logging'
 
 const MAX_WIDTH = 24
 

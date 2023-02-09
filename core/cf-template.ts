@@ -1,7 +1,7 @@
 'use strict'
 
 import { CloudFormationTemplate, ResourceType, Properties, Metric } from './cf-template.d'
-import { FunctionAlarmConfigs } from "./default-config-alarms";
+import { FunctionAlarmConfigs } from './alarms/default-config-alarms'
 import { filterObject } from './util'
 import { getLogger } from './logging'
 

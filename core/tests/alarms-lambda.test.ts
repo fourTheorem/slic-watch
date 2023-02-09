@@ -1,6 +1,6 @@
 'use strict'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../alarms-lambda'
+import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../alarms/lambda'
 import { test } from 'tap'
 import { filterObject } from '../util'
 import defaultConfig from '../default-config'

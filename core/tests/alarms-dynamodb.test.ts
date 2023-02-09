@@ -1,6 +1,6 @@
 'use strict'
 
-import dynamoDbAlarms from '../alarms-dynamodb'
+import dynamoDbAlarms from '../alarms/dynamodb'
 
 import { test } from 'tap'
 

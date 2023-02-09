@@ -1,6 +1,6 @@
 'use strict'
 
-import appSyncAlarms, { AppSyncAlarmConfig } from '../alarms-appsync'
+import appSyncAlarms, { AppSyncAlarmConfig } from '../alarms/appsync'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

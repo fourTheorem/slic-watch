@@ -4,8 +4,8 @@ import _ from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
-import { FunctionAlarmConfigs } from './default-config-alarms'
-import { LambdaFunctionAlarmConfigs } from './alarms-lambda'
+import { FunctionAlarmConfigs } from './alarms/default-config-alarms'
+import { LambdaFunctionAlarmConfigs } from './alarms/lambda'
 
 /**
  * Support for function-specific configuration for AWS Lambda overrides at a function level

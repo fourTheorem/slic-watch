@@ -1,6 +1,6 @@
 'use strict'
 
-import kinesisAlarms from '../alarms-kinesis'
+import kinesisAlarms from '../alarms/kinesis'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

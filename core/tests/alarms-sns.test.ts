@@ -1,6 +1,6 @@
 'use strict'
 
-import snsAlarms from '../alarms-sns'
+import snsAlarms from '../alarms/sns'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

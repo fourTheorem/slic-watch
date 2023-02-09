@@ -3,7 +3,7 @@
 import  _  from 'lodash'
 import { test } from 'tap'
 
-import dashboard from '../dashboard'
+import dashboard from '../dashboards/dashboard'
 import defaultConfig from '../default-config'
 
 import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from './testing-utils'

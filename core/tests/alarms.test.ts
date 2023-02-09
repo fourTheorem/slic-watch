@@ -2,7 +2,7 @@
 
 import { test } from 'tap'
 
-import alarms from '../alarms'
+import alarms from '../alarms/alarms'
 import defaultConfig from '../default-config'
 import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testContext } from './testing-utils'
 

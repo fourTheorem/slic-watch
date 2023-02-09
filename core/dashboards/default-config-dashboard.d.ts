@@ -1,6 +1,6 @@
 import { dashboard } from 'slic-watch-core/dashboard';
-import { Widgets } from './cascading-config'
-import { Statistic } from './cf-template.d'
+import { Widgets } from '../cascading-config'
+import { Statistic } from '../cf-template'
 
 export type YAxis = 'left' | 'right'
 

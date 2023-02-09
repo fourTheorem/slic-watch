@@ -1,6 +1,6 @@
 'use strict'
 
-import stepFunctionsAlarms from '../alarms-step-functions'
+import stepFunctionsAlarms from '../alarms/step-functions'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {

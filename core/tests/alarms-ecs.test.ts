@@ -1,6 +1,6 @@
 'use strict'
 
-import ecsAlarms from '../alarms-ecs'
+import ecsAlarms from '../alarms/ecs'
 import { test } from 'tap'
 import defaultConfig from '../default-config'
 import {
