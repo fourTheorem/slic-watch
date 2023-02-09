@@ -4,7 +4,7 @@ import _ from 'lodash'
 import esmock from 'esmock'
 import Serverless from 'serverless'
 import { test } from 'tap'
-import { getLogger } from 'slic-watch-core/logging'
+import pino from 'pino'
 
 const slsYaml = {
   custom: {
@@ -33,7 +33,7 @@ const testCfTemplate = {
 
 function getServerlessPlugin(t) {
   return esmock('../index', {
-    'slic-watch-core/dashboard': () => {
+    'slic-watch-core/dashboards/dashboard': () => {
       return {
         addDashboard: (cfTemplate) => {
           t.equal(cfTemplate.getSourceObject(), testCfTemplate)
@@ -41,7 +41,7 @@ function getServerlessPlugin(t) {
         }
       }
     },
-    'slic-watch-core/alarms': () => {
+    'slic-watch-core/alarms/alarms': () => {
       return {
         addAlarms: (cfTemplate) => {
           t.equal(cfTemplate.getSourceObject(), testCfTemplate)
@@ -84,7 +84,7 @@ test('index', t => {
     
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(mockServerless, {}, { log: dummyV3Logger })
-    const logger =  Object.assign({}, getLogger()) 
+    const logger =  Object.assign({}, pino()) 
     const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal' ] 
     for (const extra of extras) {
       delete logger[extra]
