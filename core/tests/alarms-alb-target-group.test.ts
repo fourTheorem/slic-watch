@@ -104,7 +104,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  function createAlarmResources (elbAlarmConfig) {
+  function createAlarmResources (elbAlarmConfig:AlbTargetAlarmConfig) {
     const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)

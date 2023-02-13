@@ -2,13 +2,17 @@
 
 import { makeResourceName, getStatisticName }from '../util'
 import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template.d'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context } from './default-config-alarms'
 
 export type AlbAlarmConfig = {
   enabled?: boolean
   HTTPCode_ELB_5XX_Count: AlarmConfig,
   RejectedConnectionCount: AlarmConfig
 }
+
+export type AlbAlarm = Alarm & {
+  loadBalancerResourceName: string
+} 
 
 
 /**

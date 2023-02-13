@@ -4,7 +4,7 @@ import _ from 'lodash'
 import Ajv from 'ajv'
 
 import alarms from '../core/alarms/alarms'
-import dashboard from 'slic-watch-core/dashboards/dashboard'
+import dashboard from '../core/dashboards/dashboard'
 import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/config-schema'
 import defaultConfig from '../core/default-config'
 import CloudFormationTemplate from '../core/cf-template'
@@ -30,7 +30,7 @@ class ServerlessPlugin {
    * @param {*} cliOptions Serverless framework CLI options
    * @param {*} pluginUtils V3 utilities, including the logger
    */
-  constructor (serverless, cliOptions, pluginUtils: PluginUtils  = {}) {
+  constructor (serverless, cliOptions, pluginUtils:PluginUtils  = {}) {
     this.serverless = serverless
     const logger = pluginUtils.log
     if (logger) {
@@ -50,9 +50,7 @@ class ServerlessPlugin {
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
-    this.hooks = {
-      'after:aws:package:finalize:mergeCustomProviderResources': this.createSlicWatchResources.bind(this)
-    }
+    this.hooks = { 'after:aws:package:finalize:mergeCustomProviderResources': this.createSlicWatchResources.bind(this)}
   }
 
   /**

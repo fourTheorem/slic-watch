@@ -75,7 +75,7 @@ function resolveEcsClusterNameForSub (cluster) {
  * A CloudFormation template instance
  * All Load Balancers CloudFormation logicalIDs
  */
-function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate) {
+function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate): string[] {
   const allLoadBalancerLogicalIds = new Set()
   const allListenerRules = {}
   const listenerResources = cfTemplate.getResourcesByType(
