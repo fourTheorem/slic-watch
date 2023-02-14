@@ -33,7 +33,7 @@ const testCfTemplate = {
 
 function getServerlessPlugin(t) {
   return esmock('../index', {
-    'slic-watch-core/dashboard': () => {
+    'slic-watch-core/dashboards/dashboard': () => {
       return {
         addDashboard: (cfTemplate) => {
           t.equal(cfTemplate.getSourceObject(), testCfTemplate)
@@ -41,7 +41,7 @@ function getServerlessPlugin(t) {
         }
       }
     },
-    'slic-watch-core/alarms': () => {
+    'slic-watch-core/alarms/alarms': () => {
       return {
         addAlarms: (cfTemplate) => {
           t.equal(cfTemplate.getSourceObject(), testCfTemplate)

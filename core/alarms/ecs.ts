@@ -1,7 +1,7 @@
 'use strict'
 
 import { resolveEcsClusterNameAsCfn } from '../util'
-import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template.d'
+import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
 import { AlarmConfig, Context } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {

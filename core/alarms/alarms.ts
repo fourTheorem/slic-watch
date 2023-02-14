@@ -3,7 +3,7 @@
 import { AlarmsCascade, cascade } from '../cascading-config'
 import { applyAlarmConfig } from '../function-config'
 import { FunctionAlarmConfigs, Context } from './default-config-alarms'
-import { CloudFormationTemplate } from '../cf-template.d'
+import { CloudFormationTemplate } from '../cf-template'
 
 import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './lambda'
 import apiGatewayAlarms from './api-gateway'

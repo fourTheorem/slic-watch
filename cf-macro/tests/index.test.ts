@@ -3,7 +3,7 @@
 import { test } from 'tap'
 import _ from 'lodash'
 import esmock from 'esmock'
-import { CloudFormationTemplate } from "../../core/cf-template.d"
+import { CloudFormationTemplate } from "../../core/cf-template"
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 const template = require('./event.json')
@@ -21,7 +21,7 @@ type TestState = {
 let testState: TestState
 
 const lambda = await esmock('../index', {
-  'slic-watch-core/dashboard': () => {
+  'slic-watch-core/dashboards/dashboard': () => {
     testState.dashboardCalled = true
     return {
       addDashboard: (cfTemplate: CloudFormationTemplate) => {
@@ -29,7 +29,7 @@ const lambda = await esmock('../index', {
       }
     }
   },
-  'slic-watch-core/alarms': () => {
+  'slic-watch-core/alarms/alarms': () => {
     testState.alarmsCalled = true
     return {
       addAlarms: (cfTemplate) => {

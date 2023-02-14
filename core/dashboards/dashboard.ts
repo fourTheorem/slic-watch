@@ -1,7 +1,7 @@
 'use strict'
 
 import { cascade, Widgets} from '../cascading-config'
-import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template.d'
+import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
 import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard'
 import { Context } from '../alarms/default-config-alarms'
 import {

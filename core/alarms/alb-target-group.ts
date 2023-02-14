@@ -2,8 +2,8 @@
 
 import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from '../util'
 
-import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template.d'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms.d'
+import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 
 export type AlbTargetAlarmConfig = {

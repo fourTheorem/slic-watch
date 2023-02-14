@@ -1,4 +1,4 @@
-import { Properties } from './../cf-template.d';
+import { Properties } from '../cf-template';
 import { AlbTargetAlarmConfig } from './alb-target-group'
 import { AlbAlarmConfig } from './alb'
 import { ApiGwAlarmConfig } from './api-gateway'
@@ -12,7 +12,7 @@ import { SnsAlarmsConfig } from './sns'
 import { SqsAlarmsConfig } from './sqs'
 import { SfAlarmsConfig } from './step-functions'
 import { AlarmsCascade } from '../cascading-config'
-import { Statistic } from '../cf-template.d'
+import { Statistic } from '../cf-template'
 import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
 
@@ -24,7 +24,7 @@ export type Alarm = {
   metricName: string,
   statistic: Statistic,
   period: number,
-  extendedStatistic: string,
+  extendedStatistic?: string,
   evaluationPeriods: number,
   treatMissingData: string,
   namespace: string,
@@ -45,7 +45,7 @@ export type AlarmProperties = {
   Namespace: string
   Period: number
   Statistic: Statistic //todo
-  ExtendedStatistic?: number //todo
+  ExtendedStatistic?: string //todo
 }
 
 export type ReturnAlarm = {

@@ -8,7 +8,7 @@ import { DashboardConfig } from './dashboards/default-config-dashboard'
  * Any values here can be overridden in the SLIC Watch configuration. See the main README.md for details on how
  * to customise the configuration for any service or specific metric.
  */
-const defaultConfig = {
+export const defaultConfig = {
   alarms: {
     enabled: true,
     Period: 60,

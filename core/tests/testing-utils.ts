@@ -5,7 +5,7 @@ import fs from 'fs'
 import _ from 'lodash'
 import { createRequire } from 'module'
 import {fileURLToPath} from 'url'
-import YAML from 'yaml'
+import  YAML from 'yaml'
 
 import CloudFormationTemplate from '../cf-template'
 import { cascade } from '../cascading-config'

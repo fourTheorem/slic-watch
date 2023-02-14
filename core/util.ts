@@ -1,6 +1,6 @@
 'use strict'
 import stringcase from 'case'
-import { CloudFormationTemplate } from './cf-template.d'
+import { CloudFormationTemplate } from './cf-template'
 
 /**
  * Filter an object to produce a new object with entries matching the supplied predicate

@@ -15,7 +15,7 @@ import { AlarmConfig, AllAlarmsConfig } from './alarms/default-config-alarms'
 import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
    EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from './dashboards/default-config-dashboard'
 import { LambdaFunctionAlarmConfigs } from './alarms/lambda'
-import { Statistic } from './cf-template.d'
+import { Statistic } from './cf-template'
 
 
 const MAX_DEPTH = 10
