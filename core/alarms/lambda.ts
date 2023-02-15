@@ -1,9 +1,9 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate, Statistic } from '../utils/cf-template'
+import { CfResource, CloudFormationTemplate } from '../cf-template'
 import { Alarm, AlarmConfig, Context, FunctionAlarmConfigs, createAlarm } from './default-config-alarms'
 
-import { getLogger } from '../utils/logging'
+import { getLogger } from '../logging'
 const logging = getLogger()
 
 export type LambdaFunctionAlarmConfigs = {

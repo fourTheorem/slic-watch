@@ -1,7 +1,6 @@
 'use strict'
 
-import { resolveEcsClusterNameAsCfn } from '../utils/util'
-import { CfResource, CloudFormationTemplate, Statistic } from '../utils/cf-template'
+import { CfResource, CloudFormationTemplate } from '../cf-template'
 import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
@@ -13,6 +12,27 @@ export type EcsAlarmsConfig = {
 export type EcsAlarm = Alarm & {
   serviceName,
   clusterName: string
+}
+
+/**
+ * Given CloudFormation syntax for an ECS cluster, derive CloudFormation syntax for
+ * the cluster's name
+ *
+ * @param  cluster CloudFormation syntax for an ECS cluster
+ * @returns CloudFormation syntax for the cluster's name
+ */
+export function resolveEcsClusterNameAsCfn (cluster) {
+  if (typeof cluster === 'string') {
+    if (cluster.startsWith('arn:')) {
+      return cluster.split(':').pop().split('/').pop()
+    }
+    return cluster
+  }
+  if (cluster.GetAtt && cluster.GetAtt[1] === 'Arn') {
+    // AWS::ECS::Cluster returns the cluster name for 'Ref'
+    return { Ref: cluster.GetAtt[0] }
+  }
+  return cluster // Fallback to name
 }
 
 /**

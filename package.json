@@ -23,7 +23,7 @@
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:lint": "eslint .",
-    "test:packages": "tap --coverage-report=html --no-browser --no-check-coverage */tests/**/*.test.ts **/tests/**/*.test.ts",
+    "test:packages": "tap --coverage-report=html --no-browser --no-check-coverage */tests/**/*.test.ts **/tests/**/*.test.ts ",
     "test": "npm run test:lint && npm run test:packages",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install"

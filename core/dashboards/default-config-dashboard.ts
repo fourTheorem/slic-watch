@@ -1,5 +1,5 @@
-import { Widgets } from '../utils/cascading-config'
-import { Statistic } from '../utils/cf-template'
+import { Widgets } from '../inputs/cascading-config'
+import { Statistic } from '../cf-template'
 
 export type YAxis = 'left' | 'right'
 

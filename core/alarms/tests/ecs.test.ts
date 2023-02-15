@@ -1,15 +1,34 @@
 'use strict'
 
-import ecsAlarms from '../ecs'
+import ecsAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
 import { test } from 'tap'
-import defaultConfig from '../../utils/default-config'
+import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from '../../utils/tests/testing-utils'
+} from '../../tests/testing-utils'
+
+test('resolveEcsClusterNameAsCfn', (t) => {
+  const fromLiteral = resolveEcsClusterNameAsCfn('my-cluster')
+  t.equal(fromLiteral, 'my-cluster')
+
+  const fromArn = resolveEcsClusterNameAsCfn('arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster')
+  t.equal(fromArn, 'my-cluster')
+
+  const fromRef = resolveEcsClusterNameAsCfn({ Ref: 'my-cluster' })
+  t.same(fromRef, { Ref: 'my-cluster' })
+
+  const fromGetAtt = resolveEcsClusterNameAsCfn({ GetAtt: ['my-cluster', 'Arn'] })
+  t.same(fromGetAtt, { Ref: 'my-cluster' })
+
+  const fromSub = resolveEcsClusterNameAsCfn({ 'Fn::Sub': '$' + '{my-cluster}' })
+  t.same(fromSub, { 'Fn::Sub': '$' + '{my-cluster}' })
+
+  t.end()
+})
 
 test('ECS MemoryUtilization is created', (t) => {
   const alarmConfig = createTestConfig(

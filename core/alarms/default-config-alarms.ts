@@ -10,8 +10,8 @@ import { LambdaAlarm, LambdaFunctionAlarmConfigs } from './lambda'
 import { SnsAlarm, SnsAlarmsConfig } from './sns'
 import { SqsAlarm, SqsAlarmsConfig } from './sqs'
 import { SfAlarmsConfig, SmAlarm } from './step-functions'
-import { AlarmsCascade } from '../utils/cascading-config'
-import { Statistic } from '../utils/cf-template'
+import { AlarmsCascade } from '../inputs/cascading-config'
+import { Statistic } from '../cf-template'
 import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
 

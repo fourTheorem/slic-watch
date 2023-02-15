@@ -1,9 +1,9 @@
 'use strict'
 
-import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from '../utils/util'
-
-import { CfResource, CloudFormationTemplate, Statistic } from '../utils/cf-template'
+import { CfResource, CloudFormationTemplate } from '../cf-template'
 import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { getStatisticName } from './get-statistic-name'
+import { makeResourceName } from './make-name'
 
 
 export type AlbTargetAlarmConfig = {
@@ -18,6 +18,71 @@ export type AlbTargetAlarm = Alarm & {
   targetGroupResourceName: string
   loadBalancerLogicalId: string 
 } 
+
+/**
+ * For a given target group defined by its CloudFormation resources Logical ID, find any load balancer
+ * that relates to the target group by finding associated ListenerRules, their Listener and each Listener's
+ * referenced load balancer.
+ *
+ * Target Group CloudFormation logicalID
+ * A CloudFormation template instance
+ * All Load Balancers CloudFormation logicalIDs
+ */
+export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate): string[] {
+  const allLoadBalancerLogicalIds = new Set()
+  const allListenerRules = {}
+  const listenerResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::Listener'
+  )
+
+  // First, find Listeners with _default actions_ referencing the target group
+  for (const listener of Object.values(listenerResources)) {
+    // @ts-ignore
+    for (const action of listener.Properties.DefaultActions || []) {
+      const targetGroupArn = action?.TargetGroupArn
+      if (targetGroupArn?.Ref === targetGroupLogicalId) {
+        // @ts-ignore
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
+  const listenerRuleResources = cfTemplate.getResourcesByType(
+    'AWS::ElasticLoadBalancingV2::ListenerRule'
+  )
+
+  // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
+  for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
+    // @ts-ignore
+    for (const action of listenerRule.Properties.Actions || []) {
+      const targetGroupArn = action.TargetGroupArn
+      if (targetGroupArn.Ref === targetGroupLogicalId) {
+        allListenerRules[listenerRuleLogicalId] = listenerRule
+        break
+      }
+    }
+  }
+
+  for (const listenerRule of Object.values(allListenerRules)) {
+    // @ts-ignore
+    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
+    if (listenerLogicalId) {
+      const listener = cfTemplate.getResourceByName(listenerLogicalId)
+      if (listener) {
+        // @ts-ignore
+        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+        if (loadBalancerLogicalId) {
+          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        }
+      }
+    }
+  }
+  // @ts-ignore
+  return [...allLoadBalancerLogicalIds]
+}
+
 
 /**
  * The fully resolved alarm configuration

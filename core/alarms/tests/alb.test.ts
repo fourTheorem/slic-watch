@@ -2,7 +2,7 @@
 
 import albAlarms, { AlbAlarmConfig } from '../alb'
 import { test } from 'tap'
-import defaultConfig from '../../utils/default-config'
+import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
@@ -10,7 +10,7 @@ import {
   createTestCloudFormationTemplate,
   albCfTemplate,
   testContext
-} from '../../utils/tests/testing-utils'
+} from '../../tests/testing-utils'
 
 test('ALB alarms are created', (t) => {
   const alarmConfigELB = createTestConfig(

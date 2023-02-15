@@ -1,8 +1,6 @@
 'use strict'
 
-// import { CloudFormationTemplate, ResourceType, Properties, Metric } from './cf-template'
-import { FunctionAlarmConfigs } from '../alarms/default-config-alarms'
-import { filterObject } from './util'
+import { filterObject } from './filter-object'
 import { getLogger } from './logging'
 
 const logger = getLogger()

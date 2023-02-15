@@ -8,19 +8,19 @@ import {fileURLToPath} from 'url'
 import  YAML from 'yaml'
 
 import CloudFormationTemplate from '../cf-template'
-import { cascade } from '../cascading-config'
+import { cascade } from '../inputs/cascading-config'
 
 const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const defaultCfTemplate = require('../../cf-resources/cloudformation-template-stack.json')
-const albCfTemplate = require('../../cf-resources/alb-cloudformation-template-stack.json')
-const appSyncCfTemplate = require('../../cf-resources/appsync-cloudformation-template-stack.json')
+const defaultCfTemplate = require('../cf-resources/cloudformation-template-stack.json')
+const albCfTemplate = require('../cf-resources/alb-cloudformation-template-stack.json')
+const appSyncCfTemplate = require('../cf-resources/appsync-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
   __dirname,
-  '../../../serverless-test-project/serverless.yml'
+  '../../serverless-test-project/serverless.yml'
 )
 
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))

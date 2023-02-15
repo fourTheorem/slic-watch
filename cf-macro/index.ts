@@ -5,10 +5,10 @@ import Ajv from 'ajv'
 
 import alarms from 'slic-watch-core/alarms/alarms'
 import dashboard from 'slic-watch-core/dashboards/dashboard'
-import CloudFormationTemplate from 'slic-watch-core/utils/cf-template'
-import defaultConfig from 'slic-watch-core/utils/default-config'
-import { slicWatchSchema}  from 'slic-watch-core/utils/config-schema'
-import { getLogger } from 'slic-watch-core/utils/logging'
+import CloudFormationTemplate from 'slic-watch-core/cf-template'
+import defaultConfig from 'slic-watch-core/inputs/default-config'
+import { slicWatchSchema}  from 'slic-watch-core/inputs/config-schema'
+import { getLogger } from 'slic-watch-core/logging'
 
 const logger = getLogger({ name: 'macroHandler' })
 

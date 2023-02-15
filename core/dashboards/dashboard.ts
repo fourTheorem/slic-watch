@@ -1,18 +1,73 @@
 'use strict'
 
-import { cascade, Widgets} from '../utils/cascading-config'
-import { CloudFormationTemplate, ResourceType, Statistic } from '../utils/cf-template'
+import { cascade, Widgets} from '../inputs/cascading-config'
+import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
 import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard'
 import { Context } from '../alarms/default-config-alarms'
-import {
-  resolveEcsClusterNameForSub,
-  resolveRestApiNameForSub,
-  resolveLoadBalancerFullNameForSub,
-  resolveTargetGroupFullNameForSub,
-  findLoadBalancersForTargetGroup,
-  resolveGraphlQLId
-} from '../utils/util'
-import { getLogger } from '../utils/logging'
+import { getLogger } from '../logging'
+import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
+import { resolveRestApiNameForSub } from '../alarms/api-gateway'
+
+/**
+ * Given CloudFormation syntax for an AppSync GraphQLAPIId, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the GraphQLAPI
+ *
+ * @param apiId The CloudFormation logical ID for the AppSync GraphQLAPI resource
+ * @returns Literal string or Sub variable syntax
+ */
+function resolveGraphlQLId (apiId: string) {
+  return `\${${apiId}.ApiId}`
+}
+
+/**
+ * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * @param resource The Application Load Balancer resource object
+ * @param logicalId The CloudFormation logical ID for the ALB resource
+ * @returns Literal string or Sub variable syntax
+ */
+export function resolveLoadBalancerFullNameForSub (logicalId: string) {
+  return `\${${logicalId}.LoadBalancerFullName}`
+}
+
+/**
+ * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
+ * @returns Literal string or Sub variable syntax
+ */
+export function resolveTargetGroupFullNameForSub (logicalId: string) {
+  return `\${${logicalId}.TargetGroupFullName}`
+}
+
+
+  /**
+ * Given CloudFormation syntax for an ECS cluster, derive a string value or
+ * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
+ *
+ * @param } cluster CloudFormation syntax for an ECS cluster
+ * @returns Literal string or Sub variable syntax
+ */
+  export function resolveEcsClusterNameForSub (cluster) {
+    if (typeof cluster === 'string') {
+      if (cluster.startsWith('arn:')) {
+        return cluster.split(':').pop().split('/').pop()
+      }
+      return cluster
+    }
+    // AWS::ECS::Cluster returns the cluster name for 'Ref'
+    // This can be used as a 'Fn::Sub' variable
+    if (cluster.GetAtt && cluster.GetAtt[1] === 'Arn') {
+      return '${' + cluster.GetAtt[0] + '}'
+    } else if (cluster.Ref) {
+      return '${' + cluster.Ref + '}'
+    } else if (cluster['Fn::Sub']) {
+      return cluster['Fn::Sub']
+    }
+    return cluster
+  }
 
 const MAX_WIDTH = 24
 

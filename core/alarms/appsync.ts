@@ -1,8 +1,9 @@
 'use strict'
 
-import { makeResourceName, getStatisticName } from '../utils/util'
-import { CfResource, CloudFormationTemplate, Statistic }  from '../utils/cf-template'
+import { CfResource, CloudFormationTemplate }  from '../cf-template'
 import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { getStatisticName } from './get-statistic-name'
+import { makeResourceName } from './make-name'
 
 
 export type AppSyncAlarmConfig = {

@@ -1,15 +1,15 @@
 'use strict'
 
-import apiGatewayAlarms from '../api-gateway'
+import apiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
 import { test } from 'tap'
-import defaultConfig from '../../utils/default-config'
+import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from '../../utils/tests/testing-utils'
+} from '../../tests/testing-utils'
 
 export type AlarmsByType ={
   APIGW_4XXError
@@ -17,7 +17,43 @@ export type AlarmsByType ={
   APIGW_Latency
 } 
 
+test('resolveRestApiNameAsCfn', (t) => {
+  const fromLiteral = resolveRestApiNameAsCfn({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  t.equal(fromLiteral, 'my-api-name')
 
+  const fromRef = resolveRestApiNameAsCfn({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
+  t.same(fromRef, { Ref: 'AWS::Stack' })
+
+  const fromGetAtt = resolveRestApiNameAsCfn({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
+  t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
+
+  const fromOpenApiRef = resolveRestApiNameAsCfn({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
+  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
+
+  t.throws(() => resolveRestApiNameAsCfn({ Properties: {} }, 'logicalId'))
+  t.end()
+})
+
+test('resolveRestApiNameForSub', (t) => {
+  const fromLiteral = resolveRestApiNameForSub({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  t.equal(fromLiteral, 'my-api-name')
+
+  const fromRef = resolveRestApiNameForSub({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
+  t.same(fromRef, '$' + '{AWS::Stack}')
+
+  const fromGetAtt = resolveRestApiNameForSub({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
+  t.same(fromGetAtt, '$' + '{myResource.MyProperty}')
+
+  const fromOpenApiRef = resolveRestApiNameForSub({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
+  t.same(fromOpenApiRef, '$' + '{AWS::Stack}')
+
+  // eslint-disable-next-line no-template-curly-in-string
+  const fromSub = resolveRestApiNameForSub({ Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } } }, 'logicalId')
+  t.same(fromSub, '$' + '{AWS::StackName}Suffix')
+
+  t.throws(() => resolveRestApiNameForSub({ Properties: {} }, 'logicalId'))
+  t.end()
+})
 
 test('API Gateway alarms are created', (t) => {
   const alarmConfig = createTestConfig(

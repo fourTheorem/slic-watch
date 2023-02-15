@@ -4,14 +4,14 @@ import dynamoDbAlarms from '../dynamodb'
 
 import { test } from 'tap'
 
-import defaultConfig from '../../utils/default-config'
+import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from '../../utils/tests/testing-utils'
+} from '../../tests/testing-utils'
 
 const alarmConfig = createTestConfig(
   defaultConfig.alarms, {
