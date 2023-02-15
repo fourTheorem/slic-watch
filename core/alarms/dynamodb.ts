@@ -1,6 +1,6 @@
-import { makeResourceName } from '../util'
+import { makeResourceName } from '../utils/util'
 
-import { CloudFormationTemplate } from '../cf-template'
+import { CloudFormationTemplate } from '../utils/cf-template'
 import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type DynamoDbAlarmConfig = {

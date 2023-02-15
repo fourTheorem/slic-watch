@@ -1,9 +1,9 @@
 'use strict'
 
-import { AlarmsCascade, cascade } from '../cascading-config'
-import { applyAlarmConfig } from '../function-config'
+import { AlarmsCascade, cascade } from '../utils/cascading-config'
+import { applyAlarmConfig } from '../utils/function-config'
 import { FunctionAlarmConfigs, Context } from './default-config-alarms'
-import { CloudFormationTemplate } from '../cf-template'
+import { CloudFormationTemplate } from '../utils/cf-template'
 
 import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './lambda'
 import apiGatewayAlarms from './api-gateway'

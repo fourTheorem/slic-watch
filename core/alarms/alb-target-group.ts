@@ -1,8 +1,8 @@
 'use strict'
 
-import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from '../util'
+import { makeResourceName, getStatisticName, findLoadBalancersForTargetGroup } from '../utils/util'
 
-import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
+import { CfResource, CloudFormationTemplate, Statistic } from '../utils/cf-template'
 import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 

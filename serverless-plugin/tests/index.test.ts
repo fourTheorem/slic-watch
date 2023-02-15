@@ -4,7 +4,7 @@ import _ from 'lodash'
 import esmock from 'esmock'
 import Serverless from 'serverless'
 import { test } from 'tap'
-import { getLogger } from 'slic-watch-core/logging'
+import { getLogger } from 'slic-watch-core/utils/logging'
 
 const slsYaml = {
   custom: {

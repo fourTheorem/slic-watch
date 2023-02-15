@@ -14,13 +14,13 @@ const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const defaultCfTemplate = require('./resources/cloudformation-template-stack.json')
-const albCfTemplate = require('./resources/alb-cloudformation-template-stack.json')
-const appSyncCfTemplate = require('./resources/appsync-cloudformation-template-stack.json')
+const defaultCfTemplate = require('../../cf-resources/cloudformation-template-stack.json')
+const albCfTemplate = require('../../cf-resources/alb-cloudformation-template-stack.json')
+const appSyncCfTemplate = require('../../cf-resources/appsync-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
   __dirname,
-  '../../serverless-test-project/serverless.yml'
+  '../../../serverless-test-project/serverless.yml'
 )
 
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))

@@ -1,7 +1,7 @@
 'use strict'
 
 import { test } from 'tap'
-import CloudFormationTemplate from '../../core/cf-template'
+import CloudFormationTemplate from 'slic-watch-core/utils/cf-template'
 import esmock from 'esmock'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)

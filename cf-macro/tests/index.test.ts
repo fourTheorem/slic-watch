@@ -3,7 +3,7 @@
 import { test } from 'tap'
 import _ from 'lodash'
 import esmock from 'esmock'
-import { CloudFormationTemplate } from "../../core/cf-template"
+import { CloudFormationTemplate } from "slic-watch-core/utils/cf-template"
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 const template = require('./event.json')

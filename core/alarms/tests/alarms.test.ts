@@ -2,9 +2,9 @@
 
 import { test } from 'tap'
 
-import alarms from '../alarms/alarms'
-import defaultConfig from '../default-config'
-import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testContext } from './testing-utils'
+import alarms from '../alarms'
+import defaultConfig from '../../utils/default-config'
+import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testContext } from '../../utils/tests/testing-utils'
 
 test('Alarms create all service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()

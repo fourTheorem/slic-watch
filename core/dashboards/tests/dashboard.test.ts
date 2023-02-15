@@ -3,10 +3,10 @@
 import  _  from 'lodash'
 import { test } from 'tap'
 
-import dashboard from '../dashboards/dashboard'
-import defaultConfig from '../default-config'
+import dashboard from '../dashboard'
+import defaultConfig from '../../utils/default-config'
 
-import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from './testing-utils'
+import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from '../../utils/tests/testing-utils'
 
 type Context ={
   stackName?: string

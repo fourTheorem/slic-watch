@@ -1,15 +1,15 @@
 'use strict'
 
-import apiGatewayAlarms from '../alarms/api-gateway'
+import apiGatewayAlarms from '../api-gateway'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
 export type AlarmsByType ={
   APIGW_4XXError

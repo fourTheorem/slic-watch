@@ -1,17 +1,17 @@
 'use strict'
 
-import ruleAlarms from '../alarms/eventbridge'
+import snsAlarms from '../sns'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
-test('Events alarms are created', (t) => {
+test('SNS alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
@@ -19,27 +19,27 @@ test('Events alarms are created', (t) => {
       EvaluationPeriods: 2,
       TreatMissingData: 'breaching',
       ComparisonOperator: 'GreaterThanOrEqualToThreshold',
-      Events: {
-        FailedInvocations: {
+      SNS: {
+        'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50
         },
-        ThrottledRules: {
+        NumberOfNotificationsFailed: {
           Threshold: 50
         }
       }
     }
   )
-  const ruleAlarmConfig = alarmConfig.Events
+  const snsAlarmConfig = alarmConfig.SNS
 
-  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
-  createRuleAlarms(cfTemplate)
+  createSNSAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    Events_FailedInvocationsAlarm: 'FailedInvocations',
-    Events_ThrottledRulesAlarm: 'ThrottledRules'
+    SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
+    SNS_NumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
@@ -50,44 +50,45 @@ test('Events alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, ruleAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, snsAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
-    t.equal(al.Namespace, 'AWS/Events')
+    t.equal(al.Namespace, 'AWS/SNS')
     t.equal(al.Period, 120)
-    t.equal(al.Dimensions.length, 1)
-    // @ts-ignore
-    t.equal(al.Dimensions[0].Name, 'RuleName')
-    // @ts-ignore
-    t.ok(al.Dimensions[0].Value.Ref)
+    t.same(al.Dimensions, [
+      {
+        Name: 'TopicName',
+        Value: { 'Fn::GetAtt': ['topic', 'TopicName'] }
+      }
+    ])
   }
 
   t.end()
 })
 
-test('Events alarms are not created when disabled globally', (t) => {
+test('SNS alarms are not created when disabled globally', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
-      Events: {
+      SNS: {
         enabled: false, // disabled globally
         Period: 60,
-        FailedInvocations: {
+        'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50
         },
-        ThrottledRules: {
+        NumberOfNotificationsFailed: {
           Threshold: 50
         }
       }
     }
   )
-  const ruleAlarmConfig = alarmConfig.Events
+  const snsAlarmConfig = alarmConfig.SNS
 
-  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
-  createRuleAlarms(cfTemplate)
+  createSNSAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 

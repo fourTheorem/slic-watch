@@ -1,15 +1,15 @@
 'use strict'
 
-import kinesisAlarms from '../alarms/kinesis'
+import kinesisAlarms from '../kinesis'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
 test('Kinesis data stream alarms are created', (t) => {
   const alarmConfig = createTestConfig(

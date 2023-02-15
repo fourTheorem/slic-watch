@@ -1,45 +1,45 @@
 'use strict'
 
-import ecsAlarms from '../alarms/ecs'
+import ruleAlarms from '../eventbridge'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
-test('ECS MemoryUtilization is created', (t) => {
+test('Events alarms are created', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
       EvaluationPeriods: 2,
       TreatMissingData: 'breaching',
-      ComparisonOperator: 'LessThanThreshold',
-      ECS: {
-        MemoryUtilization: {
+      ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+      Events: {
+        FailedInvocations: {
           Threshold: 50
         },
-        CPUUtilization: {
+        ThrottledRules: {
           Threshold: 50
         }
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ruleAlarmConfig = alarmConfig.Events
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
+  createRuleAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
   const expectedTypes = {
-    ECS_MemoryAlarm: 'MemoryUtilization',
-    ECS_CPUAlarm: 'CPUUtilization'
+    Events_FailedInvocationsAlarm: 'FailedInvocations',
+    Events_ThrottledRulesAlarm: 'ThrottledRules'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
@@ -50,54 +50,44 @@ test('ECS MemoryUtilization is created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, ecsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, ruleAlarmConfig[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'LessThanThreshold')
-    t.equal(al.Namespace, 'AWS/ECS')
+    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al.Namespace, 'AWS/Events')
     t.equal(al.Period, 120)
-    t.same(al.Dimensions, [
-      {
-        Name: 'ServiceName',
-        Value: {
-          'Fn::GetAtt': [
-            'ecsService',
-            'Name'
-          ]
-        }
-      },
-      {
-        Name: 'ClusterName',
-        Value: { Ref: 'ecsCluster' }
-      }
-    ])
+    t.equal(al.Dimensions.length, 1)
+    // @ts-ignore
+    t.equal(al.Dimensions[0].Name, 'RuleName')
+    // @ts-ignore
+    t.ok(al.Dimensions[0].Value.Ref)
   }
 
   t.end()
 })
 
-test('ECS alarms are not created when disabled globally', (t) => {
+test('Events alarms are not created when disabled globally', (t) => {
   const alarmConfig = createTestConfig(
     defaultConfig.alarms,
     {
-      ECS: {
+      Events: {
         enabled: false, // disabled globally
         Period: 60,
-        MemoryUtilization: {
+        FailedInvocations: {
           Threshold: 50
         },
-        CPUUtilization: {
+        ThrottledRules: {
           Threshold: 50
         }
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ruleAlarmConfig = alarmConfig.Events
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createRuleAlarms } = ruleAlarms(ruleAlarmConfig, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
+  createRuleAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 

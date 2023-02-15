@@ -1,9 +1,9 @@
 'use strict'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../alarms/lambda'
+import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../lambda'
 import { test } from 'tap'
-import { filterObject } from '../util'
-import defaultConfig from '../default-config'
+import { filterObject } from '../../utils/util'
+import defaultConfig from '../../utils/default-config'
 
 import {
   assertCommonAlarmProperties,
@@ -12,8 +12,8 @@ import {
   createTestCloudFormationTemplate,
   albCfTemplate,
   testContext
-} from './testing-utils'
-import { applyAlarmConfig } from '../function-config'
+} from '../../utils/tests/testing-utils'
+import { applyAlarmConfig } from '../../utils/function-config'
 
 export type AlarmsByType = {
   Lambda_Duration

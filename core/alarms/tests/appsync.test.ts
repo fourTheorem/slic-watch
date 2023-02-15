@@ -1,8 +1,8 @@
 'use strict'
 
-import appSyncAlarms, { AppSyncAlarmConfig } from '../alarms/appsync'
+import appSyncAlarms, { AppSyncAlarmConfig } from '../appsync'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
@@ -10,7 +10,7 @@ import {
   createTestCloudFormationTemplate,
   appSyncCfTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
 test('AppSync alarms are created', (t) => {
   const alarmConfigAppSync = createTestConfig(

@@ -1,15 +1,15 @@
 'use strict'
 
-import stepFunctionsAlarms from '../alarms/step-functions'
+import stepFunctionsAlarms from '../step-functions'
 import { test } from 'tap'
-import defaultConfig from '../default-config'
+import defaultConfig from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
 test('Step Function alarms are created', (t) => {
   const alarmConfig = createTestConfig(

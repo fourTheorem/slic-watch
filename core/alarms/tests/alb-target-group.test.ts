@@ -1,8 +1,8 @@
 'use strict'
 
-import albTargetAlarms, {AlbTargetAlarmConfig} from '../alarms/alb-target-group'
+import albTargetAlarms, {AlbTargetAlarmConfig} from '../alb-target-group'
 import { test } from 'tap'
-import { defaultConfig } from '../default-config'
+import { defaultConfig } from '../../utils/default-config'
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
@@ -10,7 +10,7 @@ import {
   createTestCloudFormationTemplate,
   albCfTemplate,
   testContext
-} from './testing-utils'
+} from '../../utils/tests/testing-utils'
 
 try {
   test('ALB Target Group alarms are created', (t) => {
