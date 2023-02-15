@@ -1,12 +1,16 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type EventsAlarmsConfig = {
   enabled?: boolean
   FailedInvocations: AlarmConfig,
   ThrottledRules: AlarmConfig
+}
+
+export type EventbridgeAlarm = Alarm & {
+  ruleName: object 
 }
 
 /**
@@ -49,80 +53,49 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     }
   }
 
-  function createRuleAlarm (
-    alarmName: string,
-    alarmDescription: string,
-    ruleName: string,
-    comparisonOperator: string,
-    threshold: number,
-    metricName: string,
-    statistic: Statistic,
-    period: number,
-    evaluationPeriods: number,
-    treatMissingData: string
-  ) {
-    const metricProperties = {
-      Dimensions: [{ Name: 'RuleName', Value: ruleName }],
-      MetricName: metricName,
-      Namespace: 'AWS/Events',
-      Period: period,
-      Statistic: statistic
-    }
-
-    return {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: alarmName,
-        AlarmDescription: alarmDescription,
-        EvaluationPeriods: evaluationPeriods,
-        ComparisonOperator: comparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: treatMissingData,
-        ...metricProperties
-      }
-    }
-  }
-
   function createFailedInvocationsAlarm (logicalId: string, ruleResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
-
+    const eventbridgeAlarmConfig:EventbridgeAlarm = {
+      alarmName: { 'Fn::Sub': `Events_FailedInvocationsAlarm_\${${logicalId}}` } ,
+      alarmDescription: { 'Fn::Sub': `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}` },
+      ruleName: { Ref: logicalId }, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'FailedInvocations',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/Events',
+      dimensions: [{ Name: 'RuleName', Value: { Ref: logicalId } }]
+    }
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${logicalId}`,
-      resource: createRuleAlarm(
-        // @ts-ignore
-        { 'Fn::Sub': `Events_FailedInvocationsAlarm_\${${logicalId}}` }, // alarmName
-        { 'Fn::Sub': `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
-        { Ref: logicalId },
-        config.ComparisonOperator,
-        threshold,
-        'FailedInvocations', // metricName
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(eventbridgeAlarmConfig, context)
     }
   }
 
   function createThrottledRulesAlarm (logicalId: string, ruleResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
+    const eventbridgeAlarmConfig:EventbridgeAlarm = {
+      alarmName: { 'Fn::Sub': `Events_ThrottledRulesAlarm_\${${logicalId}}` },
+      alarmDescription: { 'Fn::Sub': `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}` },
+      ruleName: { Ref: logicalId }, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'ThrottledRules',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/Events',
+      dimensions: [{ Name: 'RuleName', Value: { Ref: logicalId } }]
+    }
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,
-      resource: createRuleAlarm(
-        // @ts-ignore
-        { 'Fn::Sub': `Events_ThrottledRulesAlarm_\${${logicalId}}` }, // alarmName
-        { 'Fn::Sub': `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}` }, // alarmDescription
-        { Ref: logicalId },
-        config.ComparisonOperator,
-        threshold,
-        'ThrottledRules', // metricName
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(eventbridgeAlarmConfig, context)
     }
   }
 }

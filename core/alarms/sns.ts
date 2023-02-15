@@ -1,12 +1,16 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type SnsAlarmsConfig = {
   enabled?: boolean
   'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmConfig,
   NumberOfNotificationsFailed: AlarmConfig
+}
+
+export type SnsAlarm= Alarm & {
+  topicName: object
 }
 
 /**
@@ -49,80 +53,49 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
   }
 
-  function createSNSAlarm (
-    alarmName: string,
-    alarmDescription: string,
-    topicName: string,
-    comparisonOperator: string,
-    threshold: number,
-    metricName: string,
-    statistic: Statistic,
-    period: number,
-    evaluationPeriods: number,
-    treatMissingData: string
-  ) {
-    const metricProperties = {
-      Dimensions: [{ Name: 'TopicName', Value: topicName }],
-      MetricName: metricName,
-      Namespace: 'AWS/SNS',
-      Period: period,
-      Statistic: statistic
-    }
-
-    return {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: alarmName,
-        AlarmDescription: alarmDescription,
-        EvaluationPeriods: evaluationPeriods,
-        ComparisonOperator: comparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: treatMissingData,
-        ...metricProperties
-      }
-    }
-  }
-
   function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
-
+    const snsAlarmConfig: SnsAlarm = {
+      alarmName: { 'Fn::Sub': `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}` },
+      alarmDescription: { 'Fn::Sub': `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}` },
+      topicName: { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/SNS',
+      dimensions: [{ Name: 'TopicName', Value: { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] } }]
+    }
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicLogicalId}`,
-      resource: createSNSAlarm(
-        // @ts-ignore
-        { 'Fn::Sub': `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
-        { 'Fn::Sub': `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
-        { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name
-        config.ComparisonOperator,
-        threshold,
-        'NumberOfNotificationsFilteredOut-InvalidAttributes', // metricName
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(snsAlarmConfig, context)
     }
   }
 
   function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
+    const snsAlarmConfig: SnsAlarm = {
+      alarmName: { 'Fn::Sub': `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}` },
+      alarmDescription: { 'Fn::Sub': `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}` },
+      topicName: { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'NumberOfNotificationsFailed',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/SNS',
+      dimensions: [{ Name: 'TopicName', Value: { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] } }]
+    }
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,
-      resource: createSNSAlarm(
-        // @ts-ignore
-        { 'Fn::Sub': `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}` }, // alarmName
-        { 'Fn::Sub': `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}` }, // alarmDescription
-        { 'Fn::GetAtt': [topicLogicalId, 'TopicName'] }, // topic name
-        config.ComparisonOperator,
-        threshold,
-        'NumberOfNotificationsFailed', // metricName
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(snsAlarmConfig, context)
     }
   }
 }

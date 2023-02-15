@@ -2,7 +2,7 @@
 
 import { makeResourceName, getStatisticName } from '../util'
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 
 export type KinesisAlarmConfig = {
@@ -61,32 +61,24 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, c
 
   function createStreamAlarm (streamLogicalId: string, streamResource: CfResource, type: string, metric: string, config: AlarmConfig) {
     const threshold = config.Threshold
-    const metricProperties = {
-      Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } }],
-      MetricName: metric,
-      Namespace: 'AWS/Kinesis',
-      Period: config.Period,
-      Statistic: config.Statistic,
-      ExtendedStatistic: config.ExtendedStatistic
+    const kinesisAlarmConfig: Alarm = {
+      alarmName: { 'Fn::Sub': `Kinesis_${type}_\${${streamLogicalId}}` },
+      alarmDescription: { 'Fn::Sub': `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds` },
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: metric,
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/Kinesis',
+      dimensions:[{ Name: 'StreamName', Value: { Ref: streamLogicalId } }]
     }
 
-    const resource = {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: { 'Fn::Sub': `Kinesis_${type}_\${${streamLogicalId}}` },
-        AlarmDescription: { 'Fn::Sub': `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds` },
-        EvaluationPeriods: config.EvaluationPeriods,
-        ComparisonOperator: config.ComparisonOperator,
-        Threshold: config.Threshold,
-        TreatMissingData: config.TreatMissingData,
-        ...metricProperties
-      }
-    }
     return {
       resourceName: makeResourceName('Kinesis', streamLogicalId, type),
-      resource
+      resource: createAlarm(kinesisAlarmConfig, context)
     }
   }
 }

@@ -2,13 +2,17 @@
 
 import { makeResourceName, getStatisticName } from '../util'
 import { CfResource, CloudFormationTemplate, Statistic }  from '../cf-template'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 
 export type AppSyncAlarmConfig = {
   enabled?: boolean
   '5XXError': AlarmConfig
   Latency: AlarmConfig
+}
+
+export type AppSyncAlarm= Alarm & {
+  appSyncResourceName: string 
 }
 
 /**
@@ -52,84 +56,56 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
       }
     }
   }
-  function createAppSyncAlarm (
-    alarmName: string,
-    alarmDescription: string,
-    appSyncResourceName: string,
-    comparisonOperator: string,
-    threshold: number,
-    metricName: string,
-    statistic: Statistic,
-    period: number,
-    extendedStatistic: string,
-    evaluationPeriods: number,
-    treatMissingData: string
-  ) {
-    const graphQLAPIId = { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] }
-    const metricProperties = {
-      Dimensions: [{ Name: 'GraphQLAPIId', Value: graphQLAPIId }],
-      MetricName: metricName,
-      Namespace: 'AWS/AppSync',
-      Period: period,
-      Statistic: statistic,
-      ExtendedStatistic: extendedStatistic
-    }
-
-    return {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: alarmName,
-        AlarmDescription: alarmDescription,
-        EvaluationPeriods: evaluationPeriods,
-        ComparisonOperator: comparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: treatMissingData,
-        ...metricProperties
-      }
-    }
-  }
 
   function create5XXAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
+    const appSyncAlarmConfig:AppSyncAlarm = {
+      alarmName:`AppSync5XXErrorAlarm_${graphQLName}` ,
+      alarmDescription: `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
+      appSyncResourceName, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: '5XXError',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/AppSync',
+      dimensions: [
+        { Name: 'GraphQLAPIId', Value: { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] } }
+      ]
+    }
     return {
       resourceName: makeResourceName('AppSync', graphQLName, '5XXError'),
-      resource: createAppSyncAlarm(
-        `AppSync5XXErrorAlarm_${graphQLName}`,
-        `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-        appSyncResourceName,
-        config.ComparisonOperator,
-        threshold,
-        '5XXError',
-        config.Statistic,
-        config.Period,
-        config.ExtendedStatistic,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(appSyncAlarmConfig, context)
     }
   }
 
   function createLatencyAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmConfig) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
+    const appSyncAlarmConfig:AppSyncAlarm = {
+      alarmName:`AppSyncLatencyAlarm_${graphQLName}` ,
+      alarmDescription: `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
+      appSyncResourceName, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'Latency',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/AppSync',
+      dimensions: [
+        { Name: 'GraphQLAPIId', Value: { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] } }
+      ]
+    }
     return {
       resourceName: makeResourceName('AppSync', graphQLName, 'Latency'),
-      resource: createAppSyncAlarm(
-        `AppSyncLatencyAlarm_${graphQLName}`,
-        `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-        appSyncResourceName,
-        config.ComparisonOperator,
-        threshold,
-        'Latency',
-        config.Statistic,
-        config.Period,
-        config.ExtendedStatistic,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(appSyncAlarmConfig, context)
     }
   }
 }

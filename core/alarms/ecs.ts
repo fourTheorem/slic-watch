@@ -2,12 +2,17 @@
 
 import { resolveEcsClusterNameAsCfn } from '../util'
 import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
-import { AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type EcsAlarmsConfig = {
   enabled?: boolean
   MemoryUtilization: AlarmConfig
   CPUUtilization: AlarmConfig
+}
+
+export type EcsAlarm = Alarm & {
+  serviceName,
+  clusterName: string
 }
 
 /**
@@ -54,81 +59,57 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createEcsAlarm (
-    alarmName: string,
-    alarmDescription: string,
-    serviceName: string,
-    clusterName: string,
-    comparisonOperator: string,
-    threshold: number,
-    metricName: string,
-    statistic: Statistic,
-    period: number,
-    evaluationPeriods: number,
-    treatMissingData: string
-  ) {
-    const metricProperties = {
-      Dimensions: [{ Name: 'ServiceName', Value: serviceName }, { Name: 'ClusterName', Value: clusterName }],
-      MetricName: metricName,
-      Namespace: 'AWS/ECS',
-      Period: period,
-      Statistic: statistic
-    }
-    return {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: alarmName,
-        AlarmDescription: alarmDescription,
-        EvaluationPeriods: evaluationPeriods,
-        ComparisonOperator: comparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: treatMissingData,
-        ...metricProperties
-      }
-    }
-  }
-
   function createMemoryUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
+    const ecsAlarmConfig: EcsAlarm = {
+      alarmName: { 'Fn::Sub': `ECS_MemoryAlarm_\${${logicalId}.Name}` } ,
+      alarmDescription: { 'Fn::Sub': `ECS memory utilization for ${logicalId}.Name breaches ${threshold}` },
+      serviceName:  { 'Fn::GetAtt': [logicalId, 'Name'] },
+      clusterName,  
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'MemoryUtilization',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/ECS',
+      dimensions: [
+        { Name: 'ServiceName', Value: { 'Fn::GetAtt': [logicalId, 'Name'] } },
+        { Name: 'ClusterName', Value: clusterName }
+      ]
+    }
     return {
       resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
-      resource: createEcsAlarm(
-         // @ts-ignore
-        { 'Fn::Sub': `ECS_MemoryAlarm_\${${logicalId}.Name}` },
-        { 'Fn::Sub': `ECS memory utilization for ${logicalId}.Name breaches ${threshold}` },
-        { 'Fn::GetAtt': [logicalId, 'Name'] },
-        clusterName,
-        config.ComparisonOperator,
-        threshold,
-        'MemoryUtilization',
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(ecsAlarmConfig, context)
     }
   }
 
   function createCPUUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmConfig) {
     const threshold = config.Threshold
+    const ecsAlarmConfig: EcsAlarm = {
+      alarmName: { 'Fn::Sub': `ECS_CPUAlarm_\${${logicalId}.Name}` } ,
+      alarmDescription:  { 'Fn::Sub': `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}` },
+      serviceName:  { 'Fn::GetAtt': [logicalId, 'Name'] },
+      clusterName,  
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'CPUUtilization',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/ECS',
+      dimensions: [
+        { Name: 'ServiceName', Value: { 'Fn::GetAtt': [logicalId, 'Name'] } },
+        { Name: 'ClusterName', Value: clusterName }
+      ]
+    }
     return {
       resourceName: `slicWatchECSCPUAlarm${logicalId}`,
-      resource: createEcsAlarm(
-         // @ts-ignore
-        { 'Fn::Sub': `ECS_CPUAlarm_\${${logicalId}.Name}` },
-        { 'Fn::Sub': `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}` },
-        { 'Fn::GetAtt': [logicalId, 'Name'] },
-        clusterName,
-        config.ComparisonOperator,
-        threshold,
-        'CPUUtilization',
-        config.Statistic,
-        config.Period,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(ecsAlarmConfig, context)
     }
   }
 }

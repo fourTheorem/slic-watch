@@ -2,7 +2,7 @@
 
 import { makeResourceName, getStatisticName }from '../util'
 import { CfResource, CloudFormationTemplate, Statistic } from '../cf-template'
-import { Alarm, AlarmConfig, Context } from './default-config-alarms'
+import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
 
 export type AlbAlarmConfig = {
   enabled?: boolean
@@ -55,82 +55,53 @@ export default function ALBAlarms (albAlarmConfig: AlbAlarmConfig, context: Cont
     }
   }
 
-  function createLoadBalancerAlarm (
-    alarmName: string,
-    alarmDescription: string,
-    loadBalancerResourceName: string, // Logical ID of the CloudFormation Load Balancer Resource
-    comparisonOperator: string,
-    threshold: number,
-    metricName: string,
-    statistic: Statistic,
-    period: number,
-    extendedStatistic: string,
-    evaluationPeriods: number,
-    treatMissingData: string
-  ) {
-    const loadBalancerFullName = { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] }
-    const metricProperties = {
-      Dimensions: [{ Name: 'LoadBalancer', Value: loadBalancerFullName }],
-      MetricName: metricName,
-      Namespace: 'AWS/ApplicationELB',
-      Period: period,
-      Statistic: statistic,
-      ExtendedStatistic: extendedStatistic
-    }
-
-    return {
-      Type: 'AWS::CloudWatch::Alarm',
-      Properties: {
-        ActionsEnabled: true,
-        AlarmActions: context.alarmActions,
-        AlarmName: alarmName,
-        AlarmDescription: alarmDescription,
-        EvaluationPeriods: evaluationPeriods,
-        ComparisonOperator: comparisonOperator,
-        Threshold: threshold,
-        TreatMissingData: treatMissingData,
-        ...metricProperties
-      }
-    }
-  }
-
   function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
+    const albAlarmConfig:AlbAlarm = {
+      alarmName:`LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}` ,
+      alarmDescription: `LoadBalancer HTTP Code ELB 5XX Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
+      loadBalancerResourceName, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'HTTPCode_ELB_5XX_Count',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/ApplicationELB',
+      dimensions: [
+        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] } }
+      ]
+    }
     return {
       resourceName: makeResourceName('LoadBalancer', loadBalancerResourceName, 'HTTPCodeELB5XXCount'),
-      resource: createLoadBalancerAlarm(
-        `LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}`,
-        `LoadBalancer HTTP Code ELB 5XX Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
-        loadBalancerResourceName,
-        config.ComparisonOperator,
-        threshold,
-        'HTTPCode_ELB_5XX_Count', // metricName
-        config.Statistic,
-        config.Period,
-        config.ExtendedStatistic,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
-    }
-  }
+      resource: createAlarm(albAlarmConfig, context)
+ }
+}
 
   function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
+    const albAlarmConfig: AlbAlarm = {
+      alarmName:`LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}` ,
+      alarmDescription: `LoadBalancer Rejected Connection Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
+      loadBalancerResourceName, 
+      comparisonOperator: config.ComparisonOperator,
+      threshold: config.Threshold,
+      metricName: 'RejectedConnectionCount',
+      statistic: config.Statistic,
+      period:  config.Period,
+      extendedStatistic:  config.ExtendedStatistic,
+      evaluationPeriods:  config.EvaluationPeriods,
+      treatMissingData:  config.TreatMissingData,
+      namespace: 'AWS/ApplicationELB',
+      dimensions: [
+        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerResourceName, 'LoadBalancerFullName'] } }
+      ]
+    }
     return {
       resourceName: makeResourceName('LoadBalancer', loadBalancerResourceName, 'RejectedConnectionCount'),
-      resource: createLoadBalancerAlarm(
-        `LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}`,
-        `LoadBalancer Rejected Connection Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
-        loadBalancerResourceName,
-        config.ComparisonOperator,
-        threshold,
-        'RejectedConnectionCount', // metricName
-        config.Statistic,
-        config.Period,
-        config.ExtendedStatistic,
-        config.EvaluationPeriods,
-        config.TreatMissingData
-      )
+      resource: createAlarm(albAlarmConfig, context)
     }
   }
 }

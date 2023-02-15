@@ -1,26 +1,26 @@
-import { Properties } from '../cf-template';
 import { AlbTargetAlarmConfig } from './alb-target-group'
 import { AlbAlarmConfig } from './alb'
-import { ApiGwAlarmConfig } from './api-gateway'
-import { AppSyncAlarmConfig } from './appsync'
+import { ApiAlarm, ApiGwAlarmConfig } from './api-gateway'
+import { AppSyncAlarm, AppSyncAlarmConfig } from './appsync'
 import { DynamoDbAlarmConfig } from './dynamodb'
-import { EcsAlarmsConfig } from './ecs'
-import { EventsAlarmsConfig } from './eventbridge'
+import { EcsAlarm, EcsAlarmsConfig } from './ecs'
+import { EventbridgeAlarm, EventsAlarmsConfig } from './eventbridge'
 import { KinesisAlarmConfig } from './kinesis'
-import { LambdaFunctionAlarmConfigs } from './lambda'
-import { SnsAlarmsConfig } from './sns'
-import { SqsAlarmsConfig } from './sqs'
-import { SfAlarmsConfig } from './step-functions'
+import { LambdaAlarm, LambdaFunctionAlarmConfigs } from './lambda'
+import { SnsAlarm, SnsAlarmsConfig } from './sns'
+import { SqsAlarm, SqsAlarmsConfig } from './sqs'
+import { SfAlarmsConfig, SmAlarm } from './step-functions'
 import { AlarmsCascade } from '../cascading-config'
 import { Statistic } from '../cf-template'
 import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
 
 export type Alarm = {
-  alarmName: string,
-  alarmDescription: string,
+  alarmName,
+  alarmDescription,
   comparisonOperator: string,
   threshold: number,
+  metrics?
   metricName: string,
   statistic: Statistic,
   period: number,
@@ -41,6 +41,7 @@ export type AlarmProperties = {
   Threshold: number
   TreatMissingData: string
   Dimensions: object
+  Metrics?
   MetricName: string
   Namespace: string
   Period: number
@@ -53,10 +54,20 @@ export type ReturnAlarm = {
   Properties: AlarmProperties
 }
 
+type AllAlarms = Alarm | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
 
-export function createAlarm(alarm: AlbAlarm, context?: Context): ReturnAlarm 
-export function createAlarm(alarm: AlbTargetAlarm, context?: Context): ReturnAlarm 
-export function createAlarm(alarm: AlbAlarm |AlbTargetAlarm , context?: Context ): ReturnAlarm {
+export function createAlarm(alarm: Alarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: AlbAlarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: AlbTargetAlarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: ApiAlarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: AppSyncAlarm, context?: Context): ReturnAlarm 
+export function createAlarm(alarm: EcsAlarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: EventbridgeAlarm, context?: Context): ReturnAlarm  
+export function createAlarm(alarm: LambdaAlarm, context?: Context): ReturnAlarm 
+export function createAlarm(alarm: SnsAlarm, context?: Context): ReturnAlarm 
+export function createAlarm(alarm: SqsAlarm, context?: Context): ReturnAlarm 
+export function createAlarm(alarm: SmAlarm, context?: Context): ReturnAlarm  
+export function createAlarm(alarm:AllAlarms, context?: Context ): ReturnAlarm {
     return {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
@@ -69,6 +80,7 @@ export function createAlarm(alarm: AlbAlarm |AlbTargetAlarm , context?: Context 
         Threshold: alarm.threshold,
         TreatMissingData: alarm.treatMissingData,
         Dimensions: alarm.dimensions,
+        Metrics:alarm.metrics,
         MetricName: alarm.metricName,
         Namespace: alarm.namespace,
         Period: alarm.period,
