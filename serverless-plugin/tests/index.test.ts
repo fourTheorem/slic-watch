@@ -4,7 +4,7 @@ import _ from 'lodash'
 import esmock from 'esmock'
 import Serverless from 'serverless'
 import { test } from 'tap'
-import { getLogger } from 'slic-watch-core/logging'
+import pino from 'pino'
 
 const slsYaml = {
   custom: {
@@ -84,7 +84,7 @@ test('index', t => {
     
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(mockServerless, {}, { log: dummyV3Logger })
-    const logger =  Object.assign({}, getLogger()) 
+    const logger =  Object.assign({}, pino()) 
     const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal' ] 
     for (const extra of extras) {
       delete logger[extra]

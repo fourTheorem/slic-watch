@@ -1,9 +1,9 @@
 'use strict'
 
 import { filterObject } from './filter-object'
-import { getLogger } from './logging'
+import pino from 'pino'
 
-const logger = getLogger()
+const logger = pino()
 
 type Resource = {
   Type: string

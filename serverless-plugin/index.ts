@@ -5,12 +5,9 @@ import Ajv from 'ajv'
 
 import alarms from '../core/alarms/alarms'
 import dashboard from '../core/dashboards/dashboard'
-import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/config-schema'
-import defaultConfig from '../core/default-config'
+import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/inputs/config-schema'
+import defaultConfig from '../core/inputs/default-config'
 import CloudFormationTemplate from '../core/cf-template'
-import * as logging from '../core/logging'
-import log from './serverless-v2-logger'
-
 import Serverless from 'serverless'
 import PluginUtils from 'serverless-plugin-utils'
 import Hooks from 'serverless-hooks-plugin'
@@ -21,8 +18,8 @@ class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
   providerNaming: Aws
-  dashboard: { addDashboard: (cfTemplate: import("../core/cf-template.d").CloudFormationTemplate) => void; };
-  alarms: { addAlarms: (cfTemplate: import("../core/cf-template.d").CloudFormationTemplate) => void; };
+  dashboard: { addDashboard: (cfTemplate: import("slic-watch-core/cf-template").CloudFormationTemplate) => void; };
+  alarms: { addAlarms: (cfTemplate: import("slic-watch-core/cf-template").CloudFormationTemplate) => void; };
 
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
@@ -32,12 +29,7 @@ class ServerlessPlugin {
    */
   constructor (serverless, cliOptions, pluginUtils:PluginUtils  = {}) {
     this.serverless = serverless
-    const logger = pluginUtils.log
-    if (logger) {
-      logging.setLogger(logger)
-    } else {
-      logging.setLogger(log(serverless))
-    }
+
     this.providerNaming = serverless.providers.aws.naming
 
     if (serverless.service.provider.name !== 'aws') {

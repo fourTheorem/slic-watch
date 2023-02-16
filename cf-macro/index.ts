@@ -8,9 +8,9 @@ import dashboard from 'slic-watch-core/dashboards/dashboard'
 import CloudFormationTemplate from 'slic-watch-core/cf-template'
 import defaultConfig from 'slic-watch-core/inputs/default-config'
 import { slicWatchSchema}  from 'slic-watch-core/inputs/config-schema'
-import { getLogger } from 'slic-watch-core/logging'
+import pino from 'pino'
 
-const logger = getLogger({ name: 'macroHandler' })
+const logger = pino({ name: 'macroHandler' })
 
 type Event = {
   requestId

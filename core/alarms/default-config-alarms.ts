@@ -16,12 +16,12 @@ import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
 
 export type Alarm = {
-  alarmName,
-  alarmDescription,
+  alarmName: string | object, // apigateway, ecs and lambda object
+  alarmDescription: string | object, // apigateway, ecs and lambda object
   comparisonOperator: string,
   threshold: number,
-  metrics?
-  metricName: string,
+  metrics?: object // todo needed for only lambda Throttles alarms 
+  metricName?: string, // todo optional for only lambda Throttles alarms
   statistic: Statistic,
   period: number,
   extendedStatistic?: string,
@@ -34,15 +34,15 @@ export type Alarm = {
 export type AlarmProperties = {
   ActionsEnabled: boolean
   AlarmActions: string[] //todo
-  AlarmName: string
-  AlarmDescription: string
+  AlarmName: string | object
+  AlarmDescription: string | object
   EvaluationPeriods: number
   ComparisonOperator: string
   Threshold: number
   TreatMissingData: string
   Dimensions: object
-  Metrics?
-  MetricName: string
+  Metrics?: object
+  MetricName?: string 
   Namespace: string
   Period: number
   Statistic: Statistic //todo

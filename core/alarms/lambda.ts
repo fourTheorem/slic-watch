@@ -2,9 +2,8 @@
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
 import { Alarm, AlarmConfig, Context, FunctionAlarmConfigs, createAlarm } from './default-config-alarms'
-
-import { getLogger } from '../logging'
-const logging = getLogger()
+import pino from 'pino'
+const logging = pino()
 
 export type LambdaFunctionAlarmConfigs = {
   enabled?: boolean
@@ -18,7 +17,6 @@ export type LambdaFunctionAlarmConfigs = {
 
 export type LambdaAlarm = Alarm & {
   funcName: object
-  metrics
 } 
 /**
  * functionAlarmConfigs The cascaded Lambda alarm configuration with
@@ -212,7 +210,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
       funcName: { Ref: funcLogicalId },
       comparisonOperator: config.ComparisonOperator,
       threshold: config.Threshold,
-      metrics: metrics,
+      metrics:metrics, 
       metricName: null,
       statistic: config.Statistic,
       period:  config.Period,
