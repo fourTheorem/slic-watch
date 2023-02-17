@@ -80,6 +80,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
       ]
     }
     return {
+      // @ts-ignore
       resourceName: makeResourceName('AppSync', graphQLName, '5XXError'),
       resource: createAlarm(appSyncAlarmConfig, context)
     }
@@ -106,6 +107,7 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
       ]
     }
     return {
+      // @ts-ignore
       resourceName: makeResourceName('AppSync', graphQLName, 'Latency'),
       resource: createAlarm(appSyncAlarmConfig, context)
     }

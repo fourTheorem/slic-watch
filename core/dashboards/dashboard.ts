@@ -405,6 +405,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
             })),
             metricConfig
           ))
+          // @ts-ignore
           for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
             const gsiName = gsi.IndexName
             ddbWidgets.push(createMetricWidget(

@@ -234,6 +234,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
       AlarmDescription:  `Max duration for \${${funcLogicalId}} breaches ${threshold}% of timeout (${funcTimeout})`,
       funcName: { Ref: funcLogicalId },
       ComparisonOperator: config.ComparisonOperator,
+      // @ts-ignore
       Threshold:  (threshold * funcTimeout * 1000) / 100,
       Metrics: null,
       MetricName: 'Duration',

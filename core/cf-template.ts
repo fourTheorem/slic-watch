@@ -2,7 +2,19 @@
 
 import { filterObject } from './filter-object'
 import pino from 'pino'
-
+import {FunctionProperties} from 'cloudform-types/types/lambda/function'
+import {TopicProperties} from 'cloudform-types/types/sns/topic'
+import {QueueProperties} from 'cloudform-types/types/sqs/queue'
+import {StateMachineProperties} from 'cloudform-types/types/stepFunctions/stateMachine'
+import {StreamProperties} from 'cloudform-types/types/kinesis/stream'
+import {RuleProperties} from 'cloudform-types/types/events/rule'
+import {ServiceProperties} from 'cloudform-types/types/ecs/service'
+import {TableProperties} from 'cloudform-types/types/dynamoDb/table'
+import {GraphQLApiProperties} from 'cloudform-types/types/appsync/graphQlApi'
+import {RestApiProperties} from 'cloudform-types/types/apiGateway/restApi'
+import {TargetGroupProperties} from 'cloudform-types/types/elasticLoadBalancingV2/targetGroup'
+import {ListenerProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listener'
+import {ListenerRuleProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listenerRule'
 const logger = pino()
 
 type Resource = {
@@ -131,8 +143,8 @@ export type ResourceType = {
 }
 
 
-export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayProperties & AppSync & DynamoDBProperties & EcsProperties
-& EventBridgeProperties & KinesisProperties & LambdaProperties & SnsProperties & SqsProperties & SmProperties & CommonAlarmProperties
+export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
+& RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & CommonAlarmProperties
 
 
 // Common Alarm Properties
@@ -156,117 +168,11 @@ DashboardBody?:object
 }
 
 
-// Alb Target Group
-export type AlbTargetGroupProperties = {
-TargetType: string
-Actions
-ListenerArn
-DefaultActions
-Targets: object[],
-Name: string
-Tags: object[]
-TargetGroupAttributes: object[],
-HealthCheckEnabled: boolean
-HealthCheckPath: string
-HealthCheckIntervalSeconds: number
-HealthyThresholdCount: number
-UnhealthyThresholdCount: number
-Matcher: object
-}
 
-// Alb
-export type AlbProperties = {
-Name: string
-Type: string
-Subnets: []
-SecurityGroups: []
-LoadBalancerArn
-}
 
-// Api Gateway
-export type ApiGatewayProperties = {
-Name: string
-BinaryMediaTypes: object
-DisableExecuteApiEndpoint: object
-EndpointConfiguration: object[]
-Policy: string
-}
 
-// AppSync
-export type AppSync = {
-Name: string
-}
 
-// DynamoDB
-export type DynamoDBProperties = {
-TableName: string
-ProvisionedThroughput: object
-AttributeDefinitions: object[]
-KeySchema: object[]
-GlobalSecondaryIndexes: Indexes[]
-LocalSecondaryIndexes: object[]
-}
-type Indexes = {
-IndexName: string
-}
 
-// Ecs
-export type EcsProperties = {
-ServiceName: string
-Cluster: object
-DesiredCount: 0
-LaunchType: string
-TaskDefinition: object[]
-NetworkConfiguration: object[]
-}
-
-// EventBridge
-export type EventBridgeProperties = {
-EventBusName: object
-EventPattern: object[]
-Name: string
-ScheduleExpression: object
-State: string
-Targets: []
-}
-
-// Kinesis
-export type KinesisProperties = {
-Name: string
-ShardCount: number
-}
-
-// Lambda
-export type LambdaProperties = {
-Code: object
-Handler: string
-Runtime: string
-FunctionName: string
-MemorySize: number
-Timeout: number
-Role: object[]
-}
-
-// SNS
-export type SnsProperties = {
-TopicName: string
-}
-
-// SQS
-export type SqsProperties = {
-QueueName: string
-FifoQueue: boolean
-}
-
-// Step Function
-export type SmProperties = {
-DefinitionString: object
-RoleArn: object
-StateMachineType: string
-LoggingConfiguration: object
-TracingConfiguration: object
-StateMachineName: string
-}
 
 
 
