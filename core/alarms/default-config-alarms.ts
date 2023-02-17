@@ -14,49 +14,18 @@ import { AlarmsCascade } from '../inputs/cascading-config'
 import { Statistic } from '../cf-template'
 import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type Alarm = {
-  alarmName: string | object, // apigateway, ecs and lambda object
-  alarmDescription: string | object, // apigateway, ecs and lambda object
-  comparisonOperator: string,
-  threshold: number,
-  metrics?: object // todo needed for only lambda Throttles alarms 
-  metricName?: string, // todo optional for only lambda Throttles alarms
-  statistic: Statistic,
-  period: number,
-  extendedStatistic?: string,
-  evaluationPeriods: number,
-  treatMissingData: string,
-  namespace: string,
-  dimensions: object //todo figure out how to make this more specific
-}
 
-export type AlarmProperties = {
-  ActionsEnabled: boolean
-  AlarmActions: string[] //todo
-  AlarmName: string | object
-  AlarmDescription: string | object
-  EvaluationPeriods: number
-  ComparisonOperator: string
-  Threshold: number
-  TreatMissingData: string
-  Dimensions: object
-  Metrics?: object
-  MetricName?: string 
-  Namespace: string
-  Period: number
-  Statistic: Statistic //todo
-  ExtendedStatistic?: string //todo
-}
 
 export type ReturnAlarm = {
   Type: string
   Properties: AlarmProperties
 }
 
-type AllAlarms = Alarm | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
+type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
 
-export function createAlarm(alarm: Alarm, context?: Context): ReturnAlarm
+export function createAlarm(alarm: AlarmProperties, context?: Context): ReturnAlarm
 export function createAlarm(alarm: AlbAlarm, context?: Context): ReturnAlarm
 export function createAlarm(alarm: AlbTargetAlarm, context?: Context): ReturnAlarm
 export function createAlarm(alarm: ApiAlarm, context?: Context): ReturnAlarm
@@ -73,19 +42,19 @@ export function createAlarm(alarm:AllAlarms, context?: Context ): ReturnAlarm {
       Properties: {
         ActionsEnabled: true,
         AlarmActions: context.alarmActions,
-        AlarmName: alarm.alarmName,
-        AlarmDescription: alarm.alarmDescription,
-        EvaluationPeriods: alarm.evaluationPeriods,
-        ComparisonOperator: alarm.comparisonOperator,
-        Threshold: alarm.threshold,
-        TreatMissingData: alarm.treatMissingData,
-        Dimensions: alarm.dimensions,
-        Metrics:alarm.metrics,
-        MetricName: alarm.metricName,
-        Namespace: alarm.namespace,
-        Period: alarm.period,
-        Statistic: alarm.statistic,
-        ExtendedStatistic: alarm.extendedStatistic
+        AlarmName: alarm.AlarmName,
+        AlarmDescription: alarm.AlarmDescription,
+        EvaluationPeriods: alarm.EvaluationPeriods,
+        ComparisonOperator: alarm.ComparisonOperator,
+        Threshold: alarm.Threshold,
+        TreatMissingData: alarm.TreatMissingData,
+        Dimensions: alarm.Dimensions,
+        Metrics:alarm.Metrics,
+        MetricName: alarm.MetricName,
+        Namespace: alarm.Namespace,
+        Period: alarm.Period,
+        Statistic: alarm.Statistic,
+        ExtendedStatistic: alarm.ExtendedStatistic
       }
     }
 }

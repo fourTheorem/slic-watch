@@ -1,7 +1,8 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 export type SqsAlarmsConfig = {
   enabled?: boolean
@@ -9,7 +10,7 @@ export type SqsAlarmsConfig = {
   InFlightMessagesPc: AlarmConfig
 }
 
-export type SqsAlarm= Alarm & {
+export type SqsAlarm= AlarmProperties & {
   queueName: object
 }
 
@@ -70,19 +71,19 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
     const sqsAlarmConfig: SqsAlarm = {
-      alarmName: { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}` } ,
-      alarmDescription:  { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` },
+      AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,
+      AlarmDescription: `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`,
       queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: thresholdValue,
-      metricName: 'ApproximateNumberOfMessagesNotVisible',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/SQS',
-      dimensions: [{ Name: 'QueueName', Value: { 'Fn::GetAtt': [logicalId, 'QueueName'] } }]
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: thresholdValue,
+      MetricName: 'ApproximateNumberOfMessagesNotVisible',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/SQS',
+      Dimensions: [{ Name: 'QueueName', Value: `\${${logicalId}.QueueName}` }]
     }
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${logicalId}`,
@@ -93,19 +94,19 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
   function createOldestMsgAgeAlarm (logicalId: string, queueResource: CfResource, config: AlarmConfig) {
     const threshold = config.Threshold
     const sqsAlarmConfig: SqsAlarm = {
-      alarmName: { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}` } ,
-      alarmDescription:   { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}` },
+      AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}`,
+      AlarmDescription: `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}`,
       queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'ApproximateAgeOfOldestMessage',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/SQS',
-      dimensions: [{ Name: 'QueueName', Value: { 'Fn::GetAtt': [logicalId, 'QueueName'] } }]
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'ApproximateAgeOfOldestMessage',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/SQS',
+      Dimensions: [{ Name: 'QueueName', Value: `\${${logicalId}.QueueName}` }]
     }
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,

@@ -1,9 +1,10 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 export type ApiGwAlarmConfig = {
   enabled?: boolean
@@ -12,7 +13,7 @@ export type ApiGwAlarmConfig = {
   Latency: AlarmConfig
 }
 
-export type ApiAlarm= Alarm & {
+export type ApiAlarm= AlarmProperties & {
   apiName: string
 }
 
@@ -123,19 +124,19 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmConfig:ApiAlarm = {
-      alarmName: { 'Fn::Sub': `APIGW_5XXError_${apiNameForSub}` } ,
-      alarmDescription: { 'Fn::Sub': `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+      AlarmName: `APIGW_5XXError_${apiNameForSub}` ,
+      AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       apiName, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: '5XXError',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/ApiGateway',
-      dimensions: [{ Name: 'ApiName', Value: apiName }]
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: '5XXError',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/ApiGateway',
+      Dimensions: [{ Name: 'ApiName', Value: apiName }]
     } 
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
@@ -148,19 +149,19 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmConfig:ApiAlarm = {
-      alarmName: { 'Fn::Sub': `APIGW_4XXError_${apiNameForSub}` } ,
-      alarmDescription: { 'Fn::Sub': `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+      AlarmName: `APIGW_4XXError_${apiNameForSub}` ,
+      AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       apiName, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: '4XXError',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/ApiGateway',
-      dimensions: [{ Name: 'ApiName', Value: apiName }]
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: '4XXError',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/ApiGateway',
+      Dimensions: [{ Name: 'ApiName', Value: apiName }]
     }
     return {
       resourceName: makeResourceName('Api', apiName, '4XXError'),
@@ -173,19 +174,19 @@ export default function ApiGatewayAlarms (apiGwAlarmConfig: ApiGwAlarmConfig, co
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmConfig:ApiAlarm = {
-      alarmName: { 'Fn::Sub': `APIGW_Latency_${apiNameForSub}` } ,
-      alarmDescription: { 'Fn::Sub': `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}` },
+      AlarmName: `APIGW_Latency_${apiNameForSub}` ,
+      AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       apiName, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'Latency',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/ApiGateway',
-      dimensions: [{ Name: 'ApiName', Value: apiName }]
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'Latency',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/ApiGateway',
+      Dimensions: [{ Name: 'ApiName', Value: apiName }]
     }
     return {
       resourceName: makeResourceName('Api', apiName, 'Latency'),

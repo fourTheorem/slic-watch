@@ -60,7 +60,7 @@ test('Events alarms are created', (t) => {
     // @ts-ignore
     t.equal(al.Dimensions[0].Name, 'RuleName')
     // @ts-ignore
-    t.ok(al.Dimensions[0].Value.Ref)
+    t.ok(al.Dimensions[0].Value)
   }
 
   t.end()

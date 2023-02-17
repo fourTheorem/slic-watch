@@ -1,8 +1,9 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 export type DynamoDbAlarmConfig = {
   enabled?: boolean
@@ -78,21 +79,21 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig
     }
   }
 
-  function createDynamoDbAlarm (identifierSub: string, dimensions: object[] , metricName: string, resourceName: string) {
+  function createDynamoDbAlarm (identifierSub: string, dimensions , metricName: string, resourceName: string) {
     const config = dynamoDbAlarmConfig[metricName]
-    const dynamoDBAlarmConfig:Alarm = {
-      alarmName:{ 'Fn::Sub': `DDB_${metricName}_${identifierSub}` } ,
-      alarmDescription: { 'Fn::Sub': `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}` }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: metricName,
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/DynamoDB',
-      dimensions: dimensions
+    const dynamoDBAlarmConfig:AlarmProperties = {
+      AlarmName: `DDB_${metricName}_${identifierSub}` ,
+      AlarmDescription: `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}`, 
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: metricName,
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/DynamoDB',
+      Dimensions: dimensions
     }
     return {
       resourceName,

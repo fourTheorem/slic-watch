@@ -1,9 +1,10 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate }  from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
 export type AppSyncAlarmConfig = {
@@ -12,7 +13,7 @@ export type AppSyncAlarmConfig = {
   Latency: AlarmConfig
 }
 
-export type AppSyncAlarm= Alarm & {
+export type AppSyncAlarm= AlarmProperties & {
   appSyncResourceName: string 
 }
 
@@ -62,20 +63,20 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     const appSyncAlarmConfig:AppSyncAlarm = {
-      alarmName:`AppSync5XXErrorAlarm_${graphQLName}` ,
-      alarmDescription: `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
+      AlarmName:`AppSync5XXErrorAlarm_${graphQLName}` ,
+      AlarmDescription: `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
       appSyncResourceName, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: '5XXError',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/AppSync',
-      dimensions: [
-        { Name: 'GraphQLAPIId', Value: { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: '5XXError',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/AppSync',
+      Dimensions: [
+        { Name: 'GraphQLAPIId', Value: `\${$appSyncResourceName.ApiId}` }
       ]
     }
     return {
@@ -88,20 +89,20 @@ export default function appSyncAlarms (appSyncAlarmConfig: AppSyncAlarmConfig, c
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     const appSyncAlarmConfig:AppSyncAlarm = {
-      alarmName:`AppSyncLatencyAlarm_${graphQLName}` ,
-      alarmDescription: `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
+      AlarmName:`AppSyncLatencyAlarm_${graphQLName}` ,
+      AlarmDescription: `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
       appSyncResourceName, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'Latency',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/AppSync',
-      dimensions: [
-        { Name: 'GraphQLAPIId', Value: { 'Fn::GetAtt': [appSyncResourceName, 'ApiId'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'Latency',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/AppSync',
+      Dimensions: [
+        { Name: 'GraphQLAPIId', Value: `\${$appSyncResourceName.ApiId}` }
       ]
     }
     return {

@@ -1,6 +1,7 @@
 'use strict'
 import { CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 export type SfAlarmsConfig = {
   enabled?: boolean
@@ -9,7 +10,7 @@ export type SfAlarmsConfig = {
   ExecutionsTimedOut: AlarmConfig
 }
 
-export type SmAlarm= Alarm & {
+export type SmAlarm= AlarmProperties & {
   stateMachineArn: object 
 }
 
@@ -43,19 +44,19 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
           const config = sfAlarmConfig[metric]
           const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
           const smAlarmConfig: SmAlarm = {
-            alarmName: { 'Fn::Sub': `StepFunctions_${metric}_\${${logicalId}.Name}` } ,
-            alarmDescription: { 'Fn::Sub': `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}` },
+            AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}` ,
+            AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
             stateMachineArn: { Ref: logicalId }, 
-            comparisonOperator: config.ComparisonOperator,
-            threshold: config.Threshold,
-            metricName: metric,
-            statistic: config.Statistic,
-            period:  config.Period,
-            extendedStatistic:  config.ExtendedStatistic,
-            evaluationPeriods:  config.EvaluationPeriods,
-            treatMissingData:  config.TreatMissingData,
-            namespace: 'AWS/States',
-            dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } }]
+            ComparisonOperator: config.ComparisonOperator,
+            Threshold: config.Threshold,
+            MetricName: metric,
+            Statistic: config.Statistic,
+            Period:  config.Period,
+            ExtendedStatistic:  config.ExtendedStatistic,
+            EvaluationPeriods:  config.EvaluationPeriods,
+            TreatMissingData:  config.TreatMissingData,
+            Namespace: 'AWS/States',
+            Dimensions: [{ Name: 'StateMachineArn', Value:`\${${logicalId}}`}]
           }
           const alarmResource= createAlarm(smAlarmConfig, context)
           

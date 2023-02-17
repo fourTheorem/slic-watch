@@ -61,7 +61,7 @@ test('AppSync alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'GraphQLAPIId',
-        Value: { 'Fn::GetAtt': ['AwesomeappsyncGraphQlApi', 'ApiId'] }
+        Value: '${$appSyncResourceName.ApiId}'
       }
     ])
   }

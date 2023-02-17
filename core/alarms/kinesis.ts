@@ -1,9 +1,10 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
 export type KinesisAlarmConfig = {
@@ -62,19 +63,19 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, c
 
   function createStreamAlarm (streamLogicalId: string, streamResource: CfResource, type: string, metric: string, config: AlarmConfig) {
     const threshold = config.Threshold
-    const kinesisAlarmConfig: Alarm = {
-      alarmName: { 'Fn::Sub': `Kinesis_${type}_\${${streamLogicalId}}` },
-      alarmDescription: { 'Fn::Sub': `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds` },
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: metric,
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Kinesis',
-      dimensions:[{ Name: 'StreamName', Value: { Ref: streamLogicalId } }]
+    const kinesisAlarmConfig: AlarmProperties = {
+      AlarmName: `Kinesis_${type}_\${${streamLogicalId}}`,
+      AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: metric,
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace: 'AWS/Kinesis',
+      Dimensions:[{ Name: 'StreamName', Value: `\${${streamLogicalId}}`}]
     }
 
     return {

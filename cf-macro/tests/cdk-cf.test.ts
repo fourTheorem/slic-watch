@@ -27,12 +27,12 @@ test('ECS CDK stack', async (t) => {
     // @ts-ignore
     const alarmNames = Object.values(alarms).map(alarm => alarm.Properties.AlarmName).sort()
     t.same(alarmNames, [
+      'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',                                     
+      'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
       'LoadBalancerHTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
-      'LoadBalancerHTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      'LoadBalancerRejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
-      'LoadBalancerUnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      { 'Fn::Sub': 'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}' },
-      { 'Fn::Sub': 'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}' }
+      'LoadBalancerHTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3', 
+      'LoadBalancerRejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',      
+      'LoadBalancerUnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
     t.end()
   })

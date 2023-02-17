@@ -1,9 +1,10 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
 export type AlbTargetAlarmConfig = {
@@ -14,7 +15,7 @@ export type AlbTargetAlarmConfig = {
   LambdaUserError: AlarmConfig
 }
 
-export type AlbTargetAlarm = Alarm & {
+export type AlbTargetAlarm = AlarmProperties & {
   targetGroupResourceName: string
   loadBalancerLogicalId: string 
 } 
@@ -154,22 +155,22 @@ export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmCon
   function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource: CfResource , loadBalancerLogicalId: string, config: AlarmConfig) {
     const threshold = config.Threshold
     const albTargetAlarmConfig: AlbTargetAlarm = {
-      alarmName: `LoadBalancerHTTPCodeTarget5XXCountAlarm_${targetGroupResourceName}`,
-      alarmDescription:  `LoadBalancer HTTP Code Target 5XX Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
+      AlarmName: `LoadBalancerHTTPCodeTarget5XXCountAlarm_${targetGroupResourceName}`,
+      AlarmDescription:  `LoadBalancer HTTP Code Target 5XX Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
       targetGroupResourceName,
       loadBalancerLogicalId,
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'HTTPCode_Target_5XX_Count',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace:'AWS/ApplicationELB' ,
-      dimensions: [
-        { Name: 'TargetGroup', Value: { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] } },
-        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'HTTPCode_Target_5XX_Count',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace:'AWS/ApplicationELB' ,
+      Dimensions: [
+        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}`},
+        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}`}
       ] 
     }
     return {
@@ -181,22 +182,22 @@ export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmCon
   function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource: CfResource, loadBalancerLogicalId:string, config: AlarmConfig) {
     const threshold = config.Threshold
     const albTargetAlarmConfig: AlbTargetAlarm = {
-      alarmName: `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
-      alarmDescription:  `LoadBalancer UnHealthy Host Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
+      AlarmName: `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
+      AlarmDescription:  `LoadBalancer UnHealthy Host Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
       targetGroupResourceName,
       loadBalancerLogicalId,
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'UnHealthyHostCount',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace:'AWS/ApplicationELB' ,
-      dimensions: [
-        { Name: 'TargetGroup', Value: { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] } },
-        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'UnHealthyHostCount',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace:'AWS/ApplicationELB' ,
+      Dimensions: [
+        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}`},
+        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}`}
       ] 
     } 
     return {
@@ -208,22 +209,22 @@ export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmCon
   function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource: CfResource, loadBalancerLogicalId:string, config: AlarmConfig) {
     const threshold = config.Threshold
     const albTargetAlarmConfig: AlbTargetAlarm = {
-      alarmName: `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
-      alarmDescription: `LoadBalancer Lambda Internal Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
+      AlarmName: `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
+      AlarmDescription: `LoadBalancer Lambda Internal Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
       targetGroupResourceName,
       loadBalancerLogicalId,
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'LambdaInternalError',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace:'AWS/ApplicationELB' ,
-      dimensions: [
-        { Name: 'TargetGroup', Value: { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] } },
-        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'LambdaInternalError',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace:'AWS/ApplicationELB' ,
+      Dimensions: [
+        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}`},
+        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}`}
       ] 
     } 
     return {
@@ -235,22 +236,22 @@ export default function ALBTargetAlarms (albTargetAlarmConfig: AlbTargetAlarmCon
   function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource: CfResource, loadBalancerLogicalId:string, config: AlarmConfig) {
     const threshold = config.Threshold
     const albTargetAlarmConfig: AlbTargetAlarm = {
-      alarmName: `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,
-      alarmDescription:  `LoadBalancer Lambda User Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
+      AlarmName: `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,
+      AlarmDescription:  `LoadBalancer Lambda User Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
       targetGroupResourceName,
       loadBalancerLogicalId,
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'LambdaUserError',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace:'AWS/ApplicationELB' ,
-      dimensions: [
-        { Name: 'TargetGroup', Value: { 'Fn::GetAtt': [targetGroupResourceName, 'TargetGroupFullName'] } },
-        { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] } }
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'LambdaUserError',
+      Statistic: config.Statistic,
+      Period:  config.Period,
+      ExtendedStatistic:  config.ExtendedStatistic,
+      EvaluationPeriods:  config.EvaluationPeriods,
+      TreatMissingData:  config.TreatMissingData,
+      Namespace:'AWS/ApplicationELB' ,
+      Dimensions: [
+        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}`},
+        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}`}
       ] 
     } 
     return {

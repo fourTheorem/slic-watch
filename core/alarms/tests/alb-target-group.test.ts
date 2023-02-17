@@ -256,11 +256,11 @@ test('ALB Target Group alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'TargetGroup',
-        Value: { 'Fn::GetAtt': ['AlbEventAlbTargetGrouphttpListener', 'TargetGroupFullName'] }
+        Value: '${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}' 
       },
       {
         Name: 'LoadBalancer',
-        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
+        Value: '${alb.LoadBalancerFullName}'
       }
     ])
   }

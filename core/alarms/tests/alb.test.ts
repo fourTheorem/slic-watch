@@ -61,7 +61,7 @@ test('ALB alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'LoadBalancer',
-        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
+        Value: '${alb.LoadBalancerFullName}'
       }
     ])
   }
