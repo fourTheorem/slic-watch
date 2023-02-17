@@ -38,11 +38,9 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
-    // @ts-ignore
     for (const action of listener.Properties.DefaultActions || []) {
       const targetGroupArn = action?.TargetGroupArn
       if (targetGroupArn?.Ref === targetGroupLogicalId) {
-        // @ts-ignore
         const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
@@ -56,7 +54,6 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
-    // @ts-ignore
     for (const action of listenerRule.Properties.Actions || []) {
       const targetGroupArn = action.TargetGroupArn
       if (targetGroupArn.Ref === targetGroupLogicalId) {

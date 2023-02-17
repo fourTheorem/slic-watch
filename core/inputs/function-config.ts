@@ -4,8 +4,6 @@ import _ from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
-import { FunctionAlarmConfigs } from '../alarms/default-config-alarms'
-import { LambdaFunctionAlarmConfigs } from '../alarms/lambda'
 
 /**
  * Support for function-specific configuration for AWS Lambda overrides at a function level
@@ -27,7 +25,7 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
-    // @ts-ignore
+    //@ts-ignore
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
       funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }

@@ -9,7 +9,6 @@ import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../co
 import defaultConfig from '../core/inputs/default-config'
 import CloudFormationTemplate from '../core/cf-template'
 import Serverless from 'serverless'
-import PluginUtils from 'serverless-plugin-utils'
 import Hooks from 'serverless-hooks-plugin'
 import Aws from 'serverless/plugins/aws/provider/awsProvider';
 
@@ -24,10 +23,8 @@ class ServerlessPlugin {
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
    * @param {*} serverless The Serverless instance
-   * @param {*} cliOptions Serverless framework CLI options
-   * @param {*} pluginUtils V3 utilities, including the logger
    */
-  constructor (serverless, cliOptions, pluginUtils:PluginUtils  = {}) {
+  constructor (serverless) {
     this.serverless = serverless
 
     this.providerNaming = serverless.providers.aws.naming

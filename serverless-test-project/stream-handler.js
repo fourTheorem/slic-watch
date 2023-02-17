@@ -3,7 +3,7 @@
 /**
  * Handle Kinesis stream event source mapping events
  */
-module.exports.handle = async (event, context) => {
+module.exports.handle = async (event) => {
   for (const record of event.Records) {
     const item = JSON.parse(Buffer.from(record.kinesis.data, 'base64'))
     console.log(item)

@@ -5,7 +5,7 @@ import { applyAlarmConfig } from '../inputs/function-config'
 import { FunctionAlarmConfigs, Context } from './default-config-alarms'
 import { CloudFormationTemplate } from '../cf-template'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './lambda'
+import lambdaAlarms from './lambda'
 import apiGatewayAlarms from './api-gateway'
 import stepFunctionAlarms from './step-functions'
 import dynamoDbAlarms from './dynamodb'

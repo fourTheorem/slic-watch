@@ -11,10 +11,8 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-var-requires': 0, // todo remove later complains for all js modules
-    '@typescript-eslint/no-unused-vars': 0, // todo rmeove later
     'no-undef':0, // todo remove later
-    '@typescript-eslint/no-empty-function': 0, //todo remove later logging.test.ts is failing
-    '@typescript-eslint/ban-ts-comment': 0
+    '@typescript-eslint/ban-ts-comment': 0 //todo remove ts-ignore in modules and remove this rule
   },
   ignorePatterns: ['core/coverage'],
 }

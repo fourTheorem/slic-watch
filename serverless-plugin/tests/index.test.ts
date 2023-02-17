@@ -56,7 +56,7 @@ function getServerlessPlugin(t) {
 
 const mockServerless = {
   cli: {
-    log: () => {}
+    log: () => {''}
   },
   providers: { aws: {} },
   getProvider: () => ({

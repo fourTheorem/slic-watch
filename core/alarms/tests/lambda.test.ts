@@ -1,6 +1,6 @@
 'use strict'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from '../lambda'
+import lambdaAlarms from '../lambda'
 import { test } from 'tap'
 import { filterObject } from '../../filter-object'
 import defaultConfig from '../../inputs/default-config'
@@ -117,7 +117,6 @@ test('AWS Lambda alarms are created', (t) => {
     }
     return metricsById as MetricsById 
   }
-  for (const al of alarmsByType.Lambda_Throttles) {
     const metricsById = getMetricsById() 
     t.ok(metricsById.throttles_pc.Expression)
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
@@ -128,7 +127,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
     t.equal(metricsById.invocations.MetricStat.Period, 120)
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
-  }
+  
   t.equal(alarmsByType.Lambda_IteratorAge.size, 1)
   for (const al of alarmsByType.Lambda_IteratorAge) {
     t.equal(al.MetricName, 'IteratorAge')
@@ -232,7 +231,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     }
   }
   
-  for (const al of albAlarmsByType.Lambda_Throttles) {
     const metricsById = getMetricsById()
     t.ok(metricsById.throttles_pc.Expression)
     t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
@@ -243,7 +241,6 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
     t.equal(metricsById.invocations.MetricStat.Period, 120)
     t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
-  }
 
   t.end()
 })

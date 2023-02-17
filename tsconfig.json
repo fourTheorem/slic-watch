@@ -14,11 +14,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
-    // "isolatedModules": true
-    // "preserveSymlinks": true,
     "allowSyntheticDefaultImports": true,
-    // "forceConsistentCasingInFileNames": true,
-    // "esModuleInterop": true,
   },
   "exclude": [
     "node_modules",

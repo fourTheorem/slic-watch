@@ -63,7 +63,6 @@ export async function handler (event: Event) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        // @ts-ignore
         const funcConfig = funcResource.Metadata?.slicWatch || {}
         functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
         functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
@@ -71,7 +70,7 @@ export async function handler (event: Event) {
 
       const alarmService = alarms(config.alarms, functionAlarmConfigs, context)
       alarmService.addAlarms(cfTemplate)
-      const dashboardService = dashboard(config.dashboard, functionDashboardConfigs, context)
+      const dashboardService = dashboard(config.dashboard, functionDashboardConfigs)
       dashboardService.addDashboard(cfTemplate)
       outputFragment = cfTemplate.getSourceObject()
     }

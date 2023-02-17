@@ -109,7 +109,7 @@ export interface CloudFormationTemplate {
   getResourcesByType: (type: string) => ResourceType;
   getSourceObject: () => CompiledTemplate;
   getEventSourceMappingFunctions: () => object;
-  resolveFunctionResourceName: (func: object) => object;
+  resolveFunctionResourceName: (func: string|object) => object;
 }
 
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
@@ -123,6 +123,7 @@ export type CfResource = {
 Type?: string,
 Properties?: Properties
 DependsOn?: string[]
+Metadata
 }
 
 export type ResourceType = {
@@ -158,6 +159,9 @@ DashboardBody?:object
 // Alb Target Group
 export type AlbTargetGroupProperties = {
 TargetType: string
+Actions
+ListenerArn
+DefaultActions
 Targets: object[],
 Name: string
 Tags: object[]
@@ -176,6 +180,7 @@ Name: string
 Type: string
 Subnets: []
 SecurityGroups: []
+LoadBalancerArn
 }
 
 // Api Gateway

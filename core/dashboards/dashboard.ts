@@ -1,9 +1,8 @@
 'use strict'
 
-import { cascade, Widgets} from '../inputs/cascading-config'
+import { cascade} from '../inputs/cascading-config'
 import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
-import { DashboardConfig, FunctionDashboardConfigs,FunctionResources, ServiceDashConfig } from './default-config-dashboard'
-import { Context } from '../alarms/default-config-alarms'
+import { DashboardConfig, FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
@@ -78,7 +77,7 @@ const logger = pino()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig: DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs, context: Context) {
+export default function dashboard (dashboardConfig: DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs) {
   const {
     timeRange,
     widgets: {

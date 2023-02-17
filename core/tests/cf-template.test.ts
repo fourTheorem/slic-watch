@@ -23,7 +23,6 @@ test('Function resource name can be resolved using Ref', (t) => {
 
 test('Function resource name can be resolved using name', (t) => {
   const template = CloudFormationTemplate(emptyTemplate)
-  // @ts-ignore
   const resName = template.resolveFunctionResourceName('resName1')
   t.equal(resName, 'resName1')
   t.end()
@@ -56,11 +55,11 @@ test('Resource can be resolved by type from template with additional resource ',
   const template = CloudFormationTemplate(compiledTemplate, additionalResources) 
   
   const tableResources = template.getResourcesByType('AWS::DynamoDB::Table')
-  for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
+  for (const [, tableResource] of Object.entries(tableResources)) {
     t.equal(tableResource.Type, 'AWS::DynamoDB::Table')
   }
   const queueResources = template.getResourcesByType('AWS::SQS::Queue')
-  for (const [queueResourceeName, queueResource] of Object.entries(queueResources)) {
+  for (const [, queueResource] of Object.entries(queueResources)) {
     t.equal(queueResource.Type, 'AWS::SQS::Queue')
   } 
   t.end()
@@ -75,7 +74,7 @@ test('Resource can be resolved by type from service resources', (t) => {
   }
   const template = CloudFormationTemplate(compiledTemplate, serviceResources)
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')
-  for (const [tableResourceName, tableResource] of Object.entries(resources)) {
+  for (const [, tableResource] of Object.entries(resources)) {
     t.equal(tableResource.Type, 'AWS::DynamoDB::Table')
   }
   t.end()
