@@ -13,14 +13,14 @@ import {
   testContext
 } from '../../tests/testing-utils'
 
-const alarmConfig = createTestConfig(
+const AlarmProperties = createTestConfig(
   defaultConfig.alarms, {
     Period: 120,
     EvaluationPeriods: 2,
     TreatMissingData: 'breaching',
     ComparisonOperator: 'GreaterThanOrEqualToThreshold',
     DynamoDB: {
-      enabled: true,
+      ActionsEnabled: true,
       ReadThrottleEvents: {
         Threshold: 10
       },
@@ -35,11 +35,11 @@ const alarmConfig = createTestConfig(
       }
     }
   })
-const dynamoDbAlarmConfig = alarmConfig.DynamoDB
+const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 
 ;[true, false].forEach(specifyTableName => {
   test(`DynamoDB alarms are created ${specifyTableName ? 'with' : 'without'} a table name property`, (t) => {
-    const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
+    const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmProperties, testContext)
     const cfTemplate = createTestCloudFormationTemplate()
     if (!specifyTableName) {
       for (const tableResource of Object.values(cfTemplate.getResourcesByType('AWS::DynamoDB::Table'))) {
@@ -75,7 +75,7 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
       for (const al of alarmsByType[type]) {
         t.equal(al.Statistic, 'Sum')
         const metric = type.split('_')[1]
-        t.equal(al.Threshold, dynamoDbAlarmConfig[metric].Threshold)
+        t.equal(al.Threshold, dynamoDbAlarmProperties[metric].Threshold)
         t.equal(al.EvaluationPeriods, 2)
         t.equal(al.TreatMissingData, 'breaching')
         t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -97,7 +97,7 @@ const dynamoDbAlarmConfig = alarmConfig.DynamoDB
 })
 
 test('DynamoDB alarms are created without GSI', (t) => {
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   for (const tableResource of Object.values(cfTemplate.getResourcesByType('AWS::DynamoDB::Table'))) {
     delete tableResource.Properties.GlobalSecondaryIndexes
@@ -110,13 +110,13 @@ test('DynamoDB alarms are created without GSI', (t) => {
 })
 
 test('DynamoDB alarms are not created when disabled', (t) => {
-  const alarmConfig = createTestConfig(defaultConfig.alarms, {
+  const AlarmProperties = createTestConfig(defaultConfig.alarms, {
     DynamoDB: {
-      enabled: false
+      ActionsEnabled: false
     }
   })
-  const dynamoDbAlarmConfig = alarmConfig.DynamoDB
-  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmConfig, testContext)
+  const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
+  const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createDynamoDbAlarms(cfTemplate)
 

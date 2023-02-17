@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import sqsAlarms from '../sqs'
@@ -16,7 +17,7 @@ export type AlarmsByType ={
   SQS_ApproximateNumberOfMessagesNotVisible
 }
 test('SQS alarms are created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -26,7 +27,7 @@ test('SQS alarms are created', (t) => {
       SQS: {
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
-          enabled: true,
+          ActionsEnabled: true,
           Threshold: 200
         },
         InFlightMessagesPc: {
@@ -35,9 +36,9 @@ test('SQS alarms are created', (t) => {
         }
       }
     })
-  const sqsAlarmConfig = alarmConfig.SQS
+  const sqsAlarmProperties = AlarmProperties.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -47,7 +48,7 @@ test('SQS alarms are created', (t) => {
   // we expect 2 alarms per queue
   t.equal(Object.keys(alarmResources).length, 4)
 
-  function getAlarmsByType(): AlarmsByType {
+  function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
@@ -56,8 +57,8 @@ test('SQS alarms are created', (t) => {
       alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
       alarmsByType[alarmType].add(al)
     }
-    return alarmsByType as AlarmsByType 
-  } 
+    return alarmsByType as AlarmsByType
+  }
 
   const alarmsByType = getAlarmsByType()
   t.same(Object.keys(alarmsByType).sort(), [
@@ -73,7 +74,7 @@ test('SQS alarms are created', (t) => {
   // regular queue
   t.equal(approximateAgeOfOldMessageAlarms[0].MetricName, 'ApproximateAgeOfOldestMessage')
   t.equal(approximateAgeOfOldMessageAlarms[0].Statistic, 'Maximum')
-  t.equal(approximateAgeOfOldMessageAlarms[0].Threshold, sqsAlarmConfig.AgeOfOldestMessage.Threshold)
+  t.equal(approximateAgeOfOldMessageAlarms[0].Threshold, sqsAlarmProperties.AgeOfOldestMessage.Threshold)
   t.equal(approximateAgeOfOldMessageAlarms[0].EvaluationPeriods, 2)
   t.equal(approximateAgeOfOldMessageAlarms[0].TreatMissingData, 'breaching')
   t.equal(approximateAgeOfOldMessageAlarms[0].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -82,19 +83,14 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: {
-        'Fn::GetAtt': [
-          'regularQueue',
-          'QueueName'
-        ]
-      }
+      Value: '${regularQueue.QueueName}'
     }
   ])
 
   // fifo queue
   t.equal(approximateAgeOfOldMessageAlarms[1].MetricName, 'ApproximateAgeOfOldestMessage')
   t.equal(approximateAgeOfOldMessageAlarms[1].Statistic, 'Maximum')
-  t.equal(approximateAgeOfOldMessageAlarms[1].Threshold, sqsAlarmConfig.AgeOfOldestMessage.Threshold)
+  t.equal(approximateAgeOfOldMessageAlarms[1].Threshold, sqsAlarmProperties.AgeOfOldestMessage.Threshold)
   t.equal(approximateAgeOfOldMessageAlarms[1].EvaluationPeriods, 2)
   t.equal(approximateAgeOfOldMessageAlarms[1].TreatMissingData, 'breaching')
   t.equal(approximateAgeOfOldMessageAlarms[1].ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -103,12 +99,7 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: {
-        'Fn::GetAtt': [
-          'fifoQueue',
-          'QueueName'
-        ]
-      }
+      Value: '${fifoQueue.QueueName}'
     }
   ])
   const approximateNumberOfMessagesNotVisibileAlarms = [...alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible]
@@ -125,12 +116,7 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: {
-        'Fn::GetAtt': [
-          'regularQueue',
-          'QueueName'
-        ]
-      }
+      Value: '${regularQueue.QueueName}'
     }
   ])
 
@@ -146,12 +132,7 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: {
-        'Fn::GetAtt': [
-          'fifoQueue',
-          'QueueName'
-        ]
-      }
+      Value: '${fifoQueue.QueueName}'
     }
   ])
 
@@ -159,11 +140,11 @@ test('SQS alarms are created', (t) => {
 })
 
 test('SQS alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       SQS: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
           Threshold: 200
@@ -174,9 +155,9 @@ test('SQS alarms are not created when disabled globally', (t) => {
         }
       }
     })
-  const sqsAlarmConfig = alarmConfig.SQS
+  const sqsAlarmProperties = AlarmProperties.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -187,26 +168,26 @@ test('SQS alarms are not created when disabled globally', (t) => {
 })
 
 test('SQS alarms are not created when disabled individually', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       SQS: {
-        enabled: true, // enabled globally
+        ActionsEnabled: true, // enabled globally
         AgeOfOldestMessage: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 200
         },
         InFlightMessagesPc: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
       }
     })
-  const sqsAlarmConfig = alarmConfig.SQS
+  const sqsAlarmProperties = AlarmProperties.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSQSAlarms(cfTemplate)
 
@@ -217,25 +198,25 @@ test('SQS alarms are not created when disabled individually', (t) => {
 })
 
 test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no threshold set)', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       SQS: {
         AgeOfOldestMessage: {
-          enabled: true,
+          ActionsEnabled: true,
           Statistic: 'Maximum'
           // threshold not configured
         },
         InFlightMessagesPc: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
       }
     })
-  const sqsAlarmConfig = alarmConfig.SQS
+  const sqsAlarmProperties = AlarmProperties.SQS
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmConfig, testContext)
+  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   t.throws(() => createSQSAlarms(cfTemplate), { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()

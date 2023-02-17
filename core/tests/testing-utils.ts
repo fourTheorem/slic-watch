@@ -4,8 +4,8 @@ import path from 'path'
 import fs from 'fs'
 import _ from 'lodash'
 import { createRequire } from 'module'
-import {fileURLToPath} from 'url'
-import  YAML from 'yaml'
+import { fileURLToPath } from 'url'
+import YAML from 'yaml'
 
 import CloudFormationTemplate from '../cf-template'
 import { cascade } from '../inputs/cascading-config'
@@ -72,5 +72,5 @@ function createTestConfig (from, cascadingChanges) {
 function createTestCloudFormationTemplate (stackDefinition = null) {
   const data = stackDefinition || defaultCfTemplate
 
-  return CloudFormationTemplate(_.cloneDeep(data), {})
+  return CloudFormationTemplate(_.cloneDeep(data), { Type: '' })
 }

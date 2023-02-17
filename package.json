@@ -42,6 +42,8 @@
     "@types/serverless": "^3.12.9",
     "@types/tap": "^15.0.7",
     "@typescript-eslint/parser": "^5.0.0",
+    "cloudform": "^7.4.2",
+    "esbuild": "^0.17.10",
     "eslint": "^8.30.0",
     "eslint-config-standard-with-typescript": "^24.0.0",
     "eslint-plugin-import": "^2.23.0",

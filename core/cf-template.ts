@@ -2,28 +2,52 @@
 
 import { filterObject } from './filter-object'
 import pino from 'pino'
+import { FunctionProperties } from 'cloudform-types/types/lambda/function'
+import { TopicProperties } from 'cloudform-types/types/sns/topic'
+import { QueueProperties } from 'cloudform-types/types/sqs/queue'
+import { StateMachineProperties } from 'cloudform-types/types/stepFunctions/stateMachine'
+import { StreamProperties } from 'cloudform-types/types/kinesis/stream'
+import { RuleProperties } from 'cloudform-types/types/events/rule'
+import { ServiceProperties } from 'cloudform-types/types/ecs/service'
+import { TableProperties } from 'cloudform-types/types/dynamoDb/table'
+import { GraphQLApiProperties } from 'cloudform-types/types/appsync/graphQlApi'
+import { RestApiProperties } from 'cloudform-types/types/apiGateway/restApi'
+import { TargetGroupProperties } from 'cloudform-types/types/elasticLoadBalancingV2/targetGroup'
+import { ListenerProperties } from 'cloudform-types/types/elasticLoadBalancingV2/listener'
+import { ListenerRuleProperties } from 'cloudform-types/types/elasticLoadBalancingV2/listenerRule'
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { DashboardProperties } from 'cloudform-types/types/cloudWatch/dashboard'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 const logger = pino()
 
-type Resource = {
-  Type: string
-  Properties?: { [key: string]: Properties } 
-  DependsOn?: []
+export type ResourceType = {
+  [key: string]: Resource
+  }
+
+/**
+ * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
+ * and directly-specified CloudFormation resources
+ *
+ * compiledTemplate The compiled CloudFormation template
+ * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
+ */
+export interface CloudFormationTemplate {
+  addResource: (resourceName: string, resource: Resource) => Template ;
+  getResourceByName: (resourceName: string) => ResourceType;
+  getResourcesByType: (type: string) => ResourceType;
+  getSourceObject: () => Template;
+  getEventSourceMappingFunctions: () => object;
+  resolveFunctionResourceName: (func: string|object) => object;
 }
 
-export type CompiledTemplate = {
-  AWSTemplateFormatVersion?: string
-  Description?: string
-  Resources?: Resource[] | {[key: string]: object} | undefined 
-  Outputs?: {[key: string]: object} | undefined | object
-}
+export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
-export type AdditionalResources = {
-  Resources?: Resource []
-  
-}
+export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
+& RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
-export default function CloudFormationTemplate  (compiledTemplate: CompiledTemplate, additionalResources?: AdditionalResources): CloudFormationTemplate  {
+export default function CloudFormationTemplate (compiledTemplate: Template, additionalResources?: Resource | Resource[]): CloudFormationTemplate {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -43,7 +67,8 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
   }
 
-  function addResource(resourceName: string, resource: object): Metric {
+  function addResource (resourceName: string, resource: Resource) {
+    // eslint-disable-next-line no-return-assign
     return compiledTemplate.Resources[resourceName] = resource
   }
 
@@ -51,8 +76,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
   }
 
-  function getResourcesByType (type:string): ResourceType  {
-    
+  function getResourcesByType (type:string): ResourceType {
     return filterObject(
       {
         ...compiledTemplate.Resources,
@@ -82,7 +106,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     return eventSourceMappingFunctions
   }
 
-  function getSourceObject ():CompiledTemplate {
+  function getSourceObject ():Template {
     return compiledTemplate
   }
 
@@ -95,175 +119,3 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     resolveFunctionResourceName: resolveFunctionLogicalId
   }
 }
-
-/**
- * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
- * and directly-specified CloudFormation resources
- *
- * compiledTemplate The compiled CloudFormation template
- * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
- */
-export interface CloudFormationTemplate {
-  addResource: (resourceName: string, resource: object) => Metric;
-  getResourceByName: (resourceName: string) => ResourceType;
-  getResourcesByType: (type: string) => ResourceType;
-  getSourceObject: () => CompiledTemplate;
-  getEventSourceMappingFunctions: () => object;
-  resolveFunctionResourceName: (func: object) => object;
-}
-
-export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
-
-export type Metric = {
-resourceName?: string
-resource?: CfResource
-}
-
-export type CfResource = {
-Type?: string,
-Properties?: Properties
-DependsOn?: string[]
-}
-
-export type ResourceType = {
-[key: string]: CfResource
-}
-
-
-export type Properties = AlbTargetGroupProperties & AlbProperties& ApiGatewayProperties & AppSync & DynamoDBProperties & EcsProperties
-& EventBridgeProperties & KinesisProperties & LambdaProperties & SnsProperties & SqsProperties & SmProperties & CommonAlarmProperties
-
-
-// Common Alarm Properties
-export type CommonAlarmProperties = {
-ActionsEnabled: boolean
-AlarmActions: string[]
-AlarmName: string
-AlarmDescription: string
-EvaluationPeriods: number
-ComparisonOperator: string
-Threshold: number
-TreatMissingData: string
-Dimensions: string[]
-MetricName: string
-Namespace: string
-Period: number
-Statistic: Statistic
-ExtendedStatistic?: string
-DashboardName?: string
-DashboardBody?:object
-}
-
-
-// Alb Target Group
-export type AlbTargetGroupProperties = {
-TargetType: string
-Targets: object[],
-Name: string
-Tags: object[]
-TargetGroupAttributes: object[],
-HealthCheckEnabled: boolean
-HealthCheckPath: string
-HealthCheckIntervalSeconds: number
-HealthyThresholdCount: number
-UnhealthyThresholdCount: number
-Matcher: object
-}
-
-// Alb
-export type AlbProperties = {
-Name: string
-Type: string
-Subnets: []
-SecurityGroups: []
-}
-
-// Api Gateway
-export type ApiGatewayProperties = {
-Name: string
-BinaryMediaTypes: object
-DisableExecuteApiEndpoint: object
-EndpointConfiguration: object[]
-Policy: string
-}
-
-// AppSync
-export type AppSync = {
-Name: string
-}
-
-// DynamoDB
-export type DynamoDBProperties = {
-TableName: string
-ProvisionedThroughput: object
-AttributeDefinitions: object[]
-KeySchema: object[]
-GlobalSecondaryIndexes: Indexes[]
-LocalSecondaryIndexes: object[]
-}
-type Indexes = {
-IndexName: string
-}
-
-// Ecs
-export type EcsProperties = {
-ServiceName: string
-Cluster: object
-DesiredCount: 0
-LaunchType: string
-TaskDefinition: object[]
-NetworkConfiguration: object[]
-}
-
-// EventBridge
-export type EventBridgeProperties = {
-EventBusName: object
-EventPattern: object[]
-Name: string
-ScheduleExpression: object
-State: string
-Targets: []
-}
-
-// Kinesis
-export type KinesisProperties = {
-Name: string
-ShardCount: number
-}
-
-// Lambda
-export type LambdaProperties = {
-Code: object
-Handler: string
-Runtime: string
-FunctionName: string
-MemorySize: number
-Timeout: number
-Role: object[]
-}
-
-// SNS
-export type SnsProperties = {
-TopicName: string
-}
-
-// SQS
-export type SqsProperties = {
-QueueName: string
-FifoQueue: boolean
-}
-
-// Step Function
-export type SmProperties = {
-DefinitionString: object
-RoleArn: object
-StateMachineType: string
-LoggingConfiguration: object
-TracingConfiguration: object
-StateMachineName: string
-}
-
-
-
-
-

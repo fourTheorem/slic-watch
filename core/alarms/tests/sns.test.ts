@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import snsAlarms from '../sns'
@@ -12,7 +13,7 @@ import {
 } from '../../tests/testing-utils'
 
 test('SNS alarms are created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -29,9 +30,9 @@ test('SNS alarms are created', (t) => {
       }
     }
   )
-  const snsAlarmConfig = alarmConfig.SNS
+  const snsAlarmProperties = AlarmProperties.SNS
 
-  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createSNSAlarms(cfTemplate)
 
@@ -50,7 +51,7 @@ test('SNS alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, snsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, snsAlarmProperties[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -59,7 +60,7 @@ test('SNS alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'TopicName',
-        Value: { 'Fn::GetAtt': ['topic', 'TopicName'] }
+        Value: '${topic.TopicName}'
       }
     ])
   }
@@ -68,11 +69,11 @@ test('SNS alarms are created', (t) => {
 })
 
 test('SNS alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       SNS: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50
@@ -83,9 +84,9 @@ test('SNS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const snsAlarmConfig = alarmConfig.SNS
+  const snsAlarmProperties = AlarmProperties.SNS
 
-  const { createSNSAlarms } = snsAlarms(snsAlarmConfig, testContext)
+  const { createSNSAlarms } = snsAlarms(snsAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createSNSAlarms(cfTemplate)

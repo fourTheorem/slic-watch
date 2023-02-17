@@ -1,126 +1,119 @@
 import { Widgets } from '../inputs/cascading-config'
 import { Statistic } from '../cf-template'
+import FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
 
 export type DashboardConfig = {
-  enabled?: boolean
-  timeRange?: object
+  ActionsEnabled?: boolean
   widgets?: Widgets
-  dashConfig?: DashConfig
 }
 
-export type DashConfig = {
-  enabled?: boolean
-  metricPeriod?: object
+export type DashboardBodyProperties = {
+  ActionsEnabled?: boolean
+  metricPeriod?: number
   width?: number
   height?: number
   yAxis?: YAxis
-  Statistic?: Statistic[] 
+  Statistic?: Statistic[]
 }
 
 export type ServiceDashConfig = {
-  dashConfig?: DashConfig
+  DashboardBodyProperties?: DashboardBodyProperties
   widgets?: Widgets
 }
 
-// export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig
-// & EcsDashConfig & SnsDashConfig & RuleDashConfig & AlbDashConfig & AlbTargetDashConfig & AppSyncDashConfig
-
-export type LambdaDashConfig = {
-  enabled?: boolean
-  Errors: DashConfig
-  Throttles: DashConfig
-  Duration: DashConfig
-  Invocations: DashConfig
-  ConcurrentExecutions: DashConfig
-  IteratorAge: DashConfig
-} 
-
-export type ApiGwDashConfig = {
-  enabled?: boolean
-  '5XXError': DashConfig 
-  '4XXError': DashConfig
-  Latency: DashConfig
-  Count: DashConfig
+export type LambdaDashboardBodyProperties = {
+  Errors: DashboardBodyProperties
+  Throttles: DashboardBodyProperties
+  Duration: DashboardBodyProperties
+  Invocations: DashboardBodyProperties
+  ConcurrentExecutions: DashboardBodyProperties
+  IteratorAge: DashboardBodyProperties
 }
 
-export type SfDashConfig = {
-  enabled?: boolean
-  ExecutionsFailed: DashConfig 
-  ExecutionThrottled: DashConfig
-  ExecutionsTimedOut: DashConfig
+export type ApiGwDashboardBodyProperties = {
+  '5XXError': DashboardBodyProperties
+  '4XXError': DashboardBodyProperties
+  Latency: DashboardBodyProperties
+  Count: DashboardBodyProperties
 }
 
-export type DynamoDbDashConfig = {
-  enabled?: boolean
-  ReadThrottleEvents: DashConfig 
-  WriteThrottleEvents: DashConfig
+export type SfDashboardBodyProperties = {
+  ExecutionsFailed: DashboardBodyProperties
+  ExecutionThrottled: DashboardBodyProperties
+  ExecutionsTimedOut: DashboardBodyProperties
 }
 
-export type KinesisDashConfig = {
-  enabled?: boolean
-  'GetRecords.IteratorAgeMilliseconds': DashConfig 
-  ReadProvisionedThroughputExceeded: DashConfig
-  WriteProvisionedThroughputExceeded: DashConfig
-  'PutRecord.Success': DashConfig 
-  'PutRecords.Success': DashConfig
-  'GetRecords.Success': DashConfig
+export type DynamoDbDashboardBodyProperties = {
+  ReadThrottleEvents: DashboardBodyProperties
+  WriteThrottleEvents: DashboardBodyProperties
 }
 
-export type SqsDashConfig = {
-  enabled?: boolean
-  NumberOfMessagesSent: DashConfig 
-  NumberOfMessagesReceived: DashConfig
-  NumberOfMessagesDeleted: DashConfig
-  ApproximateAgeOfOldestMessage: DashConfig 
-  ApproximateNumberOfMessagesVisible: DashConfig
+export type KinesisDashboardBodyProperties = {
+  'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties
+  ReadProvisionedThroughputExceeded: DashboardBodyProperties
+  WriteProvisionedThroughputExceeded: DashboardBodyProperties
+  'PutRecord.Success': DashboardBodyProperties
+  'PutRecords.Success': DashboardBodyProperties
+  'GetRecords.Success': DashboardBodyProperties
 }
 
-export type EcsDashConfig = {
-  enabled?: boolean
-  MemoryUtilization: DashConfig 
-  CPUUtilization: DashConfig
+export type SqsDashboardBodyProperties = {
+  NumberOfMessagesSent: DashboardBodyProperties
+  NumberOfMessagesReceived: DashboardBodyProperties
+  NumberOfMessagesDeleted: DashboardBodyProperties
+  ApproximateAgeOfOldestMessage: DashboardBodyProperties
+  ApproximateNumberOfMessagesVisible: DashboardBodyProperties
 }
 
-export type SnsDashConfig = {
-  enabled?: boolean
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashConfig 
-  NumberOfNotificationsFailed: DashConfig
+export type EcsDashboardBodyProperties = {
+  ActionsEnabled?: boolean
+  MemoryUtilization: DashboardBodyProperties
+  CPUUtilization: DashboardBodyProperties
 }
 
-export type RuleDashConfig = {
-  enabled?: boolean
-  FailedInvocations: DashConfig 
-  ThrottledRules: DashConfig
-  Invocations: DashConfig
+export type SnsDashboardBodyProperties = {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties
+  NumberOfNotificationsFailed: DashboardBodyProperties
 }
 
-export type AlbDashConfig = {
-  enabled?: boolean 
-  HTTPCode_ELB_5XX_Count: DashConfig 
-  RejectedConnectionCount: DashConfig
+export type RuleDashboardBodyProperties = {
+  FailedInvocations: DashboardBodyProperties
+  ThrottledRules: DashboardBodyProperties
+  Invocations: DashboardBodyProperties
 }
 
-export type AlbTargetDashConfig = {
-  enabled?: boolean
-  HTTPCode_Target_5XX_Count: DashConfig 
-  UnHealthyHostCount: DashConfig
-  LambdaInternalError: DashConfig 
-  LambdaUserError: DashConfig
+export type AlbDashboardBodyProperties = {
+  HTTPCode_ELB_5XX_Count: DashboardBodyProperties
+  RejectedConnectionCount: DashboardBodyProperties
 }
 
-export type AppSyncDashConfig = {
-  enabled?: boolean
-  '5XXError': DashConfig 
-  '4XXError': DashConfig
-  Latency: DashConfig 
-  Requests: DashConfig
-  ConnectServerError: DashConfig 
-  DisconnectServerError: DashConfig
-  SubscribeServerError: DashConfig 
-  UnsubscribeServerError: DashConfig
-  PublishDataMessageServerError: DashConfig 
+export type AlbTargetDashboardBodyProperties = {
+  HTTPCode_Target_5XX_Count: DashboardBodyProperties
+  UnHealthyHostCount: DashboardBodyProperties
+  LambdaInternalError: DashboardBodyProperties
+  LambdaUserError: DashboardBodyProperties
+}
+
+export type AppSyncDashboardBodyProperties = {
+  '5XXError': DashboardBodyProperties
+  '4XXError': DashboardBodyProperties
+  Latency: DashboardBodyProperties
+  Requests: DashboardBodyProperties
+  ConnectServerError: DashboardBodyProperties
+  DisconnectServerError: DashboardBodyProperties
+  SubscribeServerError: DashboardBodyProperties
+  UnsubscribeServerError: DashboardBodyProperties
+  PublishDataMessageServerError: DashboardBodyProperties
+}
+
+// Lambda resources
+
+export type FunctionResources = {
+  Type: string
+  Properties: FunctionProperties
+  DependsOn: string[]
 }
 
 export type FunctionDashboardConfigs = {
@@ -136,27 +129,3 @@ export type FunctionDashboardConfigs = {
   EventsRuleLambdaFunction?: FunctionResources
   AlbEventLambdaFunction?: FunctionResources
 }
-
-// Lambda resources
-
-export type FunctionResources = {
-  Type: string
-  Properties: {
-    Code: object
-    Handler: string
-    Runtime: string
-    FunctionName: string
-    MemorySize: number
-    Timeout: number
-    Role: object
-    ReservedConcurrentExecutions?: number
-  }
-  DependsOn: string[]
-}
-
-export type ApiResources = {
-  Type: string
-}
-
-
-

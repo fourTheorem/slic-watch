@@ -1,16 +1,17 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { CloudFormationTemplate } from '../cf-template'
+import Resource from 'cloudform-types/types/resource'
+import { Context, createAlarm } from './default-config-alarms'
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-export type SqsAlarmsConfig = {
-  enabled?: boolean
-  AgeOfOldestMessage: AlarmConfig,
-  InFlightMessagesPc: AlarmConfig
+export type SqsAlarmsConfig = AlarmProperties& {
+  AgeOfOldestMessage: AlarmProperties,
+  InFlightMessagesPc: AlarmProperties
 }
 
-export type SqsAlarm= Alarm & {
-  queueName: object
+export type SqsAlarm= AlarmProperties & {
+  QueueName: string
 }
 
 /**
@@ -35,7 +36,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     for (const [queueResourceName, queueResource] of Object.entries(
       queueResources
     )) {
-      if (sqsAlarmsConfig.InFlightMessagesPc.enabled) {
+      if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled) {
         const inFlightMsgsAlarm = createInFlightMsgsAlarm(
           queueResourceName,
           queueResource,
@@ -44,7 +45,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
         cfTemplate.addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource)
       }
 
-      if (sqsAlarmsConfig.AgeOfOldestMessage.enabled) {
+      if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled) {
         if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
           throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
         }
@@ -62,54 +63,55 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     }
   }
 
-  function createInFlightMsgsAlarm (logicalId: string, queueResource: CfResource, config: AlarmConfig) {
+  function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
     const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
+    // @ts-ignore
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
-    const sqsAlarmConfig: SqsAlarm = {
-      alarmName: { 'Fn::Sub': `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}` } ,
-      alarmDescription:  { 'Fn::Sub': `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})` },
-      queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: thresholdValue,
-      metricName: 'ApproximateNumberOfMessagesNotVisible',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/SQS',
-      dimensions: [{ Name: 'QueueName', Value: { 'Fn::GetAtt': [logicalId, 'QueueName'] } }]
+    const sqsAlarmProperties: SqsAlarm = {
+      AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,
+      AlarmDescription: `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`,
+      QueueName: `\${${logicalId}.QueueName}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: thresholdValue,
+      MetricName: 'ApproximateNumberOfMessagesNotVisible',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/SQS',
+      Dimensions: [{ Name: 'QueueName', Value: `\${${logicalId}.QueueName}` }]
     }
     return {
       resourceName: `slicWatchSQSInFlightMsgsAlarm${logicalId}`,
-      resource: createAlarm(sqsAlarmConfig, context)
-   }
+      resource: createAlarm(sqsAlarmProperties, context)
+    }
   }
 
-  function createOldestMsgAgeAlarm (logicalId: string, queueResource: CfResource, config: AlarmConfig) {
+  function createOldestMsgAgeAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const sqsAlarmConfig: SqsAlarm = {
-      alarmName: { 'Fn::Sub': `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}` } ,
-      alarmDescription:   { 'Fn::Sub': `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}` },
-      queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: 'ApproximateAgeOfOldestMessage',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/SQS',
-      dimensions: [{ Name: 'QueueName', Value: { 'Fn::GetAtt': [logicalId, 'QueueName'] } }]
+    const sqsAlarmProperties: SqsAlarm = {
+      AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}`,
+      AlarmDescription: `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}`,
+      QueueName: `\${${logicalId}.QueueName}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: 'ApproximateAgeOfOldestMessage',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/SQS',
+      Dimensions: [{ Name: 'QueueName', Value: `\${${logicalId}.QueueName}` }]
     }
     return {
       resourceName: `slicWatchSQSOldestMsgAgeAlarm${logicalId}`,
-      resource: createAlarm(sqsAlarmConfig, context)
+      resource: createAlarm(sqsAlarmProperties, context)
     }
   }
 }

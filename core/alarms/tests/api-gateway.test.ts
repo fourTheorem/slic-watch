@@ -15,7 +15,7 @@ export type AlarmsByType ={
   APIGW_4XXError
   APIGW_5XXError
   APIGW_Latency
-} 
+}
 
 test('resolveRestApiNameAsCfn', (t) => {
   const fromLiteral = resolveRestApiNameAsCfn({ Properties: { Name: 'my-api-name' } }, 'logicalId')
@@ -56,7 +56,7 @@ test('resolveRestApiNameForSub', (t) => {
 })
 
 test('API Gateway alarms are created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -76,16 +76,15 @@ test('API Gateway alarms are created', (t) => {
       }
     }
   )
-  const apiGwAlarmConfig = alarmConfig.ApiGateway
+  const apiGwAlarmProperties = AlarmProperties.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  
-  function getAlarmByType():AlarmsByType {
+  function getAlarmByType ():AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
@@ -94,10 +93,9 @@ test('API Gateway alarms are created', (t) => {
       alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
       alarmsByType[alarmType].add(al)
     }
-    return alarmsByType as AlarmsByType 
+    return alarmsByType as AlarmsByType
   }
   t.equal(Object.keys(alarmResources).length, 3)
-  
   const alarmsByType = getAlarmByType()
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
@@ -108,7 +106,7 @@ test('API Gateway alarms are created', (t) => {
   for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
     t.equal(al.Statistic, 'Average')
-    t.equal(al.Threshold, apiGwAlarmConfig['5XXError'].Threshold)
+    t.equal(al.Threshold, apiGwAlarmProperties['5XXError'].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -124,7 +122,7 @@ test('API Gateway alarms are created', (t) => {
   for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
-    t.equal(al.Threshold, apiGwAlarmConfig['4XXError'].Threshold)
+    t.equal(al.Threshold, apiGwAlarmProperties['4XXError'].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -140,7 +138,7 @@ test('API Gateway alarms are created', (t) => {
   for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')
-    t.equal(al.Threshold, apiGwAlarmConfig.Latency.Threshold)
+    t.equal(al.Threshold, apiGwAlarmProperties.Latency.Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -158,11 +156,11 @@ test('API Gateway alarms are created', (t) => {
 })
 
 test('API Gateway alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       ApiGateway: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         '5XXError': {
           Threshold: 0.0
@@ -176,9 +174,9 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const apiGwAlarmConfig = alarmConfig.ApiGateway
+  const apiGwAlarmProperties = AlarmProperties.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)
@@ -190,30 +188,30 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
 })
 
 test('API Gateway alarms are not created when disabled individually', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       ApiGateway: {
-        enabled: true, // enabled globally
+        ActionsEnabled: true, // enabled globally
         Period: 60,
         '5XXError': {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 0.0
         },
         '4XXError': {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 0.05
         },
         Latency: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 5000
         }
       }
     }
   )
-  const apiGwAlarmConfig = alarmConfig.ApiGateway
+  const apiGwAlarmProperties = AlarmProperties.ApiGateway
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmConfig, testContext)
+  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createApiGatewayAlarms(cfTemplate)

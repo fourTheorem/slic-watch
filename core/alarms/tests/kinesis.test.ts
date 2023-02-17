@@ -12,7 +12,7 @@ import {
 } from '../../tests/testing-utils'
 
 test('Kinesis data stream alarms are created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -26,9 +26,9 @@ test('Kinesis data stream alarms are created', (t) => {
       }
     }
   )
-  const kinesisAlarmConfig = alarmConfig.Kinesis
+  const kinesisAlarmProperties = AlarmProperties.Kinesis
 
-  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createKinesisAlarms(cfTemplate)
 
@@ -51,7 +51,7 @@ test('Kinesis data stream alarms are created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, kinesisAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, kinesisAlarmProperties[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'LessThanThreshold')
@@ -71,11 +71,11 @@ test('Kinesis data stream alarms are created', (t) => {
 })
 
 test('Kinesis data stream alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Kinesis: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         IteratorAgeMilliseconds: {
           Threshold: 5000
@@ -83,9 +83,9 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
       }
     }
   )
-  const kinesisAlarmConfig = alarmConfig.Kinesis
+  const kinesisAlarmProperties = AlarmProperties.Kinesis
 
-  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmConfig, testContext)
+  const { createKinesisAlarms } = kinesisAlarms(kinesisAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createKinesisAlarms(cfTemplate)

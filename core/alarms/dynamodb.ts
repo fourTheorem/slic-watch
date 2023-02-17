@@ -1,21 +1,21 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { Context, createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-export type DynamoDbAlarmConfig = {
-  enabled?: boolean
-  ReadThrottleEvents: AlarmConfig
-  WriteThrottleEvents: AlarmConfig
-  UserErrors: AlarmConfig
-  SystemErrors: AlarmConfig
+export type DynamoDbAlarmProperties = AlarmProperties & {
+  ReadThrottleEvents: AlarmProperties
+  WriteThrottleEvents: AlarmProperties
+  UserErrors: AlarmProperties
+  SystemErrors: AlarmProperties
 }
 
 /**
- * dynamoDbAlarmConfig The fully resolved alarm configuration
+ * dynamoDbAlarmProperties The fully resolved alarm configuration
  */
-export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig, context: Context) {
+export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context) {
   return {
     createDynamoDbAlarms
   }
@@ -26,7 +26,7 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig
    *
    * cfTemplate A CloudFormation template object
    */
-  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate ) {
+  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate) {
     const tableResources = cfTemplate.getResourcesByType(
       'AWS::DynamoDB::Table'
     )
@@ -36,38 +36,39 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig
       const alarms = []
 
       const tableNameSub = `\${${tableResourceName}}`
-      if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
+      if (dynamoDbAlarmProperties.ReadThrottleEvents.ActionsEnabled) {
         alarms.push(
           createDynamoDbAlarm(tableNameSub, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'ReadThrottleEvents'))
         )
       }
 
-      if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
+      if (dynamoDbAlarmProperties.WriteThrottleEvents.ActionsEnabled) {
         alarms.push(
           createDynamoDbAlarm(tableNameSub, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'WriteThrottleEvents'))
         )
       }
 
-      if (dynamoDbAlarmConfig.UserErrors.enabled) {
+      if (dynamoDbAlarmProperties.UserErrors.ActionsEnabled) {
         alarms.push(
           createDynamoDbAlarm(tableNameSub, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableNameSub}`, 'UserErrors'))
         )
       }
 
-      if (dynamoDbAlarmConfig.SystemErrors.enabled) {
+      if (dynamoDbAlarmProperties.SystemErrors.ActionsEnabled) {
         alarms.push(
           createDynamoDbAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
         )
       }
+      // @ts-ignore
       for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
         const gsiName = gsi.IndexName
         const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
         const gsiIdentifierSub = `${tableNameSub}${gsiName}`
-        if (dynamoDbAlarmConfig.ReadThrottleEvents.enabled) {
+        if (dynamoDbAlarmProperties.ReadThrottleEvents.ActionsEnabled) {
           alarms.push(createDynamoDbAlarm(gsiIdentifierSub, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')))
         }
 
-        if (dynamoDbAlarmConfig.WriteThrottleEvents.enabled) {
+        if (dynamoDbAlarmProperties.WriteThrottleEvents.ActionsEnabled) {
           alarms.push(createDynamoDbAlarm(gsiIdentifierSub, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents')))
         }
       }
@@ -78,25 +79,25 @@ export default function DynamoDbAlarms (dynamoDbAlarmConfig: DynamoDbAlarmConfig
     }
   }
 
-  function createDynamoDbAlarm (identifierSub: string, dimensions: object[] , metricName: string, resourceName: string) {
-    const config = dynamoDbAlarmConfig[metricName]
-    const dynamoDBAlarmConfig:Alarm = {
-      alarmName:{ 'Fn::Sub': `DDB_${metricName}_${identifierSub}` } ,
-      alarmDescription: { 'Fn::Sub': `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}` }, 
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metricName: metricName,
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/DynamoDB',
-      dimensions: dimensions
+  function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string) {
+    const config = dynamoDbAlarmProperties[metricName]
+    const dynamoDBAlarmProperties:AlarmProperties = {
+      AlarmName: `DDB_${metricName}_${identifierSub}`,
+      AlarmDescription: `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: config.Threshold,
+      MetricName: metricName,
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/DynamoDB',
+      Dimensions: dimensions
     }
     return {
       resourceName,
-      resource: createAlarm(dynamoDBAlarmConfig, context)
+      resource: createAlarm(dynamoDBAlarmProperties, context)
     }
   }
 }

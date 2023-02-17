@@ -1,29 +1,29 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, FunctionAlarmConfigs, createAlarm } from './default-config-alarms'
+import { CloudFormationTemplate } from '../cf-template'
+import Resource from 'cloudform-types/types/resource'
+import { Context, FunctionAlarmPropertiess, createAlarm } from './default-config-alarms'
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import pino from 'pino'
 const logging = pino()
 
-export type LambdaFunctionAlarmConfigs = {
-  enabled?: boolean
-  Period?: number
-  Errors: AlarmConfig,
-  ThrottlesPc: AlarmConfig
-  DurationPc: AlarmConfig
-  Invocations: AlarmConfig
-  IteratorAge: AlarmConfig
+export type LambdaFunctionAlarmPropertiess = AlarmProperties & {
+  Errors: AlarmProperties,
+  ThrottlesPc: AlarmProperties
+  DurationPc: AlarmProperties
+  Invocations: AlarmProperties
+  IteratorAge: AlarmProperties
 }
 
-export type LambdaAlarm = Alarm & {
-  funcName: object
-} 
+export type LambdaAlarm = AlarmProperties & {
+  FuncName: string
+}
 /**
- * functionAlarmConfigs The cascaded Lambda alarm configuration with
+ * functionAlarmPropertiess The cascaded Lambda alarm configuration with
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
   return {
     createLambdaAlarms
   }
@@ -34,20 +34,20 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
    *
    *
    */
-  function createLambdaAlarms(cfTemplate: CloudFormationTemplate) {
+  function createLambdaAlarms (cfTemplate: CloudFormationTemplate) {
     const lambdaResources = cfTemplate.getResourcesByType(
       'AWS::Lambda::Function'
     )
 
     for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-      const funcConfig = functionAlarmConfigs[funcLogicalId]
+      const funcConfig = functionAlarmPropertiess[funcLogicalId]
       if (!funcConfig) {
         // Function is likely injected by another plugin and not a top-level user function
         logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
         return
       }
 
-      if (funcConfig.Errors.enabled) {
+      if (funcConfig.Errors.ActionsEnabled) {
         const errAlarm = createLambdaErrorsAlarm(
           funcLogicalId,
           funcResource,
@@ -56,7 +56,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
         cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
       }
 
-      if (funcConfig.ThrottlesPc.enabled) {
+      if (funcConfig.ThrottlesPc.ActionsEnabled) {
         const throttlesAlarm = createLambdaThrottlesAlarm(
           funcLogicalId,
           funcResource,
@@ -69,7 +69,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
         )
       }
 
-      if (funcConfig.DurationPc.enabled) {
+      if (funcConfig.DurationPc.ActionsEnabled) {
         const durationAlarm = createLambdaDurationAlarm(
           funcLogicalId,
           funcResource,
@@ -78,7 +78,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
         cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
       }
 
-      if (funcConfig.Invocations.enabled) {
+      if (funcConfig.Invocations.ActionsEnabled) {
         if (funcConfig.Invocations.Threshold == null) {
           throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
         }
@@ -98,8 +98,8 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     for (const [funcLogicalId, funcResource] of Object.entries(
       cfTemplate.getEventSourceMappingFunctions()
     )) {
-      const funcConfig = functionAlarmConfigs[funcLogicalId]
-      if (funcConfig.IteratorAge.enabled) {
+      const funcConfig = functionAlarmPropertiess[funcLogicalId]
+      if (funcConfig.IteratorAge.ActionsEnabled) {
         // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(
           funcLogicalId,
@@ -118,55 +118,55 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
    * The Lambda function name
    */
-  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
+  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const lambdaAlarmConfig: LambdaAlarm = {
-      alarmName:{ 'Fn::Sub': `Lambda_IteratorAge_\${${funcLogicalId}}` } ,
-      alarmDescription: { 'Fn::Sub': `Iterator Age for ${funcLogicalId} breaches ${threshold}` },
-      funcName: { Ref: funcLogicalId },
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metrics: null,
-      metricName: 'IteratorAge',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Lambda',
-      dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+    const lambdaAlarmProperties: LambdaAlarm = {
+      AlarmName: `Lambda_IteratorAge_${funcLogicalId}`,
+      AlarmDescription: `Iterator Age for ${funcLogicalId} breaches ${threshold}`,
+      FuncName: `${funcLogicalId}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: threshold,
+      Metrics: null,
+      MetricName: 'IteratorAge',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/Lambda',
+      Dimensions: [{ Name: 'FunctionName', Value: `${funcLogicalId}` }]
     }
     return {
       resourceName: `slicWatchLambdaIteratorAgeAlarm${funcLogicalId}`,
-      resource: createAlarm(lambdaAlarmConfig, context)
+      resource: createAlarm(lambdaAlarmProperties, context)
     }
   }
 
-  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
+  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const lambdaAlarmConfig: LambdaAlarm = {
-      alarmName: { 'Fn::Sub': `Lambda_Errors_\${${funcLogicalId}}` },
-      alarmDescription: { 'Fn::Sub': `Error count for \${${funcLogicalId}} breaches ${threshold}` },
-      funcName: { Ref: funcLogicalId },
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metrics: null,
-      metricName: 'Errors',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Lambda',
-      dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+    const lambdaAlarmProperties: LambdaAlarm = {
+      AlarmName: `Lambda_Errors_${funcLogicalId}`,
+      AlarmDescription: `Error count for ${funcLogicalId} breaches ${threshold}`,
+      FuncName: `${funcLogicalId}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: threshold,
+      Metrics: null,
+      MetricName: 'Errors',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/Lambda',
+      Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
     }
     return {
       resourceName: `slicWatchLambdaErrorsAlarm${funcLogicalId}`,
-      resource: createAlarm(lambdaAlarmConfig, context)
+      resource: createAlarm(lambdaAlarmProperties, context)
     }
   }
 
-  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
+  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const period = config.Period
 
@@ -183,7 +183,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
           Metric: {
             Namespace: 'AWS/Lambda',
             MetricName: 'Throttles',
-            Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+            Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
           },
           Period: period,
           Stat: config.Statistic
@@ -196,7 +196,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
           Metric: {
             Namespace: 'AWS/Lambda',
             MetricName: 'Invocations',
-            Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+            Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
           },
           Period: period,
           Stat: config.Statistic
@@ -204,74 +204,70 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
         ReturnData: false
       }
     ]
-    const lambdaAlarmConfig: LambdaAlarm = {
-      alarmName:  { 'Fn::Sub': `Lambda_Throttles_\${${funcLogicalId}}` },
-      alarmDescription: { 'Fn::Sub': `Throttles % for \${${funcLogicalId}} breaches ${threshold}` },
-      funcName: { Ref: funcLogicalId },
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metrics:metrics, 
-      metricName: null,
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Lambda',
-      dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+    const lambdaAlarmProperties: LambdaAlarm = {
+      AlarmName: `Lambda_Throttles_${funcLogicalId}`,
+      AlarmDescription: `Throttles % for ${funcLogicalId} breaches ${threshold}`,
+      FuncName: `${funcLogicalId}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: threshold,
+      Metrics: metrics,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData
     }
     return {
       resourceName: `slicWatchLambdaThrottlesAlarm${funcLogicalId}`,
-      resource: createAlarm(lambdaAlarmConfig, context)
+      resource: createAlarm(lambdaAlarmProperties, context)
     }
   }
 
-  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
+  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
-    const lambdaAlarmConfig: LambdaAlarm = {
-      alarmName:  { 'Fn::Sub': `Lambda_Duration_\${${funcLogicalId}}` },
-      alarmDescription:  { 'Fn::Sub': `Max duration for \${${funcLogicalId}} breaches ${threshold}% of timeout (${funcTimeout})` },
-      funcName: { Ref: funcLogicalId },
-      comparisonOperator: config.ComparisonOperator,
-      threshold:  (threshold * funcTimeout * 1000) / 100,
-      metrics: null,
-      metricName: 'Duration',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Lambda',
-      dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+    const lambdaAlarmProperties: LambdaAlarm = {
+      AlarmName: `Lambda_Duration_${funcLogicalId}`,
+      AlarmDescription: `Max duration for ${funcLogicalId} breaches ${threshold}% of timeout (${funcTimeout})`,
+      FuncName: `${funcLogicalId}`,
+      ComparisonOperator: config.ComparisonOperator,
+      // @ts-ignore
+      Threshold: (threshold * funcTimeout * 1000) / 100,
+      Metrics: null,
+      MetricName: 'Duration',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/Lambda',
+      Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
     }
     return {
       resourceName: `slicWatchLambdaDurationAlarm${funcLogicalId}`,
-      resource: createAlarm(lambdaAlarmConfig, context)
+      resource: createAlarm(lambdaAlarmProperties, context)
     }
   }
 
-  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmConfig) {
+  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const lambdaAlarmConfig: LambdaAlarm = {
-      alarmName:  { 'Fn::Sub': `Lambda_Invocations_\${${funcLogicalId}}` },
-      alarmDescription: { 'Fn::Sub': `Total invocations for \${${funcLogicalId}} breaches ${threshold}` },
-      funcName: { Ref: funcLogicalId },
-      comparisonOperator: config.ComparisonOperator,
-      threshold: config.Threshold,
-      metrics: null,
-      metricName: 'Invocations',
-      statistic: config.Statistic,
-      period:  config.Period,
-      extendedStatistic:  config.ExtendedStatistic,
-      evaluationPeriods:  config.EvaluationPeriods,
-      treatMissingData:  config.TreatMissingData,
-      namespace: 'AWS/Lambda',
-      dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } }]
+    const lambdaAlarmProperties: LambdaAlarm = {
+      AlarmName: `Lambda_Invocations_${funcLogicalId}`,
+      AlarmDescription: `Total invocations for ${funcLogicalId} breaches ${threshold}`,
+      FuncName: `${funcLogicalId}`,
+      ComparisonOperator: config.ComparisonOperator,
+      Threshold: threshold,
+      Metrics: null,
+      MetricName: 'Invocations',
+      Statistic: config.Statistic,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
+      Namespace: 'AWS/Lambda',
+      Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
     }
     return {
       resourceName: `slicWatchLambdaInvocationsAlarm${funcLogicalId}`,
-      resource: createAlarm(lambdaAlarmConfig, context)
+      resource: createAlarm(lambdaAlarmProperties, context)
     }
   }
 }

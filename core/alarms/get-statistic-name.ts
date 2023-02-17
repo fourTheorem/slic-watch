@@ -3,8 +3,8 @@
 /*
  * Determine the presentation name for an alarm statistic
  *
- * @param {*} alarmConfig Alarm configuration
+ * @param {*} AlarmProperties Alarm configuration
  */
-export function getStatisticName (alarmConfig) {
-  return alarmConfig.Statistic || alarmConfig.ExtendedStatistic
+export function getStatisticName (AlarmProperties) {
+  return AlarmProperties.Statistic || AlarmProperties.ExtendedStatistic
 }

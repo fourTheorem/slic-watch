@@ -1,11 +1,11 @@
 'use strict'
 
-import { AlarmsCascade, cascade } from '../inputs/cascading-config'
+import { cascade, AlarmsCascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import { FunctionAlarmConfigs, Context } from './default-config-alarms'
+import { FunctionAlarmPropertiess, Context } from './default-config-alarms'
 import { CloudFormationTemplate } from '../cf-template'
 
-import lambdaAlarms, { LambdaFunctionAlarmConfigs } from './lambda'
+import lambdaAlarms from './lambda'
 import apiGatewayAlarms from './api-gateway'
 import stepFunctionAlarms from './step-functions'
 import dynamoDbAlarms from './dynamodb'
@@ -18,7 +18,7 @@ import albAlarms from './alb'
 import albTargetAlarms from './alb-target-group'
 import appSyncAlarms from './appsync'
 
-export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function alarms (AlarmProperties:AlarmsCascade, functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -32,10 +32,10 @@ export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmConfig)
+  } = cascade(AlarmProperties)
 
-  const cascadedFunctionAlarmConfigs = applyAlarmConfig(lambdaConfig, functionAlarmConfigs )
-  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmConfigs, context)
+  const cascadedFunctionAlarmPropertiess = applyAlarmConfig(lambdaConfig, functionAlarmPropertiess)
+  const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmPropertiess, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)
   const { createDynamoDbAlarms } = dynamoDbAlarms(dynamoDbConfig, context)
@@ -58,19 +58,19 @@ export default function alarms (alarmConfig:AlarmsCascade , functionAlarmConfigs
    * A CloudFormation template object
    */
   function addAlarms (cfTemplate: CloudFormationTemplate) {
-    if (alarmConfig.enabled) {
+    if (AlarmProperties.ActionsEnabled) {
       createLambdaAlarms(cfTemplate)
-      apiGwConfig.enabled && createApiGatewayAlarms(cfTemplate)
-      sfConfig.enabled && createStatesAlarms(cfTemplate)
-      dynamoDbConfig.enabled && createDynamoDbAlarms(cfTemplate)
-      kinesisConfig.enabled && createKinesisAlarms(cfTemplate)
-      sqsConfig.enabled && createSQSAlarms(cfTemplate)
-      ecsConfig.enabled && createECSAlarms(cfTemplate)
-      snsConfig.enabled && createSNSAlarms(cfTemplate)
-      ruleConfig.enabled && createRuleAlarms(cfTemplate)
-      albConfig.enabled && createALBAlarms(cfTemplate)
-      albTargetConfig.enabled && createALBTargetAlarms(cfTemplate)
-      appSyncConfig.enabled && createAppSyncAlarms(cfTemplate)
+      apiGwConfig.ActionsEnabled && createApiGatewayAlarms(cfTemplate)
+      sfConfig.ActionsEnabled && createStatesAlarms(cfTemplate)
+      dynamoDbConfig.ActionsEnabled && createDynamoDbAlarms(cfTemplate)
+      kinesisConfig.ActionsEnabled && createKinesisAlarms(cfTemplate)
+      sqsConfig.ActionsEnabled && createSQSAlarms(cfTemplate)
+      ecsConfig.ActionsEnabled && createECSAlarms(cfTemplate)
+      snsConfig.ActionsEnabled && createSNSAlarms(cfTemplate)
+      ruleConfig.ActionsEnabled && createRuleAlarms(cfTemplate)
+      albConfig.ActionsEnabled && createALBAlarms(cfTemplate)
+      albTargetConfig.ActionsEnabled && createALBTargetAlarms(cfTemplate)
+      appSyncConfig.ActionsEnabled && createAppSyncAlarms(cfTemplate)
     }
   }
 }

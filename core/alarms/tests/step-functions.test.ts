@@ -12,7 +12,7 @@ import {
 } from '../../tests/testing-utils'
 
 test('Step Function alarms are created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -33,9 +33,9 @@ test('Step Function alarms are created', (t) => {
       }
     }
   )
-  const sfAlarmConfig = alarmConfig.States
+  const sfAlarmProperties = AlarmProperties.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 
@@ -67,7 +67,7 @@ test('Step Function alarms are created', (t) => {
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
       const metric = type.split('_')[1]
-      t.equal(al.Threshold, sfAlarmConfig[metric].Threshold)
+      t.equal(al.Threshold, sfAlarmProperties[metric].Threshold)
       t.equal(al.EvaluationPeriods, 2)
       t.equal(al.TreatMissingData, 'breaching')
       t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -76,7 +76,9 @@ test('Step Function alarms are created', (t) => {
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',
-          Value: { Ref: 'Workflow' }
+          Value: {
+            Ref: 'Workflow'
+          }
         }
       ])
     }
@@ -86,11 +88,11 @@ test('Step Function alarms are created', (t) => {
 })
 
 test('Step function alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       States: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 900,
         ExecutionThrottled: {
           Threshold: 0
@@ -104,9 +106,9 @@ test('Step function alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const sfAlarmConfig = alarmConfig.States
+  const sfAlarmProperties = AlarmProperties.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 
@@ -117,30 +119,30 @@ test('Step function alarms are not created when disabled globally', (t) => {
 })
 
 test('Step function alarms are not created when disabled individually', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       States: {
-        enabled: true, // enabdled globally
+        ActionsEnabled: true, // enabdled globally
         Period: 900,
         ExecutionThrottled: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 0
         },
         ExecutionsFailed: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 0
         },
         ExecutionsTimedOut: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Threshold: 0
         }
       }
     }
   )
-  const sfAlarmConfig = alarmConfig.States
+  const sfAlarmProperties = AlarmProperties.States
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmConfig, testContext)
+  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createStatesAlarms(cfTemplate)
 

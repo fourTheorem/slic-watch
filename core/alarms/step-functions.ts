@@ -1,22 +1,22 @@
 'use strict'
 import { CloudFormationTemplate } from '../cf-template'
-import { Alarm, AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { Context, createAlarm } from './default-config-alarms'
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-export type SfAlarmsConfig = {
-  enabled?: boolean
-  ExecutionThrottled: AlarmConfig
-  ExecutionsFailed: AlarmConfig
-  ExecutionsTimedOut: AlarmConfig
+export type SfAlarmsConfig = AlarmProperties& {
+  ExecutionThrottled: AlarmProperties
+  ExecutionsFailed: AlarmProperties
+  ExecutionsTimedOut: AlarmProperties
 }
 
-export type SmAlarm= Alarm & {
-  stateMachineArn: object 
+export type SmAlarm= AlarmProperties & {
+  StateMachineArn: string
 }
 
 /**
- * @param {object} sfAlarmConfig The fully resolved States alarm configuration
+ * @param {object} sfAlarmProperties The fully resolved States alarm configuration
  */
-export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Context) {
+export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context) {
   return {
     createStatesAlarms
   }
@@ -39,31 +39,28 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
 
     for (const [logicalId] of Object.entries(smResources)) {
       for (const metric of executionMetrics) {
-        if (sfAlarmConfig[metric].enabled) {
-          const config = sfAlarmConfig[metric]
+        if (sfAlarmProperties[metric].ActionsEnabled) {
+          const config = sfAlarmProperties[metric]
           const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
-          const smAlarmConfig: SmAlarm = {
-            alarmName: { 'Fn::Sub': `StepFunctions_${metric}_\${${logicalId}.Name}` } ,
-            alarmDescription: { 'Fn::Sub': `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}` },
-            stateMachineArn: { Ref: logicalId }, 
-            comparisonOperator: config.ComparisonOperator,
-            threshold: config.Threshold,
-            metricName: metric,
-            statistic: config.Statistic,
-            period:  config.Period,
-            extendedStatistic:  config.ExtendedStatistic,
-            evaluationPeriods:  config.EvaluationPeriods,
-            treatMissingData:  config.TreatMissingData,
-            namespace: 'AWS/States',
-            dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } }]
+          const smAlarmProperties: SmAlarm = {
+            AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}`,
+            AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
+            StateMachineArn: `${logicalId}`,
+            ComparisonOperator: config.ComparisonOperator,
+            Threshold: config.Threshold,
+            MetricName: metric,
+            Statistic: config.Statistic,
+            Period: config.Period,
+            ExtendedStatistic: config.ExtendedStatistic,
+            EvaluationPeriods: config.EvaluationPeriods,
+            TreatMissingData: config.TreatMissingData,
+            Namespace: 'AWS/States',
+            Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } as any }]
           }
-          const alarmResource= createAlarm(smAlarmConfig, context)
-          
+          const alarmResource = createAlarm(smAlarmProperties, context)
           cfTemplate.addResource(alarmResourceName, alarmResource)
         }
       }
     }
   }
-   
 }
-

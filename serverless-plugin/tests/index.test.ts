@@ -10,7 +10,7 @@ const slsYaml = {
   custom: {
     slicWatch: {
       topicArn: 'test-topic',
-      enabled: true
+      ActionsEnabled: true
     }
   },
   functions: {
@@ -29,15 +29,12 @@ const testCfTemplate = {
   }
 }
 
-
-
-function getServerlessPlugin(t) {
+function getServerlessPlugin (t) {
   return esmock('../index', {
     'slic-watch-core/dashboards/dashboard': () => {
       return {
         addDashboard: (cfTemplate) => {
           t.equal(cfTemplate.getSourceObject(), testCfTemplate)
-         
         }
       }
     },
@@ -49,14 +46,11 @@ function getServerlessPlugin(t) {
       }
     }
   })
-  
 }
-
-
 
 const mockServerless = {
   cli: {
-    log: () => {}
+    log: () => { '' }
   },
   providers: { aws: {} },
   getProvider: () => ({
@@ -78,14 +72,12 @@ const mockServerless = {
 }
 
 test('index', t => {
-
-  t.test('plugin uses v3 logger if provided', async(t) => {
+  t.test('plugin uses v3 logger if provided', async (t) => {
     const dummyV3Logger = {}
-    
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(mockServerless, {}, { log: dummyV3Logger })
-    const logger =  Object.assign({}, pino()) 
-    const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal' ] 
+    const logger = Object.assign({}, pino())
+    const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
     for (const extra of extras) {
       delete logger[extra]
     }
@@ -94,7 +86,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('plugin fails if provider is not aws', async(t) => {
+  t.test('plugin fails if provider is not aws', async (t) => {
     const ServerlessPlugin = await getServerlessPlugin(t)
     t.throws(() => new ServerlessPlugin({
       ...mockServerless,
@@ -106,14 +98,14 @@ test('index', t => {
     t.end()
   })
 
-  t.test('createSlicWatchResources adds dashboard and alarms', async(t) => {
+  t.test('createSlicWatchResources adds dashboard and alarms', async (t) => {
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(mockServerless, {})
     plugin.createSlicWatchResources()
     t.end()
   })
 
-  t.test('Plugin succeeds with no custom section', async(t) => {
+  t.test('Plugin succeeds with no custom section', async (t) => {
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin({
       ...mockServerless,
@@ -126,7 +118,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin registers the configuration schema', async(t) => {
+  t.test('Plugin registers the configuration schema', async (t) => {
     const testData = {}
     const ServerlessPlugin = await getServerlessPlugin(t)
     // eslint-disable-next-line no-new
@@ -148,7 +140,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin execution succeeds with no slicWatch config', async(t) => {
+  t.test('Plugin execution succeeds with no slicWatch config', async (t) => {
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin({
       ...mockServerless,
@@ -161,7 +153,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin execution succeeds if no SNS Topic is provided', async(t) => {
+  t.test('Plugin execution succeeds if no SNS Topic is provided', async (t) => {
     const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
     // @ts-ignore
     delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
@@ -180,7 +172,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin execution succeeds if resources are provided', async(t) => {
+  t.test('Plugin execution succeeds if resources are provided', async (t) => {
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(
       {
@@ -203,7 +195,7 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin execution fails if an invalid SLIC Watch config is provided', async(t) => {
+  t.test('Plugin execution fails if an invalid SLIC Watch config is provided', async (t) => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
     // @ts-ignore
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
@@ -222,9 +214,9 @@ test('index', t => {
     t.end()
   })
 
-  t.test('Plugin skips SLIC Watch if top-level enabled==false', async(t) => {
+  t.test('Plugin skips SLIC Watch if top-level enabled==false', async (t) => {
     const serviceYmlWithDisabled = _.cloneDeep(slsYaml)
-    serviceYmlWithDisabled.custom.slicWatch.enabled = false
+    serviceYmlWithDisabled.custom.slicWatch.ActionsEnabled = false
     const ServerlessPlugin = await getServerlessPlugin(t)
     const plugin = new ServerlessPlugin(
       {

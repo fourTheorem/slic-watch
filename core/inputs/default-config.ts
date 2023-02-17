@@ -10,7 +10,7 @@ import { DashboardConfig } from '../dashboards/default-config-dashboard'
  */
 export const defaultConfig = {
   alarms: {
-    enabled: true,
+    ActionsEnabled: true,
     Period: 60,
     EvaluationPeriods: 1,
     TreatMissingData: 'notBreaching',
@@ -29,7 +29,7 @@ export const defaultConfig = {
         Statistic: 'Maximum'
       },
       Invocations: { // No invocation alarms are created by default. Override threshold to create alarms
-        enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+        ActionsEnabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
         Threshold: null,
         Statistic: 'Sum'
       },
@@ -118,7 +118,7 @@ export const defaultConfig = {
       // approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
       AgeOfOldestMessage: {
         Statistic: 'Maximum',
-        enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+        ActionsEnabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
         Threshold: null
       },
       // approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
@@ -200,7 +200,7 @@ export const defaultConfig = {
     }
   } as AllAlarmsConfig,
   dashboard: {
-    enabled: true,
+    ActionsEnabled: true,
     timeRange: {
       // For possible 'start' and 'end' values, see
       // https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html

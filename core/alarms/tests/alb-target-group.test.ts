@@ -1,6 +1,7 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import albTargetAlarms, {AlbTargetAlarmConfig, findLoadBalancersForTargetGroup} from '../alb-target-group'
+import albTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {
@@ -15,7 +16,6 @@ import {
 import CloudFormationTemplate from '../../cf-template'
 const albCfTemp = CloudFormationTemplate(albCfTemplate)
 
-
 test('findLoadBalancersForTargetGroup', (t) => {
   test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
     const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
@@ -25,7 +25,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   })
 
   test('returns empty list for non-existent listener', (t) => {
-    // @ts-ignore
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', CloudFormationTemplate({}))
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
@@ -34,7 +33,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('includes an ALB from the DefaultActions', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
           Properties: {
@@ -49,7 +47,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {}
+        alb: { Type: '' }
       }
     })
 
@@ -61,7 +59,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('excludes DefaultActions with a literal load balancer ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
           Properties: {
@@ -76,7 +73,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {}
+        alb: { Type: '' }
       }
     })
 
@@ -87,7 +84,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('finds load balancers through listener rule target groups', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -118,7 +114,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules with no load balancer', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -140,7 +135,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules with no actions', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -157,7 +151,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listener rules a literal listener ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -175,7 +168,6 @@ test('findLoadBalancersForTargetGroup', (t) => {
   test('omits listeners with a literal load balancer ARN', (t) => {
     const template = CloudFormationTemplate({
       Resources: {
-        // @ts-ignore
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
           Properties: {
@@ -200,7 +192,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
 })
 
 test('ALB Target Group alarms are created', (t) => {
-  const alarmConfigTargetGroup = createTestConfig(
+  const AlarmPropertiesTargetGroup = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -224,13 +216,13 @@ test('ALB Target Group alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmConfig:AlbTargetAlarmConfig) {
-    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
+  function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
+    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmProperties, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
+  const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
 
   const expectedTypesTargetGroup = {
     LoadBalancerHTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -247,7 +239,7 @@ test('ALB Target Group alarms are created', (t) => {
     const expectedMetric = expectedTypesTargetGroup[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, alarmConfigTargetGroup.ApplicationELBTarget[expectedMetric].Threshold)
+    t.equal(al.Threshold, AlarmPropertiesTargetGroup.ApplicationELBTarget[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -256,30 +248,24 @@ test('ALB Target Group alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'TargetGroup',
-        Value: { 'Fn::GetAtt': ['AlbEventAlbTargetGrouphttpListener', 'TargetGroupFullName'] }
+        Value: '${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}'
       },
       {
         Name: 'LoadBalancer',
-        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
+        Value: '${alb.LoadBalancerFullName}'
       }
     ])
   }
 
-  // for (const alarmType in targeGroupAlarmResources){
-  //   console.log('helllooo',alarmType)
-  // }
-  
-
   t.end()
 })
 
-
 test('ALB alarms are not created when disabled globally', (t) => {
-  const alarmConfigTargetGroup = createTestConfig(
+  const AlarmPropertiesTargetGroup = createTestConfig(
     defaultConfig.alarms,
     {
       ApplicationELBTarget: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         HTTPCode_Target_5XX_Count: {
           Threshold: 50
@@ -297,13 +283,13 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  function createAlarmResources (elbAlarmConfig:AlbTargetAlarmConfig) {
-    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmConfig, testContext)
+  function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
+    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmProperties, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  const targeGroupAlarmResources = createAlarmResources(alarmConfigTargetGroup.ApplicationELBTarget)
+  const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
 
   t.same({}, targeGroupAlarmResources)
   t.end()

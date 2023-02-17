@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import ecsAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
@@ -31,7 +32,7 @@ test('resolveEcsClusterNameAsCfn', (t) => {
 })
 
 test('ECS MemoryUtilization is created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -48,9 +49,9 @@ test('ECS MemoryUtilization is created', (t) => {
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ecsAlarmProperties = AlarmProperties.ECS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createECSAlarms(cfTemplate)
 
@@ -69,7 +70,7 @@ test('ECS MemoryUtilization is created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, ecsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, ecsAlarmProperties[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'LessThanThreshold')
@@ -78,12 +79,7 @@ test('ECS MemoryUtilization is created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'ServiceName',
-        Value: {
-          'Fn::GetAtt': [
-            'ecsService',
-            'Name'
-          ]
-        }
+        Value: '${ecsService.Name}'
       },
       {
         Name: 'ClusterName',
@@ -96,11 +92,11 @@ test('ECS MemoryUtilization is created', (t) => {
 })
 
 test('ECS alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       ECS: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         MemoryUtilization: {
           Threshold: 50
@@ -111,9 +107,9 @@ test('ECS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ecsAlarmProperties = AlarmProperties.ECS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createECSAlarms(cfTemplate)

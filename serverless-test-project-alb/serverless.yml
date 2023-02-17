@@ -20,12 +20,12 @@ custom:
     alarms:
       Lambda:
         Invocations:
-          enabled: true
+          ActionsEnabled: true
           Threshold: 10
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
-          enabled: true
+          ActionsEnabled: true
           Threshold: 60
         InFlightMessagesPc:
           Statistic: Maximum

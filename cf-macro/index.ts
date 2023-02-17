@@ -7,7 +7,7 @@ import alarms from 'slic-watch-core/alarms/alarms'
 import dashboard from 'slic-watch-core/dashboards/dashboard'
 import CloudFormationTemplate from 'slic-watch-core/cf-template'
 import defaultConfig from 'slic-watch-core/inputs/default-config'
-import { slicWatchSchema}  from 'slic-watch-core/inputs/config-schema'
+import { slicWatchSchema } from 'slic-watch-core/inputs/config-schema'
 import pino from 'pino'
 
 const logger = pino({ name: 'macroHandler' })
@@ -17,22 +17,25 @@ type Event = {
   status: string
   fragment
 }
+
+type SlicWatchConfig = {
+  topicArn: string
+  ActionsEnabled: boolean
+}
 export async function handler (event: Event) {
   let status = 'success'
   logger.info({ event })
-  
-
   let outputFragment = event.fragment
   try {
-    const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
+    const slicWatchConfig:SlicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
 
-    if (slicWatchConfig.enabled !== false) {
+    if (slicWatchConfig.ActionsEnabled !== false) {
       const ajv = new Ajv({
         unicodeRegExp: false
       })
-      const config = _.merge(defaultConfig, slicWatchConfig )
+      const config = _.merge(defaultConfig, slicWatchConfig)
 
-      const slicWatchValidate = ajv.compile(slicWatchSchema )
+      const slicWatchValidate = ajv.compile(slicWatchSchema)
       const slicWatchValid = slicWatchValidate(slicWatchConfig)
 
       if (!slicWatchValid) {
@@ -40,7 +43,6 @@ export async function handler (event: Event) {
       }
 
       const alarmActions = []
-      // @ts-ignore
       if (slicWatchConfig.topicArn) {
         // @ts-ignore
         alarmActions.push(slicWatchConfig.topicArn)
@@ -63,7 +65,6 @@ export async function handler (event: Event) {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        // @ts-ignore
         const funcConfig = funcResource.Metadata?.slicWatch || {}
         functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
         functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
@@ -71,7 +72,7 @@ export async function handler (event: Event) {
 
       const alarmService = alarms(config.alarms, functionAlarmConfigs, context)
       alarmService.addAlarms(cfTemplate)
-      const dashboardService = dashboard(config.dashboard, functionDashboardConfigs, context)
+      const dashboardService = dashboard(config.dashboard, functionDashboardConfigs)
       dashboardService.addDashboard(cfTemplate)
       outputFragment = cfTemplate.getSourceObject()
     }
@@ -83,7 +84,7 @@ export async function handler (event: Event) {
 
   return {
     requestId: event.requestId,
-    status: status,
+    status,
     fragment: outputFragment
   }
 }

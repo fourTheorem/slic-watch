@@ -5,20 +5,13 @@
     // "strict": true, //todo remove later
     // "noImplicitAny": true, //todo remove later
     // "strictNullChecks": true, //todo remove later
-    
     "noEmit": true,
-   
     "skipLibCheck": true,
-    
     "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
-    // "isolatedModules": true
-    // "preserveSymlinks": true,
     "allowSyntheticDefaultImports": true,
-    // "forceConsistentCasingInFileNames": true,
-    // "esModuleInterop": true,
   },
   "exclude": [
     "node_modules",

@@ -2,9 +2,7 @@
 
 import { test } from 'tap'
 
-import {
-  filterObject,
-} from '../filter-object'
+import { filterObject } from '../filter-object'
 
 test('filterObject filters out', (t) => {
   const obj = { a: 1, b: 2, c: 3 }
@@ -33,5 +31,3 @@ test('filterObject filters on value and key', (t) => {
   t.same(res, { b: 2 })
   t.end()
 })
-
-

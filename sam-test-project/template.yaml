@@ -8,18 +8,18 @@ Transform:
 
 Metadata:
   slicWatch:
-    enabled: true
+    ActionsEnabled: true
     # topicArn: ${env:ALARM_TOPIC}
     topicArn: !Ref MonitoringTopic
     alarms:
       Lambda:
         Invocations:
-          enabled: true
+          ActionsEnabled: true
           Threshold: 10
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
-          enabled: true
+          ActionsEnabled: true
           Threshold: 60
         InFlightMessagesPc:
           Statistic: Maximum
@@ -51,7 +51,7 @@ Resources:
     Metadata:
       slicWatch:
         dashboard:
-          enabled: false
+          ActionsEnabled: false
 
   throttler:
     Type: AWS::Serverless::Function
@@ -123,7 +123,7 @@ Resources:
       slicWatch:
         alarms:
           Lambda:
-            enabled: false
+            ActionsEnabled: false
   
   TestStateMachine:
     Type: AWS::Serverless::StateMachine 
