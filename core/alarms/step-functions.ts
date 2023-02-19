@@ -1,13 +1,12 @@
 'use strict'
 import { CloudFormationTemplate } from '../cf-template'
-import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type SfAlarmsConfig = {
-  enabled?: boolean
-  ExecutionThrottled: AlarmConfig
-  ExecutionsFailed: AlarmConfig
-  ExecutionsTimedOut: AlarmConfig
+export type SfAlarmsConfig = AlarmProperties& {
+  ExecutionThrottled: AlarmProperties
+  ExecutionsFailed: AlarmProperties
+  ExecutionsTimedOut: AlarmProperties
 }
 
 export type SmAlarm= AlarmProperties & {
@@ -15,9 +14,9 @@ export type SmAlarm= AlarmProperties & {
 }
 
 /**
- * @param {object} sfAlarmConfig The fully resolved States alarm configuration
+ * @param {object} sfAlarmProperties The fully resolved States alarm configuration
  */
-export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Context) {
+export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context) {
   return {
     createStatesAlarms
   }
@@ -40,10 +39,10 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
 
     for (const [logicalId] of Object.entries(smResources)) {
       for (const metric of executionMetrics) {
-        if (sfAlarmConfig[metric].enabled) {
-          const config = sfAlarmConfig[metric]
+        if (sfAlarmProperties[metric].ActionsEnabled) {
+          const config = sfAlarmProperties[metric]
           const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
-          const smAlarmConfig: SmAlarm = {
+          const smAlarmProperties: SmAlarm = {
             AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}` ,
             AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
             stateMachineArn: { Ref: logicalId }, 
@@ -58,7 +57,7 @@ export default function StatesAlarms (sfAlarmConfig: SfAlarmsConfig, context: Co
             Namespace: 'AWS/States',
             Dimensions: [{ Name: 'StateMachineArn', Value:`\${${logicalId}}`}]
           }
-          const alarmResource= createAlarm(smAlarmConfig, context)
+          const alarmResource= createAlarm(smAlarmProperties, context)
           
           cfTemplate.addResource(alarmResourceName, alarmResource)
         }

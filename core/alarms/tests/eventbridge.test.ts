@@ -56,6 +56,7 @@ test('Events alarms are created', (t) => {
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Events')
     t.equal(al.Period, 120)
+    // @ts-ignore
     t.equal(al.Dimensions.length, 1)
     // @ts-ignore
     t.equal(al.Dimensions[0].Name, 'RuleName')
@@ -71,7 +72,7 @@ test('Events alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       Events: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         FailedInvocations: {
           Threshold: 50

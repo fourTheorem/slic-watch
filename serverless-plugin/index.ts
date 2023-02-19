@@ -97,7 +97,7 @@ class ServerlessPlugin {
       functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
-    this.dashboard = dashboard(config.dashboard, functionDashboardConfigs, context)
+    this.dashboard = dashboard(config.dashboard, functionDashboardConfigs)
     this.alarms = alarms(config.alarms, functionAlarmConfigs, context)
     this.dashboard.addDashboard(cfTemplate)
     this.alarms.addAlarms(cfTemplate)

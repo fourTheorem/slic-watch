@@ -20,7 +20,7 @@ export {
  * functionAlarmConfig An object per function name specifying any function-specific alarm configuration overrides
  * A per-function configuration consolidating all inputs
  */
-function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
+ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
   // Add all alarm properties to functionAlarmConfig so we can cascade top-level configuration down
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {

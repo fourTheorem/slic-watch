@@ -50,7 +50,7 @@ test('Alarms are not created when disabled globally', (t) => {
   const config = createTestConfig(
     defaultConfig.alarms,
     {
-      enabled: false
+      ActionsEnabled: false
     }
   )
   const cfTemplate = createTestCloudFormationTemplate()

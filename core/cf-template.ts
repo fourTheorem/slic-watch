@@ -15,6 +15,7 @@ import {RestApiProperties} from 'cloudform-types/types/apiGateway/restApi'
 import {TargetGroupProperties} from 'cloudform-types/types/elasticLoadBalancingV2/targetGroup'
 import {ListenerProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listener'
 import {ListenerRuleProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listenerRule'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 const logger = pino()
 
 type Resource = {
@@ -144,25 +145,11 @@ export type ResourceType = {
 
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
-& RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & CommonAlarmProperties
+& RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
 
 // Common Alarm Properties
-export type CommonAlarmProperties = {
-ActionsEnabled: boolean
-AlarmActions: string[]
-AlarmName: string
-AlarmDescription: string
-EvaluationPeriods: number
-ComparisonOperator: string
-Threshold: number
-TreatMissingData: string
-Dimensions: string[]
-MetricName: string
-Namespace: string
-Period: number
-Statistic: Statistic
-ExtendedStatistic?: string
+export type DashboardProperties = {
 DashboardName?: string
 DashboardBody?:object
 }

@@ -1,20 +1,19 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
-export type KinesisAlarmConfig = {
-  enabled?: boolean
-  'GetRecords.IteratorAgeMilliseconds': AlarmConfig,
-  ReadProvisionedThroughputExceeded: AlarmConfig
-  WriteProvisionedThroughputExceeded: AlarmConfig
-  'PutRecord.Success': AlarmConfig
-  'PutRecords.Success': AlarmConfig
-  'GetRecords.Success': AlarmConfig
+export type KinesisAlarmConfig = AlarmProperties & {
+  'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
+  ReadProvisionedThroughputExceeded: AlarmProperties
+  WriteProvisionedThroughputExceeded: AlarmProperties
+  'PutRecord.Success': AlarmProperties
+  'PutRecords.Success': AlarmProperties
+  'GetRecords.Success': AlarmProperties
 }
 
 const kinesisAlarmTypes = {
@@ -29,7 +28,7 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, context: Context) {
+export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmConfig, context: Context) {
   return {
     createKinesisAlarms
   }
@@ -47,13 +46,13 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, c
 
     for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
       for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-        if (kinesisAlarmConfig[metric].enabled) {
+        if (kinesisAlarmProperties[metric].ActionsEnabled) {
           const alarm = createStreamAlarm(
             streamResourceName,
             streamResource,
             type,
             metric,
-            kinesisAlarmConfig[metric]
+            kinesisAlarmProperties[metric]
           )
           cfTemplate.addResource(alarm.resourceName, alarm.resource)
         }
@@ -61,9 +60,9 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, c
     }
   }
 
-  function createStreamAlarm (streamLogicalId: string, streamResource: CfResource, type: string, metric: string, config: AlarmConfig) {
+  function createStreamAlarm (streamLogicalId: string, streamResource: CfResource, type: string, metric: string, config: AlarmProperties) {
     const threshold = config.Threshold
-    const kinesisAlarmConfig: AlarmProperties = {
+    const kinesisAlarmProperties: AlarmProperties = {
       AlarmName: `Kinesis_${type}_\${${streamLogicalId}}`,
       AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds`,
       ComparisonOperator: config.ComparisonOperator,
@@ -80,7 +79,7 @@ export default function KinesisAlarms (kinesisAlarmConfig: KinesisAlarmConfig, c
 
     return {
       resourceName: makeResourceName('Kinesis', streamLogicalId, type),
-      resource: createAlarm(kinesisAlarmConfig, context)
+      resource: createAlarm(kinesisAlarmProperties, context)
     }
   }
 }

@@ -42,7 +42,7 @@ const supportedWidgets = {
 }
 
 const commonAlarmProperties = {
-  enabled: { type: 'boolean' },
+  ActionsEnabled: { type: 'boolean' },
   Period: {
     type: ['integer', 'null'],
     anyOf: [
@@ -191,7 +191,7 @@ const slicWatchSchema = {
     alarms: alarmsSchema,
     dashboard: dashboardSchema,
     topicArn: { anyOf: [{ type: 'string' }, { type: 'object' }] },
-    enabled: { type: 'boolean' }
+    ActionsEnabled: { type: 'boolean' }
   },
   required: [],
   additionalProperties: false
@@ -222,11 +222,11 @@ const functionConfigSchema = {
     slicWatch: {
       type: 'object',
       properties: {
-        enabled: { type: 'boolean' },
+        ActionsEnabled: { type: 'boolean' },
         alarms: {
           type: 'object',
           properties: {
-            enabled: { type: 'boolean' },
+            ActionsEnabled: { type: 'boolean' },
              // @ts-ignore
             Lambda: alarmSchemas.Lambda
           }

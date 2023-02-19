@@ -257,11 +257,6 @@ test('ALB Target Group alarms are created', (t) => {
     ])
   }
 
-  // for (const alarmType in targeGroupAlarmResources){
-  //   console.log('helllooo',alarmType)
-  // }
-  
-
   t.end()
 })
 
@@ -271,7 +266,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ApplicationELBTarget: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         HTTPCode_Target_5XX_Count: {
           Threshold: 50

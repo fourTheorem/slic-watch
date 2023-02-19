@@ -73,7 +73,7 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
     defaultConfig.alarms,
     {
       Kinesis: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         IteratorAgeMilliseconds: {
           Threshold: 5000

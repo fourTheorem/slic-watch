@@ -11,11 +11,12 @@ import { KinesisAlarmConfig } from '../alarms/kinesis'
 import { SnsAlarmsConfig } from '../alarms/sns'
 import { SqsAlarmsConfig } from '../alarms/sqs'
 import { SfAlarmsConfig } from '../alarms/step-functions'
-import { AlarmConfig, AllAlarmsConfig } from '../alarms/default-config-alarms'
+import { AllAlarmsConfig } from '../alarms/default-config-alarms'
 import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
    EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from '../dashboards/default-config-dashboard'
 import { LambdaFunctionAlarmConfigs } from '../alarms/lambda'
 import { Statistic } from '../cf-template'
+import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
 const MAX_DEPTH = 10
@@ -24,7 +25,7 @@ type ConfigNode =  DashboardConfig | AllAlarmsConfig
 
 type ParentNode ={
   dashConfig: DashConfig
-  alarmConfig: AlarmConfig
+  alarmConfig: AlarmProperties
 
 }
 export type DashboardsCascade ={
@@ -54,8 +55,8 @@ export type Widgets = {
   AppSync?: AppSyncDashConfig 
 }
 
-export type AlarmsCascade ={
-  enabled?: boolean // remove later ? mark
+export type AlarmsCascade = {
+  ActionsEnabled: boolean
   Lambda?:  LambdaFunctionAlarmConfigs 
   ApiGateway?: ApiGwAlarmConfig
   States?: SfAlarmsConfig,
@@ -77,7 +78,7 @@ export type AlarmsCascade ={
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number): AlarmsCascade
+export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number):AlarmsCascade
 export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
 export function cascade(node:ConfigNode, parentNode?: ParentNode, depth=0 ):AlarmsCascade | DashboardsCascade {
   if (depth > 10) {

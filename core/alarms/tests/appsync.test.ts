@@ -74,7 +74,7 @@ test('AppSync alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       AppSync: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         '5XXError': {
           Threshold: 50

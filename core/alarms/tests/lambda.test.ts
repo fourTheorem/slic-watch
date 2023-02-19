@@ -259,7 +259,7 @@ test('Invocation alarms are created if configured', (t) => {
         Threshold: 95
       },
       Invocations: {
-        enabled: true,
+        ActionsEnabled: true,
         Threshold: 900 // Enabled
       },
       IteratorAge: {
@@ -309,7 +309,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
         Threshold: 95
       },
       Invocations: {
-        enabled: true, // Enabled
+        ActionsEnabled: true, // Enabled
         Threshold: null // but, oh no,  NO THRESHOLD!
       },
       IteratorAge: {
@@ -393,7 +393,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
 test('Lambda alarms are not created when disabled globally', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
-      enabled: false, // disabled globally
+      ActionsEnabled: false, // disabled globally
       Period: 60,
       Errors: {
         Threshold: 0
@@ -429,26 +429,26 @@ test('Lambda alarms are not created when disabled globally', (t) => {
 test('Lambda alarms are not created when disabled individually', (t) => {
   const alarmConfig = createTestConfig(defaultConfig.alarms, {
     Lambda: {
-      enabled: true, // enabled globally
+      ActionsEnabled: true, // enabled globally
       Period: 60,
       Errors: {
-        enabled: false, // disabled locally
+        ActionsEnabled: false, // disabled locally
         Threshold: 0
       },
       ThrottlesPc: {
-        enabled: false, // disabled locally
+        ActionsEnabled: false, // disabled locally
         Threshold: 0
       },
       DurationPc: {
-        enabled: false, // disabled locally
+        ActionsEnabled: false, // disabled locally
         Threshold: 95
       },
       Invocations: {
-        enabled: false, // disabled locally
+        ActionsEnabled: false, // disabled locally
         Threshold: 900
       },
       IteratorAge: {
-        enabled: false, // disabled locally
+        ActionsEnabled: false, // disabled locally
         Threshold: 10000
       }
     }
@@ -472,7 +472,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
   const alarmConfig  = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Invocations: {
-        enabled: true,
+        ActionsEnabled: true,
         Threshold: 1
       }
     }
@@ -495,7 +495,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
   })
   const disabledFuncAlarmConfigs = applyAlarmConfig(
     alarmConfig.Lambda, {
-      HelloLambdaFunction: { Lambda: { enabled: false } }
+      HelloLambdaFunction: { Lambda: { ActionsEnabled: false } }
     })
   const { createLambdaAlarms } = lambdaAlarms(disabledFuncAlarmConfigs, testContext)
   createLambdaAlarms(cfTemplate)

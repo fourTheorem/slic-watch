@@ -72,7 +72,7 @@ test('SNS alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       SNS: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         Period: 60,
         'NumberOfNotificationsFilteredOut-InvalidAttributes': {
           Threshold: 50

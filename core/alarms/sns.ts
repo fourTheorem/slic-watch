@@ -1,13 +1,12 @@
 'use strict'
 
 import { CfResource, CloudFormationTemplate } from '../cf-template'
-import { AlarmConfig, Context, createAlarm } from './default-config-alarms'
+import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type SnsAlarmsConfig = {
-  enabled?: boolean
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmConfig,
-  NumberOfNotificationsFailed: AlarmConfig
+export type SnsAlarmsConfig = AlarmProperties & {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties,
+  NumberOfNotificationsFailed: AlarmProperties
 }
 
 export type SnsAlarm= AlarmProperties & {
@@ -34,7 +33,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     )
 
     for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
-      if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].enabled) {
+      if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
         const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
           topicLogicalId,
           topicResource,
@@ -43,7 +42,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
         cfTemplate.addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource)
       }
 
-      if (snsAlarmsConfig.NumberOfNotificationsFailed.enabled) {
+      if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
         const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
           topicLogicalId,
           topicResource,
@@ -54,9 +53,9 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
   }
 
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
+  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const snsAlarmConfig: SnsAlarm = {
+    const snsAlarmProperties: SnsAlarm = {
       AlarmName:  `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
       topicName: `\${${topicLogicalId}.TopicName}`,  
@@ -73,13 +72,13 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicLogicalId}`,
-      resource: createAlarm(snsAlarmConfig, context)
+      resource: createAlarm(snsAlarmProperties, context)
     }
   }
 
-  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmConfig) {
+  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: CfResource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const snsAlarmConfig: SnsAlarm = {
+    const snsAlarmProperties: SnsAlarm = {
       AlarmName: `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
       topicName: `\${${topicLogicalId}.TopicName}`, 
@@ -96,7 +95,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     }
     return {
       resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,
-      resource: createAlarm(snsAlarmConfig, context)
+      resource: createAlarm(snsAlarmProperties, context)
     }
   }
 }

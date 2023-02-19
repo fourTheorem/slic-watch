@@ -11,11 +11,9 @@ import { SnsAlarm, SnsAlarmsConfig } from './sns'
 import { SqsAlarm, SqsAlarmsConfig } from './sqs'
 import { SfAlarmsConfig, SmAlarm } from './step-functions'
 import { AlarmsCascade } from '../inputs/cascading-config'
-import { Statistic } from '../cf-template'
 import { AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarm  } from "./alb";
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
-
 
 
 export type ReturnAlarm = {
@@ -60,20 +58,8 @@ export function createAlarm(alarm:AllAlarms, context?: Context ): ReturnAlarm {
 }
 
 
-export type AlarmConfig ={
-  enabled?: boolean
-  Period?: number
-  EvaluationPeriods?: number
-  TreatMissingData: string
-  ComparisonOperator?: string
-  Statistic?: Statistic
-  ExtendedStatistic?: string
-  Threshold?: number
-}
-
 export type AllAlarmsConfig = {
-  enabled?: boolean
-  alarmConfig?: AlarmConfig
+  ActionsEnabled: boolean
   alarms?: AlarmsCascade
 }
 

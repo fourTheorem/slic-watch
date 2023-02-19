@@ -26,7 +26,7 @@ test('SQS alarms are created', (t) => {
       SQS: {
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
-          enabled: true,
+          ActionsEnabled: true,
           Threshold: 200
         },
         InFlightMessagesPc: {
@@ -143,7 +143,7 @@ test('SQS alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       SQS: {
-        enabled: false, // disabled globally
+        ActionsEnabled: false, // disabled globally
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
           Threshold: 200
@@ -171,14 +171,14 @@ test('SQS alarms are not created when disabled individually', (t) => {
     defaultConfig.alarms,
     {
       SQS: {
-        enabled: true, // enabled globally
+        ActionsEnabled: true, // enabled globally
         AgeOfOldestMessage: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 200
         },
         InFlightMessagesPc: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
@@ -202,12 +202,12 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
     {
       SQS: {
         AgeOfOldestMessage: {
-          enabled: true,
+          ActionsEnabled: true,
           Statistic: 'Maximum'
           // threshold not configured
         },
         InFlightMessagesPc: {
-          enabled: false, // disabled locally
+          ActionsEnabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
