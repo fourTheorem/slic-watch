@@ -210,14 +210,9 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
       Metrics:metrics, 
-      MetricName: null,
-      Statistic: config.Statistic,
-      Period:  config.Period,
       ExtendedStatistic:  config.ExtendedStatistic,
       EvaluationPeriods:  config.EvaluationPeriods,
       TreatMissingData:  config.TreatMissingData,
-      Namespace: 'AWS/Lambda',
-      Dimensions: [{ Name: 'FunctionName', Value:`\${${funcLogicalId}}`}]
     }
     return {
       resourceName: `slicWatchLambdaThrottlesAlarm${funcLogicalId}`,
