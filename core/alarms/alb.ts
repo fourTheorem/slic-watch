@@ -1,6 +1,7 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from '../cf-template'
+import { CloudFormationTemplate } from '../cf-template'
+import Resource from "cloudform-types/types/resource"
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
@@ -56,7 +57,7 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmConfig, context: 
     }
   }
 
-  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: CfResource, config: AlarmProperties) {
+  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const albAlarmProperties:AlbAlarm = {
       AlarmName:`LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}` ,
@@ -81,7 +82,7 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmConfig, context: 
  }
 }
 
-  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: CfResource, config: AlarmProperties) {
+  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const albAlarmProperties: AlbAlarm = {
       AlarmName:`LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}` ,

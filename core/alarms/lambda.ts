@@ -1,6 +1,7 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from '../cf-template'
+import { CloudFormationTemplate } from '../cf-template'
+import Resource from "cloudform-types/types/resource"
 import { Context, FunctionAlarmConfigs, createAlarm } from './default-config-alarms'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 import pino from 'pino'
@@ -117,7 +118,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
    * The Lambda function name
    */
-  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmProperties) {
+  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_IteratorAge_\${${funcLogicalId}}`,
@@ -141,7 +142,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmProperties) {
+  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Errors_\${${funcLogicalId}}`,
@@ -165,7 +166,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmProperties) {
+  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const period = config.Period
 
@@ -220,7 +221,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmProperties) {
+  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const funcTimeout = funcResource.Properties.Timeout || 3
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
@@ -246,7 +247,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     }
   }
 
-  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: CfResource, config: AlarmProperties) {
+  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Invocations_\${${funcLogicalId}}`,

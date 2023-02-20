@@ -1,11 +1,13 @@
 'use strict'
 
-import CloudFormationTemplate, {CompiledTemplate,AdditionalResources } from '../cf-template'
+import CloudFormationTemplate from '../cf-template'
+import Template from "cloudform-types/types/template"
+import Resource from "cloudform-types/types/resource"
 
 import { test } from 'tap'
 
-const emptyTemplate:CompiledTemplate  = {
-  Resources: []
+const emptyTemplate:Template  = {
+  Resources: {}
 }
 
 test('Source is returned', (t) => {
@@ -29,12 +31,12 @@ test('Function resource name can be resolved using name', (t) => {
 })
 
 test('Resource can be resolved by type from compiled template', (t) => {
-  const compiledTemplate:CompiledTemplate = {
-    Resources: [
-      { Type: 'AWS::DynamoDB::Table' }
-    ]
+  const compiledTemplate:Template = {
+    Resources: { 
+      a: {Type: 'AWS::DynamoDB::Table'}
+    }
   }
-  const template = CloudFormationTemplate(compiledTemplate, {})
+  const template = CloudFormationTemplate(compiledTemplate, {Type:''})
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')
   t.equal(Object.keys(resources).length, 1)
   t.equal(Object.values(resources)[0].Type, 'AWS::DynamoDB::Table')
@@ -43,14 +45,12 @@ test('Resource can be resolved by type from compiled template', (t) => {
 
 test('Resource can be resolved by type from template with additional resource ', (t) => {
   const compiledTemplate = {
-    Resources: [
-      { Type: 'AWS::DynamoDB::Table' }
-    ]
+    Resources: {
+      a: { Type: 'AWS::DynamoDB::Table' }
+    }
   }
-  const additionalResources: AdditionalResources = {
-    Resources:[
-      { Type: 'AWS::SQS::Queue' }
-    ]
+  const additionalResources: Resource = {
+     Type: 'AWS::SQS::Queue'
   }
   const template = CloudFormationTemplate(compiledTemplate, additionalResources) 
   
@@ -66,11 +66,9 @@ test('Resource can be resolved by type from template with additional resource ',
 })
 
 test('Resource can be resolved by type from service resources', (t) => {
-  const compiledTemplate: CompiledTemplate = {}
-  const serviceResources:AdditionalResources = {
-    Resources: [
-      { Type: 'AWS::DynamoDB::Table' }
-    ]
+  const compiledTemplate: Template = {}
+  const serviceResources:Resource = {
+    Type: 'AWS::DynamoDB::Table' 
   }
   const template = CloudFormationTemplate(compiledTemplate, serviceResources)
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')

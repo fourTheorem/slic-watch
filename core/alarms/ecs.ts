@@ -1,6 +1,7 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate } from '../cf-template'
+import { CloudFormationTemplate } from '../cf-template'
+import Resource from "cloudform-types/types/resource"
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
@@ -79,7 +80,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmProperties) {
+  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
@@ -106,7 +107,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     }
   }
 
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource: CfResource, clusterName: string, config: AlarmProperties) {
+  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,

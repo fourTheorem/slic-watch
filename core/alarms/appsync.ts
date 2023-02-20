@@ -1,6 +1,7 @@
 'use strict'
 
-import { CfResource, CloudFormationTemplate }  from '../cf-template'
+import { CloudFormationTemplate }  from '../cf-template'
+import Resource from "cloudform-types/types/resource"
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
@@ -58,7 +59,7 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmConfi
     }
   }
 
-  function create5XXAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmProperties) {
+  function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties:AppSyncAlarm = {
@@ -85,7 +86,7 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmConfi
     }
   }
 
-  function createLatencyAlarm (appSyncResourceName: string, appSyncResource: CfResource, config: AlarmProperties) {
+  function createLatencyAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties:AppSyncAlarm = {

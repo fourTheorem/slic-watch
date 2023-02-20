@@ -16,27 +16,18 @@ import {TargetGroupProperties} from 'cloudform-types/types/elasticLoadBalancingV
 import {ListenerProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listener'
 import {ListenerRuleProperties} from 'cloudform-types/types/elasticLoadBalancingV2/listenerRule'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import {DashboardProperties} from "cloudform-types/types/cloudWatch/dashboard"
+import Resource from "cloudform-types/types/resource"
+import Template from "cloudform-types/types/template"
+
 const logger = pino()
 
-type Resource = {
-  Type: string
-  Properties?: { [key: string]: Properties } 
-  DependsOn?: []
-}
-
-export type CompiledTemplate = {
-  AWSTemplateFormatVersion?: string
-  Description?: string
-  Resources?: Resource[] | {[key: string]: object} | undefined 
-  Outputs?: {[key: string]: object} | undefined | object
-}
-
-export type AdditionalResources = {
-  Resources?: Resource []
+// export type AdditionalResources = {
+//   Resources?: Resource | Resource []
   
-}
+// }
 
-export default function CloudFormationTemplate  (compiledTemplate: CompiledTemplate, additionalResources?: AdditionalResources): CloudFormationTemplate  {
+export default function CloudFormationTemplate  (compiledTemplate: Template, additionalResources?: Resource | Resource[]): CloudFormationTemplate  {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -56,7 +47,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
   }
 
-  function addResource(resourceName: string, resource: object): Metric {
+  function addResource(resourceName: string, resource: Resource) {
     return compiledTemplate.Resources[resourceName] = resource
   }
 
@@ -95,7 +86,7 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
     return eventSourceMappingFunctions
   }
 
-  function getSourceObject ():CompiledTemplate {
+  function getSourceObject ():Template {
     return compiledTemplate
   }
 
@@ -117,10 +108,10 @@ export default function CloudFormationTemplate  (compiledTemplate: CompiledTempl
  * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
 export interface CloudFormationTemplate {
-  addResource: (resourceName: string, resource: object) => Metric;
+  addResource: (resourceName: string, resource: Resource) => Template ;
   getResourceByName: (resourceName: string) => ResourceType;
   getResourcesByType: (type: string) => ResourceType;
-  getSourceObject: () => CompiledTemplate;
+  getSourceObject: () => Template;
   getEventSourceMappingFunctions: () => object;
   resolveFunctionResourceName: (func: string|object) => object;
 }
@@ -129,31 +120,17 @@ export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 
 
 export type Metric = {
 resourceName?: string
-resource?: CfResource
+resource?: Resource
 }
 
-export type CfResource = {
-Type?: string,
-Properties?: Properties
-DependsOn?: string[]
-Metadata
-}
 
 export type ResourceType = {
-[key: string]: CfResource
+[key: string]: Resource
 }
 
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
-
-
-// Common Alarm Properties
-export type DashboardProperties = {
-DashboardName?: string
-DashboardBody?:object
-}
-
 
 
 

@@ -14,12 +14,12 @@ Metadata:
     alarms:
       Lambda:
         Invocations:
-          ActionsEnabled: true
+          enabled: true
           Threshold: 10
       SQS:
         AgeOfOldestMessage:
           Statistic: Maximum
-          ActionsEnabled: true
+          enabled: true
           Threshold: 60
         InFlightMessagesPc:
           Statistic: Maximum

@@ -49,7 +49,7 @@ class ServerlessPlugin {
 
     type SlicWatchConfig = {
       topicArn: string 
-      enabled: boolean
+      ActionsEnabled: boolean
     }
 
     const slicWatchConfig: SlicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
@@ -65,7 +65,7 @@ class ServerlessPlugin {
 
     const alarmActions = []
 
-    if (slicWatchConfig.enabled === false) {
+    if (slicWatchConfig.ActionsEnabled === false) {
       return
     }
 

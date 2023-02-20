@@ -47,7 +47,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {}
+        alb: {Type: ''}
       }
     })
 
@@ -73,7 +73,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {}
+        alb: {Type: ''}
       }
     })
 
