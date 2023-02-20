@@ -9,7 +9,7 @@
   },
   "Metadata": {
     "slicWatch": {
-      "enabled": true
+      "ActionsEnabled": true
     }
   },
   "Resources": {
@@ -32,7 +32,7 @@
             }
           },
           "dashboard": {
-            "enabled": true
+            "ActionsEnabled": true
           }
         }
       }

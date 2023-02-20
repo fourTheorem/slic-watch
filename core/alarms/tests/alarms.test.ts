@@ -8,11 +8,11 @@ import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, test
 
 test('Alarms create all service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate()
-  const funcAlarmConfigs = {}
+  const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    funcAlarmConfigs[funcLogicalId] = {}
+    funcAlarmPropertiess[funcLogicalId] = {}
   }
-  const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
+  const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmPropertiess, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
@@ -28,11 +28,11 @@ test('Alarms create all service alarms', (t) => {
 
 test('Alarms create all ALB service alarms', (t) => {
   const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
-  const funcAlarmConfigs = {}
+  const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    funcAlarmConfigs[funcLogicalId] = {}
+    funcAlarmPropertiess[funcLogicalId] = {}
   }
-  const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmConfigs, testContext)
+  const { addAlarms } = alarms(defaultConfig.alarms, funcAlarmPropertiess, testContext)
   addAlarms(cfTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
@@ -54,11 +54,11 @@ test('Alarms are not created when disabled globally', (t) => {
     }
   )
   const cfTemplate = createTestCloudFormationTemplate()
-  const funcAlarmConfigs = {}
+  const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
-    funcAlarmConfigs[funcLogicalId] = {}
+    funcAlarmPropertiess[funcLogicalId] = {}
   }
-  const { addAlarms } = alarms(config, funcAlarmConfigs, testContext)
+  const { addAlarms } = alarms(config, funcAlarmPropertiess, testContext)
   addAlarms(cfTemplate)
 
   const alarmsCreated = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')

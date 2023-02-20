@@ -1,18 +1,17 @@
 import { Widgets } from '../inputs/cascading-config'
 import { Statistic } from '../cf-template'
+import FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
 
 export type DashboardConfig = {
-  enabled?: boolean
-  timeRange?: object
+  ActionsEnabled?: boolean
   widgets?: Widgets
-  dashConfig?: DashConfig
 }
 
-export type DashConfig = {
-  enabled?: boolean
-  metricPeriod?: object
+export type DashProperties = {
+  ActionsEnabled?: boolean
+  metricPeriod?: number
   width?: number
   height?: number
   yAxis?: YAxis
@@ -20,107 +19,93 @@ export type DashConfig = {
 }
 
 export type ServiceDashConfig = {
-  dashConfig?: DashConfig
+  DashProperties?: DashProperties
   widgets?: Widgets
 }
 
-// export type Widgets = LambdaDashConfig & ApiGwDashConfig & SfDashConfig & DynamoDbDashConfig & KinesisDashConfig & SqsDashConfig
-// & EcsDashConfig & SnsDashConfig & RuleDashConfig & AlbDashConfig & AlbTargetDashConfig & AppSyncDashConfig
-
-export type LambdaDashConfig = {
-  enabled?: boolean
-  Errors: DashConfig
-  Throttles: DashConfig
-  Duration: DashConfig
-  Invocations: DashConfig
-  ConcurrentExecutions: DashConfig
-  IteratorAge: DashConfig
+export type LambdaDashProperties = {
+  Errors: DashProperties
+  Throttles: DashProperties
+  Duration: DashProperties
+  Invocations: DashProperties
+  ConcurrentExecutions: DashProperties
+  IteratorAge: DashProperties
 } 
 
-export type ApiGwDashConfig = {
-  enabled?: boolean
-  '5XXError': DashConfig 
-  '4XXError': DashConfig
-  Latency: DashConfig
-  Count: DashConfig
+export type ApiGwDashProperties = {
+  '5XXError': DashProperties 
+  '4XXError': DashProperties
+  Latency: DashProperties
+  Count: DashProperties
 }
 
-export type SfDashConfig = {
-  enabled?: boolean
-  ExecutionsFailed: DashConfig 
-  ExecutionThrottled: DashConfig
-  ExecutionsTimedOut: DashConfig
+export type SfDashProperties = {
+  ExecutionsFailed: DashProperties 
+  ExecutionThrottled: DashProperties
+  ExecutionsTimedOut: DashProperties
 }
 
-export type DynamoDbDashConfig = {
-  enabled?: boolean
-  ReadThrottleEvents: DashConfig 
-  WriteThrottleEvents: DashConfig
+export type DynamoDbDashProperties = {
+  ReadThrottleEvents: DashProperties 
+  WriteThrottleEvents: DashProperties
 }
 
-export type KinesisDashConfig = {
-  enabled?: boolean
-  'GetRecords.IteratorAgeMilliseconds': DashConfig 
-  ReadProvisionedThroughputExceeded: DashConfig
-  WriteProvisionedThroughputExceeded: DashConfig
-  'PutRecord.Success': DashConfig 
-  'PutRecords.Success': DashConfig
-  'GetRecords.Success': DashConfig
+export type KinesisDashProperties = {
+  'GetRecords.IteratorAgeMilliseconds': DashProperties 
+  ReadProvisionedThroughputExceeded: DashProperties
+  WriteProvisionedThroughputExceeded: DashProperties
+  'PutRecord.Success': DashProperties 
+  'PutRecords.Success': DashProperties
+  'GetRecords.Success': DashProperties
 }
 
-export type SqsDashConfig = {
-  enabled?: boolean
-  NumberOfMessagesSent: DashConfig 
-  NumberOfMessagesReceived: DashConfig
-  NumberOfMessagesDeleted: DashConfig
-  ApproximateAgeOfOldestMessage: DashConfig 
-  ApproximateNumberOfMessagesVisible: DashConfig
+export type SqsDashProperties = {
+  NumberOfMessagesSent: DashProperties 
+  NumberOfMessagesReceived: DashProperties
+  NumberOfMessagesDeleted: DashProperties
+  ApproximateAgeOfOldestMessage: DashProperties 
+  ApproximateNumberOfMessagesVisible: DashProperties
 }
 
-export type EcsDashConfig = {
-  enabled?: boolean
-  MemoryUtilization: DashConfig 
-  CPUUtilization: DashConfig
+export type EcsDashProperties = {
+  ActionsEnabled?: boolean
+  MemoryUtilization: DashProperties 
+  CPUUtilization: DashProperties
 }
 
-export type SnsDashConfig = {
-  enabled?: boolean
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashConfig 
-  NumberOfNotificationsFailed: DashConfig
+export type SnsDashProperties = {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashProperties 
+  NumberOfNotificationsFailed: DashProperties
 }
 
-export type RuleDashConfig = {
-  enabled?: boolean
-  FailedInvocations: DashConfig 
-  ThrottledRules: DashConfig
-  Invocations: DashConfig
+export type RuleDashProperties = {
+  FailedInvocations: DashProperties 
+  ThrottledRules: DashProperties
+  Invocations: DashProperties
 }
 
-export type AlbDashConfig = {
-  enabled?: boolean 
-  HTTPCode_ELB_5XX_Count: DashConfig 
-  RejectedConnectionCount: DashConfig
+export type AlbDashProperties = {
+  HTTPCode_ELB_5XX_Count: DashProperties 
+  RejectedConnectionCount: DashProperties
 }
 
-export type AlbTargetDashConfig = {
-  enabled?: boolean
-  HTTPCode_Target_5XX_Count: DashConfig 
-  UnHealthyHostCount: DashConfig
-  LambdaInternalError: DashConfig 
-  LambdaUserError: DashConfig
+export type AlbTargetDashProperties = {
+  HTTPCode_Target_5XX_Count: DashProperties 
+  UnHealthyHostCount: DashProperties
+  LambdaInternalError: DashProperties 
+  LambdaUserError: DashProperties
 }
 
-export type AppSyncDashConfig = {
-  enabled?: boolean
-  '5XXError': DashConfig 
-  '4XXError': DashConfig
-  Latency: DashConfig 
-  Requests: DashConfig
-  ConnectServerError: DashConfig 
-  DisconnectServerError: DashConfig
-  SubscribeServerError: DashConfig 
-  UnsubscribeServerError: DashConfig
-  PublishDataMessageServerError: DashConfig 
+export type AppSyncDashProperties = {
+  '5XXError': DashProperties 
+  '4XXError': DashProperties
+  Latency: DashProperties 
+  Requests: DashProperties
+  ConnectServerError: DashProperties 
+  DisconnectServerError: DashProperties
+  SubscribeServerError: DashProperties 
+  UnsubscribeServerError: DashProperties
+  PublishDataMessageServerError: DashProperties 
 }
 
 export type FunctionDashboardConfigs = {
@@ -141,22 +126,8 @@ export type FunctionDashboardConfigs = {
 
 export type FunctionResources = {
   Type: string
-  Properties: {
-    Code: object
-    Handler: string
-    Runtime: string
-    FunctionName: string
-    MemorySize: number
-    Timeout: number
-    Role: object
-    ReservedConcurrentExecutions?: number
-  }
+  Properties: FunctionProperties
   DependsOn: string[]
 }
-
-export type ApiResources = {
-  Type: string
-}
-
 
 

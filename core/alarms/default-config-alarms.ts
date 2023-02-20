@@ -1,12 +1,12 @@
-import { AlbTargetAlarmConfig } from './alb-target-group'
-import { AlbAlarmConfig } from './alb'
-import { ApiAlarm, ApiGwAlarmConfig } from './api-gateway'
-import { AppSyncAlarm, AppSyncAlarmConfig } from './appsync'
-import { DynamoDbAlarmConfig } from './dynamodb'
+import { AlbTargetAlarmProperties } from './alb-target-group'
+import { AlbAlarmProperties } from './alb'
+import { ApiAlarm, ApiGwAlarmProperties } from './api-gateway'
+import { AppSyncAlarm, AppSyncAlarmProperties } from './appsync'
+import { DynamoDbAlarmProperties } from './dynamodb'
 import { EcsAlarm, EcsAlarmsConfig } from './ecs'
 import { EventbridgeAlarm, EventsAlarmsConfig } from './eventbridge'
-import { KinesisAlarmConfig } from './kinesis'
-import { LambdaAlarm, LambdaFunctionAlarmConfigs } from './lambda'
+import { KinesisAlarmProperties } from './kinesis'
+import { LambdaAlarm, LambdaFunctionAlarmPropertiess } from './lambda'
 import { SnsAlarm, SnsAlarmsConfig } from './sns'
 import { SqsAlarm, SqsAlarmsConfig } from './sqs'
 import { SfAlarmsConfig, SmAlarm } from './step-functions'
@@ -63,20 +63,20 @@ export type AllAlarmsConfig = {
   alarms?: AlarmsCascade
 }
 
-export type AlarmsConfig = AlbTargetAlarmConfig & AlbAlarmConfig & ApiGwAlarmConfig & AppSyncAlarmConfig & DynamoDbAlarmConfig
-& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmConfig & LambdaFunctionAlarmConfigs & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
+export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
+& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmPropertiess & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
-export type FunctionAlarmConfigs = {
-  HelloLambdaFunction?: LambdaFunctionAlarmConfigs
-  ThrottlerLambdaFunction?: LambdaFunctionAlarmConfigs
-  DriveStreamLambdaFunction?: LambdaFunctionAlarmConfigs
-  DriveQueueLambdaFunction?: LambdaFunctionAlarmConfigs
-  DriveTableLambdaFunction?: LambdaFunctionAlarmConfigs
-  StreamProcessorLambdaFunction?: LambdaFunctionAlarmConfigs
-  HttpGetterLambdaFunction?: LambdaFunctionAlarmConfigs
-  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmConfigs
-  EventsRuleLambdaFunction?: LambdaFunctionAlarmConfigs
-  AlbEventLambdaFunction?: LambdaFunctionAlarmConfigs
+export type FunctionAlarmPropertiess = {
+  HelloLambdaFunction?: LambdaFunctionAlarmPropertiess
+  ThrottlerLambdaFunction?: LambdaFunctionAlarmPropertiess
+  DriveStreamLambdaFunction?: LambdaFunctionAlarmPropertiess
+  DriveQueueLambdaFunction?: LambdaFunctionAlarmPropertiess
+  DriveTableLambdaFunction?: LambdaFunctionAlarmPropertiess
+  StreamProcessorLambdaFunction?: LambdaFunctionAlarmPropertiess
+  HttpGetterLambdaFunction?: LambdaFunctionAlarmPropertiess
+  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmPropertiess
+  EventsRuleLambdaFunction?: LambdaFunctionAlarmPropertiess
+  AlbEventLambdaFunction?: LambdaFunctionAlarmPropertiess
 }
 
 export type Context = {

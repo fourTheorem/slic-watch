@@ -5,7 +5,7 @@ import { Context, createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type DynamoDbAlarmConfig = AlarmProperties & {
+export type DynamoDbAlarmProperties = AlarmProperties & {
   ReadThrottleEvents: AlarmProperties
   WriteThrottleEvents: AlarmProperties
   UserErrors: AlarmProperties
@@ -15,7 +15,7 @@ export type DynamoDbAlarmConfig = AlarmProperties & {
 /**
  * dynamoDbAlarmProperties The fully resolved alarm configuration
  */
-export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmConfig, context: Context) {
+export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context) {
   return {
     createDynamoDbAlarms
   }

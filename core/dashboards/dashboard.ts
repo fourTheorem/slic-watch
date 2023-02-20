@@ -2,7 +2,8 @@
 
 import { cascade} from '../inputs/cascading-config'
 import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
-import { DashboardConfig, FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
+import { FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
+import {DashboardsCascade} from '../inputs/cascading-config'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
@@ -77,7 +78,7 @@ const logger = pino()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig: DashboardConfig , functionDashboardConfigs: FunctionDashboardConfigs) {
+export default function dashboard (dashboardConfig: DashboardsCascade , functionDashboardConfigs: FunctionDashboardConfigs) {
   const {
     timeRange,
     widgets: {
@@ -244,14 +245,14 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     const lambdaWidgets = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           if (metric !== 'IteratorAge') {
             for (const stat of metricConfig.Statistic) {
               const metricDefs = []
               for (const logicalId of Object.keys(functionResources)) {
                 const functionConfig = functionDashboardConfigs[logicalId] || {}
                 const functionMetricConfig = functionConfig[metric] || {}
-                if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
+                if (functionConfig.ActionsEnabled !== false && (functionMetricConfig.ActionsEnabled !== false)) {
                   metricDefs.push({
                     namespace: 'AWS/Lambda',
                     metric,
@@ -275,7 +276,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
             for (const logicalId of eventSourceMappingFunctionResourceNames) {
               const functionConfig = functionDashboardConfigs[logicalId] || {}
               const functionMetricConfig = functionConfig[metric] || {}
-              if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
+              if (functionConfig.ActionsEnabled !== false && (functionMetricConfig.ActionsEnabled !== false)) {
                 const stats = metricConfig.Statistic
                 const iteratorAgeWidget = createMetricWidget(
                   `Lambda IteratorAge \${${logicalId}} ${stats.join(',')}`,
@@ -327,7 +328,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           const metricStatWidget = createMetricWidget(
             `${metric} API ${apiName}`,
             Object.values(metricConfig.Statistic).map((stat) => ({
@@ -358,7 +359,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/States',
@@ -392,7 +393,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     const ddbWidgets = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           ddbWidgets.push(createMetricWidget(
             `${metric} Table $\{${logicalId}}`,
             Object.values(metricConfig.Statistic).map((stat) => ({
@@ -448,7 +449,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         const widgetMetrics = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
-          if (metricConfig.enabled) {
+          if (metricConfig.ActionsEnabled) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/Kinesis',
@@ -490,7 +491,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         const widgetMetrics = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
-          if (metricConfig.enabled) {
+          if (metricConfig.ActionsEnabled) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/SQS',
@@ -528,7 +529,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
 
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/ECS',
@@ -564,7 +565,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/SNS',
@@ -599,7 +600,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
     for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/Events',
@@ -635,7 +636,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
       const widgetMetrics = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
-        if (metricConfig.enabled) {
+        if (metricConfig.ActionsEnabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/ApplicationELB',
@@ -675,7 +676,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
         const widgetMetrics = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-          if (metricConfig.enabled &&
+          if (metricConfig.ActionsEnabled &&
             (targetGroupResource.Properties.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
             for (const stat of metricConfig.Statistic) {
@@ -724,7 +725,7 @@ export default function dashboard (dashboardConfig: DashboardConfig , functionDa
           const widgetMetrics = []
           for (const metric of metrics) {
             const metricConfig = metricConfigs[metric]
-            if (metricConfig.enabled) {
+            if (metricConfig.ActionsEnabled) {
               for (const stat of metricConfig.Statistic) {
                 widgetMetrics.push({
                   namespace: 'AWS/AppSync',

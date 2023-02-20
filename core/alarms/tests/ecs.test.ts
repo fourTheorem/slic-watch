@@ -31,7 +31,7 @@ test('resolveEcsClusterNameAsCfn', (t) => {
 })
 
 test('ECS MemoryUtilization is created', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -48,9 +48,9 @@ test('ECS MemoryUtilization is created', (t) => {
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ecsAlarmProperties = AlarmProperties.ECS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
   createECSAlarms(cfTemplate)
 
@@ -69,7 +69,7 @@ test('ECS MemoryUtilization is created', (t) => {
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, ecsAlarmConfig[expectedMetric].Threshold)
+    t.equal(al.Threshold, ecsAlarmProperties[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'LessThanThreshold')
@@ -91,7 +91,7 @@ test('ECS MemoryUtilization is created', (t) => {
 })
 
 test('ECS alarms are not created when disabled globally', (t) => {
-  const alarmConfig = createTestConfig(
+  const AlarmProperties = createTestConfig(
     defaultConfig.alarms,
     {
       ECS: {
@@ -106,9 +106,9 @@ test('ECS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const ecsAlarmConfig = alarmConfig.ECS
+  const ecsAlarmProperties = AlarmProperties.ECS
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmConfig, testContext)
+  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
 
   const cfTemplate = createTestCloudFormationTemplate()
   createECSAlarms(cfTemplate)

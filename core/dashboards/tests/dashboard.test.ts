@@ -361,7 +361,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
-          metricConfig.enabled = false
+          metricConfig.ActionsEnabled = false
         }
       }
       //@ts-ignore
@@ -379,7 +379,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
-          metricConfig.enabled = false
+          metricConfig.ActionsEnabled = false
         }
       }
       //@ts-ignore
@@ -478,7 +478,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-ignore
-          metricConfig.enabled = false
+          metricConfig.ActionsEnabled = false
         }
       }
       //@ts-ignore
@@ -545,7 +545,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     //@ts-ignore
-    dashConfig.widgets[service].enabled = false
+    dashConfig.widgets[service].ActionsEnabled = false
   }
   //@ts-ignore
   const dash = dashboard(dashConfig, emptyFuncConfigs, context)
@@ -562,7 +562,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
       // @ts-ignore
-      metricConfig.enabled = false
+      metricConfig.ActionsEnabled = false
     }
   }
   //@ts-ignore
@@ -579,7 +579,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
   for (const metric of lambdaMetrics) {
     const funcConfigs = {
       [disabledFunctionName]: {
-        [metric]: { enabled: false }
+        [metric]: { ActionsEnabled: false }
       }
     }
     // @ts-ignore
@@ -608,7 +608,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
   for (const funcLogicalId of allFunctionLogicalIds) {
     funcConfigs[funcLogicalId] = {}
     for (const metric of lambdaMetrics) {
-      funcConfigs[funcLogicalId][metric] = { enabled: false }
+      funcConfigs[funcLogicalId][metric] = { ActionsEnabled: false }
     }
   }
   //@ts-ignore

@@ -8,7 +8,7 @@ import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
-export type KinesisAlarmConfig = AlarmProperties & {
+export type KinesisAlarmProperties = AlarmProperties & {
   'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
   ReadProvisionedThroughputExceeded: AlarmProperties
   WriteProvisionedThroughputExceeded: AlarmProperties
@@ -29,7 +29,7 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmConfig, context: Context) {
+export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context) {
   return {
     createKinesisAlarms
   }

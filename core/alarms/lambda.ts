@@ -2,12 +2,12 @@
 
 import { CloudFormationTemplate } from '../cf-template'
 import Resource from "cloudform-types/types/resource"
-import { Context, FunctionAlarmConfigs, createAlarm } from './default-config-alarms'
+import { Context, FunctionAlarmPropertiess, createAlarm } from './default-config-alarms'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 import pino from 'pino'
 const logging = pino()
 
-export type LambdaFunctionAlarmConfigs = AlarmProperties & {
+export type LambdaFunctionAlarmPropertiess = AlarmProperties & {
   Errors: AlarmProperties,
   ThrottlesPc: AlarmProperties
   DurationPc: AlarmProperties
@@ -19,11 +19,11 @@ export type LambdaAlarm = AlarmProperties & {
   funcName: object
 } 
 /**
- * functionAlarmConfigs The cascaded Lambda alarm configuration with
+ * functionAlarmPropertiess The cascaded Lambda alarm configuration with
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
   return {
     createLambdaAlarms
   }
@@ -40,7 +40,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     )
 
     for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-      const funcConfig = functionAlarmConfigs[funcLogicalId]
+      const funcConfig = functionAlarmPropertiess[funcLogicalId]
       if (!funcConfig) {
         // Function is likely injected by another plugin and not a top-level user function
         logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
@@ -98,7 +98,7 @@ export default function LambdaAlarms (functionAlarmConfigs: FunctionAlarmConfigs
     for (const [funcLogicalId, funcResource] of Object.entries(
       cfTemplate.getEventSourceMappingFunctions()
     )) {
-      const funcConfig = functionAlarmConfigs[funcLogicalId]
+      const funcConfig = functionAlarmPropertiess[funcLogicalId]
       if (funcConfig.IteratorAge.ActionsEnabled) {
         // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
         const iteratorAgeAlarm = createIteratorAgeAlarm(

@@ -48,7 +48,7 @@ functions:
     handler: basic-handler.hello
     slicWatch:
       dashboard:
-        enabled: false
+        ActionsEnabled: false
 
   throttler:
     handler: basic-handler.hello
@@ -95,7 +95,7 @@ functions:
     slicWatch:
       alarms:
           Lambda:
-            enabled: false
+            ActionsEnabled: false
     events:
       - eventBridge:
           useCloudFormation: true

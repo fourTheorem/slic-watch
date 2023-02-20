@@ -8,7 +8,7 @@ import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
-export type AlbTargetAlarmConfig = AlarmProperties & {
+export type AlbTargetAlarmProperties = AlarmProperties & {
   HTTPCode_Target_5XX_Count: AlarmProperties
   UnHealthyHostCount: AlarmProperties
   LambdaInternalError: AlarmProperties
@@ -90,7 +90,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 /**
  * The fully resolved alarm configuration
  */
-export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmConfig, context: Context) {
+export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context) {
   return {
     createALBTargetAlarms
   }

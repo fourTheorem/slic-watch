@@ -7,7 +7,7 @@ import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type AlbAlarmConfig = AlarmProperties & {
+export type AlbAlarmProperties = AlarmProperties & {
   HTTPCode_ELB_5XX_Count: AlarmProperties,
   RejectedConnectionCount: AlarmProperties
 }
@@ -20,7 +20,7 @@ export type AlbAlarm = AlarmProperties & {
 /**
  * albAlarmProperties The fully resolved alarm configuration
  */
-export default function ALBAlarms (albAlarmProperties: AlbAlarmConfig, context: Context) {
+export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, context: Context) {
   return {
     createALBAlarms
   }

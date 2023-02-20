@@ -7,7 +7,7 @@ import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
-export type ApiGwAlarmConfig = AlarmProperties &{
+export type ApiGwAlarmProperties = AlarmProperties &{
   '5XXError': AlarmProperties
   '4XXError': AlarmProperties
   Latency: AlarmProperties
@@ -71,7 +71,7 @@ export function resolveRestApiNameForSub (restApiResource, restApiLogicalId: str
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmConfig, context: Context) {
+export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context) {
   return {
     createApiGatewayAlarms
   }

@@ -1,6 +1,6 @@
 'use strict'
 
-import albAlarms, { AlbAlarmConfig } from '../alb'
+import albAlarms, { AlbAlarmProperties } from '../alb'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -13,7 +13,7 @@ import {
 } from '../../tests/testing-utils'
 
 test('ALB alarms are created', (t) => {
-  const alarmConfigELB = createTestConfig(
+  const AlarmPropertiesELB = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -31,13 +31,13 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmConfig: AlbAlarmConfig) {
-    const { createALBAlarms } = albAlarms(elbAlarmConfig, testContext)
+  function createAlarmResources (elbAlarmProperties: AlbAlarmProperties) {
+    const { createALBAlarms } = albAlarms(elbAlarmProperties, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  const albAlarmResources = createAlarmResources(alarmConfigELB.ApplicationELB)
+  const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
   const expectedTypesELB = {
     LoadBalancerHTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
@@ -52,7 +52,7 @@ test('ALB alarms are created', (t) => {
     const expectedMetric = expectedTypesELB[alarmType]
     t.equal(al.MetricName, expectedMetric)
     t.ok(al.Statistic)
-    t.equal(al.Threshold, alarmConfigELB.ApplicationELB[expectedMetric].Threshold)
+    t.equal(al.Threshold, AlarmPropertiesELB.ApplicationELB[expectedMetric].Threshold)
     t.equal(al.EvaluationPeriods, 2)
     t.equal(al.TreatMissingData, 'breaching')
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -70,7 +70,7 @@ test('ALB alarms are created', (t) => {
 })
 
 test('ALB alarms are not created when disabled globally', (t) => {
-  const alarmConfigELB = createTestConfig(
+  const AlarmPropertiesELB = createTestConfig(
     defaultConfig.alarms,
     {
       ApplicationELB: {
@@ -86,13 +86,13 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  function createAlarmResources (elbAlarmConfig) {
-    const { createALBAlarms } = albAlarms(elbAlarmConfig, testContext)
+  function createAlarmResources (elbAlarmProperties) {
+    const { createALBAlarms } = albAlarms(elbAlarmProperties, testContext)
     const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
     createALBAlarms(cfTemplate)
     return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
   }
-  const albAlarmResources = createAlarmResources(alarmConfigELB.ApplicationELB)
+  const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
   t.same({}, albAlarmResources)
   t.end()

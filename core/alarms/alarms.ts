@@ -2,7 +2,7 @@
 
 import { cascade, AlarmsCascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import { FunctionAlarmConfigs, Context } from './default-config-alarms'
+import { FunctionAlarmPropertiess, Context } from './default-config-alarms'
 import { CloudFormationTemplate } from '../cf-template'
 
 import lambdaAlarms from './lambda'
@@ -18,7 +18,7 @@ import albAlarms from './alb'
 import albTargetAlarms from './alb-target-group'
 import appSyncAlarms from './appsync'
 
-export default function alarms (AlarmProperties:AlarmsCascade , functionAlarmConfigs: FunctionAlarmConfigs, context: Context) {
+export default function alarms (AlarmProperties:AlarmsCascade , functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -34,7 +34,7 @@ export default function alarms (AlarmProperties:AlarmsCascade , functionAlarmCon
     AppSync: appSyncConfig
   } = cascade(AlarmProperties)
 
-  const cascadedFunctionAlarmPropertiess = applyAlarmConfig(lambdaConfig, functionAlarmConfigs )
+  const cascadedFunctionAlarmPropertiess = applyAlarmConfig(lambdaConfig, functionAlarmPropertiess )
   const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmPropertiess, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)

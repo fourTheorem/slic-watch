@@ -200,7 +200,7 @@ export const defaultConfig = {
     }
   } as AllAlarmsConfig,
   dashboard: {
-    enabled: true,
+    ActionsEnabled: true,
     timeRange: {
       // For possible 'start' and 'end' values, see
       // https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html

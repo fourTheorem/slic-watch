@@ -1,20 +1,20 @@
 'use strict'
 
-import { AlbAlarmConfig } from '../alarms/alb'
-import { AlbTargetAlarmConfig } from '../alarms/alb-target-group'
-import { ApiGwAlarmConfig } from '../alarms/api-gateway'
-import { AppSyncAlarmConfig } from '../alarms/appsync'
-import { DynamoDbAlarmConfig } from '../alarms/dynamodb'
+import { AlbAlarmProperties } from '../alarms/alb'
+import { AlbTargetAlarmProperties } from '../alarms/alb-target-group'
+import { ApiGwAlarmProperties } from '../alarms/api-gateway'
+import { AppSyncAlarmProperties } from '../alarms/appsync'
+import { DynamoDbAlarmProperties } from '../alarms/dynamodb'
 import { EcsAlarmsConfig } from '../alarms/ecs'
 import { EventsAlarmsConfig } from '../alarms/eventbridge'
-import { KinesisAlarmConfig } from '../alarms/kinesis'
+import { KinesisAlarmProperties } from '../alarms/kinesis'
 import { SnsAlarmsConfig } from '../alarms/sns'
 import { SqsAlarmsConfig } from '../alarms/sqs'
 import { SfAlarmsConfig } from '../alarms/step-functions'
 import { AllAlarmsConfig } from '../alarms/default-config-alarms'
-import { DashboardConfig, DashConfig, LambdaDashConfig, ApiGwDashConfig, SfDashConfig, DynamoDbDashConfig, KinesisDashConfig, SqsDashConfig,
-   EcsDashConfig, SnsDashConfig, RuleDashConfig, AlbDashConfig, AlbTargetDashConfig, AppSyncDashConfig } from '../dashboards/default-config-dashboard'
-import { LambdaFunctionAlarmConfigs } from '../alarms/lambda'
+import { DashboardConfig, DashProperties, LambdaDashProperties, ApiGwDashProperties, SfDashProperties, DynamoDbDashProperties, KinesisDashProperties, SqsDashProperties,
+   EcsDashProperties, SnsDashProperties, RuleDashProperties, AlbDashProperties, AlbTargetDashProperties, AppSyncDashProperties } from '../dashboards/default-config-dashboard'
+import { LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
 import { Statistic } from '../cf-template'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
@@ -24,14 +24,14 @@ const MAX_DEPTH = 10
 type ConfigNode =  DashboardConfig | AllAlarmsConfig
 
 type ParentNode ={
-  dashConfig: DashConfig
-  alarmConfig: AlarmProperties
+  DashProperties?: DashProperties
+  AlarmProperties?: AlarmProperties
 
 }
 export type DashboardsCascade ={
-  enabled?: boolean
-  timeRange: TimeRange
-  widgets: Widgets
+  ActionsEnabled?: boolean
+  timeRange?: TimeRange
+  widgets?: Widgets
  }
  type TimeRange = {
   start: string
@@ -39,36 +39,36 @@ export type DashboardsCascade ={
  } 
 
 export type Widgets = {
-  enabled?:boolean // remove later ? mark 
+  ActionsEnabled?:boolean // remove later ? mark 
   Statistic?: Statistic[]
-  Lambda?: LambdaDashConfig 
-  ApiGateway?: ApiGwDashConfig
-  States?: SfDashConfig,
-  DynamoDB?: DynamoDbDashConfig 
-  Kinesis?: KinesisDashConfig
-  SQS?: SqsDashConfig
-  ECS?: EcsDashConfig
-  SNS?: SnsDashConfig  
-  Events?: RuleDashConfig
-  ApplicationELB?: AlbDashConfig
-  ApplicationELBTarget?: AlbTargetDashConfig
-  AppSync?: AppSyncDashConfig 
+  Lambda?: LambdaDashProperties 
+  ApiGateway?: ApiGwDashProperties
+  States?: SfDashProperties,
+  DynamoDB?: DynamoDbDashProperties 
+  Kinesis?: KinesisDashProperties
+  SQS?: SqsDashProperties
+  ECS?: EcsDashProperties
+  SNS?: SnsDashProperties  
+  Events?: RuleDashProperties
+  ApplicationELB?: AlbDashProperties
+  ApplicationELBTarget?: AlbTargetDashProperties
+  AppSync?: AppSyncDashProperties 
 }
 
 export type AlarmsCascade = {
   ActionsEnabled: boolean
-  Lambda?:  LambdaFunctionAlarmConfigs 
-  ApiGateway?: ApiGwAlarmConfig
+  Lambda?:  LambdaFunctionAlarmPropertiess 
+  ApiGateway?: ApiGwAlarmProperties
   States?: SfAlarmsConfig,
-  DynamoDB?: DynamoDbAlarmConfig 
-  Kinesis?: KinesisAlarmConfig
+  DynamoDB?: DynamoDbAlarmProperties 
+  Kinesis?: KinesisAlarmProperties
   SQS?: SqsAlarmsConfig
   ECS?: EcsAlarmsConfig
   SNS?: SnsAlarmsConfig  
   Events?: EventsAlarmsConfig
-  ApplicationELB?: AlbAlarmConfig
-  ApplicationELBTarget?: AlbTargetAlarmConfig
-  AppSync?: AppSyncAlarmConfig  
+  ApplicationELB?: AlbAlarmProperties
+  ApplicationELBTarget?: AlbTargetAlarmProperties
+  AppSync?: AppSyncAlarmProperties  
 }
 
 /**
@@ -96,7 +96,6 @@ export function cascade(node:ConfigNode, parentNode?: ParentNode, depth=0 ):Alar
 
   const compiledChildren = {}
   for (const [key, value] of Object.entries(childNodes)) {
-    // @ts-ignore
     compiledChildren[key] = cascade(value, compiledNode, depth + 1)
   }
    return {

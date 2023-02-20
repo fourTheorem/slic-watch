@@ -8,7 +8,7 @@ import { makeResourceName } from './make-name'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
 
 
-export type AppSyncAlarmConfig = AlarmProperties & {
+export type AppSyncAlarmProperties = AlarmProperties & {
   '5XXError': AlarmProperties
   Latency: AlarmProperties
 }
@@ -20,7 +20,7 @@ export type AppSyncAlarm= AlarmProperties & {
 /**
  * appSyncAlarmProperties The fully resolved alarm configuration
  */
-export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmConfig, context: Context) {
+export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmProperties, context: Context) {
   return {
     createAppSyncAlarms
   }
