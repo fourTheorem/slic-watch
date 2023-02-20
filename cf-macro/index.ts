@@ -17,6 +17,11 @@ type Event = {
   status: string
   fragment
 }
+
+type SlicWatchConfig = {
+  topicArn: string 
+  ActionsEnabled: boolean
+}
 export async function handler (event: Event) {
   let status = 'success'
   logger.info({ event })
@@ -24,9 +29,9 @@ export async function handler (event: Event) {
 
   let outputFragment = event.fragment
   try {
-    const slicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
+    const slicWatchConfig:SlicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
 
-    if (slicWatchConfig.enabled !== false) {
+    if (slicWatchConfig.ActionsEnabled !== false) {
       const ajv = new Ajv({
         unicodeRegExp: false
       })
@@ -40,7 +45,6 @@ export async function handler (event: Event) {
       }
 
       const alarmActions = []
-      // @ts-ignore
       if (slicWatchConfig.topicArn) {
         // @ts-ignore
         alarmActions.push(slicWatchConfig.topicArn)

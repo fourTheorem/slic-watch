@@ -118,16 +118,9 @@ export interface CloudFormationTemplate {
 
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
-export type Metric = {
-resourceName?: string
-resource?: Resource
-}
-
-
 export type ResourceType = {
 [key: string]: Resource
 }
-
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties

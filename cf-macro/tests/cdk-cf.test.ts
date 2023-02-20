@@ -24,8 +24,8 @@ test('ECS CDK stack', async (t) => {
   test('alarms are generated', (t) => {
     const alarms = transformedTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
     t.equal(Object.keys(alarms).length, 6)
-    // @ts-ignore
-    const alarmNames = Object.values(alarms).map(alarm => alarm.Properties.AlarmName).sort()
+    
+    const alarmNames = Object.values(alarms).map(alarm => alarm.Properties?.AlarmName).sort()
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',                                     
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
@@ -34,6 +34,7 @@ test('ECS CDK stack', async (t) => {
       'LoadBalancerRejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',      
       'LoadBalancerUnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
+    
     t.end()
   })
 
