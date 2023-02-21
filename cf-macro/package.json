@@ -11,7 +11,8 @@
     "version": "2.1.2",
     "private": true,
     "scripts": {
-        "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts"
+        "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
+        "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap"
     },
     "tap": {
         "node-arg": [
@@ -22,6 +23,7 @@
         ]
     },
     "devDependencies": {
+        "esbuild": "^0.17.10",
         "esmock": "^2.1.0",
         "ts-node": "^10.9.1"
     },

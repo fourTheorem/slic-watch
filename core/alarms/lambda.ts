@@ -210,7 +210,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
       funcName: { Ref: funcLogicalId },
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
-      Metrics:metrics, 
+      Metrics: metrics, 
       ExtendedStatistic:  config.ExtendedStatistic,
       EvaluationPeriods:  config.EvaluationPeriods,
       TreatMissingData:  config.TreatMissingData,
