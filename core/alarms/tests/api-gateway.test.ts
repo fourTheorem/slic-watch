@@ -15,7 +15,7 @@ export type AlarmsByType ={
   APIGW_4XXError
   APIGW_5XXError
   APIGW_Latency
-} 
+}
 
 test('resolveRestApiNameAsCfn', (t) => {
   const fromLiteral = resolveRestApiNameAsCfn({ Properties: { Name: 'my-api-name' } }, 'logicalId')
@@ -84,8 +84,7 @@ test('API Gateway alarms are created', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  
-  function getAlarmByType():AlarmsByType {
+  function getAlarmByType ():AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
@@ -94,10 +93,9 @@ test('API Gateway alarms are created', (t) => {
       alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
       alarmsByType[alarmType].add(al)
     }
-    return alarmsByType as AlarmsByType 
+    return alarmsByType as AlarmsByType
   }
   t.equal(Object.keys(alarmResources).length, 3)
-  
   const alarmsByType = getAlarmByType()
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',

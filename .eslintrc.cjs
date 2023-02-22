@@ -1,19 +1,22 @@
 module.exports = {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    '@typescript-eslint'
   ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+  extends: [
+    'standard',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended'
   ],
   rules: {
     '@typescript-eslint/no-var-requires': 0, // todo remove later complains for all js modules
-    'no-undef':0, // todo remove later
-    '@typescript-eslint/ban-ts-comment': 0, //todo remove ts-ignore in modules and remove this rule
-    '@typescript-eslint/no-explicit-any' : 0 // used for dimensions value
+    'no-undef': 0, // todo remove later
+    '@typescript-eslint/ban-ts-comment': 0, // todo remove ts-ignore in modules and remove this rule
+    '@typescript-eslint/no-explicit-any': 0 // used for dimensions value
   },
-  ignorePatterns: ['core/coverage'],
+  ignorePatterns: ['core/coverage',
+    'serverless-plugin/dist/index.js',
+    'cf-macro/dist/index.js'
+  ]
 }

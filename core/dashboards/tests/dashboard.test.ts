@@ -1,6 +1,7 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import  _  from 'lodash'
+import _ from 'lodash'
 import { test } from 'tap'
 
 import dashboard, { resolveEcsClusterNameForSub } from '../dashboard'
@@ -8,22 +9,11 @@ import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from '../../tests/testing-utils'
 
-type Context ={
-  stackName?: string
-  region?: string 
-  alarmActions?: string[]
-}
-const context:Context = {
-  stackName: 'testStack',
-  region: 'eu-west-1'
-}
-
 const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'ConcurrentExecutions', 'Throttles']
 const emptyFuncConfigs = {}
 
 test('An empty template creates no dashboard', (t) => {
-  //@ts-ignore
-  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
 
   const cfTemplate = createTestCloudFormationTemplate({ Resources: [] })
   dash.addDashboard(cfTemplate)
@@ -36,8 +26,7 @@ test('An empty template creates no dashboard', (t) => {
 })
 
 test('A dashboard includes metrics', (t) => {
-  //@ts-ignore
-  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -210,19 +199,14 @@ test('A dashboard includes metrics', (t) => {
   test('resolveEcsClusterNameForSub', (t) => {
     const fromLiteral = resolveEcsClusterNameForSub('my-cluster')
     t.equal(fromLiteral, 'my-cluster')
-  
     const fromArn = resolveEcsClusterNameForSub('arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster')
     t.equal(fromArn, 'my-cluster')
-  
     const fromRef = resolveEcsClusterNameForSub({ Ref: 'my-cluster' })
     t.same(fromRef, '$' + '{my-cluster}')
-  
     const fromGetAtt = resolveEcsClusterNameForSub({ GetAtt: ['my-cluster', 'Arn'] })
     t.same(fromGetAtt, '$' + '{my-cluster}')
-  
     const fromSub = resolveEcsClusterNameForSub({ 'Fn::Sub': '$' + '{my-cluster}' })
     t.same(fromSub, '$' + '{my-cluster}')
-  
     const unexpected = { Unexpected: 'syntax' }
     const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
     t.same(fromUnexpected, unexpected)
@@ -298,8 +282,7 @@ test('A dashboard includes metrics', (t) => {
 })
 
 test('A dashboard includes metrics for ALB', (t) => {
-  //@ts-ignore
-  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
   const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -364,8 +347,7 @@ test('A dashboard includes metrics for ALB', (t) => {
           metricConfig.ActionsEnabled = false
         }
       }
-      //@ts-ignore
-      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const dash = dashboard(dashConfig, emptyFuncConfigs)
       const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
       dash.addDashboard(cfTemplate)
       const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -382,8 +364,7 @@ test('A dashboard includes metrics for ALB', (t) => {
           metricConfig.ActionsEnabled = false
         }
       }
-      //@ts-ignore
-      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const dash = dashboard(dashConfig, emptyFuncConfigs)
       const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
       dash.addDashboard(cfTemplate)
       const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -393,8 +374,7 @@ test('A dashboard includes metrics for ALB', (t) => {
   })
 
   t.test('target groups with no Lambda targets are excluded from metrics', (t) => {
-    //@ts-ignore
-    const tgDash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+    const tgDash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
     const tgTemplate = createTestCloudFormationTemplate({
       Resources: {
         listener: {
@@ -434,8 +414,7 @@ test('A dashboard includes metrics for ALB', (t) => {
   })
 
   test('A dashboard includes metrics for AppSync', (t) => {
-    //@ts-ignore
-    const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+    const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
     const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     dash.addDashboard(cfTemplate)
     const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -481,8 +460,7 @@ test('A dashboard includes metrics for ALB', (t) => {
           metricConfig.ActionsEnabled = false
         }
       }
-      //@ts-ignore
-      const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+      const dash = dashboard(dashConfig, emptyFuncConfigs)
       const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
       dash.addDashboard(cfTemplate)
       const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -497,8 +475,7 @@ test('A dashboard includes metrics for ALB', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  //@ts-ignore
-  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, emptyFuncConfigs)
   const tableResource = _.cloneDeep(defaultCfTemplate.Resources.dataTable)
   delete tableResource.Properties.GlobalSecondaryIndexes
   const compiledTemplate = {
@@ -530,7 +507,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
   t.equal(widgets.length, 2)
   const expectedTitles = new Set([
     'ReadThrottleEvents Table ${dataTable}',
-    'WriteThrottleEvents Table ${dataTable}',
+    'WriteThrottleEvents Table ${dataTable}'
   ])
 
   const actualTitles = new Set(
@@ -544,11 +521,9 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    //@ts-ignore
     dashConfig.widgets[service].ActionsEnabled = false
   }
-  //@ts-ignore
-  const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+  const dash = dashboard(dashConfig, emptyFuncConfigs)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -565,8 +540,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
       metricConfig.ActionsEnabled = false
     }
   }
-  //@ts-ignore
-  const dash = dashboard(dashConfig, emptyFuncConfigs, context)
+  const dash = dashboard(dashConfig, emptyFuncConfigs)
   const cfTemplate = createTestCloudFormationTemplate()
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -583,7 +557,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
       }
     }
     // @ts-ignore
-    const dash = dashboard(defaultConfig.dashboard, funcConfigs, context)
+    const dash = dashboard(defaultConfig.dashboard, funcConfigs)
     const cfTemplate = createTestCloudFormationTemplate()
     dash.addDashboard(cfTemplate)
     const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
@@ -611,8 +585,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
       funcConfigs[funcLogicalId][metric] = { ActionsEnabled: false }
     }
   }
-  //@ts-ignore
-  const dash = dashboard(defaultConfig.dashboard, funcConfigs, context)
+  const dash = dashboard(defaultConfig.dashboard, funcConfigs)
   dash.addDashboard(cfTemplate)
   const dashResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Dashboard')
   const [, dashResource] = Object.entries(dashResources)[0]

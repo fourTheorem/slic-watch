@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import appSyncAlarms, { AppSyncAlarmProperties } from '../appsync'
@@ -61,7 +62,7 @@ test('AppSync alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'GraphQLAPIId',
-        Value: '${$appSyncResourceName.ApiId}'
+        Value: '${AwesomeappsyncGraphQlApi.ApiId}}'
       }
     ])
   }

@@ -3,7 +3,7 @@
 import { CloudFormationTemplate } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type DynamoDbAlarmProperties = AlarmProperties & {
   ReadThrottleEvents: AlarmProperties
@@ -26,7 +26,7 @@ export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmPr
    *
    * cfTemplate A CloudFormation template object
    */
-  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate ) {
+  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate) {
     const tableResources = cfTemplate.getResourcesByType(
       'AWS::DynamoDB::Table'
     )
@@ -79,19 +79,19 @@ export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmPr
     }
   }
 
-  function createDynamoDbAlarm (identifierSub: string, dimensions , metricName: string, resourceName: string) {
+  function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string) {
     const config = dynamoDbAlarmProperties[metricName]
     const dynamoDBAlarmProperties:AlarmProperties = {
-      AlarmName: `DDB_${metricName}_${identifierSub}` ,
-      AlarmDescription: `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}`, 
+      AlarmName: `DDB_${metricName}_${identifierSub}`,
+      AlarmDescription: `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: metricName,
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/DynamoDB',
       Dimensions: dimensions
     }

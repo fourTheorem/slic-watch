@@ -1,7 +1,7 @@
 'use strict'
 import { CloudFormationTemplate } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type SfAlarmsConfig = AlarmProperties& {
   ExecutionThrottled: AlarmProperties
@@ -10,7 +10,7 @@ export type SfAlarmsConfig = AlarmProperties& {
 }
 
 export type SmAlarm= AlarmProperties & {
-  StateMachineArn: string 
+  StateMachineArn: string
 }
 
 /**
@@ -43,27 +43,24 @@ export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context
           const config = sfAlarmProperties[metric]
           const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
           const smAlarmProperties: SmAlarm = {
-            AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}` ,
+            AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}`,
             AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
-            StateMachineArn:  `${logicalId}`, 
+            StateMachineArn: `${logicalId}`,
             ComparisonOperator: config.ComparisonOperator,
             Threshold: config.Threshold,
             MetricName: metric,
             Statistic: config.Statistic,
-            Period:  config.Period,
-            ExtendedStatistic:  config.ExtendedStatistic,
-            EvaluationPeriods:  config.EvaluationPeriods,
-            TreatMissingData:  config.TreatMissingData,
+            Period: config.Period,
+            ExtendedStatistic: config.ExtendedStatistic,
+            EvaluationPeriods: config.EvaluationPeriods,
+            TreatMissingData: config.TreatMissingData,
             Namespace: 'AWS/States',
-            Dimensions: [{ Name: 'StateMachineArn', Value: {Ref: logicalId} as any }]
+            Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } as any }]
           }
-          const alarmResource= createAlarm(smAlarmProperties, context)
-          
+          const alarmResource = createAlarm(smAlarmProperties, context)
           cfTemplate.addResource(alarmResourceName, alarmResource)
         }
       }
     }
   }
-   
 }
-

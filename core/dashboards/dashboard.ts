@@ -1,9 +1,9 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import { cascade} from '../inputs/cascading-config'
+import { cascade, DashboardsCascade } from '../inputs/cascading-config'
 import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
 import { FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
-import {DashboardsCascade} from '../inputs/cascading-config'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
@@ -42,32 +42,31 @@ export function resolveTargetGroupFullNameForSub (logicalId: string) {
   return `\${${logicalId}.TargetGroupFullName}`
 }
 
-
-  /**
+/**
  * Given CloudFormation syntax for an ECS cluster, derive a string value or
  * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
  *
  * @param } cluster CloudFormation syntax for an ECS cluster
  * @returns Literal string or Sub variable syntax
  */
-  export function resolveEcsClusterNameForSub (cluster) {
-    if (typeof cluster === 'string') {
-      if (cluster.startsWith('arn:')) {
-        return cluster.split(':').pop().split('/').pop()
-      }
-      return cluster
-    }
-    // AWS::ECS::Cluster returns the cluster name for 'Ref'
-    // This can be used as a 'Fn::Sub' variable
-    if (cluster.GetAtt && cluster.GetAtt[1] === 'Arn') {
-      return '${' + cluster.GetAtt[0] + '}'
-    } else if (cluster.Ref) {
-      return '${' + cluster.Ref + '}'
-    } else if (cluster['Fn::Sub']) {
-      return cluster['Fn::Sub']
+export function resolveEcsClusterNameForSub (cluster) {
+  if (typeof cluster === 'string') {
+    if (cluster.startsWith('arn:')) {
+      return cluster.split(':').pop().split('/').pop()
     }
     return cluster
   }
+  // AWS::ECS::Cluster returns the cluster name for 'Ref'
+  // This can be used as a 'Fn::Sub' variable
+  if (cluster.GetAtt && cluster.GetAtt[1] === 'Arn') {
+    return '${' + cluster.GetAtt[0] + '}'
+  } else if (cluster.Ref) {
+    return '${' + cluster.Ref + '}'
+  } else if (cluster['Fn::Sub']) {
+    return cluster['Fn::Sub']
+  }
+  return cluster
+}
 
 const MAX_WIDTH = 24
 
@@ -78,7 +77,7 @@ const logger = pino()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig: DashboardsCascade , functionDashboardConfigs: FunctionDashboardConfigs) {
+export default function dashboard (dashboardConfig: DashboardsCascade, functionDashboardConfigs: FunctionDashboardConfigs) {
   const {
     timeRange,
     widgets: {
@@ -308,7 +307,7 @@ export default function dashboard (dashboardConfig: DashboardsCascade , function
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
   function getConfiguredMetrics (serviceDashConfig) {
-    const extractedConfig= {}
+    const extractedConfig = {}
     for (const [metric, metricConfig] of Object.entries(serviceDashConfig)) {
       if (typeof metricConfig === 'object') {
         extractedConfig[metric] = metricConfig
@@ -667,7 +666,7 @@ export default function dashboard (dashboardConfig: DashboardsCascade , function
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: ResourceType, cfTemplate:CloudFormationTemplate ) {
+  function createTargetGroupWidgets (targetGroupResources: ResourceType, cfTemplate:CloudFormationTemplate) {
     const targetGroupWidgets = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
@@ -751,7 +750,7 @@ export default function dashboard (dashboardConfig: DashboardsCascade , function
   }
 
   type Widgets = {
-    width:  number
+    width: number
     height: number
   }
   /**

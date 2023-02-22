@@ -10,7 +10,6 @@ try {
       ...defaultConfig,
       topicArn: 'dummy-topic-arn'
     }
-    
     const ajv = new Ajv({
       unicodeRegExp: false
     })
@@ -18,21 +17,16 @@ try {
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     // @ts-ignore
     t.ok(slicWatchValid, slicWatchValidate.errors)
-  
     const pluginValidate = ajv.compile(pluginConfigSchema)
     const testConfig = { slicWatch: slicWatchConfig }
     const pluginValid = pluginValidate(testConfig)
     // @ts-ignore
     t.ok(pluginValid, pluginValidate.errors)
-  
     t.end()
   })
-  
 } catch (error) {
-  throw new Error(error);
-  
+  throw new Error(error)
 }
-
 
 test('Default config conforms to the config schema without topicArn', (t) => {
   const slicWatchConfig = {

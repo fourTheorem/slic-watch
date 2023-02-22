@@ -1,9 +1,9 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import Resource from "cloudform-types/types/resource"
+import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type EventsAlarmsConfig = AlarmProperties &{
   FailedInvocations: AlarmProperties,
@@ -11,7 +11,7 @@ export type EventsAlarmsConfig = AlarmProperties &{
 }
 
 export type EventbridgeAlarm = AlarmProperties & {
-  RuleName: string 
+  RuleName: string
 }
 
 /**
@@ -57,19 +57,19 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
   function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
-      AlarmName: `Events_FailedInvocationsAlarm_${logicalId}` ,
+      AlarmName: `Events_FailedInvocationsAlarm_${logicalId}`,
       AlarmDescription: `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}`,
-      RuleName: `${logicalId}`, 
+      RuleName: `${logicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'FailedInvocations',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/Events',
-      Dimensions: [{ Name: 'RuleName', Value: {Ref: logicalId} as any}]
+      Dimensions: [{ Name: 'RuleName', Value: { Ref: logicalId } as any }]
     }
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${logicalId}`,
@@ -82,17 +82,17 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
       AlarmName: `Events_ThrottledRulesAlarm_${logicalId}`,
       AlarmDescription: `EventBridge Throttled Rules for ${logicalId} breaches ${threshold}`,
-      RuleName: `${logicalId}`, 
+      RuleName: `${logicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'ThrottledRules',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/Events',
-      Dimensions: [{ Name: 'RuleName', Value: {Ref: logicalId} as any}]
+      Dimensions: [{ Name: 'RuleName', Value: { Ref: logicalId } as any }]
     }
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,

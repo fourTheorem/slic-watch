@@ -18,7 +18,7 @@ import { applyAlarmConfig } from '../../inputs/function-config'
 export type AlarmsByType = {
   Lambda_Duration
   Lambda_Errors
-  Lambda_IteratorAge 
+  Lambda_IteratorAge
   Lambda_Throttles
 }
 
@@ -63,9 +63,9 @@ test('AWS Lambda alarms are created', (t) => {
 
   const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
 
-  function getAlarmsByType():AlarmsByType  {
-      const alarmsByType = {}
-      for (const alarmResource of Object.values(alarmResources)) {
+  function getAlarmsByType ():AlarmsByType {
+    const alarmsByType = {}
+    for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al.AlarmName)
@@ -107,27 +107,26 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, 120)
   }
-  function getMetricsById():MetricsById  {
+  function getMetricsById ():MetricsById {
     const metricsById = {}
     for (const al of alarmsByType.Lambda_Throttles) {
       t.equal(al.Metrics.length, 3)
       for (const metric of al.Metrics) {
         metricsById[metric.Id] = metric
-      } 
+      }
     }
-    return metricsById as MetricsById 
+    return metricsById as MetricsById
   }
-    const metricsById = getMetricsById() 
-    t.ok(metricsById.throttles_pc.Expression)
-    t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    t.equal(metricsById.throttles.MetricStat.Period, 120)
-    t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
-    t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    t.equal(metricsById.invocations.MetricStat.Period, 120)
-    t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
-  
+  const metricsById = getMetricsById()
+  t.ok(metricsById.throttles_pc.Expression)
+  t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
+  t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
+  t.equal(metricsById.throttles.MetricStat.Period, 120)
+  t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
+  t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
+  t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
+  t.equal(metricsById.invocations.MetricStat.Period, 120)
+  t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
   t.equal(alarmsByType.Lambda_IteratorAge.size, 1)
   for (const al of alarmsByType.Lambda_IteratorAge) {
     t.equal(al.MetricName, 'IteratorAge')
@@ -178,8 +177,8 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmPropertiess, testContext)
   createLambdaAlarms(albCf)
   const albAlarmResources = albCf.getResourcesByType('AWS::CloudWatch::Alarm')
-  
-  function getAlarmsByType(): AlarmsByType {
+
+  function getAlarmsByType (): AlarmsByType {
     const albAlarmsByType = {}
     for (const alarmResource of Object.values(albAlarmResources)) {
       const al = alarmResource.Properties
@@ -188,11 +187,10 @@ test('AWS Lambda alarms are created for ALB', (t) => {
       albAlarmsByType[alarmType] = albAlarmsByType[alarmType] || new Set()
       albAlarmsByType[alarmType].add(al)
     }
-    return albAlarmsByType as AlarmsByType 
+    return albAlarmsByType as AlarmsByType
   }
   const albAlarmsByType = getAlarmsByType()
   t.equal(Object.keys(albAlarmResources).length, 3)
-  
   t.same(Object.keys(albAlarmsByType).sort(), [
     'Lambda_Duration',
     'Lambda_Errors',
@@ -220,27 +218,27 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     t.equal(al.Period, 120)
   }
 
-  function getMetricsById(): MetricsById  {
+  function getMetricsById (): MetricsById {
     const metricsById = {}
+    // eslint-disable-next-line no-unreachable-loop
     for (const al of albAlarmsByType.Lambda_Throttles) {
       t.equal(al.Metrics.length, 3)
       for (const metric of al.Metrics) {
         metricsById[metric.Id] = metric
-      } 
-      return metricsById as MetricsById 
+      }
+      return metricsById as MetricsById
     }
   }
-  
-    const metricsById = getMetricsById()
-    t.ok(metricsById.throttles_pc.Expression)
-    t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
-    t.equal(metricsById.throttles.MetricStat.Period, 120)
-    t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
-    t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
-    t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
-    t.equal(metricsById.invocations.MetricStat.Period, 120)
-    t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
+  const metricsById = getMetricsById()
+  t.ok(metricsById.throttles_pc.Expression)
+  t.equal(metricsById.throttles.MetricStat.Metric.Namespace, 'AWS/Lambda')
+  t.equal(metricsById.throttles.MetricStat.Metric.MetricName, 'Throttles')
+  t.equal(metricsById.throttles.MetricStat.Period, 120)
+  t.equal(metricsById.throttles.MetricStat.Stat, 'Sum')
+  t.equal(metricsById.invocations.MetricStat.Metric.Namespace, 'AWS/Lambda')
+  t.equal(metricsById.invocations.MetricStat.Metric.MetricName, 'Invocations')
+  t.equal(metricsById.invocations.MetricStat.Period, 120)
+  t.equal(metricsById.invocations.MetricStat.Stat, 'Sum')
 
   t.end()
 })
@@ -469,7 +467,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
 })
 
 test('AWS Lambda alarms are not created if disabled at function level', (t) => {
-  const AlarmProperties  = createTestConfig(defaultConfig.alarms, {
+  const AlarmProperties = createTestConfig(defaultConfig.alarms, {
     Lambda: {
       Invocations: {
         ActionsEnabled: true,

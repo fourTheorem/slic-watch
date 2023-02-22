@@ -1,12 +1,11 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import Resource from "cloudform-types/types/resource"
+import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
-
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type KinesisAlarmProperties = AlarmProperties & {
   'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
@@ -70,12 +69,12 @@ export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmPrope
       Threshold: config.Threshold,
       MetricName: metric,
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/Kinesis',
-      Dimensions:[{ Name: 'StreamName', Value: {Ref: streamLogicalId} as any}]
+      Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } as any }]
     }
 
     return {

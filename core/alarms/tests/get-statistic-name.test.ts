@@ -1,6 +1,5 @@
 'use strict'
 
-
 import { test } from 'tap'
 import { getStatisticName } from '../get-statistic-name'
 

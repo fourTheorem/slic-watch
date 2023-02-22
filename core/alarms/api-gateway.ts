@@ -1,11 +1,11 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import Resource from "cloudform-types/types/resource"
+import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type ApiGwAlarmProperties = AlarmProperties &{
   '5XXError': AlarmProperties
@@ -124,20 +124,20 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_5XXError_${apiNameForSub}` ,
+      AlarmName: `APIGW_5XXError_${apiNameForSub}`,
       AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName, 
+      ApiName: apiName,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: '5XXError',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/ApiGateway',
       Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    } 
+    }
     return {
       resourceName: makeResourceName('Api', apiName, 'Availability'),
       resource: createAlarm(apiAlarmProperties, context)
@@ -149,17 +149,17 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_4XXError_${apiNameForSub}` ,
+      AlarmName: `APIGW_4XXError_${apiNameForSub}`,
       AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName, 
+      ApiName: apiName,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: '4XXError',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/ApiGateway',
       Dimensions: [{ Name: 'ApiName', Value: apiName }]
     }
@@ -174,17 +174,17 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
     const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_Latency_${apiNameForSub}` ,
+      AlarmName: `APIGW_Latency_${apiNameForSub}`,
       AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName, 
+      ApiName: apiName,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'Latency',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/ApiGateway',
       Dimensions: [{ Name: 'ApiName', Value: apiName }]
     }

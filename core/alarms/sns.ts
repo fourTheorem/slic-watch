@@ -1,9 +1,9 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import Resource from "cloudform-types/types/resource"
+import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type SnsAlarmsConfig = AlarmProperties & {
   'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties,
@@ -57,17 +57,17 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
   function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const snsAlarmProperties: SnsAlarm = {
-      AlarmName:  `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
+      AlarmName: `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      TopicName: `\${${topicLogicalId}.TopicName}`,  
+      TopicName: `\${${topicLogicalId}.TopicName}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/SNS',
       Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }]
     }
@@ -82,15 +82,15 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     const snsAlarmProperties: SnsAlarm = {
       AlarmName: `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      TopicName: `\${${topicLogicalId}.TopicName}`, 
+      TopicName: `\${${topicLogicalId}.TopicName}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'NumberOfNotificationsFailed',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/SNS',
       Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }]
     }

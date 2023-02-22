@@ -3,13 +3,12 @@
 import { test } from 'tap'
 import _ from 'lodash'
 import esmock from 'esmock'
-import { CloudFormationTemplate } from "slic-watch-core/cf-template"
+import { CloudFormationTemplate } from 'slic-watch-core/cf-template'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 const template = require('./event.json')
 
 const event = { fragment: template, templateParameterValues: { stack: 'sam-test-stack-project' } }
-
 
 type TestState = {
   dashboardCalled?:boolean,
@@ -41,7 +40,7 @@ const lambda = await esmock('../index', {
 
 test('index', t => {
   t.beforeEach(t => {
-   t.ok(true)
+    t.ok(true)
     testState = {}
   })
 
@@ -142,9 +141,3 @@ test('index', t => {
 
   t.end()
 })
-
-
-  
-
-  
-

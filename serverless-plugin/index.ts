@@ -10,15 +10,13 @@ import defaultConfig from '../core/inputs/default-config'
 import CloudFormationTemplate from '../core/cf-template'
 import Serverless from 'serverless'
 import Hooks from 'serverless-hooks-plugin'
-import Aws from 'serverless/plugins/aws/provider/awsProvider';
-
-
+import Aws from 'serverless/plugins/aws/provider/awsProvider'
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
   providerNaming: Aws
-  dashboard: { addDashboard: (cfTemplate: import("slic-watch-core/cf-template").CloudFormationTemplate) => void; };
-  alarms: { addAlarms: (cfTemplate: import("slic-watch-core/cf-template").CloudFormationTemplate) => void; };
+  dashboard: { addDashboard: (cfTemplate: import('slic-watch-core/cf-template').CloudFormationTemplate) => void; }
+  alarms: { addAlarms: (cfTemplate: import('slic-watch-core/cf-template').CloudFormationTemplate) => void; }
 
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
@@ -39,16 +37,15 @@ class ServerlessPlugin {
     }
 
     // Use the latest possible hook to ensure that `Resources` are included in the compiled Template
-    this.hooks = { 'after:aws:package:finalize:mergeCustomProviderResources': this.createSlicWatchResources.bind(this)}
+    this.hooks = { 'after:aws:package:finalize:mergeCustomProviderResources': this.createSlicWatchResources.bind(this) }
   }
 
   /**
    * Modify the CloudFormation template before the package is finalized
    */
   createSlicWatchResources () {
-
     type SlicWatchConfig = {
-      topicArn: string 
+      topicArn: string
       ActionsEnabled: boolean
     }
 
@@ -78,7 +75,6 @@ class ServerlessPlugin {
     const context = { alarmActions }
 
     const config = _.merge(defaultConfig, slicWatchConfig)
-    
     const awsProvider = this.serverless.getProvider('aws')
 
     const cfTemplate = CloudFormationTemplate(

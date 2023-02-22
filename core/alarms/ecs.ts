@@ -1,9 +1,9 @@
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
-import Resource from "cloudform-types/types/resource"
+import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
+import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 export type EcsAlarmsConfig = AlarmProperties & {
   MemoryUtilization: AlarmProperties
@@ -86,18 +86,18 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
       AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
       AlarmDescription: `ECS memory utilization for ${logicalId}.Name breaches ${threshold}`,
       ServiceName: `\${${logicalId}.Name}`,
-      ClusterName:clusterName,  
+      ClusterName: clusterName,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'MemoryUtilization',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/ECS',
       Dimensions: [
-        { Name: 'ServiceName', Value: `\${${logicalId}.Name}`},
+        { Name: 'ServiceName', Value: `\${${logicalId}.Name}` },
         { Name: 'ClusterName', Value: clusterName }
       ]
     }
@@ -111,20 +111,20 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,
-      AlarmDescription:  `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}`,
-      ServiceName:  `\${${logicalId}.Name}`,
-      ClusterName: clusterName,  
+      AlarmDescription: `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}`,
+      ServiceName: `\${${logicalId}.Name}`,
+      ClusterName: clusterName,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'CPUUtilization',
       Statistic: config.Statistic,
-      Period:  config.Period,
-      ExtendedStatistic:  config.ExtendedStatistic,
-      EvaluationPeriods:  config.EvaluationPeriods,
-      TreatMissingData:  config.TreatMissingData,
+      Period: config.Period,
+      ExtendedStatistic: config.ExtendedStatistic,
+      EvaluationPeriods: config.EvaluationPeriods,
+      TreatMissingData: config.TreatMissingData,
       Namespace: 'AWS/ECS',
       Dimensions: [
-        { Name: 'ServiceName', Value: `\${${logicalId}.Name}`},
+        { Name: 'ServiceName', Value: `\${${logicalId}.Name}` },
         { Name: 'ClusterName', Value: clusterName }
       ]
     }

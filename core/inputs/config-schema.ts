@@ -38,7 +38,7 @@ const supportedWidgets = {
   Events: ['FailedInvocations', 'ThrottledRules', 'Invocations'],
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
   ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
-  AppSync: ['5XXError', '4XXError', 'Latency','Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
+  AppSync: ['5XXError', '4XXError', 'Latency', 'Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
 }
 
 const commonAlarmProperties = {
@@ -227,7 +227,7 @@ const functionConfigSchema = {
           type: 'object',
           properties: {
             ActionsEnabled: { type: 'boolean' },
-             // @ts-ignore
+            // @ts-ignore
             Lambda: alarmSchemas.Lambda
           }
         },
@@ -235,7 +235,7 @@ const functionConfigSchema = {
           type: 'object',
           properties: {
             ActionsEnabled: { type: 'boolean' },
-             // @ts-ignore
+            // @ts-ignore
             Lambda: widgetSchemas.Lambda
           }
         }

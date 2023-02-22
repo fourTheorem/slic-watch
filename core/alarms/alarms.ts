@@ -18,7 +18,7 @@ import albAlarms from './alb'
 import albTargetAlarms from './alb-target-group'
 import appSyncAlarms from './appsync'
 
-export default function alarms (AlarmProperties:AlarmsCascade , functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
+export default function alarms (AlarmProperties:AlarmsCascade, functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -34,7 +34,7 @@ export default function alarms (AlarmProperties:AlarmsCascade , functionAlarmPro
     AppSync: appSyncConfig
   } = cascade(AlarmProperties)
 
-  const cascadedFunctionAlarmPropertiess = applyAlarmConfig(lambdaConfig, functionAlarmPropertiess )
+  const cascadedFunctionAlarmPropertiess = applyAlarmConfig(lambdaConfig, functionAlarmPropertiess)
   const { createLambdaAlarms } = lambdaAlarms(cascadedFunctionAlarmPropertiess, context)
   const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwConfig, context)
   const { createStatesAlarms } = stepFunctionAlarms(sfConfig, context)

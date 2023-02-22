@@ -1,6 +1,7 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import albTargetAlarms, {AlbTargetAlarmProperties, findLoadBalancersForTargetGroup} from '../alb-target-group'
+import albTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {
@@ -14,7 +15,6 @@ import {
 
 import CloudFormationTemplate from '../../cf-template'
 const albCfTemp = CloudFormationTemplate(albCfTemplate)
-
 
 test('findLoadBalancersForTargetGroup', (t) => {
   test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
@@ -47,7 +47,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {Type: ''}
+        alb: { Type: '' }
       }
     })
 
@@ -73,7 +73,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: {Type: ''}
+        alb: { Type: '' }
       }
     })
 
@@ -248,7 +248,7 @@ test('ALB Target Group alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'TargetGroup',
-        Value: '${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}' 
+        Value: '${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}'
       },
       {
         Name: 'LoadBalancer',
@@ -259,7 +259,6 @@ test('ALB Target Group alarms are created', (t) => {
 
   t.end()
 })
-
 
 test('ALB alarms are not created when disabled globally', (t) => {
   const AlarmPropertiesTargetGroup = createTestConfig(

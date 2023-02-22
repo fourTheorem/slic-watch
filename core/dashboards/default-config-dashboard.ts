@@ -15,7 +15,7 @@ export type DashboardBodyProperties = {
   width?: number
   height?: number
   yAxis?: YAxis
-  Statistic?: Statistic[] 
+  Statistic?: Statistic[]
 }
 
 export type ServiceDashConfig = {
@@ -30,82 +30,90 @@ export type LambdaDashboardBodyProperties = {
   Invocations: DashboardBodyProperties
   ConcurrentExecutions: DashboardBodyProperties
   IteratorAge: DashboardBodyProperties
-} 
+}
 
 export type ApiGwDashboardBodyProperties = {
-  '5XXError': DashboardBodyProperties 
+  '5XXError': DashboardBodyProperties
   '4XXError': DashboardBodyProperties
   Latency: DashboardBodyProperties
   Count: DashboardBodyProperties
 }
 
 export type SfDashboardBodyProperties = {
-  ExecutionsFailed: DashboardBodyProperties 
+  ExecutionsFailed: DashboardBodyProperties
   ExecutionThrottled: DashboardBodyProperties
   ExecutionsTimedOut: DashboardBodyProperties
 }
 
 export type DynamoDbDashboardBodyProperties = {
-  ReadThrottleEvents: DashboardBodyProperties 
+  ReadThrottleEvents: DashboardBodyProperties
   WriteThrottleEvents: DashboardBodyProperties
 }
 
 export type KinesisDashboardBodyProperties = {
-  'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties 
+  'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties
   ReadProvisionedThroughputExceeded: DashboardBodyProperties
   WriteProvisionedThroughputExceeded: DashboardBodyProperties
-  'PutRecord.Success': DashboardBodyProperties 
+  'PutRecord.Success': DashboardBodyProperties
   'PutRecords.Success': DashboardBodyProperties
   'GetRecords.Success': DashboardBodyProperties
 }
 
 export type SqsDashboardBodyProperties = {
-  NumberOfMessagesSent: DashboardBodyProperties 
+  NumberOfMessagesSent: DashboardBodyProperties
   NumberOfMessagesReceived: DashboardBodyProperties
   NumberOfMessagesDeleted: DashboardBodyProperties
-  ApproximateAgeOfOldestMessage: DashboardBodyProperties 
+  ApproximateAgeOfOldestMessage: DashboardBodyProperties
   ApproximateNumberOfMessagesVisible: DashboardBodyProperties
 }
 
 export type EcsDashboardBodyProperties = {
   ActionsEnabled?: boolean
-  MemoryUtilization: DashboardBodyProperties 
+  MemoryUtilization: DashboardBodyProperties
   CPUUtilization: DashboardBodyProperties
 }
 
 export type SnsDashboardBodyProperties = {
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties 
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties
   NumberOfNotificationsFailed: DashboardBodyProperties
 }
 
 export type RuleDashboardBodyProperties = {
-  FailedInvocations: DashboardBodyProperties 
+  FailedInvocations: DashboardBodyProperties
   ThrottledRules: DashboardBodyProperties
   Invocations: DashboardBodyProperties
 }
 
 export type AlbDashboardBodyProperties = {
-  HTTPCode_ELB_5XX_Count: DashboardBodyProperties 
+  HTTPCode_ELB_5XX_Count: DashboardBodyProperties
   RejectedConnectionCount: DashboardBodyProperties
 }
 
 export type AlbTargetDashboardBodyProperties = {
-  HTTPCode_Target_5XX_Count: DashboardBodyProperties 
+  HTTPCode_Target_5XX_Count: DashboardBodyProperties
   UnHealthyHostCount: DashboardBodyProperties
-  LambdaInternalError: DashboardBodyProperties 
+  LambdaInternalError: DashboardBodyProperties
   LambdaUserError: DashboardBodyProperties
 }
 
 export type AppSyncDashboardBodyProperties = {
-  '5XXError': DashboardBodyProperties 
+  '5XXError': DashboardBodyProperties
   '4XXError': DashboardBodyProperties
-  Latency: DashboardBodyProperties 
+  Latency: DashboardBodyProperties
   Requests: DashboardBodyProperties
-  ConnectServerError: DashboardBodyProperties 
+  ConnectServerError: DashboardBodyProperties
   DisconnectServerError: DashboardBodyProperties
-  SubscribeServerError: DashboardBodyProperties 
+  SubscribeServerError: DashboardBodyProperties
   UnsubscribeServerError: DashboardBodyProperties
-  PublishDataMessageServerError: DashboardBodyProperties 
+  PublishDataMessageServerError: DashboardBodyProperties
+}
+
+// Lambda resources
+
+export type FunctionResources = {
+  Type: string
+  Properties: FunctionProperties
+  DependsOn: string[]
 }
 
 export type FunctionDashboardConfigs = {
@@ -121,13 +129,3 @@ export type FunctionDashboardConfigs = {
   EventsRuleLambdaFunction?: FunctionResources
   AlbEventLambdaFunction?: FunctionResources
 }
-
-// Lambda resources
-
-export type FunctionResources = {
-  Type: string
-  Properties: FunctionProperties
-  DependsOn: string[]
-}
-
-

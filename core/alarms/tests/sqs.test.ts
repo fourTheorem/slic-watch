@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import sqsAlarms from '../sqs'
@@ -47,7 +48,7 @@ test('SQS alarms are created', (t) => {
   // we expect 2 alarms per queue
   t.equal(Object.keys(alarmResources).length, 4)
 
-  function getAlarmsByType(): AlarmsByType {
+  function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
@@ -56,8 +57,8 @@ test('SQS alarms are created', (t) => {
       alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
       alarmsByType[alarmType].add(al)
     }
-    return alarmsByType as AlarmsByType 
-  } 
+    return alarmsByType as AlarmsByType
+  }
 
   const alarmsByType = getAlarmsByType()
   t.same(Object.keys(alarmsByType).sort(), [

@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import snsAlarms from '../sns'
