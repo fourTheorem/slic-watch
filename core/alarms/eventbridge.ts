@@ -57,9 +57,9 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
   function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
-      AlarmName: `Events_FailedInvocationsAlarm_\${${logicalId}}` ,
+      AlarmName: `Events_FailedInvocationsAlarm_${logicalId}` ,
       AlarmDescription: `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}`,
-      RuleName: logicalId , 
+      RuleName: `${logicalId}`, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'FailedInvocations',
@@ -69,7 +69,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
       EvaluationPeriods:  config.EvaluationPeriods,
       TreatMissingData:  config.TreatMissingData,
       Namespace: 'AWS/Events',
-      Dimensions: [{ Name: 'RuleName', Value: `\${${logicalId}}`}]
+      Dimensions: [{ Name: 'RuleName', Value: {Ref: logicalId} as any}]
     }
     return {
       resourceName: `slicWatchEventsFailedInvocationsAlarm${logicalId}`,
@@ -80,9 +80,9 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
   function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
-      AlarmName: `Events_ThrottledRulesAlarm_\${${logicalId}}`,
-      AlarmDescription: `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}`,
-      RuleName: logicalId, 
+      AlarmName: `Events_ThrottledRulesAlarm_${logicalId}`,
+      AlarmDescription: `EventBridge Throttled Rules for ${logicalId} breaches ${threshold}`,
+      RuleName: `${logicalId}`, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'ThrottledRules',
@@ -92,7 +92,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
       EvaluationPeriods:  config.EvaluationPeriods,
       TreatMissingData:  config.TreatMissingData,
       Namespace: 'AWS/Events',
-      Dimensions: [{ Name: 'RuleName', Value: `\${${logicalId}}`}]
+      Dimensions: [{ Name: 'RuleName', Value: {Ref: logicalId} as any}]
     }
     return {
       resourceName: `slicWatchEventsThrottledRulesAlarm${logicalId}`,

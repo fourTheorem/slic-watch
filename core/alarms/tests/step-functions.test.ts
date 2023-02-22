@@ -76,7 +76,9 @@ test('Step Function alarms are created', (t) => {
       t.same(al.Dimensions, [
         {
           Name: 'StateMachineArn',
-          Value: '${Workflow}'
+          Value: {
+            'Ref': 'Workflow'
+          }
         }
       ])
     }

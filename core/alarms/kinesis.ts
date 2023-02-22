@@ -64,8 +64,8 @@ export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmPrope
   function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const kinesisAlarmProperties: AlarmProperties = {
-      AlarmName: `Kinesis_${type}_\${${streamLogicalId}}`,
-      AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${threshold} milliseconds`,
+      AlarmName: `Kinesis_${type}_${streamLogicalId}`,
+      AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamLogicalId} breaches ${threshold} milliseconds`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: metric,
@@ -75,7 +75,7 @@ export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmPrope
       EvaluationPeriods:  config.EvaluationPeriods,
       TreatMissingData:  config.TreatMissingData,
       Namespace: 'AWS/Kinesis',
-      Dimensions:[{ Name: 'StreamName', Value: `\${${streamLogicalId}}`}]
+      Dimensions:[{ Name: 'StreamName', Value: {Ref: streamLogicalId} as any}]
     }
 
     return {

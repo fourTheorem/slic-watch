@@ -60,7 +60,10 @@ test('Kinesis data stream alarms are created', (t) => {
     t.same(al.Dimensions, [
       {
         Name: 'StreamName',
-        Value: '${stream}'
+        Value: {
+          'Ref': 'stream'
+        }
+
       }
     ])
   }

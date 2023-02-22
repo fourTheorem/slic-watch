@@ -45,7 +45,7 @@ export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context
           const smAlarmProperties: SmAlarm = {
             AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}` ,
             AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
-            StateMachineArn:  `\${${logicalId}}`, 
+            StateMachineArn:  `${logicalId}`, 
             ComparisonOperator: config.ComparisonOperator,
             Threshold: config.Threshold,
             MetricName: metric,
@@ -55,7 +55,7 @@ export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context
             EvaluationPeriods:  config.EvaluationPeriods,
             TreatMissingData:  config.TreatMissingData,
             Namespace: 'AWS/States',
-            Dimensions: [{ Name: 'StateMachineArn', Value:`\${${logicalId}}`}]
+            Dimensions: [{ Name: 'StateMachineArn', Value: {Ref: logicalId} as any }]
           }
           const alarmResource= createAlarm(smAlarmProperties, context)
           
