@@ -14,7 +14,7 @@ export type AppSyncAlarmProperties = AlarmProperties & {
 }
 
 export type AppSyncAlarm= AlarmProperties & {
-  appSyncResourceName: string 
+  AppSyncResourceName: string 
 }
 
 /**
@@ -65,7 +65,7 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmPrope
     const appSyncAlarmProperties:AppSyncAlarm = {
       AlarmName:`AppSync5XXErrorAlarm_${graphQLName}` ,
       AlarmDescription: `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-      appSyncResourceName, 
+      AppSyncResourceName:appSyncResourceName , 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: '5XXError',
@@ -80,7 +80,6 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmPrope
       ]
     }
     return {
-      // @ts-ignore
       resourceName: makeResourceName('AppSync', graphQLName, '5XXError'),
       resource: createAlarm(appSyncAlarmProperties, context)
     }
@@ -92,7 +91,7 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmPrope
     const appSyncAlarmProperties:AppSyncAlarm = {
       AlarmName:`AppSyncLatencyAlarm_${graphQLName}` ,
       AlarmDescription: `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-      appSyncResourceName, 
+      AppSyncResourceName: appSyncResourceName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'Latency',
@@ -107,7 +106,6 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmPrope
       ]
     }
     return {
-      // @ts-ignore
       resourceName: makeResourceName('AppSync', graphQLName, 'Latency'),
       resource: createAlarm(appSyncAlarmProperties, context)
     }

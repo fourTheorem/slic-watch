@@ -12,8 +12,8 @@ import { SnsAlarmsConfig } from '../alarms/sns'
 import { SqsAlarmsConfig } from '../alarms/sqs'
 import { SfAlarmsConfig } from '../alarms/step-functions'
 import { AllAlarmsConfig } from '../alarms/default-config-alarms'
-import { DashboardConfig, DashProperties, LambdaDashProperties, ApiGwDashProperties, SfDashProperties, DynamoDbDashProperties, KinesisDashProperties, SqsDashProperties,
-   EcsDashProperties, SnsDashProperties, RuleDashProperties, AlbDashProperties, AlbTargetDashProperties, AppSyncDashProperties } from '../dashboards/default-config-dashboard'
+import { DashboardConfig, DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties, KinesisDashboardBodyProperties, SqsDashboardBodyProperties,
+   EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties, AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties } from '../dashboards/default-config-dashboard'
 import { LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
 import { Statistic } from '../cf-template'
 import { AlarmProperties} from "cloudform-types/types/cloudWatch/alarm"
@@ -24,7 +24,7 @@ const MAX_DEPTH = 10
 type ConfigNode =  DashboardConfig | AllAlarmsConfig
 
 type ParentNode ={
-  DashProperties?: DashProperties
+  DashboardBodyProperties?: DashboardBodyProperties
   AlarmProperties?: AlarmProperties
 
 }
@@ -41,18 +41,18 @@ export type DashboardsCascade ={
 export type Widgets = {
   ActionsEnabled?:boolean // remove later ? mark 
   Statistic?: Statistic[]
-  Lambda?: LambdaDashProperties 
-  ApiGateway?: ApiGwDashProperties
-  States?: SfDashProperties,
-  DynamoDB?: DynamoDbDashProperties 
-  Kinesis?: KinesisDashProperties
-  SQS?: SqsDashProperties
-  ECS?: EcsDashProperties
-  SNS?: SnsDashProperties  
-  Events?: RuleDashProperties
-  ApplicationELB?: AlbDashProperties
-  ApplicationELBTarget?: AlbTargetDashProperties
-  AppSync?: AppSyncDashProperties 
+  Lambda?: LambdaDashboardBodyProperties 
+  ApiGateway?: ApiGwDashboardBodyProperties
+  States?: SfDashboardBodyProperties,
+  DynamoDB?: DynamoDbDashboardBodyProperties 
+  Kinesis?: KinesisDashboardBodyProperties
+  SQS?: SqsDashboardBodyProperties
+  ECS?: EcsDashboardBodyProperties
+  SNS?: SnsDashboardBodyProperties  
+  Events?: RuleDashboardBodyProperties
+  ApplicationELB?: AlbDashboardBodyProperties
+  ApplicationELBTarget?: AlbTargetDashboardBodyProperties
+  AppSync?: AppSyncDashboardBodyProperties 
 }
 
 export type AlarmsCascade = {

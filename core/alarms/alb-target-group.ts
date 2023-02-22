@@ -16,8 +16,8 @@ export type AlbTargetAlarmProperties = AlarmProperties & {
 }
 
 export type AlbTargetAlarm = AlarmProperties & {
-  targetGroupResourceName: string
-  loadBalancerLogicalId: string 
+  TargetGroupResourceName: string
+  LoadBalancerLogicalId: string 
 } 
 
 /**
@@ -38,12 +38,9 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
-    // @ts-ignore
     for (const action of listener.Properties.DefaultActions || []) {
       const targetGroupArn = action?.TargetGroupArn
-      // @ts-ignore
       if (targetGroupArn?.Ref === targetGroupLogicalId) {
-        // @ts-ignore
         const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
@@ -57,10 +54,8 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule ] of Object.entries(listenerRuleResources)) {
-    // @ts-ignore
     for (const action of listenerRule.Properties.Actions || []) {
       const targetGroupArn = action.TargetGroupArn
-      // @ts-ignore
       if (targetGroupArn.Ref === targetGroupLogicalId) {
         allListenerRules[listenerRuleLogicalId] = listenerRule
         break
@@ -159,8 +154,8 @@ export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlar
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerHTTPCodeTarget5XXCountAlarm_${targetGroupResourceName}`,
       AlarmDescription:  `LoadBalancer HTTP Code Target 5XX Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      targetGroupResourceName,
-      loadBalancerLogicalId,
+      TargetGroupResourceName: targetGroupResourceName,
+      LoadBalancerLogicalId:loadBalancerLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'HTTPCode_Target_5XX_Count',
@@ -186,8 +181,8 @@ export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlar
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
       AlarmDescription:  `LoadBalancer UnHealthy Host Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      targetGroupResourceName,
-      loadBalancerLogicalId,
+      TargetGroupResourceName: targetGroupResourceName,
+      LoadBalancerLogicalId:loadBalancerLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'UnHealthyHostCount',
@@ -213,8 +208,8 @@ export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlar
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
       AlarmDescription: `LoadBalancer Lambda Internal Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      targetGroupResourceName,
-      loadBalancerLogicalId,
+      TargetGroupResourceName: targetGroupResourceName,
+      LoadBalancerLogicalId:loadBalancerLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'LambdaInternalError',
@@ -240,8 +235,8 @@ export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlar
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,
       AlarmDescription:  `LoadBalancer Lambda User Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      targetGroupResourceName,
-      loadBalancerLogicalId,
+      TargetGroupResourceName: targetGroupResourceName,
+      LoadBalancerLogicalId:loadBalancerLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'LambdaUserError',

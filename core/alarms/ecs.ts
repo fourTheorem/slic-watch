@@ -11,8 +11,8 @@ export type EcsAlarmsConfig = AlarmProperties & {
 }
 
 export type EcsAlarm = AlarmProperties & {
-  serviceName,
-  clusterName: string
+  ServiceName: string,
+  ClusterName: string
 }
 
 /**
@@ -85,8 +85,8 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
       AlarmDescription: `ECS memory utilization for ${logicalId}.Name breaches ${threshold}`,
-      serviceName:  { 'Fn::GetAtt': [logicalId, 'Name'] },
-      clusterName,  
+      ServiceName: `\${${logicalId}.Name}`,
+      ClusterName:clusterName,  
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'MemoryUtilization',
@@ -112,8 +112,8 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,
       AlarmDescription:  `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}`,
-      serviceName:  { 'Fn::GetAtt': [logicalId, 'Name'] },
-      clusterName,  
+      ServiceName:  `\${${logicalId}.Name}`,
+      ClusterName: clusterName,  
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'CPUUtilization',

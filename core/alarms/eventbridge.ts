@@ -11,7 +11,7 @@ export type EventsAlarmsConfig = AlarmProperties &{
 }
 
 export type EventbridgeAlarm = AlarmProperties & {
-  ruleName: object 
+  RuleName: string 
 }
 
 /**
@@ -59,7 +59,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
       AlarmName: `Events_FailedInvocationsAlarm_\${${logicalId}}` ,
       AlarmDescription: `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}`,
-      ruleName: { Ref: logicalId }, 
+      RuleName: logicalId , 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'FailedInvocations',
@@ -82,7 +82,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
     const eventbridgeAlarmProperties:EventbridgeAlarm = {
       AlarmName: `Events_ThrottledRulesAlarm_\${${logicalId}}`,
       AlarmDescription: `EventBridge Throttled Rules for \${${logicalId}} breaches ${threshold}`,
-      ruleName: { Ref: logicalId }, 
+      RuleName: logicalId, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'ThrottledRules',

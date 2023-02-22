@@ -13,7 +13,7 @@ export type AlbAlarmProperties = AlarmProperties & {
 }
 
 export type AlbAlarm = AlarmProperties & {
-  loadBalancerResourceName: string
+  LoadBalancerResourceName: string
 } 
 
 
@@ -62,7 +62,7 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, conte
     const albAlarmProperties:AlbAlarm = {
       AlarmName:`LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}` ,
       AlarmDescription: `LoadBalancer HTTP Code ELB 5XX Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
-      loadBalancerResourceName, 
+      LoadBalancerResourceName: loadBalancerResourceName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'HTTPCode_ELB_5XX_Count',
@@ -87,7 +87,7 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, conte
     const albAlarmProperties: AlbAlarm = {
       AlarmName:`LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}` ,
       AlarmDescription: `LoadBalancer Rejected Connection Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
-      loadBalancerResourceName, 
+      LoadBalancerResourceName: loadBalancerResourceName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'RejectedConnectionCount',

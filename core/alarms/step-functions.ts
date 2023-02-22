@@ -10,7 +10,7 @@ export type SfAlarmsConfig = AlarmProperties& {
 }
 
 export type SmAlarm= AlarmProperties & {
-  stateMachineArn: object 
+  StateMachineArn: string 
 }
 
 /**
@@ -45,7 +45,7 @@ export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context
           const smAlarmProperties: SmAlarm = {
             AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}` ,
             AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
-            stateMachineArn: { Ref: logicalId }, 
+            StateMachineArn:  `\${${logicalId}}`, 
             ComparisonOperator: config.ComparisonOperator,
             Threshold: config.Threshold,
             MetricName: metric,

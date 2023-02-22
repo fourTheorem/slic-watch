@@ -11,7 +11,7 @@ export type SqsAlarmsConfig = AlarmProperties& {
 }
 
 export type SqsAlarm= AlarmProperties & {
-  queueName: object
+  QueueName: string
 }
 
 /**
@@ -74,7 +74,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,
       AlarmDescription: `SQS in-flight messages for \${${logicalId}.QueueName} breaches ${thresholdValue} (${threshold}% of the hard limit of ${hardLimit})`,
-      queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
+      QueueName: `\${${logicalId}.QueueName}`, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: thresholdValue,
       MetricName: 'ApproximateNumberOfMessagesNotVisible',
@@ -97,7 +97,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}`,
       AlarmDescription: `SQS age of oldest message in the queue \${${logicalId}.QueueName} breaches ${threshold}`,
-      queueName: { 'Fn::GetAtt': [logicalId, 'QueueName'] }, 
+      QueueName: `\${${logicalId}.QueueName}`, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'ApproximateAgeOfOldestMessage',

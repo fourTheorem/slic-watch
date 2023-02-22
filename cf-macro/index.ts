@@ -3,7 +3,7 @@
 import _ from 'lodash'
 import Ajv from 'ajv'
 
-import alarms from '../core/alarms/alarms'
+import alarms from 'slic-watch-core/alarms/alarms'
 import dashboard from 'slic-watch-core/dashboards/dashboard'
 import CloudFormationTemplate from 'slic-watch-core/cf-template'
 import defaultConfig from 'slic-watch-core/inputs/default-config'

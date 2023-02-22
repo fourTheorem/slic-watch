@@ -11,7 +11,7 @@ export type SnsAlarmsConfig = AlarmProperties & {
 }
 
 export type SnsAlarm= AlarmProperties & {
-  topicName: string
+  TopicName: string
 }
 
 /**
@@ -59,7 +59,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     const snsAlarmProperties: SnsAlarm = {
       AlarmName:  `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      topicName: `\${${topicLogicalId}.TopicName}`,  
+      TopicName: `\${${topicLogicalId}.TopicName}`,  
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
@@ -82,7 +82,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
     const snsAlarmProperties: SnsAlarm = {
       AlarmName: `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}`,
       AlarmDescription: `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      topicName: `\${${topicLogicalId}.TopicName}`, 
+      TopicName: `\${${topicLogicalId}.TopicName}`, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'NumberOfNotificationsFailed',

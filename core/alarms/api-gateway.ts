@@ -14,7 +14,7 @@ export type ApiGwAlarmProperties = AlarmProperties &{
 }
 
 export type ApiAlarm= AlarmProperties & {
-  apiName: string
+  ApiName: string
 }
 
 /**
@@ -126,7 +126,7 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiAlarmProperties:ApiAlarm = {
       AlarmName: `APIGW_5XXError_${apiNameForSub}` ,
       AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      apiName, 
+      ApiName: apiName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: '5XXError',
@@ -151,7 +151,7 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiAlarmProperties:ApiAlarm = {
       AlarmName: `APIGW_4XXError_${apiNameForSub}` ,
       AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      apiName, 
+      ApiName: apiName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: '4XXError',
@@ -176,7 +176,7 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
     const apiAlarmProperties:ApiAlarm = {
       AlarmName: `APIGW_Latency_${apiNameForSub}` ,
       AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      apiName, 
+      ApiName: apiName, 
       ComparisonOperator: config.ComparisonOperator,
       Threshold: config.Threshold,
       MetricName: 'Latency',

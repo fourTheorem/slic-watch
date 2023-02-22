@@ -16,7 +16,7 @@ export type LambdaFunctionAlarmPropertiess = AlarmProperties & {
 }
 
 export type LambdaAlarm = AlarmProperties & {
-  funcName: object
+  FuncName: string
 } 
 /**
  * functionAlarmPropertiess The cascaded Lambda alarm configuration with
@@ -123,7 +123,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_IteratorAge_\${${funcLogicalId}}`,
       AlarmDescription:  `Iterator Age for ${funcLogicalId} breaches ${threshold}`,
-      funcName: { Ref: funcLogicalId },
+      FuncName: funcLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
       Metrics: null,
@@ -147,7 +147,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Errors_\${${funcLogicalId}}`,
       AlarmDescription: `Error count for \${${funcLogicalId}} breaches ${threshold}`,
-      funcName: { Ref: funcLogicalId },
+      FuncName: `\${${funcLogicalId}}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
       Metrics: null,
@@ -207,7 +207,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName:  `Lambda_Throttles_\${${funcLogicalId}}` ,
       AlarmDescription:  `Throttles % for \${${funcLogicalId}} breaches ${threshold}`,
-      funcName: { Ref: funcLogicalId },
+      FuncName: `\${${funcLogicalId}}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
       Metrics: metrics, 
@@ -227,7 +227,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName:  `Lambda_Duration_\${${funcLogicalId}}`,
       AlarmDescription:  `Max duration for \${${funcLogicalId}} breaches ${threshold}% of timeout (${funcTimeout})`,
-      funcName: { Ref: funcLogicalId },
+      FuncName: funcLogicalId,
       ComparisonOperator: config.ComparisonOperator,
       // @ts-ignore
       Threshold:  (threshold * funcTimeout * 1000) / 100,
@@ -252,7 +252,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Invocations_\${${funcLogicalId}}`,
       AlarmDescription: `Total invocations for \${${funcLogicalId}} breaches ${threshold}`,
-      funcName: { Ref: funcLogicalId },
+      FuncName: `\${${funcLogicalId}}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
       Metrics: null,
