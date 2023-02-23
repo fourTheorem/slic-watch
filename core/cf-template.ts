@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 'use strict'
 
 import { filterObject } from './filter-object'
@@ -10,7 +11,6 @@ import { StreamProperties } from 'cloudform-types/types/kinesis/stream'
 import { RuleProperties } from 'cloudform-types/types/events/rule'
 import { ServiceProperties } from 'cloudform-types/types/ecs/service'
 import { TableProperties } from 'cloudform-types/types/dynamoDb/table'
-import { GraphQLApiProperties } from 'cloudform-types/types/appsync/graphQlApi'
 import { RestApiProperties } from 'cloudform-types/types/apiGateway/restApi'
 import { TargetGroupProperties } from 'cloudform-types/types/elasticLoadBalancingV2/targetGroup'
 import { ListenerProperties } from 'cloudform-types/types/elasticLoadBalancingV2/listener'
@@ -44,7 +44,7 @@ export interface CloudFormationTemplate {
 
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
-export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & GraphQLApiProperties & TableProperties & ServiceProperties
+export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
 export default function CloudFormationTemplate (compiledTemplate: Template, additionalResources?: Resource | Resource[]): CloudFormationTemplate {

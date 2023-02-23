@@ -3,6 +3,7 @@
   "version": "2.1.2",
   "description": "Test project for SLIC Watch serverless plugin",
   "main": "basic-handler.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/fourTheorem/slic-watch.git",
@@ -11,7 +12,7 @@
   "license": "Apache",
   "devDependencies": {
     "ajv": "^8.11.0",
-    "serverless": "^3",
+    "serverless": "^2.72.3",
     "serverless-step-functions": "^3.7.0"
   },
   "scripts": {

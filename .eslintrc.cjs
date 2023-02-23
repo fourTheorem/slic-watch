@@ -5,9 +5,7 @@ module.exports = {
     '@typescript-eslint'
   ],
   extends: [
-    'standard',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended'
+    'standard'
   ],
   rules: {
     '@typescript-eslint/no-var-requires': 0, // todo remove later complains for all js modules

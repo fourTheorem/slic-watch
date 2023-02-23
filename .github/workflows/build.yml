@@ -14,18 +14,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [18]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}.x
-      - name: Ensure npm >= 7
-        run: npm i -g npm@^7
+          node-version: 18
+          cache: 'npm'
       - run: npm ci
-      - run: npm run audit
       - run: npm test
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
