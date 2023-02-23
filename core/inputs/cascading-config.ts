@@ -1,46 +1,50 @@
 'use strict'
 
-import { AlbAlarmProperties } from '../alarms/alb'
-import { AlbTargetAlarmProperties } from '../alarms/alb-target-group'
-import { ApiGwAlarmProperties } from '../alarms/api-gateway'
-import { AppSyncAlarmProperties } from '../alarms/appsync'
-import { DynamoDbAlarmProperties } from '../alarms/dynamodb'
-import { EcsAlarmsConfig } from '../alarms/ecs'
-import { EventsAlarmsConfig } from '../alarms/eventbridge'
-import { KinesisAlarmProperties } from '../alarms/kinesis'
-import { SnsAlarmsConfig } from '../alarms/sns'
-import { SqsAlarmsConfig } from '../alarms/sqs'
-import { SfAlarmsConfig } from '../alarms/step-functions'
-import { AllAlarmsConfig } from '../alarms/default-config-alarms'
+import { type AlbAlarmProperties } from '../alarms/alb'
+import { type AlbTargetAlarmProperties } from '../alarms/alb-target-group'
+import { type ApiGwAlarmProperties } from '../alarms/api-gateway'
+import { type AppSyncAlarmProperties } from '../alarms/appsync'
+import { type DynamoDbAlarmProperties } from '../alarms/dynamodb'
+import { type EcsAlarmsConfig } from '../alarms/ecs'
+import { type EventsAlarmsConfig } from '../alarms/eventbridge'
+import { type KinesisAlarmProperties } from '../alarms/kinesis'
+import { type SnsAlarmsConfig } from '../alarms/sns'
+import { type SqsAlarmsConfig } from '../alarms/sqs'
+import { type SfAlarmsConfig } from '../alarms/step-functions'
+import { type AllAlarmsConfig } from '../alarms/default-config-alarms'
 import {
-  DashboardConfig, DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
-  KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
-  AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
+  type AllDashboardConfig, type DashboardBodyProperties, type LambdaDashboardBodyProperties, type ApiGwDashboardBodyProperties, type SfDashboardBodyProperties, type DynamoDbDashboardBodyProperties,
+  type KinesisDashboardBodyProperties, type SqsDashboardBodyProperties, type EcsDashboardBodyProperties, type SnsDashboardBodyProperties, type RuleDashboardBodyProperties,
+  type AlbDashboardBodyProperties, type AlbTargetDashboardBodyProperties, type AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
-import { LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
-import { Statistic } from '../cf-template'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { type LambdaFunctionAlarmProperties } from '../alarms/lambda'
+import type { Statistic } from '@aws-sdk/client-cloudwatch'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 const MAX_DEPTH = 10
 
-type ConfigNode = DashboardConfig | AllAlarmsConfig
+type ConfigNode = AllDashboardConfig | AllAlarmsConfig
 
-type ParentNode ={
+interface ParentNode {
   DashboardBodyProperties?: DashboardBodyProperties
   AlarmProperties?: AlarmProperties
 }
 
-type TimeRange = {
+interface TimeRange {
   start: string
-  end: string
- }
+  end?: string
+}
 
-export type Widgets = {
-  ActionsEnabled?:boolean // remove later ? mark
+export interface Widgets {
+  enabled?: boolean
+  metricPeriod?: number
+  width?: number
+  height?: number
+  yAxis?: string
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties
-  States?: SfDashboardBodyProperties,
+  States?: SfDashboardBodyProperties
   DynamoDB?: DynamoDbDashboardBodyProperties
   Kinesis?: KinesisDashboardBodyProperties
   SQS?: SqsDashboardBodyProperties
@@ -52,17 +56,21 @@ export type Widgets = {
   AppSync?: AppSyncDashboardBodyProperties
 }
 
-export type DashboardsCascade ={
-  ActionsEnabled?: boolean
+export interface SlicWatchDashboardConfig {
+  enabled?: boolean
   timeRange?: TimeRange
-  widgets?: Widgets
- }
+  widgets: Widgets
+}
 
-export type AlarmsCascade = {
-  ActionsEnabled: boolean
-  Lambda?: LambdaFunctionAlarmPropertiess
+export interface SlicWatchAlarmsConfig {
+  enabled: boolean
+  Period: number
+  EvaluationPeriods: number
+  TreatMissingData: string
+  ComparisonOperator: string
+  Lambda?: LambdaFunctionAlarmProperties
   ApiGateway?: ApiGwAlarmProperties
-  States?: SfAlarmsConfig,
+  States?: SfAlarmsConfig
   DynamoDB?: DynamoDbAlarmProperties
   Kinesis?: KinesisAlarmProperties
   SQS?: SqsAlarmsConfig
@@ -81,9 +89,9 @@ export type AlarmsCascade = {
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number):AlarmsCascade
-export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
-export function cascade (node:ConfigNode, parentNode?: ParentNode, depth = 0):AlarmsCascade | DashboardsCascade {
+export function cascade (node: AllAlarmsConfig, parentNode?: ParentNode, depth?: number): SlicWatchAlarmsConfig
+export function cascade (node: AllDashboardConfig, parentNode?: ParentNode, depth?: number): SlicWatchDashboardConfig
+export function cascade (node: ConfigNode, parentNode?: ParentNode, depth = 0): SlicWatchAlarmsConfig | SlicWatchDashboardConfig {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }
@@ -104,5 +112,5 @@ export function cascade (node:ConfigNode, parentNode?: ParentNode, depth = 0):Al
   return {
     ...compiledNode,
     ...compiledChildren
-  } as DashboardsCascade | AlarmsCascade
+  } as SlicWatchDashboardConfig | SlicWatchAlarmsConfig
 }

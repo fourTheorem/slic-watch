@@ -1,7 +1,11 @@
 'use strict'
 
-import { AllAlarmsConfig } from '../alarms/default-config-alarms'
-import { DashboardConfig } from '../dashboards/default-config-dashboard'
+// import type { SlicWatchAlarmsConfig, SlicWatchDashboardConfig } from '../inputs/cascading-config'
+
+// interface DefaultConfig {
+//   alarms: SlicWatchAlarmsConfig
+//   dashboard: SlicWatchDashboardConfig
+// }
 
 /**
  * This is the default configuration for Alarms and Dashboard widgets for all supported AWS services.
@@ -10,7 +14,7 @@ import { DashboardConfig } from '../dashboards/default-config-dashboard'
  */
 export const defaultConfig = {
   alarms: {
-    ActionsEnabled: true,
+    enabled: true,
     Period: 60,
     EvaluationPeriods: 1,
     TreatMissingData: 'notBreaching',
@@ -29,7 +33,7 @@ export const defaultConfig = {
         Statistic: 'Maximum'
       },
       Invocations: { // No invocation alarms are created by default. Override threshold to create alarms
-        ActionsEnabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+        enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
         Threshold: null,
         Statistic: 'Sum'
       },
@@ -118,7 +122,7 @@ export const defaultConfig = {
       // approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
       AgeOfOldestMessage: {
         Statistic: 'Maximum',
-        ActionsEnabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
+        enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
         Threshold: null
       },
       // approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
@@ -198,9 +202,9 @@ export const defaultConfig = {
         Threshold: 0
       }
     }
-  } as AllAlarmsConfig,
+  },
   dashboard: {
-    ActionsEnabled: true,
+    enabled: true,
     timeRange: {
       // For possible 'start' and 'end' values, see
       // https:# docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html
@@ -389,7 +393,7 @@ export const defaultConfig = {
         }
       }
     }
-  } as DashboardConfig
+  }
 }
 
 export default defaultConfig

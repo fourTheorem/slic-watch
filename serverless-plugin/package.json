@@ -15,16 +15,8 @@
     "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap"
   },
   "devDependencies": {
-    "@types/serverless": "^3.12.9",
-    "@types/tap": "^15.0.7",
-    "esbuild": "^0.17.2",
-    "esmock": "^2.1.0",
     "serverless-hooks-plugin": "^1.1.0",
-    "serverless-plugin-utils": "^0.2.0",
-    "ts-node": "^10.9.1"
-  },
-  "peerDependencies": {
-    "serverless": "^2.60 || ^3.16.0"
+    "serverless-plugin-utils": "^0.2.0"
   },
   "engines": {
     "node": ">=10.0"

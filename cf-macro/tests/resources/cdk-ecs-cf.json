@@ -2,18 +2,18 @@
  "Transform": "SlicWatch-v2",
  "Metadata": {
   "slicWatch": {
-   "ActionsEnabled": true,
+   "enabled": true,
    "alarms": {
     "Lambda": {
      "Invocations": {
-      "ActionsEnabled": true,
+      "enabled": true,
       "Threshold": 10
      }
     },
     "SQS": {
      "AgeOfOldestMessage": {
       "Statistic": "Maximum",
-      "ActionsEnabled": true,
+      "enabled": true,
       "Threshold": 60
      },
      "InFlightMessagesPc": {

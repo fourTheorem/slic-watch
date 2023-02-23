@@ -1,19 +1,20 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
-import { Context, createAlarm } from './default-config-alarms'
+import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Template from 'cloudform-types/types/template'
 
-export type KinesisAlarmProperties = AlarmProperties & {
-  'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
-  ReadProvisionedThroughputExceeded: AlarmProperties
-  WriteProvisionedThroughputExceeded: AlarmProperties
-  'PutRecord.Success': AlarmProperties
-  'PutRecords.Success': AlarmProperties
-  'GetRecords.Success': AlarmProperties
+export interface KinesisAlarmProperties {
+  enabled?: boolean
+  'GetRecords.IteratorAgeMilliseconds': DefaultAlarmsProperties
+  ReadProvisionedThroughputExceeded: DefaultAlarmsProperties
+  WriteProvisionedThroughputExceeded: DefaultAlarmsProperties
+  'PutRecord.Success': DefaultAlarmsProperties
+  'PutRecords.Success': DefaultAlarmsProperties
+  'GetRecords.Success': DefaultAlarmsProperties
 }
 
 const kinesisAlarmTypes = {
@@ -28,58 +29,32 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context) {
-  return {
-    createKinesisAlarms
-  }
-
+export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
    * based on the resources found within
    *
    *  A CloudFormation template object
    */
-  function createKinesisAlarms (cfTemplate: CloudFormationTemplate) {
-    const streamResources = cfTemplate.getResourcesByType(
-      'AWS::Kinesis::Stream'
-    )
+  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate, additionalResources)
 
-    for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
-      for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-        if (kinesisAlarmProperties[metric].ActionsEnabled) {
-          const alarm = createStreamAlarm(
-            streamResourceName,
-            streamResource,
-            type,
-            metric,
-            kinesisAlarmProperties[metric]
-          )
-          cfTemplate.addResource(alarm.resourceName, alarm.resource)
+  for (const [streamResourceName] of Object.entries(streamResources)) {
+    for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
+      const config: DefaultAlarmsProperties = kinesisAlarmProperties[metric]
+      if (config.enabled !== false) {
+        const threshold = config.Threshold
+        const kinesisAlarmProperties: AlarmProperties = {
+          AlarmName: `Kinesis_${type}_${streamResourceName}`,
+          AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${threshold} milliseconds`,
+          MetricName: metric,
+          Namespace: 'AWS/Kinesis',
+          Dimensions: [{ Name: 'StreamName', Value: { Ref: streamResourceName } as any }],
+          ...config
         }
+        const resourceName = makeResourceName('Kinesis', streamResourceName, type)
+        const resource = createAlarm(kinesisAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
       }
-    }
-  }
-
-  function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties) {
-    const threshold = config.Threshold
-    const kinesisAlarmProperties: AlarmProperties = {
-      AlarmName: `Kinesis_${type}_${streamLogicalId}`,
-      AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamLogicalId} breaches ${threshold} milliseconds`,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: metric,
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/Kinesis',
-      Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } as any }]
-    }
-
-    return {
-      resourceName: makeResourceName('Kinesis', streamLogicalId, type),
-      resource: createAlarm(kinesisAlarmProperties, context)
     }
   }
 }

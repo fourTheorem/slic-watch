@@ -1,21 +1,25 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
-import { Context, createAlarm } from './default-config-alarms'
+import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Resource from 'cloudform-types/types/resource'
+import type Template from 'cloudform-types/types/template'
 
-export type ApiGwAlarmProperties = AlarmProperties &{
-  '5XXError': AlarmProperties
-  '4XXError': AlarmProperties
-  Latency: AlarmProperties
+export interface ApiGwAlarmProperties {
+  enabled?: boolean
+  '5XXError': DefaultAlarmsProperties
+  '4XXError': DefaultAlarmsProperties
+  Latency: DefaultAlarmsProperties
 }
 
-export type ApiAlarm= AlarmProperties & {
+export type ApiAlarm = AlarmProperties & {
   ApiName: string
 }
+
+// type ApiMetrics = '5XXError' | '4XXError' | 'Latency'
 
 /**
  * Given a CloudFormation resource for an API Gateway REST API, derive CloudFormation syntax for
@@ -30,9 +34,9 @@ export type ApiAlarm= AlarmProperties & {
  * @param restApiLogicalId The logical ID for the resouce
  * @returns CloudFormation syntax for the API name
  */
-export function resolveRestApiNameAsCfn (restApiResource, restApiLogicalId: string) {
-  const apiName = restApiResource.Properties.Name || restApiResource.Properties?.Body?.info?.title
-  if (!apiName) {
+export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogicalId: string) {
+  const apiName = restApiResource.Properties?.Name ?? restApiResource.Properties?.Body?.info?.title
+  if (apiName === undefined) {
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
   return apiName
@@ -52,145 +56,59 @@ export function resolveRestApiNameAsCfn (restApiResource, restApiLogicalId: stri
  * @param restApiLogicalId The logical ID for the resouce
  * @returns Literal string or Sub variable syntax
  */
-export function resolveRestApiNameForSub (restApiResource, restApiLogicalId: string) {
-  const name = restApiResource.Properties.Name || restApiResource.Properties.Body?.info?.title
-  if (!name) {
+export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string) {
+  const name = (restApiResource.Properties?.Name) ?? (restApiResource.Properties?.Body?.info?.title)
+  if (name === false) {
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
 
-  if (name.GetAtt) {
-    return `\${${name.GetAtt[0]}.${name.GetAtt[1]}}`
-  } else if (name.Ref) {
-    return `\${${name.Ref}}`
-  } else if (name['Fn::Sub']) {
+  if (name.GetAtt != null && name.GetAtt[1] === 'Arn') {
+    return { Ref: name.GetAtt[0] }
+  } else if (name.Ref != null) {
+    return { Ref: name.Ref }
+  } else if (name['Fn::Sub'] != null) {
     return name['Fn::Sub']
   }
   return name
 }
 
+const executionMetrics = {
+  '5XXError': 'Availability',
+  '4XXError': '4XXError',
+  Latency: 'Latency'
+}
+
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context) {
-  return {
-    createApiGatewayAlarms
-  }
-
+export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
    *A CloudFormation template object
    */
-  function createApiGatewayAlarms (cfTemplate: CloudFormationTemplate) {
-    const apiResources = cfTemplate.getResourcesByType(
-      'AWS::ApiGateway::RestApi'
-    )
+  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
 
-    for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-      const alarms = []
-
-      if (apiGwAlarmProperties['5XXError'].ActionsEnabled) {
-        alarms.push(create5XXAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties['5XXError']
-        ))
+  for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
+    for (const [metric, type] of Object.entries(executionMetrics)) {
+      const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
+      if (config.enabled !== false) {
+        const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
+        const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
+        const threshold = config.Threshold
+        const apiAlarmProperties: ApiAlarm = {
+          AlarmName: `APIGW_${metric}_${apiNameForSub}`,
+          AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
+          ApiName: apiName,
+          MetricName: metric,
+          Namespace: 'AWS/ApiGateway',
+          Dimensions: [{ Name: 'ApiName', Value: apiName }],
+          ...config
+        }
+        const resourceName = makeResourceName('Api', apiName, executionMetrics[type])
+        const resource = createAlarm(apiAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
       }
-
-      if (apiGwAlarmProperties['4XXError'].ActionsEnabled) {
-        alarms.push(create4XXAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties['4XXError']
-        ))
-      }
-
-      if (apiGwAlarmProperties.Latency.ActionsEnabled) {
-        alarms.push(createLatencyAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties.Latency
-        ))
-      }
-
-      for (const alarm of alarms) {
-        cfTemplate.addResource(alarm.resourceName, alarm.resource)
-      }
-    }
-  }
-
-  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_5XXError_${apiNameForSub}`,
-      AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: '5XXError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, 'Availability'),
-      resource: createAlarm(apiAlarmProperties, context)
-    }
-  }
-
-  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_4XXError_${apiNameForSub}`,
-      AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: '4XXError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, '4XXError'),
-      resource: createAlarm(apiAlarmProperties, context)
-    }
-  }
-
-  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
-      AlarmName: `APIGW_Latency_${apiNameForSub}`,
-      AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'Latency',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, 'Latency'),
-      resource: createAlarm(apiAlarmProperties, context)
     }
   }
 }

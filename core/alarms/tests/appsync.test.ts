@@ -1,8 +1,8 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import appSyncAlarms, { AppSyncAlarmProperties } from '../appsync'
+import createAppSyncAlarms, { type AppSyncAlarmProperties } from '../appsync'
 import { test } from 'tap'
+import { getResourcesByType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -33,10 +33,9 @@ test('AppSync alarms are created', (t) => {
 
   )
   function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmProperties) {
-    const { createAppSyncAlarms } = appSyncAlarms(appSyncAlarmProperties, testContext)
-    const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(cfTemplate)
-    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(appSyncCfTemplate)
+    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate, additionalResources)
+    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 
@@ -49,17 +48,17 @@ test('AppSync alarms are created', (t) => {
   for (const alarmResource of Object.values(appSyncAlarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
+    const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypesAppSync[alarmType]
-    t.equal(al.MetricName, expectedMetric)
-    t.ok(al.Statistic)
-    t.equal(al.Threshold, AlarmPropertiesAppSync.AppSync[expectedMetric].Threshold)
-    t.equal(al.EvaluationPeriods, 2)
-    t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
-    t.equal(al.Namespace, 'AWS/AppSync')
-    t.equal(al.Period, 120)
-    t.same(al.Dimensions, [
+    t.equal(al?.MetricName, expectedMetric)
+    t.ok(al?.Statistic)
+    t.equal(al?.Threshold, AlarmPropertiesAppSync.AppSync[expectedMetric].Threshold)
+    t.equal(al?.EvaluationPeriods, 2)
+    t.equal(al?.TreatMissingData, 'breaching')
+    t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al?.Namespace, 'AWS/AppSync')
+    t.equal(al?.Period, 120)
+    t.same(al?.Dimensions, [
       {
         Name: 'GraphQLAPIId',
         Value: '${AwesomeappsyncGraphQlApi.ApiId}}'
@@ -75,7 +74,7 @@ test('AppSync alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       AppSync: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         '5XXError': {
           Threshold: 50
@@ -88,10 +87,9 @@ test('AppSync alarms are not created when disabled globally', (t) => {
   )
 
   function createAlarmResources (appSyncAlarmProperties) {
-    const { createAppSyncAlarms } = appSyncAlarms(appSyncAlarmProperties, testContext)
-    const cfTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(cfTemplate)
-    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(appSyncCfTemplate)
+    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate, additionalResources)
+    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 

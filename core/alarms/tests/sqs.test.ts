@@ -1,7 +1,7 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import sqsAlarms from '../sqs'
+import createSQSAlarms from '../sqs'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -12,7 +12,7 @@ import {
   testContext
 } from '../../tests/testing-utils'
 
-export type AlarmsByType ={
+export interface AlarmsByType {
   SQS_ApproximateAgeOfOldestMessage
   SQS_ApproximateNumberOfMessagesNotVisible
 }
@@ -27,7 +27,7 @@ test('SQS alarms are created', (t) => {
       SQS: {
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
-          ActionsEnabled: true,
+          enabled: true,
           Threshold: 200
         },
         InFlightMessagesPc: {
@@ -37,12 +37,10 @@ test('SQS alarms are created', (t) => {
       }
     })
   const sqsAlarmProperties = AlarmProperties.SQS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createSQSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   // We have 2 queues (a regular one and a fifo one) in our test stack
   // we expect 2 alarms per queue
@@ -53,8 +51,8 @@ test('SQS alarms are created', (t) => {
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
-      const alarmType = alarmNameToType(al.AlarmName)
-      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      const alarmType = alarmNameToType(al?.AlarmName)
+      alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
       alarmsByType[alarmType].add(al)
     }
     return alarmsByType as AlarmsByType
@@ -144,7 +142,7 @@ test('SQS alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       SQS: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         AgeOfOldestMessage: {
           Statistic: 'Maximum',
           Threshold: 200
@@ -156,12 +154,10 @@ test('SQS alarms are not created when disabled globally', (t) => {
       }
     })
   const sqsAlarmProperties = AlarmProperties.SQS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createSQSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -172,26 +168,24 @@ test('SQS alarms are not created when disabled individually', (t) => {
     defaultConfig.alarms,
     {
       SQS: {
-        ActionsEnabled: true, // enabled globally
+        enabled: true, // enabled globally
         AgeOfOldestMessage: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 200
         },
         InFlightMessagesPc: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
       }
     })
   const sqsAlarmProperties = AlarmProperties.SQS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createSQSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -203,21 +197,19 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
     {
       SQS: {
         AgeOfOldestMessage: {
-          ActionsEnabled: true,
+          enabled: true,
           Statistic: 'Maximum'
           // threshold not configured
         },
         InFlightMessagesPc: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Statistic: 'Maximum',
           Threshold: 90
         }
       }
     })
   const sqsAlarmProperties = AlarmProperties.SQS
-
-  const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  t.throws(() => createSQSAlarms(cfTemplate), { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  t.throws(() => { createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources) }, { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
 })

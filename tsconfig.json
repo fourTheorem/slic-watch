@@ -2,23 +2,31 @@
   "esm": true,
   "compilerOptions": {
     "module": "ESNext",
-    // "strict": true, //todo remove later
-    // "noImplicitAny": true, //todo remove later
-    // "strictNullChecks": true, //todo remove later
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
     "noEmit": true,
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "ts-node": {
+    "swc": true,
+    "esm": true
   },
   "exclude": [
     "node_modules",
     "cdk.out",
-    "coverage"
+    "coverage",
+    "core/coverage/lcov-report/*",
+    "cf-macro/coverage/lcov-report/*"
   ],
   "include": [
-    "core"
+    "core",
+    "serverless-plugin",
+    "cf-macro"
   ]
 }

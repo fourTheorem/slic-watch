@@ -1,102 +1,53 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
-import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Template from 'cloudform-types/types/template'
 
-export type SnsAlarmsConfig = AlarmProperties & {
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties,
-  NumberOfNotificationsFailed: AlarmProperties
+export interface SnsAlarmsConfig {
+  enabled?: boolean
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DefaultAlarmsProperties
+  NumberOfNotificationsFailed: DefaultAlarmsProperties
 }
 
-export type SnsAlarm= AlarmProperties & {
+export type SnsAlarm = AlarmProperties & {
   TopicName: string
 }
+
+type SnsMetrics = 'NumberOfNotificationsFilteredOut-InvalidAttributes' | 'NumberOfNotificationsFailed'
+
+const executionMetrics: SnsMetrics[] = ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
 
 /**
  * snsAlarmsConfig The fully resolved alarm configuration
  */
-export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context) {
-  return {
-    createSNSAlarms
-  }
-
+export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required SNS alarms to the provided CloudFormation template
    * based on the SNS resources found within
    *
    * A CloudFormation template object
    */
-  function createSNSAlarms (cfTemplate: CloudFormationTemplate) {
-    const topicResources = cfTemplate.getResourcesByType(
-      'AWS::SNS::Topic'
-    )
+  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
 
-    for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
-      if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
-        const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
-          topicLogicalId,
-          topicResource,
-          snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes']
-        )
-        cfTemplate.addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource)
+  for (const [topicLogicalId] of Object.entries(topicResources)) {
+    for (const metric of executionMetrics) {
+      const config = snsAlarmsConfig[metric]
+      if (config.enabled !== false) {
+        const snsAlarmProperties: SnsAlarm = {
+          AlarmName: `SNS_${metric.replaceAll('-', '')}Alarm_\${${topicLogicalId}.TopicName}`,
+          AlarmDescription: `${metric} for \${${topicLogicalId}.TopicName} breaches (${config.Threshold}`,
+          TopicName: `\${${topicLogicalId}.TopicName}`,
+          MetricName: metric,
+          Namespace: 'AWS/SNS',
+          Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }],
+          ...config
+        }
+        const resourceName = `slicWatch${metric}Alarm${topicLogicalId}`
+        const resource = createAlarm(snsAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
       }
-
-      if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
-        const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
-          topicLogicalId,
-          topicResource,
-          snsAlarmsConfig.NumberOfNotificationsFailed
-        )
-        cfTemplate.addResource(numberOfNotificationsFailed.resourceName, numberOfNotificationsFailed.resource)
-      }
-    }
-  }
-
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties) {
-    const threshold = config.Threshold
-    const snsAlarmProperties: SnsAlarm = {
-      AlarmName: `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
-      AlarmDescription: `Number of SNS Notifications Filtered out Invalid Attributes for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      TopicName: `\${${topicLogicalId}.TopicName}`,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/SNS',
-      Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }]
-    }
-    return {
-      resourceName: `slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarm${topicLogicalId}`,
-      resource: createAlarm(snsAlarmProperties, context)
-    }
-  }
-
-  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties) {
-    const threshold = config.Threshold
-    const snsAlarmProperties: SnsAlarm = {
-      AlarmName: `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}`,
-      AlarmDescription: `Number of Notifications failed for \${${topicLogicalId}.TopicName} breaches (${threshold}`,
-      TopicName: `\${${topicLogicalId}.TopicName}`,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'NumberOfNotificationsFailed',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/SNS',
-      Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }]
-    }
-    return {
-      resourceName: `slicWatchSNSNumberOfNotificationsFailedAlarm${topicLogicalId}`,
-      resource: createAlarm(snsAlarmProperties, context)
     }
   }
 }

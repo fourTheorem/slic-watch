@@ -1,7 +1,7 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
-import ecsAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
+import createECSAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -50,12 +50,10 @@ test('ECS MemoryUtilization is created', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const expectedTypes = {
     ECS_MemoryAlarm: 'MemoryUtilization',
@@ -66,17 +64,17 @@ test('ECS MemoryUtilization is created', (t) => {
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
+    const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypes[alarmType]
-    t.equal(al.MetricName, expectedMetric)
-    t.ok(al.Statistic)
-    t.equal(al.Threshold, ecsAlarmProperties[expectedMetric].Threshold)
-    t.equal(al.EvaluationPeriods, 2)
-    t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'LessThanThreshold')
-    t.equal(al.Namespace, 'AWS/ECS')
-    t.equal(al.Period, 120)
-    t.same(al.Dimensions, [
+    t.equal(al?.MetricName, expectedMetric)
+    t.ok(al?.Statistic)
+    t.equal(al?.Threshold, ecsAlarmProperties[expectedMetric].Threshold)
+    t.equal(al?.EvaluationPeriods, 2)
+    t.equal(al?.TreatMissingData, 'breaching')
+    t.equal(al?.ComparisonOperator, 'LessThanThreshold')
+    t.equal(al?.Namespace, 'AWS/ECS')
+    t.equal(al?.Period, 120)
+    t.same(al?.Dimensions, [
       {
         Name: 'ServiceName',
         Value: '${ecsService.Name}'
@@ -96,7 +94,7 @@ test('ECS alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ECS: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         MemoryUtilization: {
           Threshold: 50
@@ -108,13 +106,10 @@ test('ECS alarms are not created when disabled globally', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

@@ -7,9 +7,8 @@
  *  A function accepting value, key arguments and returning a boolean
  */
 function filterObject (obj: object, predicate) {
-  return Object.entries(obj)
-    .filter(([key, value]) => predicate(value, key))
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+  return Object.fromEntries(Object.entries(obj)
+    .filter(([key, value]) => predicate(value, key)))
 }
 
 export {

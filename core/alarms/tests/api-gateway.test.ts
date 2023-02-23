@@ -1,6 +1,6 @@
 'use strict'
 
-import apiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
+import createApiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -10,48 +10,81 @@ import {
   createTestCloudFormationTemplate,
   testContext
 } from '../../tests/testing-utils'
+import { getResourcesByType } from '../../cf-template'
 
-export type AlarmsByType ={
-  APIGW_4XXError
-  APIGW_5XXError
-  APIGW_Latency
+export interface AlarmsByType {
+  APIGW_4XXError?
+  APIGW_5XXError?
+  APIGW_Latency?
 }
 
 test('resolveRestApiNameAsCfn', (t) => {
-  const fromLiteral = resolveRestApiNameAsCfn({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  const fromLiteral = resolveRestApiNameAsCfn({
+    Properties: { Name: 'my-api-name' },
+    Type: ''
+  }, 'logicalId')
   t.equal(fromLiteral, 'my-api-name')
 
-  const fromRef = resolveRestApiNameAsCfn({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
+  const fromRef = resolveRestApiNameAsCfn({
+    Properties: { Name: { Ref: 'AWS::Stack' } },
+    Type: ''
+  }, 'logicalId')
   t.same(fromRef, { Ref: 'AWS::Stack' })
 
-  const fromGetAtt = resolveRestApiNameAsCfn({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
+  const fromGetAtt = resolveRestApiNameAsCfn({
+    Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } },
+    Type: ''
+  }, 'logicalId')
   t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
 
-  const fromOpenApiRef = resolveRestApiNameAsCfn({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
+  const fromOpenApiRef = resolveRestApiNameAsCfn({
+    Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } },
+    Type: ''
+  }, 'logicalId')
   t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
 
-  t.throws(() => resolveRestApiNameAsCfn({ Properties: {} }, 'logicalId'))
+  t.throws(() => resolveRestApiNameAsCfn({
+    Properties: {},
+    Type: ''
+  }, 'logicalId'))
   t.end()
 })
 
 test('resolveRestApiNameForSub', (t) => {
-  const fromLiteral = resolveRestApiNameForSub({ Properties: { Name: 'my-api-name' } }, 'logicalId')
+  const fromLiteral = resolveRestApiNameForSub({
+    Properties: { Name: 'my-api-name' },
+    Type: ''
+  }, 'logicalId')
   t.equal(fromLiteral, 'my-api-name')
 
-  const fromRef = resolveRestApiNameForSub({ Properties: { Name: { Ref: 'AWS::Stack' } } }, 'logicalId')
-  t.same(fromRef, '$' + '{AWS::Stack}')
+  const fromRef = resolveRestApiNameForSub({
+    Properties: { Name: { Ref: 'AWS::Stack' } },
+    Type: ''
+  }, 'logicalId')
+  t.same(fromRef, { Ref: 'AWS::Stack' })
 
-  const fromGetAtt = resolveRestApiNameForSub({ Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } } }, 'logicalId')
-  t.same(fromGetAtt, '$' + '{myResource.MyProperty}')
+  const fromGetAtt = resolveRestApiNameForSub({
+    Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } },
+    Type: ''
+  }, 'logicalId')
+  t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
 
-  const fromOpenApiRef = resolveRestApiNameForSub({ Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } } }, 'logicalId')
-  t.same(fromOpenApiRef, '$' + '{AWS::Stack}')
+  const fromOpenApiRef = resolveRestApiNameForSub({
+    Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } },
+    Type: ''
+  }, 'logicalId')
+  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
 
-  // eslint-disable-next-line no-template-curly-in-string
-  const fromSub = resolveRestApiNameForSub({ Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } } }, 'logicalId')
+  const fromSub = resolveRestApiNameForSub({
+    Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } },
+    Type: ''
+  }, 'logicalId')
   t.same(fromSub, '$' + '{AWS::StackName}Suffix')
 
-  t.throws(() => resolveRestApiNameForSub({ Properties: {} }, 'logicalId'))
+  t.throws(() => resolveRestApiNameForSub({
+    Properties: {},
+    Type: ''
+  }, 'logicalId'))
   t.end()
 })
 
@@ -77,31 +110,27 @@ test('API Gateway alarms are created', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
-
-  function getAlarmByType ():AlarmsByType {
-    const alarmsByType = {}
-    for (const alarmResource of Object.values(alarmResources)) {
-      const al = alarmResource.Properties
-      assertCommonAlarmProperties(t, al)
-      const alarmType = alarmNameToType(al.AlarmName)
-      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
-      alarmsByType[alarmType].add(al)
-    }
-    return alarmsByType as AlarmsByType
-  }
+  const alarmsByType: AlarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 3)
-  const alarmsByType = getAlarmByType()
+  for (const alarmResource of Object.values(alarmResources)) {
+    const al = alarmResource.Properties
+    assertCommonAlarmProperties(t, al)
+    const alarmType = alarmNameToType(al?.AlarmName)
+    alarmsByType[alarmType] = (alarmsByType[alarmType] === true) || new Set()
+    alarmsByType[alarmType].add(al)
+  }
+
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
     'APIGW_5XXError',
     'APIGW_Latency'
   ])
+
   t.equal(alarmsByType.APIGW_5XXError.size, 1)
   for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
@@ -119,6 +148,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
+
   for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
@@ -135,6 +165,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
+
   for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')
@@ -160,7 +191,7 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ApiGateway: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         '5XXError': {
           Threshold: 0.0
@@ -175,13 +206,10 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -192,31 +220,28 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
     defaultConfig.alarms,
     {
       ApiGateway: {
-        ActionsEnabled: true, // enabled globally
+        enabled: true, // enabled globally
         Period: 60,
         '5XXError': {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0.0
         },
         '4XXError': {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0.05
         },
         Latency: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 5000
         }
       }
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

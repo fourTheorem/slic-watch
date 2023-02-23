@@ -1,0 +1,25 @@
+ {
+  "root": true,
+  "plugins": [
+   "@typescript-eslint"
+  ],
+  "extends": [
+    "standard-with-typescript"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/no-floating-promises": 0,
+    "no-template-curly-in-string": 0,
+    "@typescript-eslint/restrict-template-expressions": 0,
+    "@typescript-eslint/consistent-type-assertions": 0,
+    "@typescript-eslint/explicit-function-return-type": 0 // when there is function they return object?
+    
+  },
+  "ignorePatterns": ["core/coverage",
+  "cf-macro/coverage",
+    "serverless-plugin/dist/index.js",
+    "cf-macro/dist/index.js"
+  ]
+}

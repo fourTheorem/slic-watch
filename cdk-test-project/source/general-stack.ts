@@ -4,6 +4,7 @@ import * as sns from 'aws-cdk-lib/aws-sns'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as sqs from 'aws-cdk-lib/aws-sqs'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CfnResource } from 'aws-cdk-lib'
 import * as events from 'aws-cdk-lib/aws-events'
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets'
