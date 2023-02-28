@@ -19,6 +19,8 @@
     "coverage"
   ],
   "include": [
-    "core"
+    "core",
+    "serverless-plugin",
+    "cf-macro"
   ]
 }
