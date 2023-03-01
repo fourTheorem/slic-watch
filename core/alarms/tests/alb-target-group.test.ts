@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import albTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'

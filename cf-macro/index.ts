@@ -19,8 +19,8 @@ type Event = {
 }
 
 type SlicWatchConfig = {
-  topicArn: string
-  ActionsEnabled: boolean
+  topicArn?: string
+  ActionsEnabled?: boolean
 }
 export async function handler (event: Event) {
   let status = 'success'
@@ -29,7 +29,7 @@ export async function handler (event: Event) {
   try {
     const slicWatchConfig:SlicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
 
-    if (slicWatchConfig.ActionsEnabled !== false) {
+    if (slicWatchConfig?.ActionsEnabled ?? true) {
       const ajv = new Ajv({
         unicodeRegExp: false
       })
@@ -43,7 +43,7 @@ export async function handler (event: Event) {
       }
 
       const alarmActions = []
-      if (slicWatchConfig.topicArn) {
+      if (slicWatchConfig?.topicArn) {
         // @ts-ignore
         alarmActions.push(slicWatchConfig.topicArn)
       } else if (process.env.ALARM_SNS_TOPIC) {

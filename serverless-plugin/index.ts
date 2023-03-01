@@ -28,6 +28,7 @@ class ServerlessPlugin {
     this.providerNaming = serverless.providers.aws.naming
 
     if (serverless.service.provider.name !== 'aws') {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new Serverless('SLIC Watch only supports AWS')
     }
 
@@ -57,12 +58,13 @@ class ServerlessPlugin {
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new Serverless('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
     const alarmActions = []
 
-    if (slicWatchConfig.ActionsEnabled === false) {
+    if (!slicWatchConfig.ActionsEnabled) {
       return
     }
 

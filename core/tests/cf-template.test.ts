@@ -1,8 +1,9 @@
+
 'use strict'
 
 import CloudFormationTemplate from '../cf-template'
 import Template from 'cloudform-types/types/template'
-import Resource from 'cloudform-types/types/resource'
+import { ResourceType } from './../cf-template'
 
 import { test } from 'tap'
 
@@ -11,8 +12,9 @@ const emptyTemplate:Template = {
 }
 
 test('Source is returned', (t) => {
-  const template = CloudFormationTemplate(emptyTemplate)
+  const template = CloudFormationTemplate({ Resources: {} })
   t.same(template.getSourceObject(), emptyTemplate)
+  t.ok(true)
   t.end()
 })
 
@@ -36,7 +38,7 @@ test('Resource can be resolved by type from compiled template', (t) => {
       a: { Type: 'AWS::DynamoDB::Table' }
     }
   }
-  const template = CloudFormationTemplate(compiledTemplate, { Type: '' })
+  const template = CloudFormationTemplate(compiledTemplate, { b: { Type: '' } })
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')
   t.equal(Object.keys(resources).length, 1)
   t.equal(Object.values(resources)[0].Type, 'AWS::DynamoDB::Table')
@@ -49,8 +51,8 @@ test('Resource can be resolved by type from template with additional resource ',
       a: { Type: 'AWS::DynamoDB::Table' }
     }
   }
-  const additionalResources: Resource = {
-    Type: 'AWS::SQS::Queue'
+  const additionalResources: ResourceType = {
+    b: { Type: 'AWS::SQS::Queue' }
   }
   const template = CloudFormationTemplate(compiledTemplate, additionalResources)
   const tableResources = template.getResourcesByType('AWS::DynamoDB::Table')
@@ -66,8 +68,8 @@ test('Resource can be resolved by type from template with additional resource ',
 
 test('Resource can be resolved by type from service resources', (t) => {
   const compiledTemplate: Template = {}
-  const serviceResources:Resource = {
-    Type: 'AWS::DynamoDB::Table'
+  const serviceResources: ResourceType = {
+    b: { Type: 'AWS::DynamoDB::Table' }
   }
   const template = CloudFormationTemplate(compiledTemplate, serviceResources)
   const resources = template.getResourcesByType('AWS::DynamoDB::Table')

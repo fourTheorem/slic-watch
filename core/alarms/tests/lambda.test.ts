@@ -322,7 +322,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
   const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  t.throws(() => createLambdaAlarms(cfTemplate), { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  t.throws(() => { createLambdaAlarms(cfTemplate) }, { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
 })
 

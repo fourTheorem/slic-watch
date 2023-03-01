@@ -1,3 +1,5 @@
+'use strict'
+
 import { AlbTargetAlarmProperties, AlbTargetAlarm } from './alb-target-group'
 import { AlbAlarmProperties, AlbAlarm } from './alb'
 import { ApiAlarm, ApiGwAlarmProperties } from './api-gateway'

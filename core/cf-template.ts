@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 'use strict'
 
 import { filterObject } from './filter-object'
@@ -34,8 +33,8 @@ export type ResourceType = {
  * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
  */
 export interface CloudFormationTemplate {
-  addResource: (resourceName: string, resource: Resource) => Template ;
-  getResourceByName: (resourceName: string) => ResourceType;
+  addResource: (resourceName: string, resource: Resource) => void ;
+  getResourceByName: (resourceName: string) => Resource;
   getResourcesByType: (type: string) => ResourceType;
   getSourceObject: () => Template;
   getEventSourceMappingFunctions: () => object;
@@ -44,10 +43,14 @@ export interface CloudFormationTemplate {
 
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
+export type LoadBalancerArn = {
+
+}
+
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
-export default function CloudFormationTemplate (compiledTemplate: Template, additionalResources?: Resource | Resource[]): CloudFormationTemplate {
+export default function CloudFormationTemplate (compiledTemplate: Template, additionalResources: ResourceType = {}): CloudFormationTemplate {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
@@ -68,22 +71,16 @@ export default function CloudFormationTemplate (compiledTemplate: Template, addi
   }
 
   function addResource (resourceName: string, resource: Resource) {
-    // eslint-disable-next-line no-return-assign
-    return compiledTemplate.Resources[resourceName] = resource
+    compiledTemplate.Resources[resourceName] = resource
   }
 
-  function getResourceByName (resourceName:string): ResourceType {
+  function getResourceByName (resourceName:string): Resource {
     return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
   }
 
   function getResourcesByType (type:string): ResourceType {
-    return filterObject(
-      {
-        ...compiledTemplate.Resources,
-        ...additionalResources
-      },
-      (resource) => resource.Type === type
-    )
+    const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
+    return filterObject(resources, resource => resource.Type === type)
   }
 
   function getEventSourceMappingFunctions () {

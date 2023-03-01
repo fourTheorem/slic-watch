@@ -1,4 +1,5 @@
 'use strict'
+
 import { CloudFormationTemplate } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'

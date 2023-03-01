@@ -10,47 +10,35 @@ const template = require('./event.json')
 
 const event = { fragment: template, templateParameterValues: { stack: 'sam-test-stack-project' } }
 
-type TestState = {
-  dashboardCalled?:boolean,
-  alarmsCalled?: boolean,
-  addDashboardCfTemplate?: CloudFormationTemplate,
-  addAlarmsCfTemplate?: CloudFormationTemplate
+function getLambda(onDashboard, onAlarms) {
+  return esmock('../index', {
+    'slic-watch-core/dashboards/dashboard': () => {
+      return {
+        addDashboard: (cfTemplate: CloudFormationTemplate) => {
+          onDashboard(cfTemplate)
+        }
+      }
+    },
+    'slic-watch-core/alarms/alarms': () => {
+      return {
+        addAlarms: (cfTemplate: CloudFormationTemplate) => {
+          onAlarms(cfTemplate)
+        }
+      }
+    }
+  })
 }
 
-let testState: TestState
-
-const lambda = await esmock('../index', {
-  'slic-watch-core/dashboards/dashboard': () => {
-    testState.dashboardCalled = true
-    return {
-      addDashboard: (cfTemplate: CloudFormationTemplate) => {
-        testState.addDashboardCfTemplate = cfTemplate
-      }
-    }
-  },
-  'slic-watch-core/alarms/alarms': () => {
-    testState.alarmsCalled = true
-    return {
-      addAlarms: (cfTemplate) => {
-        testState.addAlarmsCfTemplate = cfTemplate
-      }
-    }
-  }
-})
-
 test('index', t => {
-  t.beforeEach(t => {
-    t.ok(true)
-    testState = {}
-  })
-
   t.test('macro returns success', async t => {
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => {})
     const result = await lambda.handler(event, null)
     t.equal(result.status, 'success')
   })
 
   t.test('macro uses SNS Topic environment variable if specified', async t => {
     process.env.ALARM_SNS_TOPIC = 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => {})
     try {
       const result = await lambda.handler(event, null)
       t.equal(result.status, 'success')
@@ -73,21 +61,27 @@ test('index', t => {
         }
       }
     }
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => {})
     const result = await lambda.handler(eventWithTopic, null)
     t.equal(result.status, 'success')
   })
 
   t.test('Macro skips SLIC Watch if top-level enabled==false', async t => {
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => t.fail('Should not be called'))
     const testevent = _.cloneDeep(event)
     testevent.fragment.Metadata.slicWatch.enabled = false
     await lambda.handler(testevent, null)
-    t.notOk(testState.alarmsCalled)
+    t.end()
   })
 
   t.test('Macro adds dashboard and alarms', async t => {
+    t.plan(2, 'alarms and dashboards called')
+    const lambda = await getLambda(
+      cfTemplate => t.same(cfTemplate.getSourceObject(), template),
+      cfTemplate => t.same(cfTemplate.getSourceObject(), template)
+    )
     await lambda.handler(event, null)
-    t.equal(testState.addDashboardCfTemplate?.getSourceObject(), template)
-    t.equal(testState.addAlarmsCfTemplate?.getSourceObject(), template)
+    t.end()
   })
 
   t.test('Macro adds dashboard and alarms if no function configuration is provided', async t => {
@@ -104,14 +98,17 @@ test('index', t => {
         }
       }
     }
+    t.plan(2, 'alarms and dashboards properties are the same')
+    const lambda = await getLambda(
+      cfTemplate => t.same(cfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties),
+      cfTemplate => t.same(cfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
+    )
     await lambda.handler(testEvent, null)
-    // @ts-ignore
-    t.equal(testState.addDashboardCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
-    // @ts-ignore
-    t.equal(testState.addAlarmsCfTemplate.getSourceObject().Resources.Properties, template.Resources.Properties)
+    t.end()
   })
 
   t.test('Macro execution fails if an invalid SLIC Watch config is provided', async t => {
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => {})
     const testevent = _.cloneDeep(event)
     testevent.fragment.Metadata.slicWatch.topicArrrrn = 'pirateTopic'
     const result = await lambda.handler(testevent, null)
@@ -119,20 +116,25 @@ test('index', t => {
   })
 
   t.test('Macro execution succeeds with no slicWatch config', async t => {
+    t.plan(1, 'alarms called')
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => t.ok(true))
     const testevent = _.cloneDeep(event)
     delete testevent.fragment.Metadata.slicWatch
     await lambda.handler(testevent, null)
-    t.ok(testState.alarmsCalled)
+    t.end()
   })
 
   t.test('Macro execution succeeds if no SNS Topic is provided', async t => {
+    t.plan(1, 'alarms called')
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => t.ok(true))
     const testevent = _.cloneDeep(event)
     delete testevent.fragment.Metadata.slicWatch.topicArn
     await lambda.handler(testevent, null)
-    t.ok(testState.alarmsCalled)
+    t.end()
   })
 
   t.test('Macro succeeds with no custom section', async t => {
+    const lambda = await getLambda(cfTemplate => {}, cfTemplate => {})
     const testevent = _.cloneDeep(event)
     delete testevent.fragment.Metadata
     const result = await lambda.handler(testevent, null)

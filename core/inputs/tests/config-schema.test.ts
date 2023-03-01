@@ -1,4 +1,5 @@
 'use strict'
+
 import Ajv from 'ajv'
 import { test } from 'tap'
 import defaultConfig from '../default-config'

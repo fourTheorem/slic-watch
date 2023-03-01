@@ -1,3 +1,5 @@
+'use strict'
+
 import { Widgets } from '../inputs/cascading-config'
 import { Statistic } from '../cf-template'
 import FunctionProperties from 'cloudform-types/types/lambda/function'

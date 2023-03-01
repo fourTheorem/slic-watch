@@ -79,6 +79,7 @@ test('index', t => {
     const logger = Object.assign({}, pino())
     const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
     for (const extra of extras) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete logger[extra]
     }
     t.same(logger, dummyV3Logger)

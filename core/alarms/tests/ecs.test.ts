@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import ecsAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'

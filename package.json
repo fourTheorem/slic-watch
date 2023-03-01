@@ -22,8 +22,8 @@
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "TAP_BUFFER=0 c8 tap --no-timeout --coverage --coverage-report=text-lcov --test-ignore='*node_modules*' **/*.test.ts",
-    "coverage": "c8 report --reporter=text-lcov > coverage/tests.lcov",
+    "test:packages": "rm -rf coverage && NODE_V8_COVERAGE=$PWD/coverage/tmp coverage-node ./node_modules/tap/bin/run.js --test-ignore='*node_modules*' **/*.test.ts",
+    "coverage": "c8 report --all --reporter=text-lcov > coverage/tests.lcov",
     "test": "npm run lint && npm run destroy-test && npm run test:packages && npm run coverage",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install",
@@ -34,11 +34,8 @@
       "--no-warnings",
       "--loader=ts-node/esm",
       "--loader=esmock",
-      "--experimental-specifier-resolution=node",
-      "--experimental-loader",
-      "@istanbuljs/esm-loader-hook"
+      "--experimental-specifier-resolution=node"
     ],
-    "coverage": false,
     "ts": false
   },
   "devDependencies": {
@@ -51,6 +48,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "c8": "^7.13.0",
     "cloudform": "^7.4.2",
+    "coverage-node": "^8.0.0",
     "esbuild": "^0.17.10",
     "eslint": "^8.30.0",
     "eslint-config-standard-with-typescript": "^24.0.0",

@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import { cascade, DashboardsCascade } from '../inputs/cascading-config'
@@ -192,10 +191,10 @@ export default function dashboard (dashboardConfig: DashboardsCascade, functionD
   }
   type MetricDefs = {
     namespace: string
-    metric : string
+    metric: string
     dimensions: object
     stat: Statistic
-    yAxis? : string
+    yAxis?: string
   }
   /**
    * Create a metric for the specified metrics

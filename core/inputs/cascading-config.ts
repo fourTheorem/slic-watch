@@ -36,7 +36,7 @@ type TimeRange = {
  }
 
 export type Widgets = {
-  ActionsEnabled?:boolean // remove later ? mark
+  ActionsEnabled?: boolean // remove later ? mark
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties

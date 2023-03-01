@@ -1,3 +1,4 @@
+
 'use strict'
 
 import { CloudFormationTemplate } from '../cf-template'
@@ -6,6 +7,7 @@ import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { ResourceType } from './../cf-template'
 
 export type AlbTargetAlarmProperties = AlarmProperties & {
   HTTPCode_Target_5XX_Count: AlarmProperties
@@ -29,7 +31,7 @@ export type AlbTargetAlarm = AlarmProperties & {
  */
 export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate): string[] {
   const allLoadBalancerLogicalIds = new Set()
-  const allListenerRules = {}
+  const allListenerRules:ResourceType = {}
   const listenerResources = cfTemplate.getResourcesByType(
     'AWS::ElasticLoadBalancingV2::Listener'
   )
@@ -62,18 +64,14 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   }
 
   for (const listenerRule of Object.values(allListenerRules)) {
-    // @ts-ignore
-    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
-    if (listenerLogicalId) {
+      const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
       const listener = cfTemplate.getResourceByName(listenerLogicalId)
-      if (listener) {
-        // @ts-ignore
-        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
-        if (loadBalancerLogicalId) {
-          allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
+        if (listener) {
+          const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+          if (loadBalancerLogicalId) {
+            allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
         }
       }
-    }
   }
   // @ts-ignore
   return [...allLoadBalancerLogicalIds]

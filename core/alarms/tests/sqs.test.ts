@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import sqsAlarms from '../sqs'
@@ -218,6 +217,6 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
 
   const { createSQSAlarms } = sqsAlarms(sqsAlarmProperties, testContext)
   const cfTemplate = createTestCloudFormationTemplate()
-  t.throws(() => createSQSAlarms(cfTemplate), { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  t.throws(() => { createSQSAlarms(cfTemplate) }, { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
 })
