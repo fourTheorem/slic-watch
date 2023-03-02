@@ -1,6 +1,6 @@
 'use strict'
 
-import apiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
+import createApiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -10,6 +10,7 @@ import {
   createTestCloudFormationTemplate,
   testContext
 } from '../../tests/testing-utils'
+import { getResourcesByType } from '../../cf-template'
 
 export type AlarmsByType ={
   APIGW_4XXError
@@ -77,12 +78,10 @@ test('API Gateway alarms are created', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   function getAlarmByType ():AlarmsByType {
     const alarmsByType = {}
@@ -175,13 +174,10 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -210,13 +206,10 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createApiGatewayAlarms } = apiGatewayAlarms(apiGwAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

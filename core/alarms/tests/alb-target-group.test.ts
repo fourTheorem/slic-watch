@@ -1,6 +1,6 @@
 'use strict'
 
-import albTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
+import createALBTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {
@@ -11,26 +11,24 @@ import {
   albCfTemplate,
   testContext
 } from '../../tests/testing-utils'
-
-import CloudFormationTemplate from '../../cf-template'
-const albCfTemp = CloudFormationTemplate(albCfTemplate)
+import { getResourcesByType } from '../../cf-template'
 
 test('findLoadBalancersForTargetGroup', (t) => {
   test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
     const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemp)
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemplate, {})
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
 
   test('returns empty list for non-existent listener', (t) => {
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', CloudFormationTemplate({}))
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', {}, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
 
   test('includes an ALB from the DefaultActions', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
@@ -48,15 +46,15 @@ test('findLoadBalancersForTargetGroup', (t) => {
         },
         alb: { Type: '' }
       }
-    })
+    }
 
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
 
   test('excludes DefaultActions with a literal load balancer ARN', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listener: {
           Type: 'AWS::ElasticLoadBalancingV2::Listener',
@@ -74,14 +72,14 @@ test('findLoadBalancersForTargetGroup', (t) => {
         },
         alb: { Type: '' }
       }
-    })
+    }
 
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
   test('finds load balancers through listener rule target groups', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
@@ -104,14 +102,14 @@ test('findLoadBalancersForTargetGroup', (t) => {
           }
         }
       }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
 
   test('omits listener rules with no load balancer', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
@@ -125,14 +123,14 @@ test('findLoadBalancersForTargetGroup', (t) => {
           Properties: {}
         }
       }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
 
   test('omits listener rules with no actions', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
@@ -141,14 +139,14 @@ test('findLoadBalancersForTargetGroup', (t) => {
           }
         }
       }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', template)
+    }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
 
   test('omits listener rules a literal listener ARN', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listenerRule: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
@@ -158,14 +156,14 @@ test('findLoadBalancersForTargetGroup', (t) => {
           }
         }
       }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
 
   test('omits listeners with a literal load balancer ARN', (t) => {
-    const template = CloudFormationTemplate({
+    const compiledTemplate = {
       Resources: {
         listenerRuleA: {
           Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
@@ -181,8 +179,8 @@ test('findLoadBalancersForTargetGroup', (t) => {
           }
         }
       }
-    })
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', template)
+    }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -216,10 +214,9 @@ test('ALB Target Group alarms are created', (t) => {
 
   )
   function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
-    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmProperties, testContext)
-    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    createALBTargetAlarms(cfTemplate)
-    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
+    createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
+    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
 
@@ -283,10 +280,9 @@ test('ALB alarms are not created when disabled globally', (t) => {
   )
 
   function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
-    const { createALBTargetAlarms } = albTargetAlarms(elbAlarmProperties, testContext)
-    const cfTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    createALBTargetAlarms(cfTemplate)
-    return cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
+    createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
+    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
 

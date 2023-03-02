@@ -1,4 +1,3 @@
-'use strict'
 
 import { filterObject } from './filter-object'
 import pino from 'pino'
@@ -25,94 +24,59 @@ export type ResourceType = {
   [key: string]: Resource
   }
 
-/**
- * Encapsulate a CloudFormation template comprised of compiled Serverless functions/events
- * and directly-specified CloudFormation resources
- *
- * compiledTemplate The compiled CloudFormation template
- * additionalResources Directly-provided CloudFormation resources which are not expected to be included in `compiledTemplate`
- */
-export interface CloudFormationTemplate {
-  addResource: (resourceName: string, resource: Resource) => void ;
-  getResourceByName: (resourceName: string) => Resource;
-  getResourcesByType: (type: string) => ResourceType;
-  getSourceObject: () => Template;
-  getEventSourceMappingFunctions: () => object;
-  resolveFunctionResourceName: (func: string|object) => object;
-}
-
 export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
 
 export type LoadBalancerArn = {
 
 }
+// (compiledTemplate: Template, additionalResources: ResourceType = {})
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
-export default function CloudFormationTemplate (compiledTemplate: Template, additionalResources: ResourceType = {}): CloudFormationTemplate {
   /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
    *
    *The function logical ID or CloudFormation intrinsic resolving a function
    */
-  function resolveFunctionLogicalId (func) {
-    if (typeof func === 'string') {
-      return func
-    }
-    if (func['Fn::GetAtt']) {
-      return func['Fn::GetAtt'][0]
-    }
-    if (func.Ref) {
-      return func.Ref
-    }
-    logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
+export function resolveFunctionResourceName (func) {
+  if (typeof func === 'string') {
+    return func
   }
-
-  function addResource (resourceName: string, resource: Resource) {
-    compiledTemplate.Resources[resourceName] = resource
+  if (func['Fn::GetAtt']) {
+    return func['Fn::GetAtt'][0]
   }
-
-  function getResourceByName (resourceName:string): Resource {
-    return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
+  if (func.Ref) {
+    return func.Ref
   }
+  logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
+}
 
-  function getResourcesByType (type:string): ResourceType {
-    const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
-    return filterObject(resources, resource => resource.Type === type)
-  }
+export function addResource (resourceName: string, resource: Resource, compiledTemplate: Template) {
+  compiledTemplate.Resources[resourceName] = resource
+}
 
-  function getEventSourceMappingFunctions () {
-    const eventSourceMappings = getResourcesByType(
-      'AWS::Lambda::EventSourceMapping'
+export function getResourcesByType (type:string, compiledTemplate, additionalResources = {}): ResourceType {
+  const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
+  return filterObject(resources, resource => resource.Type === type)
+}
+
+export function getEventSourceMappingFunctions (compiledTemplate, additionalResources = {}): ResourceType {
+  const eventSourceMappings = getResourcesByType(
+    'AWS::Lambda::EventSourceMapping', compiledTemplate, additionalResources)
+  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
+  const eventSourceMappingFunctions = {}
+  for (const eventSourceMapping of Object.values(eventSourceMappings)) {
+    const funcResourceName = resolveFunctionResourceName(
+      eventSourceMapping.Properties.FunctionName
     )
-    const lambdaResources = getResourcesByType('AWS::Lambda::Function')
-    const eventSourceMappingFunctions = {}
-    for (const eventSourceMapping of Object.values(eventSourceMappings)) {
-      const funcResourceName = resolveFunctionLogicalId(
-        eventSourceMapping.Properties.FunctionName
-      )
-      if (funcResourceName) {
-        const funcResource = lambdaResources[funcResourceName]
-        if (funcResource) {
-          eventSourceMappingFunctions[funcResourceName] = funcResource
-        }
+    if (funcResourceName) {
+      const funcResource = lambdaResources[funcResourceName]
+      if (funcResource) {
+        eventSourceMappingFunctions[funcResourceName] = funcResource
       }
     }
-    return eventSourceMappingFunctions
   }
-
-  function getSourceObject ():Template {
-    return compiledTemplate
-  }
-
-  return {
-    addResource,
-    getResourceByName,
-    getResourcesByType,
-    getSourceObject,
-    getEventSourceMappingFunctions,
-    resolveFunctionResourceName: resolveFunctionLogicalId
-  }
+  return eventSourceMappingFunctions
 }

@@ -1,11 +1,12 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type ApiGwAlarmProperties = AlarmProperties &{
   '5XXError': AlarmProperties
@@ -71,20 +72,13 @@ export function resolveRestApiNameForSub (restApiResource, restApiLogicalId: str
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context) {
-  return {
-    createApiGatewayAlarms
-  }
-
+export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
    *A CloudFormation template object
    */
-  function createApiGatewayAlarms (cfTemplate: CloudFormationTemplate) {
-    const apiResources = cfTemplate.getResourcesByType(
-      'AWS::ApiGateway::RestApi'
-    )
+    const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
 
     for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
       const alarms = []
@@ -114,10 +108,9 @@ export default function ApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProper
       }
 
       for (const alarm of alarms) {
-        cfTemplate.addResource(alarm.resourceName, alarm.resource)
+        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
       }
     }
-  }
 
   function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)

@@ -1,11 +1,12 @@
 'use strict'
 
 import { cascade, DashboardsCascade } from '../inputs/cascading-config'
-import { CloudFormationTemplate, ResourceType, Statistic } from '../cf-template'
+import { getResourcesByType, getEventSourceMappingFunctions, addResource, ResourceType, Statistic } from '../cf-template'
 import { FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
+import Template from 'cloudform-types/types/template'
 
 /**
  * Given CloudFormation syntax for an AppSync GraphQLAPIId, derive a string value or
@@ -76,7 +77,7 @@ const logger = pino()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function dashboard (dashboardConfig: DashboardsCascade, functionDashboardConfigs: FunctionDashboardConfigs) {
+export default function addDashboard (dashboardConfig: DashboardsCascade, functionDashboardConfigs, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   const {
     timeRange,
     widgets: {
@@ -95,57 +96,27 @@ export default function dashboard (dashboardConfig: DashboardsCascade, functionD
     }
   } = cascade(dashboardConfig)
 
-  return {
-    addDashboard
-  }
-
   /**
    * Adds a dashboard to the specified CloudFormation template
    * based on the resources provided in the template.
    *
    * A CloudFormation template
    */
-  function addDashboard (cfTemplate:CloudFormationTemplate) {
-    const apiResources = cfTemplate.getResourcesByType(
-      'AWS::ApiGateway::RestApi'
-    )
-    const stateMachineResources = cfTemplate.getResourcesByType(
-      'AWS::StepFunctions::StateMachine'
-    )
-    const lambdaResources = cfTemplate.getResourcesByType(
-      'AWS::Lambda::Function'
-    )
-    const tableResources = cfTemplate.getResourcesByType(
-      'AWS::DynamoDB::Table'
-    )
-    const streamResources = cfTemplate.getResourcesByType(
-      'AWS::Kinesis::Stream'
-    )
-    const queueResources = cfTemplate.getResourcesByType(
-      'AWS::SQS::Queue'
-    )
-    const ecsServiceResources = cfTemplate.getResourcesByType(
-      'AWS::ECS::Service'
-    )
-    const topicResources = cfTemplate.getResourcesByType(
-      'AWS::SNS::Topic'
-    )
-    const ruleResources = cfTemplate.getResourcesByType(
-      'AWS::Events::Rule'
-    )
-    const loadBalancerResources = cfTemplate.getResourcesByType(
-      'AWS::ElasticLoadBalancingV2::LoadBalancer'
-    )
+    const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
+    const stateMachineResources = getResourcesByType('AWS::StepFunctions::StateMachine', compiledTemplate)
+    const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
+    const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
+    const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
+    const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
+    const ecsServiceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
+    const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
+    const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate)
+    const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate)
+    const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
 
-    const targetGroupResources = cfTemplate.getResourcesByType(
-      'AWS::ElasticLoadBalancingV2::TargetGroup'
-    )
+    const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
-    const appSyncResources = cfTemplate.getResourcesByType(
-      'AWS::AppSync::GraphQLApi'
-    )
-
-    const eventSourceMappingFunctions = cfTemplate.getEventSourceMappingFunctions()
+    const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
     const apiWidgets = createApiWidgets(apiResources)
     const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
     const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
@@ -156,7 +127,7 @@ export default function dashboard (dashboardConfig: DashboardsCascade, functionD
     const topicWidgets = createTopicWidgets(topicResources)
     const ruleWidgets = createRuleWidgets(ruleResources)
     const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
-    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, cfTemplate)
+    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, compiledTemplate)
     const appSyncWidgets = createAppSyncWidgets(appSyncResources)
 
     const positionedWidgets = layOutWidgets([
@@ -184,11 +155,11 @@ export default function dashboard (dashboardConfig: DashboardsCascade, functionD
           DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
         }
       }
-      cfTemplate.addResource('slicWatchDashboard', dashboardResource)
+      addResource('slicWatchDashboard', dashboardResource, compiledTemplate)
     } else {
       logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
     }
-  }
+
   type MetricDefs = {
     namespace: string
     metric: string
@@ -665,10 +636,10 @@ export default function dashboard (dashboardConfig: DashboardsCascade, functionD
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: ResourceType, cfTemplate:CloudFormationTemplate) {
+  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate) {
     const targetGroupWidgets = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
-      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
+      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`

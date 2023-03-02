@@ -1,11 +1,12 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type AppSyncAlarmProperties = AlarmProperties & {
   '5XXError': AlarmProperties
@@ -19,21 +20,14 @@ export type AppSyncAlarm= AlarmProperties & {
 /**
  * appSyncAlarmProperties The fully resolved alarm configuration
  */
-export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmProperties, context: Context) {
-  return {
-    createAppSyncAlarms
-  }
-
+export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required AppSync alarms to the provided CloudFormation template
    * based on the AppSync resources found within
    *
    * A CloudFormation template object
    */
-  function createAppSyncAlarms (cfTemplate: CloudFormationTemplate) {
-    const appSyncResources = cfTemplate.getResourcesByType(
-      'AWS::AppSync::GraphQLApi'
-    )
+    const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate, additionalResources)
 
     for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
       const alarms = []
@@ -53,10 +47,9 @@ export default function appSyncAlarms (appSyncAlarmProperties: AppSyncAlarmPrope
         ))
       }
       for (const alarm of alarms) {
-        cfTemplate.addResource(alarm.resourceName, alarm.resource)
+        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
       }
     }
-  }
 
   function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
     const graphQLName = appSyncResource.Properties.Name

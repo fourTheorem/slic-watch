@@ -1,6 +1,7 @@
 'use strict'
 
-import stepFunctionsAlarms from '../step-functions'
+import createStatesAlarms from '../step-functions'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -34,12 +35,9 @@ test('Step Function alarms are created', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createStatesAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 6)
@@ -107,12 +105,10 @@ test('Step function alarms are not created when disabled globally', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createStatesAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -141,12 +137,10 @@ test('Step function alarms are not created when disabled individually', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createStatesAlarms } = stepFunctionsAlarms(sfAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createStatesAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

@@ -1,11 +1,12 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type KinesisAlarmProperties = AlarmProperties & {
   'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
@@ -28,21 +29,14 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context) {
-  return {
-    createKinesisAlarms
-  }
-
+export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
    * based on the resources found within
    *
    *  A CloudFormation template object
    */
-  function createKinesisAlarms (cfTemplate: CloudFormationTemplate) {
-    const streamResources = cfTemplate.getResourcesByType(
-      'AWS::Kinesis::Stream'
-    )
+    const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate, additionalResources)
 
     for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
       for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
@@ -54,11 +48,10 @@ export default function KinesisAlarms (kinesisAlarmProperties: KinesisAlarmPrope
             metric,
             kinesisAlarmProperties[metric]
           )
-          cfTemplate.addResource(alarm.resourceName, alarm.resource)
+          addResource(alarm.resourceName, alarm.resource, compiledTemplate)
         }
       }
     }
-  }
 
   function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties) {
     const threshold = config.Threshold

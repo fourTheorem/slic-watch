@@ -1,9 +1,10 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type EcsAlarmsConfig = AlarmProperties & {
   MemoryUtilization: AlarmProperties
@@ -39,21 +40,14 @@ export function resolveEcsClusterNameAsCfn (cluster) {
 /**
  * ecsAlarmsConfig The fully resolved alarm configuration
  */
-export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context) {
-  return {
-    createECSAlarms
-  }
-
+export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required ECS alarms to the provided CloudFormation template
    * based on the ECS Service resources
    *
    * A CloudFormation template object
    */
-  function createECSAlarms (cfTemplate: CloudFormationTemplate) {
-    const serviceResources = cfTemplate.getResourcesByType(
-      'AWS::ECS::Service'
-    )
+    const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate, additionalResources)
     for (const [serviceResourceName, serviceResource] of Object.entries(
       serviceResources
     )) {
@@ -66,7 +60,7 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
           clusterName,
           ecsAlarmsConfig.MemoryUtilization
         )
-        cfTemplate.addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource)
+        addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
       }
       if (ecsAlarmsConfig.CPUUtilization.ActionsEnabled) {
         const cpuUtilizationAlarm = createCPUUtilizationAlarm(
@@ -75,10 +69,9 @@ export default function ecsAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Co
           clusterName,
           ecsAlarmsConfig.CPUUtilization
         )
-        cfTemplate.addResource(cpuUtilizationAlarm.resourceName, cpuUtilizationAlarm.resource)
+        addResource(cpuUtilizationAlarm.resourceName, cpuUtilizationAlarm.resource, compiledTemplate)
       }
     }
-  }
 
   function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
     const threshold = config.Threshold

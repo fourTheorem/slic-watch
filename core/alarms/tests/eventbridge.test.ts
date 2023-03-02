@@ -1,6 +1,7 @@
 'use strict'
 
-import ruleAlarms from '../eventbridge'
+import createRuleAlarms from '../eventbridge'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -30,12 +31,10 @@ test('Events alarms are created', (t) => {
     }
   )
   const ruleAlarmProperties = AlarmProperties.Events
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createRuleAlarms } = ruleAlarms(ruleAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createRuleAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const expectedTypes = {
     Events_FailedInvocationsAlarm: 'FailedInvocations',
@@ -84,13 +83,10 @@ test('Events alarms are not created when disabled globally', (t) => {
     }
   )
   const ruleAlarmProperties = AlarmProperties.Events
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createRuleAlarms } = ruleAlarms(ruleAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createRuleAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

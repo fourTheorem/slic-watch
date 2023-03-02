@@ -22,24 +22,24 @@
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "rm -rf coverage && NODE_V8_COVERAGE=$PWD/coverage/tmp coverage-node ./node_modules/tap/bin/run.js --test-ignore='*node_modules*' **/*.test.ts",
-    "coverage": "c8 report --all --reporter=text-lcov > coverage/tests.lcov",
+    "test:packages": "rm -rf coverage && c8 tap --test-ignore='*node_modules*' **/*.test.ts",
+    "coverage": "c8 report --reporter=text-lcov > coverage/tests.lcov",
     "test": "npm run lint && npm run destroy-test && npm run test:packages && npm run coverage",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install",
-    "destroy-test": "find . -name '*.test.ts' -path '*node_modules*' | xargs -I {} rm {}"
+    "destroy-test": "find . -name '*.test.ts' -path '*node_modules*' | xargs -I {} rm {}",
+    "coverage:html": "c8 report --reporter=html"
   },
   "tap": {
     "node-arg": [
       "--no-warnings",
       "--loader=ts-node/esm",
-      "--loader=esmock",
       "--experimental-specifier-resolution=node"
-    ],
-    "ts": false
+    ]
   },
   "devDependencies": {
-    "@istanbuljs/esm-loader-hook": "^0.2.0",
+    "@swc-node/core": "^1.10.1",
+    "@swc-node/register": "^1.6.2",
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "@types/prettier": "2.6.0",
     "@types/serverless": "^3.12.9",
@@ -48,6 +48,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "c8": "^7.13.0",
     "cloudform": "^7.4.2",
+    "codecov": "^3.8.3",
     "coverage-node": "^8.0.0",
     "esbuild": "^0.17.10",
     "eslint": "^8.30.0",
@@ -56,13 +57,12 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "esmock": "^2.1.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.0.5",
     "tap": "^16.3.0",
     "ts-node": "^10.9.1",
-    "typescript": "~3.9.7"
+    "typescript": "^4.9.5"
   },
   "engines": {
     "node": ">=12.0"

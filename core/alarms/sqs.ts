@@ -1,9 +1,10 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type SqsAlarmsConfig = AlarmProperties& {
   AgeOfOldestMessage: AlarmProperties,
@@ -17,21 +18,14 @@ export type SqsAlarm= AlarmProperties & {
 /**
  * @param {object} sqsAlarmsConfig The fully resolved alarm configuration
  */
-export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Context) {
-  return {
-    createSQSAlarms
-  }
-
+export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required SQS alarms to the provided CloudFormation template
    * based on the SQS resources found within
    *
    * A CloudFormation template object
    */
-  function createSQSAlarms (cfTemplate: CloudFormationTemplate) {
-    const queueResources = cfTemplate.getResourcesByType(
-      'AWS::SQS::Queue'
-    )
+    const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate, additionalResources)
 
     for (const [queueResourceName, queueResource] of Object.entries(
       queueResources
@@ -42,7 +36,7 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
           queueResource,
           sqsAlarmsConfig.InFlightMessagesPc
         )
-        cfTemplate.addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource)
+        addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
       }
 
       if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled) {
@@ -55,13 +49,9 @@ export default function sqsAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Co
           queueResource,
           sqsAlarmsConfig.AgeOfOldestMessage
         )
-        cfTemplate.addResource(
-          oldestMsgAgeAlarm.resourceName,
-          oldestMsgAgeAlarm.resource
-        )
+        addResource(oldestMsgAgeAlarm.resourceName, oldestMsgAgeAlarm.resource, compiledTemplate)
       }
     }
-  }
 
   function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold

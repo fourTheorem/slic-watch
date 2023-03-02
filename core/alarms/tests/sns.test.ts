@@ -1,6 +1,7 @@
 'use strict'
 
-import snsAlarms from '../sns'
+import createSNSAlarms from '../sns'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -30,12 +31,10 @@ test('SNS alarms are created', (t) => {
     }
   )
   const snsAlarmProperties = AlarmProperties.SNS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createSNSAlarms } = snsAlarms(snsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createSNSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const expectedTypes = {
     SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
@@ -84,13 +83,10 @@ test('SNS alarms are not created when disabled globally', (t) => {
     }
   )
   const snsAlarmProperties = AlarmProperties.SNS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createSNSAlarms } = snsAlarms(snsAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createSNSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

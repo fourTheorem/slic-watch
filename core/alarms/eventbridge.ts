@@ -1,9 +1,12 @@
+
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
+import { ResourceType } from './../cf-template'
 
 export type EventsAlarmsConfig = AlarmProperties &{
   FailedInvocations: AlarmProperties,
@@ -17,21 +20,13 @@ export type EventbridgeAlarm = AlarmProperties & {
 /**
  * The fully resolved alarm configuration
  */
-export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, context: Context) {
-  return {
-    createRuleAlarms
-  }
-
+export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required Events alarms to the provided CloudFormation template
    * based on the EventBridge Rule found within
    *
-   * cfTemplate A CloudFormation template object
    */
-  function createRuleAlarms (cfTemplate:CloudFormationTemplate) {
-    const ruleResources = cfTemplate.getResourcesByType(
-      'AWS::Events::Rule'
-    )
+    const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate, additionalResources)
 
     for (const [ruleResourceName, ruleResource] of Object.entries(ruleResources)) {
       if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled) {
@@ -40,7 +35,7 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
           ruleResource,
           eventsAlarmsConfig.FailedInvocations
         )
-        cfTemplate.addResource(failedInvocations.resourceName, failedInvocations.resource)
+        addResource(failedInvocations.resourceName, failedInvocations.resource, compiledTemplate)
       }
 
       if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled) {
@@ -49,10 +44,9 @@ export default function eventsAlarms (eventsAlarmsConfig: EventsAlarmsConfig, co
           ruleResource,
           eventsAlarmsConfig.ThrottledRules
         )
-        cfTemplate.addResource(throttledRules.resourceName, throttledRules.resource)
+        addResource(throttledRules.resourceName, throttledRules.resource, compiledTemplate)
       }
     }
-  }
 
   function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold

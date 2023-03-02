@@ -1,9 +1,10 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Template from 'cloudform-types/types/template'
 
 export type DynamoDbAlarmProperties = AlarmProperties & {
   ReadThrottleEvents: AlarmProperties
@@ -15,21 +16,13 @@ export type DynamoDbAlarmProperties = AlarmProperties & {
 /**
  * dynamoDbAlarmProperties The fully resolved alarm configuration
  */
-export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context) {
-  return {
-    createDynamoDbAlarms
-  }
-
+export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required DynamoDB alarms to the provided CloudFormation template
    * based on the tables and their global secondary indices.
    *
-   * cfTemplate A CloudFormation template object
    */
-  function createDynamoDbAlarms (cfTemplate: CloudFormationTemplate) {
-    const tableResources = cfTemplate.getResourcesByType(
-      'AWS::DynamoDB::Table'
-    )
+    const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate, additionalResources)
     for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
       const tableDimensions = [{ Name: 'TableName', Value: { Ref: tableResourceName } }]
 
@@ -74,10 +67,9 @@ export default function DynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmPr
       }
 
       for (const alarm of alarms) {
-        cfTemplate.addResource(alarm.resourceName, alarm.resource)
+        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
       }
     }
-  }
 
   function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string) {
     const config = dynamoDbAlarmProperties[metricName]

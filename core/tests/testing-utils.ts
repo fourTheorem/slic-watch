@@ -7,7 +7,6 @@ import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import YAML from 'yaml'
 
-import CloudFormationTemplate from '../cf-template'
 import { cascade } from '../inputs/cascading-config'
 
 const require = createRequire(import.meta.url)
@@ -72,5 +71,5 @@ function createTestConfig (from, cascadingChanges) {
 function createTestCloudFormationTemplate (stackDefinition = null) {
   const data = stackDefinition || defaultCfTemplate
 
-  return CloudFormationTemplate(_.cloneDeep(data), {})
+  return { compiledTemplate: _.cloneDeep(data), additionalResources: {} }
 }

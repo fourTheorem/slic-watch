@@ -1,6 +1,7 @@
 'use strict'
 
-import lambdaAlarms from '../lambda'
+import createLambdaAlarms from '../lambda'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import { filterObject } from '../../filter-object'
 import defaultConfig from '../../inputs/default-config'
@@ -53,15 +54,14 @@ test('AWS Lambda alarms are created', (t) => {
     }
   })
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   function getAlarmsByType ():AlarmsByType {
     const alarmsByType = {}
@@ -169,14 +169,13 @@ test('AWS Lambda alarms are created for ALB', (t) => {
     }
   })
 
-  const albCf = createTestCloudFormationTemplate(albCfTemplate)
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
   const albFuncAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(albCf.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     albFuncAlarmPropertiess[funcLogicalId] = albAlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(albFuncAlarmPropertiess, testContext)
-  createLambdaAlarms(albCf)
-  const albAlarmResources = albCf.getResourcesByType('AWS::CloudWatch::Alarm')
+  createLambdaAlarms(albFuncAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  const albAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   function getAlarmsByType (): AlarmsByType {
     const albAlarmsByType = {}
@@ -266,15 +265,14 @@ test('Invocation alarms are created if configured', (t) => {
     }
   })
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.startsWith('Lambda_Invocations')
@@ -316,13 +314,12 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     }
   })
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  t.throws(() => { createLambdaAlarms(cfTemplate) }, { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  t.throws(() => { createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources) }, { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
 })
 
@@ -361,7 +358,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
       }
     })
 
-    const cfTemplate = createTestCloudFormationTemplate(
+    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(
       {
         Resources: {
           esm: {
@@ -375,14 +372,11 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     )
 
     const funcAlarmPropertiess = {}
-    for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+    for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
       funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
     }
-    const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-    createLambdaAlarms(cfTemplate)
-    const alarmResources = cfTemplate.getResourcesByType(
-      'AWS::CloudWatch::Alarm'
-    )
+    createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+    const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
     t.equal(Object.keys(alarmResources).length, 0)
     t.end()
   })
@@ -411,14 +405,13 @@ test('Lambda alarms are not created when disabled globally', (t) => {
     }
   })
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -452,15 +445,14 @@ test('Lambda alarms are not created when disabled individually', (t) => {
     }
   })
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()
@@ -475,7 +467,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
       }
     }
   })
-  const cfTemplate = createTestCloudFormationTemplate({
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate({
     Resources: {
       HelloLambdaFunction: {
         Type: 'AWS::Lambda::Function',
@@ -495,16 +487,15 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
     AlarmProperties.Lambda, {
       HelloLambdaFunction: { Lambda: { ActionsEnabled: false } }
     })
-  const { createLambdaAlarms } = lambdaAlarms(disabledFuncAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+    createLambdaAlarms(disabledFuncAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 0)
   t.end()
 })
 
 test('AWS Lambda alarms are not created if function configuration is not provided (e.g. Custom Resource injected functions)', (t) => {
-  const cfTemplate = createTestCloudFormationTemplate({
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate({
     Resources: {
       HelloLambdaFunction: {
         Type: 'AWS::Lambda::Function',
@@ -515,10 +506,9 @@ test('AWS Lambda alarms are not created if function configuration is not provide
     }
   })
   const funcAlarmPropertiess = {} // No function configuration as in the case where functions are not defined in serverless.yml:functions
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 0)
   t.end()
 })
@@ -526,16 +516,15 @@ test('AWS Lambda alarms are not created if function configuration is not provide
 test('Duration alarms are created if no timeout is specified', (t) => {
   const AlarmProperties = createTestConfig(defaultConfig.alarms, {})
 
-  const cfTemplate = createTestCloudFormationTemplate()
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
-  for (const [funcLogicalId, resource] of Object.entries(cfTemplate.getResourcesByType('AWS::Lambda::Function'))) {
+  for (const [funcLogicalId, resource] of Object.entries(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = AlarmProperties.Lambda
     delete resource.Properties.Timeout
   }
-  const { createLambdaAlarms } = lambdaAlarms(funcAlarmPropertiess, testContext)
-  createLambdaAlarms(cfTemplate)
+  createLambdaAlarms(funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.startsWith('Lambda_Duration')

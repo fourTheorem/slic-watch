@@ -1,11 +1,12 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
+import { addResource, getResourcesByType, ResourceType } from '../cf-template'
 import Resource from 'cloudform-types/types/resource'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Template from 'cloudform-types/types/template'
 
 export type AlbAlarmProperties = AlarmProperties & {
   HTTPCode_ELB_5XX_Count: AlarmProperties,
@@ -19,21 +20,14 @@ export type AlbAlarm = AlarmProperties & {
 /**
  * albAlarmProperties The fully resolved alarm configuration
  */
-export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, context: Context) {
-  return {
-    createALBAlarms
-  }
-
+export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required Application Load Balancer alarms for Application Load Balancer to the provided CloudFormation template
    * based on the resources found within
    *
    *  A CloudFormation template object
    */
-  function createALBAlarms (cfTemplate: CloudFormationTemplate) {
-    const loadBalancerResources = cfTemplate.getResourcesByType(
-      'AWS::ElasticLoadBalancingV2::LoadBalancer'
-    )
+    const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, additionalResources)
 
     for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
       if (albAlarmProperties.HTTPCode_ELB_5XX_Count && albAlarmProperties.HTTPCode_ELB_5XX_Count.ActionsEnabled) {
@@ -42,7 +36,7 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, conte
           loadBalancerResource,
           albAlarmProperties.HTTPCode_ELB_5XX_Count
         )
-        cfTemplate.addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource)
+        addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource, compiledTemplate)
       }
 
       if (albAlarmProperties.RejectedConnectionCount && albAlarmProperties.RejectedConnectionCount.ActionsEnabled) {
@@ -51,10 +45,9 @@ export default function ALBAlarms (albAlarmProperties: AlbAlarmProperties, conte
           loadBalancerResource,
           albAlarmProperties.RejectedConnectionCount
         )
-        cfTemplate.addResource(rejectedConnectionCount.resourceName, rejectedConnectionCount.resource)
+        addResource(rejectedConnectionCount.resourceName, rejectedConnectionCount.resource, compiledTemplate)
       }
     }
-  }
 
   function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold

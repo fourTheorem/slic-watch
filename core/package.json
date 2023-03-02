@@ -24,7 +24,6 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "esmock": "^2.1.0",
     "ts-node": "^10.9.1"
   }
 }

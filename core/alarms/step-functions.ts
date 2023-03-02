@@ -1,8 +1,9 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Template from 'cloudform-types/types/template'
 
 export type SfAlarmsConfig = AlarmProperties& {
   ExecutionThrottled: AlarmProperties
@@ -17,21 +18,14 @@ export type SmAlarm= AlarmProperties & {
 /**
  * @param {object} sfAlarmProperties The fully resolved States alarm configuration
  */
-export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context) {
-  return {
-    createStatesAlarms
-  }
-
+export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required Step Function alarms to the provided CloudFormation template
    * based on the resources found within
    *
    * A CloudFormation template object
    */
-  function createStatesAlarms (cfTemplate: CloudFormationTemplate) {
-    const smResources = cfTemplate.getResourcesByType(
-      'AWS::StepFunctions::StateMachine'
-    )
+    const smResources = getResourcesByType('AWS::StepFunctions::StateMachine', compiledTemplate, additionalResources)
     const executionMetrics = [
       'ExecutionThrottled',
       'ExecutionsFailed',
@@ -59,9 +53,8 @@ export default function StatesAlarms (sfAlarmProperties: SfAlarmsConfig, context
             Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } as any }]
           }
           const alarmResource = createAlarm(smAlarmProperties, context)
-          cfTemplate.addResource(alarmResourceName, alarmResource)
+          addResource(alarmResourceName, alarmResource, compiledTemplate)
         }
       }
     }
-  }
 }

@@ -11,7 +11,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "ts-node": {
+    "swc": true,
+    "esm": true
   },
   "exclude": [
     "node_modules",

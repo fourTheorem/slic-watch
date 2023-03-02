@@ -1,13 +1,13 @@
 
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { ResourceType, getResourcesByType, addResource } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import { ResourceType } from './../cf-template'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type AlbTargetAlarmProperties = AlarmProperties & {
   HTTPCode_Target_5XX_Count: AlarmProperties
@@ -20,6 +20,10 @@ export type AlbTargetAlarm = AlarmProperties & {
   TargetGroupResourceName: string
   LoadBalancerLogicalId: string
 }
+function getResourceByName (resourceName:string, compiledTemplate, additionalResources = {}): Resource {
+  return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
+}
+
 /**
  * For a given target group defined by its CloudFormation resources Logical ID, find any load balancer
  * that relates to the target group by finding associated ListenerRules, their Listener and each Listener's
@@ -29,12 +33,10 @@ export type AlbTargetAlarm = AlarmProperties & {
  * A CloudFormation template instance
  * All Load Balancers CloudFormation logicalIDs
  */
-export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, cfTemplate: CloudFormationTemplate): string[] {
+export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template, additionalResources: ResourceType = {}): string[] {
   const allLoadBalancerLogicalIds = new Set()
   const allListenerRules:ResourceType = {}
-  const listenerResources = cfTemplate.getResourcesByType(
-    'AWS::ElasticLoadBalancingV2::Listener'
-  )
+  const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate, additionalResources)
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
@@ -48,9 +50,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
       }
     }
   }
-  const listenerRuleResources = cfTemplate.getResourcesByType(
-    'AWS::ElasticLoadBalancingV2::ListenerRule'
-  )
+  const listenerRuleResources = getResourcesByType('AWS::ElasticLoadBalancingV2::ListenerRule', compiledTemplate, additionalResources)
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
@@ -65,7 +65,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   for (const listenerRule of Object.values(allListenerRules)) {
       const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
-      const listener = cfTemplate.getResourceByName(listenerLogicalId)
+      const listener = getResourceByName(listenerLogicalId, compiledTemplate, additionalResources)
         if (listener) {
           const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
           if (loadBalancerLogicalId) {
@@ -80,62 +80,54 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 /**
  * The fully resolved alarm configuration
  */
-export default function ALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context) {
-  return {
-    createALBTargetAlarms
-  }
-
-  /**
-   * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
-   * based on the resources found within
-   *
-   * A CloudFormation template object
-   */
-  function createALBTargetAlarms (cfTemplate: CloudFormationTemplate) {
-    const targetGroupResources = cfTemplate.getResourcesByType(
-      'AWS::ElasticLoadBalancingV2::TargetGroup'
-    )
-    for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
-      for (const tgLogicalId of Object.keys(targetGroupResources)) {
-        const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, cfTemplate)
-        for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-          if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count && albTargetAlarmProperties.HTTPCode_Target_5XX_Count.ActionsEnabled) {
-            const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
+export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+/**
+ * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
+ * based on the resources found within
+ *
+ * A CloudFormation template object
+ */
+  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, additionalResources)
+  for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
+    for (const tgLogicalId of Object.keys(targetGroupResources)) {
+      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
+      for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
+        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count && albTargetAlarmProperties.HTTPCode_Target_5XX_Count.ActionsEnabled) {
+          const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
+            targetGroupResourceName,
+            targetGroupResource,
+            loadBalancerLogicalId,
+            albTargetAlarmProperties.HTTPCode_Target_5XX_Count
+          )
+          addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource, compiledTemplate)
+        }
+        if (albTargetAlarmProperties.UnHealthyHostCount && albTargetAlarmProperties.UnHealthyHostCount.ActionsEnabled) {
+          const unHealthyHostCount = createUnHealthyHostCountAlarm(
+            targetGroupResourceName,
+            targetGroupResource,
+            loadBalancerLogicalId,
+            albTargetAlarmProperties.UnHealthyHostCount
+          )
+          addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource, compiledTemplate)
+        }
+        if (targetGroupResource.Properties.TargetType === 'lambda') {
+          if (albTargetAlarmProperties.LambdaInternalError && albTargetAlarmProperties.LambdaInternalError.ActionsEnabled) {
+            const lambdaInternalError = createLambdaInternalErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
               loadBalancerLogicalId,
-              albTargetAlarmProperties.HTTPCode_Target_5XX_Count
+              albTargetAlarmProperties.LambdaInternalError
             )
-            cfTemplate.addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource)
+            addResource(lambdaInternalError.resourceName, lambdaInternalError.resource, compiledTemplate)
           }
-          if (albTargetAlarmProperties.UnHealthyHostCount && albTargetAlarmProperties.UnHealthyHostCount.ActionsEnabled) {
-            const unHealthyHostCount = createUnHealthyHostCountAlarm(
+          if (albTargetAlarmProperties.LambdaUserError && albTargetAlarmProperties.LambdaUserError.ActionsEnabled) {
+            const lambdaUserError = createLambdaUserErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
               loadBalancerLogicalId,
-              albTargetAlarmProperties.UnHealthyHostCount
+              albTargetAlarmProperties.LambdaUserError
             )
-            cfTemplate.addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource)
-          }
-          if (targetGroupResource.Properties.TargetType === 'lambda') {
-            if (albTargetAlarmProperties.LambdaInternalError && albTargetAlarmProperties.LambdaInternalError.ActionsEnabled) {
-              const lambdaInternalError = createLambdaInternalErrorAlarm(
-                targetGroupResourceName,
-                targetGroupResource,
-                loadBalancerLogicalId,
-                albTargetAlarmProperties.LambdaInternalError
-              )
-              cfTemplate.addResource(lambdaInternalError.resourceName, lambdaInternalError.resource)
-            }
-            if (albTargetAlarmProperties.LambdaUserError && albTargetAlarmProperties.LambdaUserError.ActionsEnabled) {
-              const lambdaUserError = createLambdaUserErrorAlarm(
-                targetGroupResourceName,
-                targetGroupResource,
-                loadBalancerLogicalId,
-                albTargetAlarmProperties.LambdaUserError
-              )
-              cfTemplate.addResource(lambdaUserError.resourceName, lambdaUserError.resource)
-            }
+            addResource(lambdaUserError.resourceName, lambdaUserError.resource, compiledTemplate)
           }
         }
       }

@@ -1,6 +1,7 @@
 'use strict'
 
-import ecsAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
+import createECSAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
+import { getResourcesByType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -49,12 +50,10 @@ test('ECS MemoryUtilization is created', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
-  const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const expectedTypes = {
     ECS_MemoryAlarm: 'MemoryUtilization',
@@ -107,13 +106,10 @@ test('ECS alarms are not created when disabled globally', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
 
-  const { createECSAlarms } = ecsAlarms(ecsAlarmProperties, testContext)
-
-  const cfTemplate = createTestCloudFormationTemplate()
-  createECSAlarms(cfTemplate)
-
-  const alarmResources = cfTemplate.getResourcesByType('AWS::CloudWatch::Alarm')
+  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

@@ -1,9 +1,10 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, getEventSourceMappingFunctions, ResourceType } from '../cf-template'
 import { Context, FunctionAlarmPropertiess, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 import pino from 'pino'
 const logging = pino()
 
@@ -23,21 +24,14 @@ export type LambdaAlarm = AlarmProperties & {
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context) {
-  return {
-    createLambdaAlarms
-  }
-
+export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType) {
   /**
    * Add all required Lambda alarms to the provided CloudFormation template
    * based on the Lambda resources found within
    *
    *
    */
-  function createLambdaAlarms (cfTemplate: CloudFormationTemplate) {
-    const lambdaResources = cfTemplate.getResourcesByType(
-      'AWS::Lambda::Function'
-    )
+    const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
 
     for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
       const funcConfig = functionAlarmPropertiess[funcLogicalId]
@@ -53,7 +47,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
           funcResource,
           funcConfig.Errors
         )
-        cfTemplate.addResource(errAlarm.resourceName, errAlarm.resource)
+        addResource(errAlarm.resourceName, errAlarm.resource, compiledTemplate)
       }
 
       if (funcConfig.ThrottlesPc.ActionsEnabled) {
@@ -63,10 +57,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
           funcConfig.ThrottlesPc
         )
 
-        cfTemplate.addResource(
-          throttlesAlarm.resourceName,
-          throttlesAlarm.resource
-        )
+        addResource(throttlesAlarm.resourceName, throttlesAlarm.resource, compiledTemplate)
       }
 
       if (funcConfig.DurationPc.ActionsEnabled) {
@@ -75,7 +66,7 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
           funcResource,
           funcConfig.DurationPc
         )
-        cfTemplate.addResource(durationAlarm.resourceName, durationAlarm.resource)
+        addResource(durationAlarm.resourceName, durationAlarm.resource, compiledTemplate)
       }
 
       if (funcConfig.Invocations.ActionsEnabled) {
@@ -88,15 +79,12 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
           funcResource,
           funcConfig.Invocations
         )
-        cfTemplate.addResource(
-          invocationsAlarm.resourceName,
-          invocationsAlarm.resource
-        )
+        addResource(invocationsAlarm.resourceName, invocationsAlarm.resource, compiledTemplate)
       }
     }
 
     for (const [funcLogicalId, funcResource] of Object.entries(
-      cfTemplate.getEventSourceMappingFunctions()
+      getEventSourceMappingFunctions(compiledTemplate, additionalResources)
     )) {
       const funcConfig = functionAlarmPropertiess[funcLogicalId]
       if (funcConfig.IteratorAge.ActionsEnabled) {
@@ -106,13 +94,9 @@ export default function LambdaAlarms (functionAlarmPropertiess: FunctionAlarmPro
           funcResource,
           funcConfig.IteratorAge
         )
-        cfTemplate.addResource(
-          iteratorAgeAlarm.resourceName,
-          iteratorAgeAlarm.resource
-        )
+        addResource(iteratorAgeAlarm.resourceName, iteratorAgeAlarm.resource, compiledTemplate)
       }
     }
-  }
 
   /**
    * Create alarms for Iterator Age on a Lambda EventSourceMapping

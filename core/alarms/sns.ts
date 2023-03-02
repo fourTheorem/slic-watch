@@ -1,9 +1,10 @@
 'use strict'
 
-import { CloudFormationTemplate } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
+import { getResourcesByType, addResource, ResourceType } from '../cf-template'
 import { Context, createAlarm } from './default-config-alarms'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import Resource from 'cloudform-types/types/resource'
+import Template from 'cloudform-types/types/template'
 
 export type SnsAlarmsConfig = AlarmProperties & {
   'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties,
@@ -17,21 +18,14 @@ export type SnsAlarm= AlarmProperties & {
 /**
  * snsAlarmsConfig The fully resolved alarm configuration
  */
-export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context) {
-  return {
-    createSNSAlarms
-  }
-
+export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required SNS alarms to the provided CloudFormation template
    * based on the SNS resources found within
    *
    * A CloudFormation template object
    */
-  function createSNSAlarms (cfTemplate: CloudFormationTemplate) {
-    const topicResources = cfTemplate.getResourcesByType(
-      'AWS::SNS::Topic'
-    )
+    const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
 
     for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
       if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
@@ -40,7 +34,7 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
           topicResource,
           snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes']
         )
-        cfTemplate.addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource)
+        addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource, compiledTemplate)
       }
 
       if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
@@ -49,10 +43,9 @@ export default function snsAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Co
           topicResource,
           snsAlarmsConfig.NumberOfNotificationsFailed
         )
-        cfTemplate.addResource(numberOfNotificationsFailed.resourceName, numberOfNotificationsFailed.resource)
+        addResource(numberOfNotificationsFailed.resourceName, numberOfNotificationsFailed.resource, compiledTemplate)
       }
     }
-  }
 
   function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
