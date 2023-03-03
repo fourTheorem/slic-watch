@@ -8,8 +8,8 @@ import Resource from 'cloudform-types/types/resource'
 import Template from 'cloudform-types/types/template'
 import { ResourceType } from './../cf-template'
 
-export type EventsAlarmsConfig = AlarmProperties &{
-  FailedInvocations: AlarmProperties,
+export type EventsAlarmsConfig = AlarmProperties & {
+  FailedInvocations: AlarmProperties
   ThrottledRules: AlarmProperties
 }
 
@@ -26,31 +26,31 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
    * based on the EventBridge Rule found within
    *
    */
-    const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate, additionalResources)
+  const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate, additionalResources)
 
-    for (const [ruleResourceName, ruleResource] of Object.entries(ruleResources)) {
-      if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled) {
-        const failedInvocations = createFailedInvocationsAlarm(
-          ruleResourceName,
-          ruleResource,
-          eventsAlarmsConfig.FailedInvocations
-        )
-        addResource(failedInvocations.resourceName, failedInvocations.resource, compiledTemplate)
-      }
-
-      if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled) {
-        const throttledRules = createThrottledRulesAlarm(
-          ruleResourceName,
-          ruleResource,
-          eventsAlarmsConfig.ThrottledRules
-        )
-        addResource(throttledRules.resourceName, throttledRules.resource, compiledTemplate)
-      }
+  for (const [ruleResourceName, ruleResource] of Object.entries(ruleResources)) {
+    if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled) {
+      const failedInvocations = createFailedInvocationsAlarm(
+        ruleResourceName,
+        ruleResource,
+        eventsAlarmsConfig.FailedInvocations
+      )
+      addResource(failedInvocations.resourceName, failedInvocations.resource, compiledTemplate)
     }
+
+    if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled) {
+      const throttledRules = createThrottledRulesAlarm(
+        ruleResourceName,
+        ruleResource,
+        eventsAlarmsConfig.ThrottledRules
+      )
+      addResource(throttledRules.resourceName, throttledRules.resource, compiledTemplate)
+    }
+  }
 
   function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const eventbridgeAlarmProperties:EventbridgeAlarm = {
+    const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_FailedInvocationsAlarm_${logicalId}`,
       AlarmDescription: `EventBridge Failed Invocations for \${${logicalId}} breaches ${threshold}`,
       RuleName: `${logicalId}`,
@@ -73,7 +73,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
 
   function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const eventbridgeAlarmProperties:EventbridgeAlarm = {
+    const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_ThrottledRulesAlarm_${logicalId}`,
       AlarmDescription: `EventBridge Throttled Rules for ${logicalId} breaches ${threshold}`,
       RuleName: `${logicalId}`,

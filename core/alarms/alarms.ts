@@ -19,7 +19,7 @@ import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { ResourceType } from './../cf-template'
 
-export default function addAlarms (AlarmProperties:AlarmsCascade, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function addAlarms (AlarmProperties: AlarmsCascade, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,

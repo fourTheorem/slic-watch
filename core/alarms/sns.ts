@@ -7,11 +7,11 @@ import Resource from 'cloudform-types/types/resource'
 import Template from 'cloudform-types/types/template'
 
 export type SnsAlarmsConfig = AlarmProperties & {
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties,
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties
   NumberOfNotificationsFailed: AlarmProperties
 }
 
-export type SnsAlarm= AlarmProperties & {
+export type SnsAlarm = AlarmProperties & {
   TopicName: string
 }
 
@@ -25,27 +25,27 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
    *
    * A CloudFormation template object
    */
-    const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
+  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
 
-    for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
-      if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
-        const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
-          topicLogicalId,
-          topicResource,
-          snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes']
-        )
-        addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource, compiledTemplate)
-      }
-
-      if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
-        const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
-          topicLogicalId,
-          topicResource,
-          snsAlarmsConfig.NumberOfNotificationsFailed
-        )
-        addResource(numberOfNotificationsFailed.resourceName, numberOfNotificationsFailed.resource, compiledTemplate)
-      }
+  for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
+    if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
+      const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
+        topicLogicalId,
+        topicResource,
+        snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes']
+      )
+      addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource, compiledTemplate)
     }
+
+    if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
+      const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
+        topicLogicalId,
+        topicResource,
+        snsAlarmsConfig.NumberOfNotificationsFailed
+      )
+      addResource(numberOfNotificationsFailed.resourceName, numberOfNotificationsFailed.resource, compiledTemplate)
+    }
+  }
 
   function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold

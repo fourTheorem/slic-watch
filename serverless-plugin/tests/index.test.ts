@@ -103,16 +103,16 @@ test('index', t => {
       ...mockServerless,
       configSchemaHandler: {
         defineCustomProperties: (schema) => {
-          // @ts-ignore
+          // @ts-expect-error
           testData.schema = schema
         },
         defineFunctionProperties: (provider, schema) => {
-          // @ts-ignore
+          // @ts-expect-error
           testData.functionSchema = schema
         }
       }
     })
-    // @ts-ignore
+    // @ts-expect-error
     t.equal(typeof testData.schema, 'object')
     t.end()
   })
@@ -131,7 +131,6 @@ test('index', t => {
 
   t.test('Plugin execution succeeds if no SNS Topic is provided', t => {
     const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
-    // @ts-ignore
     delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
     const plugin = new ServerlessPlugin(
       {
@@ -169,7 +168,7 @@ test('index', t => {
 
   t.test('Plugin execution fails if an invalid SLIC Watch config is provided', t => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
-    // @ts-ignore
+    // @ts-expect-error
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
     const plugin = new ServerlessPlugin(
       {

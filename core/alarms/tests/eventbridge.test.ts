@@ -55,11 +55,11 @@ test('Events alarms are created', (t) => {
     t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
     t.equal(al.Namespace, 'AWS/Events')
     t.equal(al.Period, 120)
-    // @ts-ignore
+    // @ts-expect-error
     t.equal(al.Dimensions.length, 1)
-    // @ts-ignore
+    // @ts-expect-error
     t.equal(al.Dimensions[0].Name, 'RuleName')
-    // @ts-ignore
+    // @ts-expect-error
     t.ok(al.Dimensions[0].Value)
   }
 

@@ -16,14 +16,14 @@ import {
 } from '../../tests/testing-utils'
 import { applyAlarmConfig } from '../../inputs/function-config'
 
-export type AlarmsByType = {
+export interface AlarmsByType {
   Lambda_Duration
   Lambda_Errors
   Lambda_IteratorAge
   Lambda_Throttles
 }
 
-export type MetricsById = {
+export interface MetricsById {
   throttles_pc
   throttles
   invocations
@@ -63,7 +63,7 @@ test('AWS Lambda alarms are created', (t) => {
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
-  function getAlarmsByType ():AlarmsByType {
+  function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
@@ -107,7 +107,7 @@ test('AWS Lambda alarms are created', (t) => {
     t.equal(al.Namespace, 'AWS/Lambda')
     t.equal(al.Period, 120)
   }
-  function getMetricsById ():MetricsById {
+  function getMetricsById (): MetricsById {
     const metricsById = {}
     for (const al of alarmsByType.Lambda_Throttles) {
       t.equal(al.Metrics.length, 3)
@@ -279,7 +279,6 @@ test('Invocation alarms are created if configured', (t) => {
   )
   t.equal(Object.keys(invocAlarmResources).length, 8)
   for (const res of Object.values(invocAlarmResources)) {
-    // @ts-ignore
     const al = res.Properties
     t.equal(al.MetricName, 'Invocations')
     t.equal(al.Statistic, 'Sum')
@@ -335,8 +334,8 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     functionName: {},
     reason: 'unexpected reference format'
   }
-].forEach(({ functionName, reason }) =>
-  test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
+].forEach(({ functionName, reason }) => async () => {
+  await test(`IteratorAge alarm is not created if function reference cannot be found due to ${reason}`, (t) => {
     const AlarmProperties = createTestConfig(defaultConfig.alarms, {
       Lambda: {
         Period: 60,
@@ -380,7 +379,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     t.equal(Object.keys(alarmResources).length, 0)
     t.end()
   })
-)
+})
 
 test('Lambda alarms are not created when disabled globally', (t) => {
   const AlarmProperties = createTestConfig(defaultConfig.alarms, {
@@ -487,7 +486,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
     AlarmProperties.Lambda, {
       HelloLambdaFunction: { Lambda: { ActionsEnabled: false } }
     })
-    createLambdaAlarms(disabledFuncAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  createLambdaAlarms(disabledFuncAlarmPropertiess, testContext, compiledTemplate, additionalResources)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 0)

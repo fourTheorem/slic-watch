@@ -20,7 +20,7 @@ export type AlbTargetAlarm = AlarmProperties & {
   TargetGroupResourceName: string
   LoadBalancerLogicalId: string
 }
-function getResourceByName (resourceName:string, compiledTemplate, additionalResources = {}): Resource {
+function getResourceByName (resourceName: string, compiledTemplate, additionalResources = {}): Resource {
   return compiledTemplate.Resources[resourceName] || additionalResources[resourceName]
 }
 
@@ -35,7 +35,7 @@ function getResourceByName (resourceName:string, compiledTemplate, additionalRes
  */
 export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template, additionalResources: ResourceType = {}): string[] {
   const allLoadBalancerLogicalIds = new Set()
-  const allListenerRules:ResourceType = {}
+  const allListenerRules: ResourceType = {}
   const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate, additionalResources)
 
   // First, find Listeners with _default actions_ referencing the target group
@@ -64,16 +64,16 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   }
 
   for (const listenerRule of Object.values(allListenerRules)) {
-      const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
-      const listener = getResourceByName(listenerLogicalId, compiledTemplate, additionalResources)
-        if (listener) {
-          const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
-          if (loadBalancerLogicalId) {
-            allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
-        }
+    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
+    const listener = getResourceByName(listenerLogicalId, compiledTemplate, additionalResources)
+    if (listener) {
+      const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+      if (loadBalancerLogicalId) {
+        allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
       }
+    }
   }
-  // @ts-ignore
+  // @ts-expect-error
   return [...allLoadBalancerLogicalIds]
 }
 
@@ -92,7 +92,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
     for (const tgLogicalId of Object.keys(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count && albTargetAlarmProperties.HTTPCode_Target_5XX_Count.ActionsEnabled) {
+        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count?.ActionsEnabled) {
           const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
             targetGroupResourceName,
             targetGroupResource,
@@ -101,7 +101,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
           )
           addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource, compiledTemplate)
         }
-        if (albTargetAlarmProperties.UnHealthyHostCount && albTargetAlarmProperties.UnHealthyHostCount.ActionsEnabled) {
+        if (albTargetAlarmProperties.UnHealthyHostCount?.ActionsEnabled) {
           const unHealthyHostCount = createUnHealthyHostCountAlarm(
             targetGroupResourceName,
             targetGroupResource,
@@ -111,7 +111,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
           addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource, compiledTemplate)
         }
         if (targetGroupResource.Properties.TargetType === 'lambda') {
-          if (albTargetAlarmProperties.LambdaInternalError && albTargetAlarmProperties.LambdaInternalError.ActionsEnabled) {
+          if (albTargetAlarmProperties.LambdaInternalError?.ActionsEnabled) {
             const lambdaInternalError = createLambdaInternalErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
@@ -120,7 +120,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
             )
             addResource(lambdaInternalError.resourceName, lambdaInternalError.resource, compiledTemplate)
           }
-          if (albTargetAlarmProperties.LambdaUserError && albTargetAlarmProperties.LambdaUserError.ActionsEnabled) {
+          if (albTargetAlarmProperties.LambdaUserError?.ActionsEnabled) {
             const lambdaUserError = createLambdaUserErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
@@ -161,7 +161,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
     }
   }
 
-  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId:string, config: AlarmProperties) {
+  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
@@ -188,7 +188,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
     }
   }
 
-  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId:string, config: AlarmProperties) {
+  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
@@ -215,7 +215,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
     }
   }
 
-  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId:string, config: AlarmProperties) {
+  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: AlarmProperties) {
     const threshold = config.Threshold
     const albTargetAlarmProperties: AlbTargetAlarm = {
       AlarmName: `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,

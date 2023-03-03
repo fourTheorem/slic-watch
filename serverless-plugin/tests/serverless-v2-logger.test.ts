@@ -7,13 +7,13 @@ test('v2 logger provides standard functions', (t) => {
   const serverless = {
     cli: {
       log: (...params) => {
-        // @ts-ignore
+        // @ts-expect-error
         invocationParams.push(params)
       }
     }
   }
   const logger = ServerlessV2Logger(serverless)
-  // @ts-ignore
+  // @ts-expect-error
   logger.log('a message')
   t.same(invocationParams.pop(), ['a message'])
   logger.error('a message')

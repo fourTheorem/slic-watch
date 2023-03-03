@@ -15,29 +15,29 @@ import { SfAlarmsConfig, SmAlarm } from './step-functions'
 import { AlarmsCascade } from '../inputs/cascading-config'
 import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-export type ReturnAlarm = {
+export interface ReturnAlarm {
   Type: string
   Properties: AlarmProperties
 }
 
-export type Context = {
+export interface Context {
   alarmActions: string[]
 }
 
 type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
 
-export function createAlarm(alarm: AlarmProperties, context?: Context): ReturnAlarm
-export function createAlarm(alarm: AlbAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: AlbTargetAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: ApiAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: AppSyncAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: EcsAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: EventbridgeAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: LambdaAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: SnsAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: SqsAlarm, context?: Context): ReturnAlarm
-export function createAlarm(alarm: SmAlarm, context?: Context): ReturnAlarm
-export function createAlarm (alarm:AllAlarms, context?: Context): ReturnAlarm {
+export function createAlarm (alarm: AlarmProperties, context?: Context): ReturnAlarm
+export function createAlarm (alarm: AlbAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: AlbTargetAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: ApiAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: AppSyncAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: EcsAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: EventbridgeAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: SmAlarm, context?: Context): ReturnAlarm
+export function createAlarm (alarm: AllAlarms, context?: Context): ReturnAlarm {
   return {
     Type: 'AWS::CloudWatch::Alarm',
     Properties: {
@@ -60,7 +60,7 @@ export function createAlarm (alarm:AllAlarms, context?: Context): ReturnAlarm {
   }
 }
 
-export type AllAlarmsConfig = {
+export interface AllAlarmsConfig {
   ActionsEnabled: boolean
   alarms?: AlarmsCascade
 }
@@ -68,7 +68,7 @@ export type AllAlarmsConfig = {
 export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
 & EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmPropertiess & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
-export type FunctionAlarmPropertiess = {
+export interface FunctionAlarmPropertiess {
   HelloLambdaFunction?: LambdaFunctionAlarmPropertiess
   ThrottlerLambdaFunction?: LambdaFunctionAlarmPropertiess
   DriveStreamLambdaFunction?: LambdaFunctionAlarmPropertiess

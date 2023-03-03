@@ -12,7 +12,7 @@ import {
   testContext
 } from '../../tests/testing-utils'
 
-export type AlarmsByType ={
+export interface AlarmsByType {
   SQS_ApproximateAgeOfOldestMessage
   SQS_ApproximateNumberOfMessagesNotVisible
 }

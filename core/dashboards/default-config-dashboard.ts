@@ -6,12 +6,12 @@ import FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
 
-export type DashboardConfig = {
+export interface DashboardConfig {
   ActionsEnabled?: boolean
   widgets?: Widgets
 }
 
-export type DashboardBodyProperties = {
+export interface DashboardBodyProperties {
   ActionsEnabled?: boolean
   metricPeriod?: number
   width?: number
@@ -20,12 +20,12 @@ export type DashboardBodyProperties = {
   Statistic?: Statistic[]
 }
 
-export type ServiceDashConfig = {
+export interface ServiceDashConfig {
   DashboardBodyProperties?: DashboardBodyProperties
   widgets?: Widgets
 }
 
-export type LambdaDashboardBodyProperties = {
+export interface LambdaDashboardBodyProperties {
   Errors: DashboardBodyProperties
   Throttles: DashboardBodyProperties
   Duration: DashboardBodyProperties
@@ -34,25 +34,25 @@ export type LambdaDashboardBodyProperties = {
   IteratorAge: DashboardBodyProperties
 }
 
-export type ApiGwDashboardBodyProperties = {
+export interface ApiGwDashboardBodyProperties {
   '5XXError': DashboardBodyProperties
   '4XXError': DashboardBodyProperties
   Latency: DashboardBodyProperties
   Count: DashboardBodyProperties
 }
 
-export type SfDashboardBodyProperties = {
+export interface SfDashboardBodyProperties {
   ExecutionsFailed: DashboardBodyProperties
   ExecutionThrottled: DashboardBodyProperties
   ExecutionsTimedOut: DashboardBodyProperties
 }
 
-export type DynamoDbDashboardBodyProperties = {
+export interface DynamoDbDashboardBodyProperties {
   ReadThrottleEvents: DashboardBodyProperties
   WriteThrottleEvents: DashboardBodyProperties
 }
 
-export type KinesisDashboardBodyProperties = {
+export interface KinesisDashboardBodyProperties {
   'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties
   ReadProvisionedThroughputExceeded: DashboardBodyProperties
   WriteProvisionedThroughputExceeded: DashboardBodyProperties
@@ -61,7 +61,7 @@ export type KinesisDashboardBodyProperties = {
   'GetRecords.Success': DashboardBodyProperties
 }
 
-export type SqsDashboardBodyProperties = {
+export interface SqsDashboardBodyProperties {
   NumberOfMessagesSent: DashboardBodyProperties
   NumberOfMessagesReceived: DashboardBodyProperties
   NumberOfMessagesDeleted: DashboardBodyProperties
@@ -69,36 +69,36 @@ export type SqsDashboardBodyProperties = {
   ApproximateNumberOfMessagesVisible: DashboardBodyProperties
 }
 
-export type EcsDashboardBodyProperties = {
+export interface EcsDashboardBodyProperties {
   ActionsEnabled?: boolean
   MemoryUtilization: DashboardBodyProperties
   CPUUtilization: DashboardBodyProperties
 }
 
-export type SnsDashboardBodyProperties = {
+export interface SnsDashboardBodyProperties {
   'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties
   NumberOfNotificationsFailed: DashboardBodyProperties
 }
 
-export type RuleDashboardBodyProperties = {
+export interface RuleDashboardBodyProperties {
   FailedInvocations: DashboardBodyProperties
   ThrottledRules: DashboardBodyProperties
   Invocations: DashboardBodyProperties
 }
 
-export type AlbDashboardBodyProperties = {
+export interface AlbDashboardBodyProperties {
   HTTPCode_ELB_5XX_Count: DashboardBodyProperties
   RejectedConnectionCount: DashboardBodyProperties
 }
 
-export type AlbTargetDashboardBodyProperties = {
+export interface AlbTargetDashboardBodyProperties {
   HTTPCode_Target_5XX_Count: DashboardBodyProperties
   UnHealthyHostCount: DashboardBodyProperties
   LambdaInternalError: DashboardBodyProperties
   LambdaUserError: DashboardBodyProperties
 }
 
-export type AppSyncDashboardBodyProperties = {
+export interface AppSyncDashboardBodyProperties {
   '5XXError': DashboardBodyProperties
   '4XXError': DashboardBodyProperties
   Latency: DashboardBodyProperties
@@ -112,13 +112,13 @@ export type AppSyncDashboardBodyProperties = {
 
 // Lambda resources
 
-export type FunctionResources = {
+export interface FunctionResources {
   Type: string
   Properties: FunctionProperties
   DependsOn: string[]
 }
 
-export type FunctionDashboardConfigs = {
+export interface FunctionDashboardConfigs {
   HelloLambdaFunction?: FunctionResources
   PingLambdaFunction?: FunctionResources
   ThrottlerLambdaFunction?: FunctionResources

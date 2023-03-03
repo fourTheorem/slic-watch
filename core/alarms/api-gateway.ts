@@ -8,13 +8,13 @@ import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import Resource from 'cloudform-types/types/resource'
 import Template from 'cloudform-types/types/template'
 
-export type ApiGwAlarmProperties = AlarmProperties &{
+export type ApiGwAlarmProperties = AlarmProperties & {
   '5XXError': AlarmProperties
   '4XXError': AlarmProperties
   Latency: AlarmProperties
 }
 
-export type ApiAlarm= AlarmProperties & {
+export type ApiAlarm = AlarmProperties & {
   ApiName: string
 }
 
@@ -78,45 +78,45 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
    * based on the resources found within
    *A CloudFormation template object
    */
-    const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
+  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
 
-    for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-      const alarms = []
+  for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
+    const alarms = []
 
-      if (apiGwAlarmProperties['5XXError'].ActionsEnabled) {
-        alarms.push(create5XXAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties['5XXError']
-        ))
-      }
-
-      if (apiGwAlarmProperties['4XXError'].ActionsEnabled) {
-        alarms.push(create4XXAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties['4XXError']
-        ))
-      }
-
-      if (apiGwAlarmProperties.Latency.ActionsEnabled) {
-        alarms.push(createLatencyAlarm(
-          apiResourceName,
-          apiResource,
-          apiGwAlarmProperties.Latency
-        ))
-      }
-
-      for (const alarm of alarms) {
-        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
-      }
+    if (apiGwAlarmProperties['5XXError'].ActionsEnabled) {
+      alarms.push(create5XXAlarm(
+        apiResourceName,
+        apiResource,
+        apiGwAlarmProperties['5XXError']
+      ))
     }
+
+    if (apiGwAlarmProperties['4XXError'].ActionsEnabled) {
+      alarms.push(create4XXAlarm(
+        apiResourceName,
+        apiResource,
+        apiGwAlarmProperties['4XXError']
+      ))
+    }
+
+    if (apiGwAlarmProperties.Latency.ActionsEnabled) {
+      alarms.push(createLatencyAlarm(
+        apiResourceName,
+        apiResource,
+        apiGwAlarmProperties.Latency
+      ))
+    }
+
+    for (const alarm of alarms) {
+      addResource(alarm.resourceName, alarm.resource, compiledTemplate)
+    }
+  }
 
   function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
+    const apiAlarmProperties: ApiAlarm = {
       AlarmName: `APIGW_5XXError_${apiNameForSub}`,
       AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       ApiName: apiName,
@@ -141,7 +141,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
+    const apiAlarmProperties: ApiAlarm = {
       AlarmName: `APIGW_4XXError_${apiNameForSub}`,
       AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       ApiName: apiName,
@@ -166,7 +166,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
-    const apiAlarmProperties:ApiAlarm = {
+    const apiAlarmProperties: ApiAlarm = {
       AlarmName: `APIGW_Latency_${apiNameForSub}`,
       AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
       ApiName: apiName,

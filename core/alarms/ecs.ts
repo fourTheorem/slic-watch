@@ -12,7 +12,7 @@ export type EcsAlarmsConfig = AlarmProperties & {
 }
 
 export type EcsAlarm = AlarmProperties & {
-  ServiceName: string,
+  ServiceName: string
   ClusterName: string
 }
 
@@ -47,31 +47,31 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
    *
    * A CloudFormation template object
    */
-    const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate, additionalResources)
-    for (const [serviceResourceName, serviceResource] of Object.entries(
-      serviceResources
-    )) {
-      const cluster = serviceResource.Properties.Cluster
-      const clusterName = resolveEcsClusterNameAsCfn(cluster)
-      if (ecsAlarmsConfig.MemoryUtilization.ActionsEnabled) {
-        const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
-          serviceResourceName,
-          serviceResource,
-          clusterName,
-          ecsAlarmsConfig.MemoryUtilization
-        )
-        addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
-      }
-      if (ecsAlarmsConfig.CPUUtilization.ActionsEnabled) {
-        const cpuUtilizationAlarm = createCPUUtilizationAlarm(
-          serviceResourceName,
-          serviceResource,
-          clusterName,
-          ecsAlarmsConfig.CPUUtilization
-        )
-        addResource(cpuUtilizationAlarm.resourceName, cpuUtilizationAlarm.resource, compiledTemplate)
-      }
+  const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate, additionalResources)
+  for (const [serviceResourceName, serviceResource] of Object.entries(
+    serviceResources
+  )) {
+    const cluster = serviceResource.Properties.Cluster
+    const clusterName = resolveEcsClusterNameAsCfn(cluster)
+    if (ecsAlarmsConfig.MemoryUtilization.ActionsEnabled) {
+      const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
+        serviceResourceName,
+        serviceResource,
+        clusterName,
+        ecsAlarmsConfig.MemoryUtilization
+      )
+      addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
     }
+    if (ecsAlarmsConfig.CPUUtilization.ActionsEnabled) {
+      const cpuUtilizationAlarm = createCPUUtilizationAlarm(
+        serviceResourceName,
+        serviceResource,
+        clusterName,
+        ecsAlarmsConfig.CPUUtilization
+      )
+      addResource(cpuUtilizationAlarm.resourceName, cpuUtilizationAlarm.resource, compiledTemplate)
+    }
+  }
 
   function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
     const threshold = config.Threshold

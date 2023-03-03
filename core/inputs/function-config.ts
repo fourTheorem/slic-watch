@@ -6,13 +6,6 @@ import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
 
 /**
- * Support for function-specific configuration for AWS Lambda overrides at a function level
- */
-export {
-  applyAlarmConfig
-}
-
-/**
  * Merges the global Lambda alarm configuration with any function-specific overrides, ensuring
  * that function overrides take precedence over any global configuration
  *
@@ -25,11 +18,18 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
-    // @ts-ignore
+    // @ts-expect-error
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
       funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
     mergedFuncAlarmConfigs[func] = _.merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
   }
   return mergedFuncAlarmConfigs
+}
+
+/**
+ * Support for function-specific configuration for AWS Lambda overrides at a function level
+ */
+export {
+  applyAlarmConfig
 }

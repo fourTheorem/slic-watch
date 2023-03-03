@@ -10,33 +10,21 @@ import YAML from 'yaml'
 import { cascade } from '../inputs/cascading-config'
 
 const require = createRequire(import.meta.url)
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 const defaultCfTemplate = require('../cf-resources/cloudformation-template-stack.json')
 const albCfTemplate = require('../cf-resources/alb-cloudformation-template-stack.json')
 const appSyncCfTemplate = require('../cf-resources/appsync-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
-  __dirname,
+  dirname,
   '../../serverless-test-project/serverless.yml'
 )
 
 const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = { alarmActions: ['dummy-arn'] }
-
-export {
-  slsYaml,
-  albCfTemplate,
-  appSyncCfTemplate,
-  defaultCfTemplate,
-  testContext,
-  assertCommonAlarmProperties,
-  alarmNameToType,
-  createTestConfig,
-  createTestCloudFormationTemplate
-}
 
 function assertCommonAlarmProperties (t, al) {
   t.ok(al.AlarmDescription)
@@ -72,4 +60,16 @@ function createTestCloudFormationTemplate (stackDefinition = null) {
   const data = stackDefinition || defaultCfTemplate
 
   return { compiledTemplate: _.cloneDeep(data), additionalResources: {} }
+}
+
+export {
+  slsYaml,
+  albCfTemplate,
+  appSyncCfTemplate,
+  defaultCfTemplate,
+  testContext,
+  assertCommonAlarmProperties,
+  alarmNameToType,
+  createTestConfig,
+  createTestCloudFormationTemplate
 }

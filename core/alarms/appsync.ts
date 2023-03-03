@@ -13,7 +13,7 @@ export type AppSyncAlarmProperties = AlarmProperties & {
   Latency: AlarmProperties
 }
 
-export type AppSyncAlarm= AlarmProperties & {
+export type AppSyncAlarm = AlarmProperties & {
   AppSyncResourceName: string
 }
 
@@ -27,34 +27,34 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
    *
    * A CloudFormation template object
    */
-    const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate, additionalResources)
+  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate, additionalResources)
 
-    for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
-      const alarms = []
-      if (appSyncAlarmProperties['5XXError'].ActionsEnabled) {
-        alarms.push(create5XXAlarm(
-          appSyncResourceName,
-          appSyncResource,
-          appSyncAlarmProperties['5XXError']
-        ))
-      }
-
-      if (appSyncAlarmProperties.Latency.ActionsEnabled) {
-        alarms.push(createLatencyAlarm(
-          appSyncResourceName,
-          appSyncResource,
-          appSyncAlarmProperties.Latency
-        ))
-      }
-      for (const alarm of alarms) {
-        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
-      }
+  for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
+    const alarms = []
+    if (appSyncAlarmProperties['5XXError'].ActionsEnabled) {
+      alarms.push(create5XXAlarm(
+        appSyncResourceName,
+        appSyncResource,
+        appSyncAlarmProperties['5XXError']
+      ))
     }
+
+    if (appSyncAlarmProperties.Latency.ActionsEnabled) {
+      alarms.push(createLatencyAlarm(
+        appSyncResourceName,
+        appSyncResource,
+        appSyncAlarmProperties.Latency
+      ))
+    }
+    for (const alarm of alarms) {
+      addResource(alarm.resourceName, alarm.resource, compiledTemplate)
+    }
+  }
 
   function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
-    const appSyncAlarmProperties:AppSyncAlarm = {
+    const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSync5XXErrorAlarm_${graphQLName}`,
       AlarmDescription: `AppSync 5XX Error ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
       AppSyncResourceName: appSyncResourceName,
@@ -80,7 +80,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
   function createLatencyAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
     const graphQLName = appSyncResource.Properties.Name
     const threshold = config.Threshold
-    const appSyncAlarmProperties:AppSyncAlarm = {
+    const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSyncLatencyAlarm_${graphQLName}`,
       AlarmDescription: `AppSync Latency ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
       AppSyncResourceName: appSyncResourceName,

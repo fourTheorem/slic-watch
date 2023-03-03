@@ -44,12 +44,12 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   createSlicWatchResources () {
-    type SlicWatchConfig = {
+    interface SlicWatchConfig {
       topicArn: string
       ActionsEnabled: boolean
     }
 
-    const slicWatchConfig: SlicWatchConfig = (this.serverless.service.custom || {}).slicWatch || {}
+    const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch || {}
 
     const ajv = new Ajv({
       unicodeRegExp: false
@@ -68,7 +68,6 @@ class ServerlessPlugin {
     }
 
     if (slicWatchConfig.topicArn) {
-      // @ts-ignore
       alarmActions.push(slicWatchConfig.topicArn)
     }
 
@@ -82,9 +81,9 @@ class ServerlessPlugin {
     const functionDashboardConfigs = {}
     for (const funcName of this.serverless.service.getAllFunctions()) {
       const func = this.serverless.service.getFunction(funcName)
-      // @ts-ignore
+      // @ts-expect-error
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      // @ts-ignore
+      // @ts-expect-error
       const funcConfig = func.slicWatch || {}
       functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard

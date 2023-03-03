@@ -102,65 +102,65 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    *
    * A CloudFormation template
    */
-    const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
-    const stateMachineResources = getResourcesByType('AWS::StepFunctions::StateMachine', compiledTemplate)
-    const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
-    const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
-    const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
-    const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
-    const ecsServiceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
-    const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
-    const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate)
-    const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate)
-    const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
+  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
+  const stateMachineResources = getResourcesByType('AWS::StepFunctions::StateMachine', compiledTemplate)
+  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
+  const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
+  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
+  const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
+  const ecsServiceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
+  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
+  const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate)
+  const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate)
+  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
 
-    const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
+  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
-    const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
-    const apiWidgets = createApiWidgets(apiResources)
-    const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
-    const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
-    const lambdaWidgets = createLambdaWidgets(lambdaResources, Object.keys(eventSourceMappingFunctions))
-    const streamWidgets = createStreamWidgets(streamResources)
-    const queueWidgets = createQueueWidgets(queueResources)
-    const ecsWidgets = createEcsWidgets(ecsServiceResources)
-    const topicWidgets = createTopicWidgets(topicResources)
-    const ruleWidgets = createRuleWidgets(ruleResources)
-    const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
-    const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, compiledTemplate)
-    const appSyncWidgets = createAppSyncWidgets(appSyncResources)
+  const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
+  const apiWidgets = createApiWidgets(apiResources)
+  const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
+  const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
+  const lambdaWidgets = createLambdaWidgets(lambdaResources, Object.keys(eventSourceMappingFunctions))
+  const streamWidgets = createStreamWidgets(streamResources)
+  const queueWidgets = createQueueWidgets(queueResources)
+  const ecsWidgets = createEcsWidgets(ecsServiceResources)
+  const topicWidgets = createTopicWidgets(topicResources)
+  const ruleWidgets = createRuleWidgets(ruleResources)
+  const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
+  const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, compiledTemplate)
+  const appSyncWidgets = createAppSyncWidgets(appSyncResources)
 
-    const positionedWidgets = layOutWidgets([
-      ...apiWidgets,
-      ...stateMachineWidgets,
-      ...dynamoDbWidgets,
-      ...lambdaWidgets,
-      ...streamWidgets,
-      ...queueWidgets,
-      ...ecsWidgets,
-      ...topicWidgets,
-      ...ruleWidgets,
-      ...loadBalancerWidgets,
-      ...targetGroupWidgets,
-      ...appSyncWidgets
-    ])
+  const positionedWidgets = layOutWidgets([
+    ...apiWidgets,
+    ...stateMachineWidgets,
+    ...dynamoDbWidgets,
+    ...lambdaWidgets,
+    ...streamWidgets,
+    ...queueWidgets,
+    ...ecsWidgets,
+    ...topicWidgets,
+    ...ruleWidgets,
+    ...loadBalancerWidgets,
+    ...targetGroupWidgets,
+    ...appSyncWidgets
+  ])
 
-    if (positionedWidgets.length > 0) {
-      const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
-      const dashboardResource = {
-        Type: 'AWS::CloudWatch::Dashboard',
-        Properties: {
-          // eslint-disable-next-line no-template-curly-in-string
-          DashboardName: { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' },
-          DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
-        }
+  if (positionedWidgets.length > 0) {
+    const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
+    const dashboardResource = {
+      Type: 'AWS::CloudWatch::Dashboard',
+      Properties: {
+        // eslint-disable-next-line no-template-curly-in-string
+        DashboardName: { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' },
+        DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
       }
-      addResource('slicWatchDashboard', dashboardResource, compiledTemplate)
-    } else {
-      logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
     }
+    addResource('slicWatchDashboard', dashboardResource, compiledTemplate)
+  } else {
+    logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
+  }
 
-  type MetricDefs = {
+  interface MetricDefs {
     namespace: string
     metric: string
     dimensions: object
@@ -174,7 +174,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * @param {Array.<object>} metrics The metric definitions to render
    * @param {Object} Cascaded widget/metric configuration
    */
-  function createMetricWidget (title: string, metricDefs: Array<MetricDefs>, config) {
+  function createMetricWidget (title: string, metricDefs: MetricDefs[], config) {
     const metrics = metricDefs.map(
       ({ namespace, metric, dimensions, stat, yAxis }) => [
         namespace,
@@ -375,7 +375,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
             })),
             metricConfig
           ))
-          // @ts-ignore
+          // @ts-expect-error
           for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
             const gsiName = gsi.IndexName
             ddbWidgets.push(createMetricWidget(
@@ -719,7 +719,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
     return appSyncWidgets
   }
 
-  type Widgets = {
+  interface Widgets {
     width: number
     height: number
   }
@@ -729,7 +729,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * A set of dashboard widgets
    * A set of dashboard widgets with layout properties set
    */
-  function layOutWidgets (widgets: Array<Widgets>) {
+  function layOutWidgets (widgets: Widgets[]) {
     let x = 0
     let y = 0
 

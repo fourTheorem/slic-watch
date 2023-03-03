@@ -9,7 +9,7 @@ import pino from 'pino'
 const logging = pino()
 
 export type LambdaFunctionAlarmPropertiess = AlarmProperties & {
-  Errors: AlarmProperties,
+  Errors: AlarmProperties
   ThrottlesPc: AlarmProperties
   DurationPc: AlarmProperties
   Invocations: AlarmProperties
@@ -31,72 +31,72 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
    *
    *
    */
-    const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
+  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
 
-    for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-      const funcConfig = functionAlarmPropertiess[funcLogicalId]
-      if (!funcConfig) {
-        // Function is likely injected by another plugin and not a top-level user function
-        logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
-        return
-      }
-
-      if (funcConfig.Errors.ActionsEnabled) {
-        const errAlarm = createLambdaErrorsAlarm(
-          funcLogicalId,
-          funcResource,
-          funcConfig.Errors
-        )
-        addResource(errAlarm.resourceName, errAlarm.resource, compiledTemplate)
-      }
-
-      if (funcConfig.ThrottlesPc.ActionsEnabled) {
-        const throttlesAlarm = createLambdaThrottlesAlarm(
-          funcLogicalId,
-          funcResource,
-          funcConfig.ThrottlesPc
-        )
-
-        addResource(throttlesAlarm.resourceName, throttlesAlarm.resource, compiledTemplate)
-      }
-
-      if (funcConfig.DurationPc.ActionsEnabled) {
-        const durationAlarm = createLambdaDurationAlarm(
-          funcLogicalId,
-          funcResource,
-          funcConfig.DurationPc
-        )
-        addResource(durationAlarm.resourceName, durationAlarm.resource, compiledTemplate)
-      }
-
-      if (funcConfig.Invocations.ActionsEnabled) {
-        if (funcConfig.Invocations.Threshold == null) {
-          throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
-        }
-
-        const invocationsAlarm = createLambdaInvocationsAlarm(
-          funcLogicalId,
-          funcResource,
-          funcConfig.Invocations
-        )
-        addResource(invocationsAlarm.resourceName, invocationsAlarm.resource, compiledTemplate)
-      }
+  for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
+    const funcConfig = functionAlarmPropertiess[funcLogicalId]
+    if (!funcConfig) {
+      // Function is likely injected by another plugin and not a top-level user function
+      logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
+      return
     }
 
-    for (const [funcLogicalId, funcResource] of Object.entries(
-      getEventSourceMappingFunctions(compiledTemplate, additionalResources)
-    )) {
-      const funcConfig = functionAlarmPropertiess[funcLogicalId]
-      if (funcConfig.IteratorAge.ActionsEnabled) {
-        // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
-        const iteratorAgeAlarm = createIteratorAgeAlarm(
-          funcLogicalId,
-          funcResource,
-          funcConfig.IteratorAge
-        )
-        addResource(iteratorAgeAlarm.resourceName, iteratorAgeAlarm.resource, compiledTemplate)
-      }
+    if (funcConfig.Errors.ActionsEnabled) {
+      const errAlarm = createLambdaErrorsAlarm(
+        funcLogicalId,
+        funcResource,
+        funcConfig.Errors
+      )
+      addResource(errAlarm.resourceName, errAlarm.resource, compiledTemplate)
     }
+
+    if (funcConfig.ThrottlesPc.ActionsEnabled) {
+      const throttlesAlarm = createLambdaThrottlesAlarm(
+        funcLogicalId,
+        funcResource,
+        funcConfig.ThrottlesPc
+      )
+
+      addResource(throttlesAlarm.resourceName, throttlesAlarm.resource, compiledTemplate)
+    }
+
+    if (funcConfig.DurationPc.ActionsEnabled) {
+      const durationAlarm = createLambdaDurationAlarm(
+        funcLogicalId,
+        funcResource,
+        funcConfig.DurationPc
+      )
+      addResource(durationAlarm.resourceName, durationAlarm.resource, compiledTemplate)
+    }
+
+    if (funcConfig.Invocations.ActionsEnabled) {
+      if (funcConfig.Invocations.Threshold == null) {
+        throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
+      }
+
+      const invocationsAlarm = createLambdaInvocationsAlarm(
+        funcLogicalId,
+        funcResource,
+        funcConfig.Invocations
+      )
+      addResource(invocationsAlarm.resourceName, invocationsAlarm.resource, compiledTemplate)
+    }
+  }
+
+  for (const [funcLogicalId, funcResource] of Object.entries(
+    getEventSourceMappingFunctions(compiledTemplate, additionalResources)
+  )) {
+    const funcConfig = functionAlarmPropertiess[funcLogicalId]
+    if (funcConfig.IteratorAge.ActionsEnabled) {
+      // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
+      const iteratorAgeAlarm = createIteratorAgeAlarm(
+        funcLogicalId,
+        funcResource,
+        funcConfig.IteratorAge
+      )
+      addResource(iteratorAgeAlarm.resourceName, iteratorAgeAlarm.resource, compiledTemplate)
+    }
+  }
 
   /**
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
@@ -213,7 +213,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       AlarmDescription: `Max duration for ${funcLogicalId} breaches ${threshold}% of timeout (${funcTimeout})`,
       FuncName: `${funcLogicalId}`,
       ComparisonOperator: config.ComparisonOperator,
-      // @ts-ignore
+      // @ts-expect-error
       Threshold: (threshold * funcTimeout * 1000) / 100,
       Metrics: null,
       MetricName: 'Duration',

@@ -20,7 +20,7 @@ test('Function resource name can be resolved using name', (t) => {
 })
 
 test('Resource can be resolved by type from compiled template', (t) => {
-  const compiledTemplate:Template = {
+  const compiledTemplate: Template = {
     Resources: {
       a: { Type: 'AWS::DynamoDB::Table' }
     }

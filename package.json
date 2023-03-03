@@ -23,7 +23,7 @@
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:packages": "rm -rf coverage && c8 tap --test-ignore='*node_modules*' **/*.test.ts",
-    "coverage": "c8 report --reporter=text-lcov > coverage/tests.lcov",
+    "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
     "test": "npm run lint && npm run destroy-test && npm run test:packages && npm run coverage",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install",

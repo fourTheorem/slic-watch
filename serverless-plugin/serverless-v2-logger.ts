@@ -6,7 +6,6 @@
  */
 export default function ServerlessV2Logger (serverless) {
   function log () {
-    // eslint-disable-next-line prefer-rest-params
     serverless.cli.log(...arguments)
   }
 

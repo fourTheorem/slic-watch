@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 'use strict'
 
 import _ from 'lodash'
@@ -324,7 +323,6 @@ test('A dashboard includes metrics for ALB', (t) => {
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
     t.same(metricNames.sort(), ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'].sort())
-    // eslint-disable-next-line no-template-curly-in-string
     const expectedTitles = new Set(['Target Group ${alb.LoadBalancerName}/${AlbEventAlbTargetGrouphttpListener.TargetGroupName}'])
 
     const actualTitles = new Set(
@@ -338,7 +336,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-ignore
+          // @ts-expect-error
           metricConfig.ActionsEnabled = false
         }
       }
@@ -354,7 +352,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-ignore
+          // @ts-expect-error
           metricConfig.ActionsEnabled = false
         }
       }
@@ -447,7 +445,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-ignore
+          // @ts-expect-error
           metricConfig.ActionsEnabled = false
         }
       }
@@ -501,7 +499,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
     dashConfig.widgets[service].ActionsEnabled = false
   }
   const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-   addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate, additionalResources)
+  addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate, additionalResources)
   const dashResources = getResourcesByType(compiledTemplate, additionalResources, 'AWS::CloudWatch::Dashboard')
   t.same(dashResources, {})
   t.end()
@@ -512,7 +510,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-      // @ts-ignore
+      // @ts-expect-error
       metricConfig.ActionsEnabled = false
     }
   }

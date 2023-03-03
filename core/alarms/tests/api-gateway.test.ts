@@ -12,7 +12,7 @@ import {
 } from '../../tests/testing-utils'
 import { getResourcesByType } from '../../cf-template'
 
-export type AlarmsByType ={
+export interface AlarmsByType {
   APIGW_4XXError
   APIGW_5XXError
   APIGW_Latency
@@ -83,7 +83,7 @@ test('API Gateway alarms are created', (t) => {
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
-  function getAlarmByType ():AlarmsByType {
+  function getAlarmByType (): AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties

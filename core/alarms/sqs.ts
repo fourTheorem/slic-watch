@@ -6,12 +6,12 @@ import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import Resource from 'cloudform-types/types/resource'
 import Template from 'cloudform-types/types/template'
 
-export type SqsAlarmsConfig = AlarmProperties& {
-  AgeOfOldestMessage: AlarmProperties,
+export type SqsAlarmsConfig = AlarmProperties & {
+  AgeOfOldestMessage: AlarmProperties
   InFlightMessagesPc: AlarmProperties
 }
 
-export type SqsAlarm= AlarmProperties & {
+export type SqsAlarm = AlarmProperties & {
   QueueName: string
 }
 
@@ -25,33 +25,33 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
    *
    * A CloudFormation template object
    */
-    const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate, additionalResources)
+  const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate, additionalResources)
 
-    for (const [queueResourceName, queueResource] of Object.entries(
-      queueResources
-    )) {
-      if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled) {
-        const inFlightMsgsAlarm = createInFlightMsgsAlarm(
-          queueResourceName,
-          queueResource,
-          sqsAlarmsConfig.InFlightMessagesPc
-        )
-        addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
-      }
-
-      if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled) {
-        if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
-          throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
-        }
-
-        const oldestMsgAgeAlarm = createOldestMsgAgeAlarm(
-          queueResourceName,
-          queueResource,
-          sqsAlarmsConfig.AgeOfOldestMessage
-        )
-        addResource(oldestMsgAgeAlarm.resourceName, oldestMsgAgeAlarm.resource, compiledTemplate)
-      }
+  for (const [queueResourceName, queueResource] of Object.entries(
+    queueResources
+  )) {
+    if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled) {
+      const inFlightMsgsAlarm = createInFlightMsgsAlarm(
+        queueResourceName,
+        queueResource,
+        sqsAlarmsConfig.InFlightMessagesPc
+      )
+      addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
     }
+
+    if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled) {
+      if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
+        throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
+      }
+
+      const oldestMsgAgeAlarm = createOldestMsgAgeAlarm(
+        queueResourceName,
+        queueResource,
+        sqsAlarmsConfig.AgeOfOldestMessage
+      )
+      addResource(oldestMsgAgeAlarm.resourceName, oldestMsgAgeAlarm.resource, compiledTemplate)
+    }
+  }
 
   function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
@@ -59,7 +59,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
     const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
-    // @ts-ignore
+    // @ts-expect-error
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,

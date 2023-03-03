@@ -9,7 +9,7 @@ import Resource from 'cloudform-types/types/resource'
 import Template from 'cloudform-types/types/template'
 
 export type KinesisAlarmProperties = AlarmProperties & {
-  'GetRecords.IteratorAgeMilliseconds': AlarmProperties,
+  'GetRecords.IteratorAgeMilliseconds': AlarmProperties
   ReadProvisionedThroughputExceeded: AlarmProperties
   WriteProvisionedThroughputExceeded: AlarmProperties
   'PutRecord.Success': AlarmProperties
@@ -36,22 +36,22 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
    *
    *  A CloudFormation template object
    */
-    const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate, additionalResources)
+  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate, additionalResources)
 
-    for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
-      for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-        if (kinesisAlarmProperties[metric].ActionsEnabled) {
-          const alarm = createStreamAlarm(
-            streamResourceName,
-            streamResource,
-            type,
-            metric,
-            kinesisAlarmProperties[metric]
-          )
-          addResource(alarm.resourceName, alarm.resource, compiledTemplate)
-        }
+  for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
+    for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
+      if (kinesisAlarmProperties[metric].ActionsEnabled) {
+        const alarm = createStreamAlarm(
+          streamResourceName,
+          streamResource,
+          type,
+          metric,
+          kinesisAlarmProperties[metric]
+        )
+        addResource(alarm.resourceName, alarm.resource, compiledTemplate)
       }
     }
+  }
 
   function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties) {
     const threshold = config.Threshold

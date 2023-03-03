@@ -20,21 +20,16 @@ import Template from 'cloudform-types/types/template'
 
 const logger = pino()
 
-export type ResourceType = {
-  [key: string]: Resource
-  }
+export type ResourceType = Record<string, Resource>
 
-export type Statistic = 'Average'| 'Maximum'| 'Minimum'| 'SampleCount'| 'Sum' | 'p95'
+export type Statistic = 'Average' | 'Maximum' | 'Minimum' | 'SampleCount' | 'Sum' | 'p95'
 
-export type LoadBalancerArn = {
-
-}
 // (compiledTemplate: Template, additionalResources: ResourceType = {})
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
-  /**
+/**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
    * CloudFormation logical ID from within this stack
    *
@@ -57,7 +52,7 @@ export function addResource (resourceName: string, resource: Resource, compiledT
   compiledTemplate.Resources[resourceName] = resource
 }
 
-export function getResourcesByType (type:string, compiledTemplate, additionalResources = {}): ResourceType {
+export function getResourcesByType (type: string, compiledTemplate, additionalResources = {}): ResourceType {
   const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
   return filterObject(resources, resource => resource.Type === type)
 }

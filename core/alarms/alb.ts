@@ -9,7 +9,7 @@ import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import Template from 'cloudform-types/types/template'
 
 export type AlbAlarmProperties = AlarmProperties & {
-  HTTPCode_ELB_5XX_Count: AlarmProperties,
+  HTTPCode_ELB_5XX_Count: AlarmProperties
   RejectedConnectionCount: AlarmProperties
 }
 
@@ -27,31 +27,31 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
    *
    *  A CloudFormation template object
    */
-    const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, additionalResources)
+  const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, additionalResources)
 
-    for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
-      if (albAlarmProperties.HTTPCode_ELB_5XX_Count && albAlarmProperties.HTTPCode_ELB_5XX_Count.ActionsEnabled) {
-        const httpCodeELB5XXCount = createHTTPCodeELB5XXCountAlarm(
-          loadBalancerResourceName,
-          loadBalancerResource,
-          albAlarmProperties.HTTPCode_ELB_5XX_Count
-        )
-        addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource, compiledTemplate)
-      }
-
-      if (albAlarmProperties.RejectedConnectionCount && albAlarmProperties.RejectedConnectionCount.ActionsEnabled) {
-        const rejectedConnectionCount = createRejectedConnectionCountAlarm(
-          loadBalancerResourceName,
-          loadBalancerResource,
-          albAlarmProperties.RejectedConnectionCount
-        )
-        addResource(rejectedConnectionCount.resourceName, rejectedConnectionCount.resource, compiledTemplate)
-      }
+  for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
+    if (albAlarmProperties.HTTPCode_ELB_5XX_Count?.ActionsEnabled) {
+      const httpCodeELB5XXCount = createHTTPCodeELB5XXCountAlarm(
+        loadBalancerResourceName,
+        loadBalancerResource,
+        albAlarmProperties.HTTPCode_ELB_5XX_Count
+      )
+      addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource, compiledTemplate)
     }
+
+    if (albAlarmProperties.RejectedConnectionCount?.ActionsEnabled) {
+      const rejectedConnectionCount = createRejectedConnectionCountAlarm(
+        loadBalancerResourceName,
+        loadBalancerResource,
+        albAlarmProperties.RejectedConnectionCount
+      )
+      addResource(rejectedConnectionCount.resourceName, rejectedConnectionCount.resource, compiledTemplate)
+    }
+  }
 
   function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
     const threshold = config.Threshold
-    const albAlarmProperties:AlbAlarm = {
+    const albAlarmProperties: AlbAlarm = {
       AlarmName: `LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}`,
       AlarmDescription: `LoadBalancer HTTP Code ELB 5XX Count ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${threshold}`,
       LoadBalancerResourceName: loadBalancerResourceName,

@@ -25,22 +25,22 @@ const MAX_DEPTH = 10
 
 type ConfigNode = DashboardConfig | AllAlarmsConfig
 
-type ParentNode ={
+interface ParentNode {
   DashboardBodyProperties?: DashboardBodyProperties
   AlarmProperties?: AlarmProperties
 }
 
-type TimeRange = {
+interface TimeRange {
   start: string
   end: string
- }
+}
 
-export type Widgets = {
+export interface Widgets {
   ActionsEnabled?: boolean // remove later ? mark
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties
-  States?: SfDashboardBodyProperties,
+  States?: SfDashboardBodyProperties
   DynamoDB?: DynamoDbDashboardBodyProperties
   Kinesis?: KinesisDashboardBodyProperties
   SQS?: SqsDashboardBodyProperties
@@ -52,17 +52,17 @@ export type Widgets = {
   AppSync?: AppSyncDashboardBodyProperties
 }
 
-export type DashboardsCascade ={
+export interface DashboardsCascade {
   ActionsEnabled?: boolean
   timeRange?: TimeRange
   widgets?: Widgets
- }
+}
 
-export type AlarmsCascade = {
+export interface AlarmsCascade {
   ActionsEnabled: boolean
   Lambda?: LambdaFunctionAlarmPropertiess
   ApiGateway?: ApiGwAlarmProperties
-  States?: SfAlarmsConfig,
+  States?: SfAlarmsConfig
   DynamoDB?: DynamoDbAlarmProperties
   Kinesis?: KinesisAlarmProperties
   SQS?: SqsAlarmsConfig
@@ -81,9 +81,9 @@ export type AlarmsCascade = {
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-export function cascade(node:AllAlarmsConfig, parentNode?: ParentNode, depth?:number):AlarmsCascade
-export function cascade(node:DashboardConfig, parentNode?: ParentNode, depth?:number) : DashboardsCascade
-export function cascade (node:ConfigNode, parentNode?: ParentNode, depth = 0):AlarmsCascade | DashboardsCascade {
+export function cascade (node: AllAlarmsConfig, parentNode?: ParentNode, depth?: number): AlarmsCascade
+export function cascade (node: DashboardConfig, parentNode?: ParentNode, depth?: number): DashboardsCascade
+export function cascade (node: ConfigNode, parentNode?: ParentNode, depth = 0): AlarmsCascade | DashboardsCascade {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }

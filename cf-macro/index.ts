@@ -12,13 +12,13 @@ import pino from 'pino'
 
 const logger = pino({ name: 'macroHandler' })
 
-type Event = {
+interface Event {
   requestId?
   status?: string
   fragment
 }
 
-type SlicWatchConfig = {
+interface SlicWatchConfig {
   topicArn?: string
   ActionsEnabled?: boolean
 }
@@ -27,7 +27,7 @@ export function handler (event: Event): Event {
   logger.info({ event })
   const outputFragment = event.fragment
   try {
-    const slicWatchConfig:SlicWatchConfig = (outputFragment.Metadata || {}).slicWatch || {}
+    const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch || {}
 
     if (slicWatchConfig?.ActionsEnabled ?? true) {
       const ajv = new Ajv({

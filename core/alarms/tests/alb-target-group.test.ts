@@ -213,7 +213,7 @@ test('ALB Target Group alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
+  function createAlarmResources (elbAlarmProperties: AlbTargetAlarmProperties) {
     const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
     return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -279,7 +279,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  function createAlarmResources (elbAlarmProperties:AlbTargetAlarmProperties) {
+  function createAlarmResources (elbAlarmProperties: AlbTargetAlarmProperties) {
     const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
     createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
     return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
