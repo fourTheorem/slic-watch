@@ -7,7 +7,7 @@ import { handler } from '../index'
 const require = createRequire(import.meta.url)
 const template = require('./event.json')
 
-const event = { fragment: template, templateParameterValues: { stack: 'sam-test-stack-project' } }
+const event = { fragment: template }
 
 test('macro returns success', t => {
   const result = handler(event)
@@ -47,7 +47,7 @@ test('macro uses topicArn if specified', t => {
 
 test('Macro skips SLIC Watch if top-level enabled==false', t => {
   const testevent = _.cloneDeep(event)
-  testevent.fragment.Metadata.slicWatch.enabled = false
+  testevent.fragment.Metadata.slicWatch.ActionsEnabled = false
   handler(testevent)
   t.end()
 })

@@ -43,11 +43,8 @@ export function handler (event: Event): Event {
       }
 
       const alarmActions = []
-      if (slicWatchConfig?.topicArn) {
-        alarmActions.push(slicWatchConfig.topicArn)
-      } else if (process.env.ALARM_SNS_TOPIC) {
-        alarmActions.push(process.env.ALARM_SNS_TOPIC)
-      }
+      slicWatchConfig?.topicArn && alarmActions.push(slicWatchConfig.topicArn)
+      process.env.ALARM_SNS_TOPIC && alarmActions.push(process.env.ALARM_SNS_TOPIC)
 
       const context = {
         alarmActions
