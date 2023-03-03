@@ -9,10 +9,6 @@
     "directory": "serverless-test-project-alb"
   },
   "license": "Apache",
-  "devDependencies": {
-    "ajv": "^8.11.0",
-    "serverless": "^3"
-  },
   "scripts": {
     "test": "ALARM_TOPIC=test sls package",
     "test:v2": "ALARM_TOPIC=test sls package -c serverless-v2.yml"

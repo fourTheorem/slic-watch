@@ -19,15 +19,7 @@
             "--loader=ts-node/esm"
         ]
     },
-    "devDependencies": {
-        "esbuild": "^0.17.10",
-        "ts-node": "^10.9.1"
-    },
     "dependencies": {
-        "ajv": "^8.11.0",
-        "case": "^1.6.3",
-        "lodash": "^4.17.21",
-        "slic-watch-core": "^2.0.0-rc1",
-        "yaml": "^1.10.2"
+        "slic-watch-core": "^2.1.2"
     }
 }

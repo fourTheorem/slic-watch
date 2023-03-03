@@ -11,9 +11,7 @@
   },
   "license": "Apache",
   "devDependencies": {
-    "ajv": "^8.11.0",
-    "serverless": "^2.72.3",
-    "serverless-step-functions": "^3.7.0"
+    "serverless-step-functions": "^3.12.1"
   },
   "scripts": {
     "test": "ALARM_TOPIC=test sls package",
