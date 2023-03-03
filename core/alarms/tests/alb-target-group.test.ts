@@ -1,6 +1,6 @@
 'use strict'
 
-import createALBTargetAlarms, { AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
+import createALBTargetAlarms, { type AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {

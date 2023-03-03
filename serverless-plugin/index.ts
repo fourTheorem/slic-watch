@@ -9,9 +9,9 @@ import addDashboard from '../core/dashboards/dashboard'
 import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/inputs/config-schema'
 import defaultConfig from '../core/inputs/default-config'
 import Serverless from 'serverless'
-import Hooks from 'serverless-hooks-plugin'
-import Aws from 'serverless/plugins/aws/provider/awsProvider'
-import { ResourceType } from './../core/cf-template'
+import type Hooks from 'serverless-hooks-plugin'
+import type Aws from 'serverless/plugins/aws/provider/awsProvider'
+import { type ResourceType } from './../core/cf-template'
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks

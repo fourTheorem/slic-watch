@@ -2,8 +2,8 @@
 'use strict'
 
 import { resolveFunctionResourceName, getResourcesByType } from '../cf-template'
-import Template from 'cloudform-types/types/template'
-import { ResourceType } from './../cf-template'
+import type Template from 'cloudform-types/types/template'
+import { type ResourceType } from './../cf-template'
 
 import { test } from 'tap'
 

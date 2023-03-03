@@ -1,12 +1,12 @@
 'use strict'
 
-import { addResource, getResourcesByType, ResourceType } from '../cf-template'
-import Resource from 'cloudform-types/types/resource'
-import { Context, createAlarm } from './default-config-alarms'
+import { addResource, getResourcesByType, type ResourceType } from '../cf-template'
+import type Resource from 'cloudform-types/types/resource'
+import { type Context, createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import Template from 'cloudform-types/types/template'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Template from 'cloudform-types/types/template'
 
 export type AlbAlarmProperties = AlarmProperties & {
   HTTPCode_ELB_5XX_Count: AlarmProperties

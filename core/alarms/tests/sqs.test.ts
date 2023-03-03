@@ -210,6 +210,6 @@ test('SQS AgeOfOldestMessage alarms throws if misconfigured (enabled but no thre
     })
   const sqsAlarmProperties = AlarmProperties.SQS
   const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  t.throws(() => createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources), { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  t.throws(() => { createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate, additionalResources) }, { message: 'SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
   t.end()
 })

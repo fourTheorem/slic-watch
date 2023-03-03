@@ -1,25 +1,25 @@
 'use strict'
 
-import { AlbAlarmProperties } from '../alarms/alb'
-import { AlbTargetAlarmProperties } from '../alarms/alb-target-group'
-import { ApiGwAlarmProperties } from '../alarms/api-gateway'
-import { AppSyncAlarmProperties } from '../alarms/appsync'
-import { DynamoDbAlarmProperties } from '../alarms/dynamodb'
-import { EcsAlarmsConfig } from '../alarms/ecs'
-import { EventsAlarmsConfig } from '../alarms/eventbridge'
-import { KinesisAlarmProperties } from '../alarms/kinesis'
-import { SnsAlarmsConfig } from '../alarms/sns'
-import { SqsAlarmsConfig } from '../alarms/sqs'
-import { SfAlarmsConfig } from '../alarms/step-functions'
-import { AllAlarmsConfig } from '../alarms/default-config-alarms'
+import { type AlbAlarmProperties } from '../alarms/alb'
+import { type AlbTargetAlarmProperties } from '../alarms/alb-target-group'
+import { type ApiGwAlarmProperties } from '../alarms/api-gateway'
+import { type AppSyncAlarmProperties } from '../alarms/appsync'
+import { type DynamoDbAlarmProperties } from '../alarms/dynamodb'
+import { type EcsAlarmsConfig } from '../alarms/ecs'
+import { type EventsAlarmsConfig } from '../alarms/eventbridge'
+import { type KinesisAlarmProperties } from '../alarms/kinesis'
+import { type SnsAlarmsConfig } from '../alarms/sns'
+import { type SqsAlarmsConfig } from '../alarms/sqs'
+import { type SfAlarmsConfig } from '../alarms/step-functions'
+import { type AllAlarmsConfig } from '../alarms/default-config-alarms'
 import {
-  DashboardConfig, DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
-  KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
-  AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
+  type DashboardConfig, type DashboardBodyProperties, type LambdaDashboardBodyProperties, type ApiGwDashboardBodyProperties, type SfDashboardBodyProperties, type DynamoDbDashboardBodyProperties,
+  type KinesisDashboardBodyProperties, type SqsDashboardBodyProperties, type EcsDashboardBodyProperties, type SnsDashboardBodyProperties, type RuleDashboardBodyProperties,
+  type AlbDashboardBodyProperties, type AlbTargetDashboardBodyProperties, type AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
-import { LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
-import { Statistic } from '../cf-template'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { type LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
+import { type Statistic } from '../cf-template'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 const MAX_DEPTH = 10
 

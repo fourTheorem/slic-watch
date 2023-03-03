@@ -1,9 +1,9 @@
 'use strict'
 
-import { getResourcesByType, addResource, ResourceType } from '../cf-template'
-import { Context, createAlarm } from './default-config-alarms'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import Template from 'cloudform-types/types/template'
+import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { type Context, createAlarm } from './default-config-alarms'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Template from 'cloudform-types/types/template'
 
 export type SfAlarmsConfig = AlarmProperties & {
   ExecutionThrottled: AlarmProperties

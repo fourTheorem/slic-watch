@@ -1,8 +1,8 @@
 'use strict'
 
-import { Widgets } from '../inputs/cascading-config'
-import { Statistic } from '../cf-template'
-import FunctionProperties from 'cloudform-types/types/lambda/function'
+import { type Widgets } from '../inputs/cascading-config'
+import { type Statistic } from '../cf-template'
+import type FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
 

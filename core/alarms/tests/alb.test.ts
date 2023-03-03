@@ -1,6 +1,6 @@
 'use strict'
 
-import createALBAlarms, { AlbAlarmProperties } from '../alb'
+import createALBAlarms, { type AlbAlarmProperties } from '../alb'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {

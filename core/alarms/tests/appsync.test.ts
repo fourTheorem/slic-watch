@@ -1,6 +1,6 @@
 'use strict'
 
-import createAppSyncAlarms, { AppSyncAlarmProperties } from '../appsync'
+import createAppSyncAlarms, { type AppSyncAlarmProperties } from '../appsync'
 import { test } from 'tap'
 import { getResourcesByType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'

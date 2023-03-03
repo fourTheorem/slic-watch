@@ -1,9 +1,9 @@
 'use strict'
 
-import { cascade, AlarmsCascade } from '../inputs/cascading-config'
+import { cascade, type AlarmsCascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import { FunctionAlarmPropertiess, Context } from './default-config-alarms'
-import Template from 'cloudform-types/types/template'
+import { type FunctionAlarmPropertiess, type Context } from './default-config-alarms'
+import type Template from 'cloudform-types/types/template'
 
 import createLambdaAlarms from './lambda'
 import createApiGatewayAlarms from './api-gateway'
@@ -17,7 +17,7 @@ import createRuleAlarms from './eventbridge'
 import createALBAlarms from './alb'
 import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
-import { ResourceType } from './../cf-template'
+import { type ResourceType } from './../cf-template'
 
 export default function addAlarms (AlarmProperties: AlarmsCascade, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   const {

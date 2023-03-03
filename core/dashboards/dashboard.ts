@@ -1,12 +1,12 @@
 'use strict'
 
-import { cascade, DashboardsCascade } from '../inputs/cascading-config'
-import { getResourcesByType, getEventSourceMappingFunctions, addResource, ResourceType, Statistic } from '../cf-template'
-import { FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
+import { cascade, type DashboardsCascade } from '../inputs/cascading-config'
+import { getResourcesByType, getEventSourceMappingFunctions, addResource, type ResourceType, type Statistic } from '../cf-template'
+import { type FunctionDashboardConfigs, type ServiceDashConfig } from './default-config-dashboard'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
-import Template from 'cloudform-types/types/template'
+import type Template from 'cloudform-types/types/template'
 
 /**
  * Given CloudFormation syntax for an AppSync GraphQLAPIId, derive a string value or

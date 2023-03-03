@@ -179,7 +179,7 @@ test('index', t => {
         }
       }
     )
-    t.throws(() => plugin.createSlicWatchResources(), Serverless)
+    t.throws(() => { plugin.createSlicWatchResources() }, Serverless)
     t.end()
   })
 

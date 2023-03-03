@@ -1,10 +1,10 @@
 'use strict'
 
-import { getResourcesByType, addResource, getEventSourceMappingFunctions, ResourceType } from '../cf-template'
-import { Context, FunctionAlarmPropertiess, createAlarm } from './default-config-alarms'
-import { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import Resource from 'cloudform-types/types/resource'
-import Template from 'cloudform-types/types/template'
+import { getResourcesByType, addResource, getEventSourceMappingFunctions, type ResourceType } from '../cf-template'
+import { type Context, type FunctionAlarmPropertiess, createAlarm } from './default-config-alarms'
+import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type Resource from 'cloudform-types/types/resource'
+import type Template from 'cloudform-types/types/template'
 import pino from 'pino'
 const logging = pino()
 
