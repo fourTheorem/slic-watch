@@ -52,7 +52,6 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
       )
     }
-    // @ts-expect-error
     for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
       const gsiName = gsi.IndexName
       const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]

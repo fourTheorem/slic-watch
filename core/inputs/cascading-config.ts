@@ -36,7 +36,7 @@ interface TimeRange {
 }
 
 export interface Widgets {
-  ActionsEnabled?: boolean // remove later ? mark
+  enabled?: boolean // remove later ? mark
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties
@@ -53,7 +53,7 @@ export interface Widgets {
 }
 
 export interface DashboardsCascade {
-  ActionsEnabled?: boolean
+  enabled?: boolean
   timeRange?: TimeRange
   widgets?: Widgets
 }

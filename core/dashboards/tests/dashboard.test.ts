@@ -337,7 +337,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-expect-error
-          metricConfig.ActionsEnabled = false
+          metricConfig.enabled = false
         }
       }
       const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate((appSyncCfTemplate))
@@ -353,7 +353,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-expect-error
-          metricConfig.ActionsEnabled = false
+          metricConfig.enabled = false
         }
       }
       const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate((albCfTemplate))
@@ -446,7 +446,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
           // @ts-expect-error
-          metricConfig.ActionsEnabled = false
+          metricConfig.enabled = false
         }
       }
       const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate((appSyncCfTemplate))
@@ -496,7 +496,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    dashConfig.widgets[service].ActionsEnabled = false
+    dashConfig.widgets[service].enabled = false
   }
   const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate, additionalResources)
@@ -511,7 +511,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
       // @ts-expect-error
-      metricConfig.ActionsEnabled = false
+      metricConfig.enabled = false
     }
   }
   const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
@@ -526,7 +526,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
   for (const metric of lambdaMetrics) {
     const funcConfigs = {
       [disabledFunctionName]: {
-        [metric]: { ActionsEnabled: false }
+        [metric]: { enabled: false }
       }
     }
     const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
@@ -553,7 +553,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
   for (const funcLogicalId of allFunctionLogicalIds) {
     funcConfigs[funcLogicalId] = {}
     for (const metric of lambdaMetrics) {
-      funcConfigs[funcLogicalId][metric] = { ActionsEnabled: false }
+      funcConfigs[funcLogicalId][metric] = { enabled: false }
     }
   }
   addDashboard(defaultConfig.dashboard, funcConfigs, compiledTemplate, additionalResources)

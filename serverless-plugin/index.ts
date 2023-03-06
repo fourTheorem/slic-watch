@@ -3,7 +3,6 @@
 
 import _ from 'lodash'
 import Ajv from 'ajv'
-
 import addAlarms from '../core/alarms/alarms'
 import addDashboard from '../core/dashboards/dashboard'
 import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/inputs/config-schema'
@@ -12,6 +11,11 @@ import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'
 import type Aws from 'serverless/plugins/aws/provider/awsProvider'
 import { type ResourceType } from './../core/cf-template'
+
+interface SlicWatchConfig {
+  topicArn: string
+  enabled: boolean
+}
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
@@ -44,11 +48,6 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   createSlicWatchResources () {
-    interface SlicWatchConfig {
-      topicArn: string
-      ActionsEnabled: boolean
-    }
-
     const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch || {}
 
     const ajv = new Ajv({
@@ -63,7 +62,7 @@ class ServerlessPlugin {
 
     const alarmActions = []
 
-    if (!slicWatchConfig.ActionsEnabled) {
+    if (!(slicWatchConfig.enabled ?? true)) {
       return
     }
 
@@ -81,7 +80,6 @@ class ServerlessPlugin {
     const functionDashboardConfigs = {}
     for (const funcName of this.serverless.service.getAllFunctions()) {
       const func = this.serverless.service.getFunction(funcName)
-      // @ts-expect-error
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
       // @ts-expect-error
       const funcConfig = func.slicWatch || {}

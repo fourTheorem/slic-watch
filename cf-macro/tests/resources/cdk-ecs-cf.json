@@ -2,7 +2,7 @@
  "Transform": "SlicWatch-v2",
  "Metadata": {
   "slicWatch": {
-   "ActionsEnabled": true,
+   "enabled": true,
    "alarms": {
     "Lambda": {
      "Invocations": {

@@ -111,7 +111,7 @@ const alarmsSchema = {
 }
 
 const commonWidgetProperties = {
-  ActionsEnabled: { type: 'boolean' },
+  enabled: { type: 'boolean' },
   width: { type: ['integer', 'null'], minimum: 1, maximum: 24 },
   height: { type: ['integer', 'null'], minimum: 1, maximum: 1000 },
   metricPeriod: { type: ['integer', 'null'], minimum: 60, multipleOf: 60 },
@@ -153,7 +153,7 @@ for (const service of Object.keys(supportedWidgets)) {
 const dashboardSchema = {
   type: 'object',
   properties: {
-    ActionsEnabled: { type: 'boolean' },
+    enabled: { type: 'boolean' },
     timeRange: {
       type: 'object',
       oneOf: [{
@@ -191,7 +191,7 @@ const slicWatchSchema = {
     alarms: alarmsSchema,
     dashboard: dashboardSchema,
     topicArn: { anyOf: [{ type: 'string' }, { type: 'object' }] },
-    ActionsEnabled: { type: 'boolean' }
+    enabled: { type: 'boolean' }
   },
   required: [],
   additionalProperties: false
@@ -222,7 +222,7 @@ const functionConfigSchema = {
     slicWatch: {
       type: 'object',
       properties: {
-        ActionsEnabled: { type: 'boolean' },
+        enabled: { type: 'boolean' },
         alarms: {
           type: 'object',
           properties: {
@@ -234,7 +234,7 @@ const functionConfigSchema = {
         dashboard: {
           type: 'object',
           properties: {
-            ActionsEnabled: { type: 'boolean' },
+            enabled: { type: 'boolean' },
             // @ts-expect-error
             Lambda: widgetSchemas.Lambda
           }

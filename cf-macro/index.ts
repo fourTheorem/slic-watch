@@ -20,7 +20,7 @@ interface Event {
 
 interface SlicWatchConfig {
   topicArn?: string
-  ActionsEnabled?: boolean
+  enabled?: boolean
 }
 export function handler (event: Event): Event {
   let status = 'success'
@@ -29,7 +29,7 @@ export function handler (event: Event): Event {
   try {
     const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch || {}
 
-    if (slicWatchConfig?.ActionsEnabled ?? true) {
+    if (slicWatchConfig?.enabled ?? true) {
       const ajv = new Ajv({
         unicodeRegExp: false
       })

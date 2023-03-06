@@ -10,7 +10,7 @@ const slsYaml = {
   custom: {
     slicWatch: {
       topicArn: 'test-topic',
-      ActionsEnabled: true
+      enabled: true
     }
   },
   functions: {
@@ -185,7 +185,7 @@ test('index', t => {
 
   t.test('Plugin skips SLIC Watch if top-level enabled==false', t => {
     const serviceYmlWithDisabled = _.cloneDeep(slsYaml)
-    serviceYmlWithDisabled.custom.slicWatch.ActionsEnabled = false
+    serviceYmlWithDisabled.custom.slicWatch.enabled = false
     const plugin = new ServerlessPlugin(
       {
         ...mockServerless,

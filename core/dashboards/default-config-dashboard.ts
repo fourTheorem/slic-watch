@@ -7,12 +7,12 @@ import type FunctionProperties from 'cloudform-types/types/lambda/function'
 export type YAxis = 'left' | 'right'
 
 export interface DashboardConfig {
-  ActionsEnabled?: boolean
+  enabled?: boolean
   widgets?: Widgets
 }
 
 export interface DashboardBodyProperties {
-  ActionsEnabled?: boolean
+  enabled?: boolean
   metricPeriod?: number
   width?: number
   height?: number
@@ -70,7 +70,7 @@ export interface SqsDashboardBodyProperties {
 }
 
 export interface EcsDashboardBodyProperties {
-  ActionsEnabled?: boolean
+  enabled?: boolean
   MemoryUtilization: DashboardBodyProperties
   CPUUtilization: DashboardBodyProperties
 }

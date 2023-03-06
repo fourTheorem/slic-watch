@@ -47,7 +47,7 @@ test('macro uses topicArn if specified', t => {
 
 test('Macro skips SLIC Watch if top-level enabled==false', t => {
   const testevent = _.cloneDeep(event)
-  testevent.fragment.Metadata.slicWatch.ActionsEnabled = false
+  testevent.fragment.Metadata.slicWatch.enabled = false
   handler(testevent)
   t.end()
 })
