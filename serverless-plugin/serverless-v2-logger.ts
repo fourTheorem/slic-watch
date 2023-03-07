@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Log wrapper that provides standard logging functions backed by the single-level
  * Serverless logger provided in Serverless Framework v1 and v2
@@ -5,7 +7,7 @@
  * @returns An object with standard logging functions
  */
 export default function ServerlessV2Logger (serverless) {
-  function log () {
+  function log (str) {
     serverless.cli.log(...arguments)
   }
 

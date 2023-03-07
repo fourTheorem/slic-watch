@@ -336,7 +336,6 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-expect-error
           metricConfig.enabled = false
         }
       }
@@ -352,7 +351,6 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-expect-error
           metricConfig.enabled = false
         }
       }
@@ -445,7 +443,6 @@ test('A dashboard includes metrics for ALB', (t) => {
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
         for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          // @ts-expect-error
           metricConfig.enabled = false
         }
       }
@@ -510,7 +507,6 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-      // @ts-expect-error
       metricConfig.enabled = false
     }
   }

@@ -38,7 +38,6 @@ test('No overrides cascades everything down', (t) => {
       c: 4
     }
   }
-  // @ts-expect-error
   const cascaded = cascade(input)
   t.same(cascaded, expected)
   t.end()
@@ -79,7 +78,6 @@ test('Overrides prevent cascading', (t) => {
       c: 4
     }
   }
-  // @ts-expect-error
   const cascaded = cascade(input)
   t.same(cascaded, expected)
   t.end()
@@ -98,9 +96,7 @@ test('Circular dependencies cause an error', (t) => {
       c: 4
     }
   }
-  // @ts-expect-error
   input.sub1.sub2_1.sub_2_1_circ = input
-  // @ts-expect-error
   t.throws(() => cascade(input))
   t.end()
 })
@@ -119,7 +115,6 @@ test('Null property values are retained', (t) => {
       b: null
     }
   }
-  // @ts-expect-error
   const cascaded = cascade(input)
   t.same(cascaded, expected)
   t.end()

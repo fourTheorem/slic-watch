@@ -73,7 +73,6 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
       }
     }
   }
-  // @ts-expect-error
   return [...allLoadBalancerLogicalIds]
 }
 

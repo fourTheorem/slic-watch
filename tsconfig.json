@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "ESNext",
     // "strict": true, //todo remove later
-    // "noImplicitAny": true, //todo remove later
+    "noImplicitAny": false, //todo remove later
     // "strictNullChecks": true, //todo remove later
     "noEmit": true,
     "skipLibCheck": true,

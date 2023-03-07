@@ -6,6 +6,11 @@ import ServerlessPlugin from '../index'
 import { test } from 'tap'
 import pino from 'pino'
 
+interface TestData {
+  schema?
+  functionSchema?
+}
+
 const slsYaml = {
   custom: {
     slicWatch: {
@@ -97,22 +102,19 @@ test('index', t => {
   })
 
   t.test('Plugin registers the configuration schema', t => {
-    const testData = {}
+    const testData: TestData = {}
     // eslint-disable-next-line no-new
     new ServerlessPlugin({
       ...mockServerless,
       configSchemaHandler: {
         defineCustomProperties: (schema) => {
-          // @ts-expect-error
           testData.schema = schema
         },
         defineFunctionProperties: (provider, schema) => {
-          // @ts-expect-error
           testData.functionSchema = schema
         }
       }
     })
-    // @ts-expect-error
     t.equal(typeof testData.schema, 'object')
     t.end()
   })
@@ -168,7 +170,6 @@ test('index', t => {
 
   t.test('Plugin execution fails if an invalid SLIC Watch config is provided', t => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
-    // @ts-expect-error
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
     const plugin = new ServerlessPlugin(
       {

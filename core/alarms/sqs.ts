@@ -59,7 +59,6 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
     const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
-    // @ts-expect-error
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,

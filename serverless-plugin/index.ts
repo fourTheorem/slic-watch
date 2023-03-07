@@ -81,7 +81,6 @@ class ServerlessPlugin {
     for (const funcName of this.serverless.service.getAllFunctions()) {
       const func = this.serverless.service.getFunction(funcName)
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      // @ts-expect-error
       const funcConfig = func.slicWatch || {}
       functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard

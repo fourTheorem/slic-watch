@@ -18,7 +18,6 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs) {
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
-    // @ts-expect-error
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
       funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
