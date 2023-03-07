@@ -22,13 +22,12 @@
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "rm -rf coverage && c8 tap  **/*.test.ts",
+    "test:packages": "c8 tap --test-regex='\/tests\/.+\\.test\\.ts' --test-ignore='.aws-sam'",
     "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
-    "test": "npm run lint && npm run destroy-test && npm run test:packages && npm run coverage",
+    "test": "npm run lint && npm run test:packages && npm run coverage",
     "postversion": "./scripts/sync-macro-version.js",
     "prepare": "test ! -d '.git' || is-ci || husky install",
-    "coverage:html": "c8 report --reporter=html",
-    "destroy-test": "find . -name '*.test.ts' -path '*node_modules*' | xargs -I {} rm {}"
+    "coverage:html": "c8 report --reporter=html"
   },
   "tap": {
     "node-arg": [

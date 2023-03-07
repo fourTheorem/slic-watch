@@ -29,7 +29,7 @@ export function handler (event: Event): Event {
   try {
     const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch || {}
 
-    if (slicWatchConfig?.enabled ?? true) {
+    if (slicWatchConfig.enabled ?? true) {
       const ajv = new Ajv({
         unicodeRegExp: false
       })
