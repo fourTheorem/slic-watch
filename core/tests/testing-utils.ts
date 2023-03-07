@@ -3,19 +3,15 @@
 import path from 'path'
 import fs from 'fs'
 import _ from 'lodash'
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import YAML from 'yaml'
-
 import { cascade } from '../inputs/cascading-config'
+import defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json' assert { type: 'json'}
+import albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json' assert { type: 'json'}
+import appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json' assert { type: 'json'}
 
-const require = createRequire(import.meta.url)
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-const defaultCfTemplate = require('../cf-resources/cloudformation-template-stack.json')
-const albCfTemplate = require('../cf-resources/alb-cloudformation-template-stack.json')
-const appSyncCfTemplate = require('../cf-resources/appsync-cloudformation-template-stack.json')
 
 const slsYamlPath = path.resolve(
   dirname,

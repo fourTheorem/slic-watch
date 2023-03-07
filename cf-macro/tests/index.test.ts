@@ -2,10 +2,8 @@
 
 import { test } from 'tap'
 import _ from 'lodash'
-import { createRequire } from 'module'
 import { handler } from '../index'
-const require = createRequire(import.meta.url)
-const template = require('./event.json')
+import template from './event.json' assert { type: 'json'}
 
 const event = { fragment: template }
 

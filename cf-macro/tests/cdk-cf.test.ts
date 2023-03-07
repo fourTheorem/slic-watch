@@ -4,9 +4,7 @@
 import { test } from 'tap'
 import { getResourcesByType } from 'slic-watch-core/cf-template'
 import { handler } from '../index'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const cdkStack = require('./resources/cdk-ecs-cf.json')
+import cdkStack from './resources/cdk-ecs-cf.json' assert { type: 'json'}
 
 /**
  * Test the synthesized output from the CDK ECS Stack in `cdk-test-project`
