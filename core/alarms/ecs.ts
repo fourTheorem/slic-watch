@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
@@ -23,7 +23,7 @@ export type EcsAlarm = AlarmProperties & {
  * @param  cluster CloudFormation syntax for an ECS cluster
  * @returns CloudFormation syntax for the cluster's name
  */
-export function resolveEcsClusterNameAsCfn (cluster) {
+export function resolveEcsClusterNameAsCfn (cluster): any {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {
       return cluster.split(':').pop()?.split('/').pop()
@@ -73,7 +73,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     }
   }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
+  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
@@ -100,7 +100,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     }
   }
 
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties) {
+  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,

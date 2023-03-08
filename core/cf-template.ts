@@ -35,7 +35,7 @@ export type Properties = TargetGroupProperties & ListenerProperties & ListenerRu
    *
    *The function logical ID or CloudFormation intrinsic resolving a function
    */
-export function resolveFunctionResourceName (func) {
+export function resolveFunctionResourceName (func): string | undefined {
   if (typeof func === 'string') {
     return func
   }

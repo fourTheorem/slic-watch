@@ -1,7 +1,7 @@
 'use strict'
 
 import { type AllAlarmsConfig } from '../alarms/default-config-alarms'
-import { type DashboardConfig } from '../dashboards/default-config-dashboard'
+import { type AllDashboardConfig } from '../dashboards/default-config-dashboard'
 
 /**
  * This is the default configuration for Alarms and Dashboard widgets for all supported AWS services.
@@ -389,7 +389,7 @@ export const defaultConfig = {
         }
       }
     }
-  } as DashboardConfig
+  } as AllDashboardConfig
 }
 
 export default defaultConfig

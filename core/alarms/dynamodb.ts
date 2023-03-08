@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
@@ -16,7 +16,7 @@ export type DynamoDbAlarmProperties = AlarmProperties & {
 /**
  * dynamoDbAlarmProperties The fully resolved alarm configuration
  */
-export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): ReturnAlarm {
   /**
    * Add all required DynamoDB alarms to the provided CloudFormation template
    * based on the tables and their global secondary indices.
@@ -70,7 +70,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
     }
   }
 
-  function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string) {
+  function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string): ReturnAlarm {
     const config = dynamoDbAlarmProperties[metricName]
     const dynamoDBAlarmProperties: AlarmProperties = {
       AlarmName: `DDB_${metricName}_${identifierSub}`,

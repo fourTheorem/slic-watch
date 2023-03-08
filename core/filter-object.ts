@@ -6,7 +6,7 @@
  *  The object
  *  A function accepting value, key arguments and returning a boolean
  */
-function filterObject (obj: object, predicate) {
+function filterObject (obj: object, predicate): object {
   return Object.fromEntries(Object.entries(obj)
     .filter(([key, value]) => predicate(value, key)))
 }

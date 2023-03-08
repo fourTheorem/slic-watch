@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -53,7 +53,7 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
     }
   }
 
-  function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties) {
+  function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const kinesisAlarmProperties: AlarmProperties = {
       AlarmName: `Kinesis_${type}_${streamLogicalId}`,

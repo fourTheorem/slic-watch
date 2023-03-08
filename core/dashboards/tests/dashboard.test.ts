@@ -28,8 +28,8 @@ test('A dashboard includes metrics', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   // eslint-disable-next-line no-template-curly-in-string
-  t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+  t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
   t.ok(dashBody.start)
 
@@ -282,9 +282,8 @@ test('A dashboard includes metrics for ALB', (t) => {
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate, additionalResources)
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
-  // eslint-disable-next-line no-template-curly-in-string
-  t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+  t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
   t.ok(dashBody.start)
 
@@ -316,7 +315,7 @@ test('A dashboard includes metrics for ALB', (t) => {
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
-    const metricNames = []
+    const metricNames: string[] = []
     for (const metric of widgets[0].properties.metrics) {
       namespaces.add(metric[0])
       metricNames.push(metric[1])
@@ -387,13 +386,13 @@ test('A dashboard includes metrics for ALB', (t) => {
     })
     addDashboard(defaultConfig.dashboard, emptyFuncConfigs, compiledTemplate)
     const tgDashResource = Object.values(getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate, additionalResources))[0]
-    const tgDashBody = JSON.parse(tgDashResource.Properties.DashboardBody['Fn::Sub'])
+    const tgDashBody = JSON.parse(tgDashResource.Properties?.DashboardBody['Fn::Sub'])
 
     const widgets = tgDashBody.widgets.filter(({ properties: { title } }) =>
       title.startsWith('Target')
     )
     t.equal(widgets.length, 1)
-    const metricNames = []
+    const metricNames: string[] = []
     for (const metric of widgets[0].properties.metrics) {
       metricNames.push(metric[1])
     }
@@ -408,8 +407,8 @@ test('A dashboard includes metrics for ALB', (t) => {
     t.equal(Object.keys(dashResources).length, 1)
     const [, dashResource] = Object.entries(dashResources)[0]
     // eslint-disable-next-line no-template-curly-in-string
-    t.same(dashResource.Properties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-    const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+    t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+    const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
     t.ok(dashBody.start)
 
@@ -473,7 +472,7 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   const [, dashResource] = Object.entries(dashResources)[0]
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
   const widgets = dashBody.widgets
 
   t.equal(widgets.length, 2)
@@ -529,7 +528,7 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
     addDashboard(defaultConfig.dashboard, funcConfigs, compiledTemplate, additionalResources)
     const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate, additionalResources)
     const [, dashResource] = Object.entries(dashResources)[0]
-    const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+    const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
       title.startsWith(`Lambda ${metric}`)
@@ -555,7 +554,7 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
   addDashboard(defaultConfig.dashboard, funcConfigs, compiledTemplate, additionalResources)
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   const [, dashResource] = Object.entries(dashResources)[0]
-  const dashBody = JSON.parse(dashResource.Properties.DashboardBody['Fn::Sub'])
+  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
   const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
     title.startsWith('Lambda')

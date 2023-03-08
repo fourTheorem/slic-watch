@@ -1,6 +1,6 @@
 'use strict'
 
-import { cascade, type AlarmsCascade } from '../inputs/cascading-config'
+import { cascade, type SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
 import { type FunctionAlarmPropertiess, type Context } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
@@ -19,7 +19,7 @@ import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { type ResourceType } from './../cf-template'
 
-export default function addAlarms (AlarmProperties: AlarmsCascade, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function addAlarms (AlarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -39,16 +39,16 @@ export default function addAlarms (AlarmProperties: AlarmsCascade, functionAlarm
 
   if (AlarmProperties.ActionsEnabled) {
     createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate, additionalResources)
-    apiGwConfig.ActionsEnabled && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
-    sfConfig.ActionsEnabled && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
-    dynamoDbConfig.ActionsEnabled && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
-    kinesisConfig.ActionsEnabled && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
-    sqsConfig.ActionsEnabled && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
-    ecsConfig.ActionsEnabled && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
-    snsConfig.ActionsEnabled && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
-    ruleConfig.ActionsEnabled && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
-    albConfig.ActionsEnabled && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
-    albTargetConfig.ActionsEnabled && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
-    appSyncConfig.ActionsEnabled && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
+    apiGwConfig?.ActionsEnabled && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
+    sfConfig?.ActionsEnabled && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
+    dynamoDbConfig?.ActionsEnabled && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
+    kinesisConfig?.ActionsEnabled && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
+    sqsConfig?.ActionsEnabled && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
+    ecsConfig?.ActionsEnabled && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
+    snsConfig?.ActionsEnabled && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
+    ruleConfig?.ActionsEnabled && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
+    albConfig?.ActionsEnabled && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
+    albTargetConfig?.ActionsEnabled && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
+    appSyncConfig?.ActionsEnabled && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
   }
 }

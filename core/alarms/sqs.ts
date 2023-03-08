@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
@@ -53,7 +53,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     }
   }
 
-  function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
+  function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold: any = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
@@ -81,7 +81,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     }
   }
 
-  function createOldestMsgAgeAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
+  function createOldestMsgAgeAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}`,

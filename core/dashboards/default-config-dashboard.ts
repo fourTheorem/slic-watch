@@ -6,9 +6,9 @@ import type FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
 
-export interface DashboardConfig {
+export interface AllDashboardConfig {
   enabled?: boolean
-  widgets?: Widgets
+  widgets: Widgets
 }
 
 export interface DashboardBodyProperties {

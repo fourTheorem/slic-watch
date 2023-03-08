@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -112,7 +112,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
+  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -137,7 +137,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
+  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -162,7 +162,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties) {
+  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold

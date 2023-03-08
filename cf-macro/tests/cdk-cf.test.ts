@@ -20,7 +20,7 @@ test('ECS CDK stack', (t) => {
   test('alarms are generated', (t) => {
     const alarms = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
     t.equal(Object.keys(alarms).length, 6)
-    const alarmNames = Object.values(alarms).map(alarm => alarm.Properties?.AlarmName).sort()
+    const alarmNames = Object.values(alarms).map(alarm => alarm.Properties?.AlarmName).sort((a: string, b: string) => a.localeCompare(b))
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',

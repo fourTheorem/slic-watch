@@ -18,7 +18,7 @@ export type SmAlarm = AlarmProperties & {
 /**
  * @param {object} sfAlarmProperties The fully resolved States alarm configuration
  */
-export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
   /**
    * Add all required Step Function alarms to the provided CloudFormation template
    * based on the resources found within

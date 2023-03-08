@@ -2,7 +2,7 @@
 'use strict'
 
 import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
@@ -48,7 +48,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
     }
   }
 
-  function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
+  function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_FailedInvocationsAlarm_${logicalId}`,
@@ -71,7 +71,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
     }
   }
 
-  function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties) {
+  function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_ThrottledRulesAlarm_${logicalId}`,

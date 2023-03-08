@@ -47,7 +47,7 @@ class ServerlessPlugin {
   /**
    * Modify the CloudFormation template before the package is finalized
    */
-  createSlicWatchResources () {
+  createSlicWatchResources (): void {
     const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch || {}
 
     const ajv = new Ajv({

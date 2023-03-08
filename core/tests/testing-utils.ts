@@ -22,7 +22,7 @@ const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = { alarmActions: ['dummy-arn'] }
 
-function assertCommonAlarmProperties (t, al) {
+function assertCommonAlarmProperties (t, al): void {
   t.ok(al.AlarmDescription)
   t.ok(al.ActionsEnabled)
   t.equal(al.AlarmActions.length, 1)
@@ -35,14 +35,14 @@ function assertCommonAlarmProperties (t, al) {
  * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} objectj
  * @returns The inferred type
  */
-function alarmNameToType (alarmName) {
+function alarmNameToType (alarmName): void {
   const resolvedName = alarmName['Fn::Sub'] ? alarmName['Fn::Sub'] : alarmName
   const components = resolvedName.split('_')
   components.pop()
   return components.join('_')
 }
 
-function createTestConfig (from, cascadingChanges) {
+function createTestConfig (from, cascadingChanges): any {
   return cascade(
     _.merge(
       {},
@@ -52,8 +52,8 @@ function createTestConfig (from, cascadingChanges) {
   )
 }
 
-function createTestCloudFormationTemplate (stackDefinition = null) {
-  const data = stackDefinition || defaultCfTemplate
+function createTestCloudFormationTemplate (stackDefinition = null): any {
+  const data = stackDefinition ?? defaultCfTemplate
 
   return { compiledTemplate: _.cloneDeep(data), additionalResources: {} }
 }

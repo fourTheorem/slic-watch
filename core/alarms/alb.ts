@@ -2,7 +2,7 @@
 
 import { addResource, getResourcesByType, type ResourceType } from '../cf-template'
 import type Resource from 'cloudform-types/types/resource'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -49,7 +49,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
     }
   }
 
-  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
+  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const albAlarmProperties: AlbAlarm = {
       AlarmName: `LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}`,
@@ -74,7 +74,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
     }
   }
 
-  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties) {
+  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties): ReturnAlarm {
     const threshold = config.Threshold
     const albAlarmProperties: AlbAlarm = {
       AlarmName: `LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}`,
