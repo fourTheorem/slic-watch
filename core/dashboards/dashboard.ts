@@ -52,7 +52,7 @@ export function resolveTargetGroupFullNameForSub (logicalId: string) {
 export function resolveEcsClusterNameForSub (cluster) {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {
-      return cluster.split(':').pop().split('/').pop()
+      return cluster.split(':').pop()?.split('/').pop()
     }
     return cluster
   }
@@ -146,7 +146,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
   ])
 
   if (positionedWidgets.length > 0) {
-    const dash = { start: timeRange.start, end: timeRange.end, widgets: positionedWidgets }
+    const dash = { start: timeRange?.start, end: timeRange?.end, widgets: positionedWidgets }
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
@@ -211,13 +211,13 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
     functionResources: FunctionDashboardConfigs,
     eventSourceMappingFunctionResourceNames: string[]
   ) {
-    const lambdaWidgets = []
+    const lambdaWidgets: any = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
         if (metricConfig.enabled) {
           if (metric !== 'IteratorAge') {
             for (const stat of metricConfig.Statistic) {
-              const metricDefs = []
+              const metricDefs: any = []
               for (const logicalId of Object.keys(functionResources)) {
                 const functionConfig = functionDashboardConfigs[logicalId] || {}
                 const functionMetricConfig = functionConfig[metric] || {}
@@ -225,7 +225,6 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
                   metricDefs.push({
                     namespace: 'AWS/Lambda',
                     metric,
-                    // eslint-disable-next-line no-template-curly-in-string
                     dimensions: { FunctionName: `\${${logicalId}}` },
                     stat
                   })
@@ -293,10 +292,10 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of CloudFormation RestApi resources by resource name
    */
   function createApiWidgets (apiResources: ResourceType) {
-    const apiWidgets = []
+    const apiWidgets: any = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -330,9 +329,9 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of Step Function State Machine resources by resource name
    */
   function createStateMachineWidgets (smResources: ResourceType) {
-    const smWidgets = []
+    const smWidgets: any = []
     for (const [logicalId] of Object.entries(smResources)) {
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -365,9 +364,9 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of DynamoDB table resources by resource name
    */
   function createDynamoDbWidgets (tableResources: ResourceType) {
-    const ddbWidgets = []
+    const ddbWidgets: any = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -388,7 +387,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
             )
             ddbWidgets.push(metricStatWidget)
           }
-          for (const gsi of res.Properties.GlobalSecondaryIndexes || []) {
+          for (const gsi of res.Properties?.GlobalSecondaryIndexes || []) {
             const gsiName = gsi.IndexName
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
@@ -422,7 +421,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object with CloudFormation Kinesis Data Stream resources by resource name
    */
   function createStreamWidgets (streamResources: ResourceType) {
-    const streamWidgets = []
+    const streamWidgets: any = []
 
     const metricGroups = {
       IteratorAge: ['GetRecords.IteratorAgeMilliseconds'],
@@ -433,7 +432,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
 
     for (const [logicalId] of Object.entries(streamResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
-        const widgetMetrics = []
+        const widgetMetrics: any = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
           if (metricConfig.enabled) {
@@ -464,7 +463,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object with CloudFormation SQS resources by resource name
    */
   function createQueueWidgets (queueResources: ResourceType) {
-    const queueWidgets = []
+    const queueWidgets: any = []
 
     const metricGroups = {
       Messages: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted'],
@@ -475,7 +474,7 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
 
     for (const [logicalId] of Object.entries(queueResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
-        const widgetMetrics = []
+        const widgetMetrics: any = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
           if (metricConfig.enabled) {
@@ -510,11 +509,11 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of ECS Service resources by resource name
    */
   function createEcsWidgets (ecsServiceResources: ResourceType) {
-    const ecsWidgets = []
+    const ecsWidgets: any = []
     for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
-      const clusterName = resolveEcsClusterNameForSub(res.Properties.Cluster)
+      const clusterName = resolveEcsClusterNameForSub(res.Properties?.Cluster)
 
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -548,9 +547,9 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of SNS Service resources by resource name
    */
   function createTopicWidgets (topicResources: ResourceType) {
-    const topicWidgets = []
+    const topicWidgets: any = []
     for (const logicalId of Object.keys(topicResources)) {
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -583,9 +582,9 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    *  Object of EventBridge Service resources by resource name
    */
   function createRuleWidgets (ruleResources: ResourceType) {
-    const ruleWidgets = []
+    const ruleWidgets: any = []
     for (const [logicalId] of Object.entries(ruleResources)) {
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -616,12 +615,12 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of Application Load Balancer Service resources by resource name
    */
   function createLoadBalancerWidgets (loadBalancerResources: ResourceType) {
-    const loadBalancerWidgets = []
+    const loadBalancerWidgets: any = []
     for (const [logicalId] of Object.entries(loadBalancerResources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
 
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
-      const widgetMetrics = []
+      const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -655,16 +654,16 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
   function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate) {
-    const targetGroupWidgets = []
+    const targetGroupWidgets: any = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
-        const widgetMetrics = []
+        const widgetMetrics: any = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
           if (metricConfig.enabled &&
-            (targetGroupResource.Properties.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
+            (targetGroupResource.Properties?.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
@@ -698,18 +697,18 @@ export default function addDashboard (dashboardConfig: DashboardsCascade, functi
    * Object of AppSync Service resources by resource name
    */
   function createAppSyncWidgets (appSyncResources: ResourceType) {
-    const appSyncWidgets = []
+    const appSyncWidgets: any = []
     const metricGroups = {
       API: ['5XXError', '4XXError', 'Latency', 'Requests'],
       'Real-time Subscriptions': ['ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
     }
     const metricConfigs = getConfiguredMetrics(appSyncDashConfig)
     for (const res of Object.values(appSyncResources)) {
-      const appSyncResourceName = res.Properties.Name
+      const appSyncResourceName = res.Properties?.Name
       for (const [logicalId] of Object.entries(appSyncResources)) {
         const graphQLAPIId = resolveGraphlQLId(logicalId)
         for (const [group, metrics] of Object.entries(metricGroups)) {
-          const widgetMetrics = []
+          const widgetMetrics: any = []
           for (const metric of metrics) {
             const metricConfig = metricConfigs[metric]
             if (metricConfig.enabled) {

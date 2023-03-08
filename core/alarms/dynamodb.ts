@@ -26,7 +26,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
   for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
     const tableDimensions = [{ Name: 'TableName', Value: { Ref: tableResourceName } }]
 
-    const alarms = []
+    const alarms: any = []
 
     const tableNameSub = `\${${tableResourceName}}`
     if (dynamoDbAlarmProperties.ReadThrottleEvents.ActionsEnabled) {
@@ -52,7 +52,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
       )
     }
-    for (const gsi of tableResource.Properties.GlobalSecondaryIndexes || []) {
+    for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes || []) {
       const gsiName = gsi.IndexName
       const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
       const gsiIdentifierSub = `${tableNameSub}${gsiName}`

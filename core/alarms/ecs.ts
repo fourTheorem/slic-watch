@@ -26,7 +26,7 @@ export type EcsAlarm = AlarmProperties & {
 export function resolveEcsClusterNameAsCfn (cluster) {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {
-      return cluster.split(':').pop().split('/').pop()
+      return cluster.split(':').pop()?.split('/').pop()
     }
     return cluster
   }
@@ -51,7 +51,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
   for (const [serviceResourceName, serviceResource] of Object.entries(
     serviceResources
   )) {
-    const cluster = serviceResource.Properties.Cluster
+    const cluster = serviceResource.Properties?.Cluster
     const clusterName = resolveEcsClusterNameAsCfn(cluster)
     if (ecsAlarmsConfig.MemoryUtilization.ActionsEnabled) {
       const memoryUtilizationAlarm = createMemoryUtilizationAlarm(

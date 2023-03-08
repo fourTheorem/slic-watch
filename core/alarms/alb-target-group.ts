@@ -1,4 +1,3 @@
-
 'use strict'
 
 import { type ResourceType, getResourcesByType, addResource } from '../cf-template'
@@ -34,16 +33,16 @@ function getResourceByName (resourceName: string, compiledTemplate, additionalRe
  * All Load Balancers CloudFormation logicalIDs
  */
 export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template, additionalResources: ResourceType = {}): string[] {
-  const allLoadBalancerLogicalIds = new Set()
+  const allLoadBalancerLogicalIds: any = new Set()
   const allListenerRules: ResourceType = {}
   const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate, additionalResources)
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
-    for (const action of listener.Properties.DefaultActions || []) {
+    for (const action of listener.Properties?.DefaultActions || []) {
       const targetGroupArn = action?.TargetGroupArn
       if (targetGroupArn?.Ref === targetGroupLogicalId) {
-        const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+        const loadBalancerLogicalId = listener.Properties?.LoadBalancerArn?.Ref
         if (loadBalancerLogicalId) {
           allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
         }
@@ -54,7 +53,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
-    for (const action of listenerRule.Properties.Actions || []) {
+    for (const action of listenerRule.Properties?.Actions || []) {
       const targetGroupArn = action.TargetGroupArn
       if (targetGroupArn.Ref === targetGroupLogicalId) {
         allListenerRules[listenerRuleLogicalId] = listenerRule
@@ -64,10 +63,10 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   }
 
   for (const listenerRule of Object.values(allListenerRules)) {
-    const listenerLogicalId = listenerRule.Properties.ListenerArn.Ref
+    const listenerLogicalId = listenerRule.Properties?.ListenerArn.Ref
     const listener = getResourceByName(listenerLogicalId, compiledTemplate, additionalResources)
     if (listener) {
-      const loadBalancerLogicalId = listener.Properties.LoadBalancerArn?.Ref
+      const loadBalancerLogicalId = listener.Properties?.LoadBalancerArn?.Ref
       if (loadBalancerLogicalId) {
         allLoadBalancerLogicalIds.add(loadBalancerLogicalId)
       }
@@ -109,7 +108,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
           )
           addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource, compiledTemplate)
         }
-        if (targetGroupResource.Properties.TargetType === 'lambda') {
+        if (targetGroupResource.Properties?.TargetType === 'lambda') {
           if (albTargetAlarmProperties.LambdaInternalError?.ActionsEnabled) {
             const lambdaInternalError = createLambdaInternalErrorAlarm(
               targetGroupResourceName,

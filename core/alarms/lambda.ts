@@ -110,7 +110,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       FuncName: `${funcLogicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
-      Metrics: null,
+      Metrics: undefined,
       MetricName: 'IteratorAge',
       Statistic: config.Statistic,
       Period: config.Period,
@@ -134,7 +134,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       FuncName: `${funcLogicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
-      Metrics: null,
+      Metrics: undefined,
       MetricName: 'Errors',
       Statistic: config.Statistic,
       Period: config.Period,
@@ -206,15 +206,15 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
   }
 
   function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties) {
-    const funcTimeout = funcResource.Properties.Timeout || 3
-    const threshold = config.Threshold
+    const funcTimeout = funcResource.Properties?.Timeout || 3
+    const threshold: any = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Duration_${funcLogicalId}`,
       AlarmDescription: `Max duration for ${funcLogicalId} breaches ${threshold}% of timeout (${funcTimeout})`,
       FuncName: `${funcLogicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: (threshold * funcTimeout * 1000) / 100,
-      Metrics: null,
+      Metrics: undefined,
       MetricName: 'Duration',
       Statistic: config.Statistic,
       Period: config.Period,
@@ -238,7 +238,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       FuncName: `${funcLogicalId}`,
       ComparisonOperator: config.ComparisonOperator,
       Threshold: threshold,
-      Metrics: null,
+      Metrics: undefined,
       MetricName: 'Invocations',
       Statistic: config.Statistic,
       Period: config.Period,

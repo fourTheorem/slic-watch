@@ -2,9 +2,9 @@
   "esm": true,
   "compilerOptions": {
     "module": "ESNext",
-    // "strict": true, //todo remove later
-    "noImplicitAny": false, //todo remove later
-    // "strictNullChecks": true, //todo remove later
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
     "noEmit": true,
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],

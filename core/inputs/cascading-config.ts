@@ -55,7 +55,7 @@ export interface Widgets {
 export interface DashboardsCascade {
   enabled?: boolean
   timeRange?: TimeRange
-  widgets?: Widgets
+  widgets: Widgets
 }
 
 export interface AlarmsCascade {

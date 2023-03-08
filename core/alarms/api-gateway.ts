@@ -81,7 +81,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
 
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-    const alarms = []
+    const alarms: any = []
 
     if (apiGwAlarmProperties['5XXError'].ActionsEnabled) {
       alarms.push(create5XXAlarm(

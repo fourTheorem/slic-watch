@@ -64,7 +64,7 @@ export function getEventSourceMappingFunctions (compiledTemplate, additionalReso
   const eventSourceMappingFunctions = {}
   for (const eventSourceMapping of Object.values(eventSourceMappings)) {
     const funcResourceName = resolveFunctionResourceName(
-      eventSourceMapping.Properties.FunctionName
+      eventSourceMapping.Properties?.FunctionName
     )
     if (funcResourceName) {
       const funcResource = lambdaResources[funcResourceName]

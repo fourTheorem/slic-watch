@@ -5,10 +5,10 @@ import { test } from 'tap'
 import ServerlessV2Logger from '../serverless-v2-logger'
 
 test('v2 logger provides standard functions', (t) => {
-  const invocationParams = []
+  const invocationParams: any[] = []
   const serverless = {
     cli: {
-      log: (...params: any) => {
+      log: (...params) => {
         invocationParams.push(params)
       }
     }

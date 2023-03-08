@@ -42,7 +42,7 @@ export function createAlarm (alarm: AllAlarms, context?: Context): ReturnAlarm {
     Type: 'AWS::CloudWatch::Alarm',
     Properties: {
       ActionsEnabled: true,
-      AlarmActions: context.alarmActions,
+      AlarmActions: context?.alarmActions,
       AlarmName: alarm.AlarmName,
       AlarmDescription: alarm.AlarmDescription,
       EvaluationPeriods: alarm.EvaluationPeriods,

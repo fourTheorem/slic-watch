@@ -6,8 +6,8 @@
  * @param {*} serverless The Serverless instance provided by a Serverless plugin hook
  * @returns An object with standard logging functions
  */
-export default function ServerlessV2Logger (serverless) {
-  function log (str) {
+export default function ServerlessV2Logger (this: any, serverless) {
+  function log () {
     serverless.cli.log(...arguments)
   }
 

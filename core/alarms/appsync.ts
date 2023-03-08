@@ -30,7 +30,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
   const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate, additionalResources)
 
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
-    const alarms = []
+    const alarms: any = []
     if (appSyncAlarmProperties['5XXError'].ActionsEnabled) {
       alarms.push(create5XXAlarm(
         appSyncResourceName,
@@ -52,7 +52,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
   }
 
   function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
-    const graphQLName = appSyncResource.Properties.Name
+    const graphQLName = appSyncResource.Properties?.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSync5XXErrorAlarm_${graphQLName}`,
@@ -78,7 +78,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
   }
 
   function createLatencyAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties) {
-    const graphQLName = appSyncResource.Properties.Name
+    const graphQLName = appSyncResource.Properties?.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSyncLatencyAlarm_${graphQLName}`,

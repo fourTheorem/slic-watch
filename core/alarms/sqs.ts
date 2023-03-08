@@ -54,7 +54,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
   }
 
   function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties) {
-    const threshold = config.Threshold
+    const threshold: any = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
