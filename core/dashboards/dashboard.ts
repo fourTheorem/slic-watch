@@ -160,6 +160,13 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
   }
 
+  interface WidgetMetrics {
+    namespace: string
+    metric: string
+    dimensions: string
+    stat: string
+  }
+
   interface MetricDefs {
     namespace: string
     metric: string
@@ -167,6 +174,27 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     stat: Statistic
     yAxis?: string
   }
+  interface Properties {
+    metrics: any[]
+    title: string
+    view: string
+    region: string
+    period: number
+  }
+
+  interface CreateMetricWidget {
+    type: string
+    properties: Properties
+    width: number
+    height: number
+  }
+
+  // interface PositionedWidgets {
+  //   x: number
+  //   y: number
+  //   width: number
+  //   height: number
+  // }
   /**
    * Create a metric for the specified metrics
    *
@@ -174,7 +202,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * @param {Array.<object>} metrics The metric definitions to render
    * @param {Object} Cascaded widget/metric configuration
    */
-  function createMetricWidget (title: string, metricDefs: MetricDefs[], config) {
+  function createMetricWidget (title: string, metricDefs: MetricDefs[], config): CreateMetricWidget {
     const metrics = metricDefs.map(
       ({ namespace, metric, dimensions, stat, yAxis }) => [
         namespace,
@@ -288,11 +316,11 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of CloudFormation RestApi resources by resource name
    */
-  function createApiWidgets (apiResources: ResourceType): string[] {
-    const apiWidgets: any = []
+  function createApiWidgets (apiResources: ResourceType): CreateMetricWidget[] {
+    const apiWidgets: CreateMetricWidget[] = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
-      const widgetMetrics: any = []
+      const widgetMetrics: WidgetMetrics | any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
@@ -325,8 +353,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of Step Function State Machine resources by resource name
    */
-  function createStateMachineWidgets (smResources: ResourceType): string[] {
-    const smWidgets: any = []
+  function createStateMachineWidgets (smResources: ResourceType): CreateMetricWidget[] {
+    const smWidgets: CreateMetricWidget[] = []
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
@@ -360,8 +388,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of DynamoDB table resources by resource name
    */
-  function createDynamoDbWidgets (tableResources: ResourceType): string {
-    const ddbWidgets: any = []
+  function createDynamoDbWidgets (tableResources: ResourceType): CreateMetricWidget[] {
+    const ddbWidgets: CreateMetricWidget[] = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
@@ -417,8 +445,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object with CloudFormation Kinesis Data Stream resources by resource name
    */
-  function createStreamWidgets (streamResources: ResourceType): string {
-    const streamWidgets: any = []
+  function createStreamWidgets (streamResources: ResourceType): CreateMetricWidget[] {
+    const streamWidgets: CreateMetricWidget[] = []
 
     const metricGroups = {
       IteratorAge: ['GetRecords.IteratorAgeMilliseconds'],
@@ -459,8 +487,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * Create a set of CloudWatch Dashboard widgets for the SQS resources provided
    * Object with CloudFormation SQS resources by resource name
    */
-  function createQueueWidgets (queueResources: ResourceType): string {
-    const queueWidgets: any = []
+  function createQueueWidgets (queueResources: ResourceType): CreateMetricWidget[] {
+    const queueWidgets: CreateMetricWidget[] = []
 
     const metricGroups = {
       Messages: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted'],
@@ -505,8 +533,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of ECS Service resources by resource name
    */
-  function createEcsWidgets (ecsServiceResources: ResourceType): string[] {
-    const ecsWidgets: any = []
+  function createEcsWidgets (ecsServiceResources: ResourceType): CreateMetricWidget[] {
+    const ecsWidgets: CreateMetricWidget[] = []
     for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties?.Cluster)
 
@@ -543,8 +571,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of SNS Service resources by resource name
    */
-  function createTopicWidgets (topicResources: ResourceType): string[] {
-    const topicWidgets: any = []
+  function createTopicWidgets (topicResources: ResourceType): CreateMetricWidget[] {
+    const topicWidgets: CreateMetricWidget[] = []
     for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
@@ -578,8 +606,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    *  Object of EventBridge Service resources by resource name
    */
-  function createRuleWidgets (ruleResources: ResourceType): string[] {
-    const ruleWidgets: any = []
+  function createRuleWidgets (ruleResources: ResourceType): CreateMetricWidget[] {
+    const ruleWidgets: CreateMetricWidget[] = []
     for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
@@ -611,8 +639,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of Application Load Balancer Service resources by resource name
    */
-  function createLoadBalancerWidgets (loadBalancerResources: ResourceType): string[] {
-    const loadBalancerWidgets: any = []
+  function createLoadBalancerWidgets (loadBalancerResources: ResourceType): CreateMetricWidget[] {
+    const loadBalancerWidgets: CreateMetricWidget[] = []
     for (const [logicalId] of Object.entries(loadBalancerResources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
 
@@ -650,8 +678,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate): string[] {
-    const targetGroupWidgets: any = []
+  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate): CreateMetricWidget[] {
+    const targetGroupWidgets: CreateMetricWidget[] = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
@@ -693,8 +721,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    *
    * Object of AppSync Service resources by resource name
    */
-  function createAppSyncWidgets (appSyncResources: ResourceType): string[] {
-    const appSyncWidgets: any = []
+  function createAppSyncWidgets (appSyncResources: ResourceType): CreateMetricWidget[] {
+    const appSyncWidgets: CreateMetricWidget[] = []
     const metricGroups = {
       API: ['5XXError', '4XXError', 'Latency', 'Requests'],
       'Real-time Subscriptions': ['ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
@@ -733,18 +761,13 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     return appSyncWidgets
   }
 
-  interface Widgets {
-    width: number
-    height: number
-  }
-
   /**
    * Set the location and dimension properties of each provided widget
    *
    * A set of dashboard widgets
    * A set of dashboard widgets with layout properties set
    */
-  function layOutWidgets (widgets: Widgets[]) {
+  function layOutWidgets (widgets: CreateMetricWidget[]) {
     let x = 0
     let y = 0
 

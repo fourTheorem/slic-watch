@@ -60,7 +60,7 @@ class ServerlessPlugin {
       throw new Serverless('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
-    const alarmActions = []
+    const alarmActions: string[] = []
 
     if (!(slicWatchConfig.enabled ?? true)) {
       return
