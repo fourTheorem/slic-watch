@@ -16,7 +16,7 @@ export type DynamoDbAlarmProperties = AlarmProperties & {
 /**
  * dynamoDbAlarmProperties The fully resolved alarm configuration
  */
-export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): ReturnAlarm {
+export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
   /**
    * Add all required DynamoDB alarms to the provided CloudFormation template
    * based on the tables and their global secondary indices.

@@ -45,17 +45,17 @@ test('SNS alarms are created', (t) => {
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
+    const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypes[alarmType]
-    t.equal(al.MetricName, expectedMetric)
-    t.ok(al.Statistic)
-    t.equal(al.Threshold, snsAlarmProperties[expectedMetric].Threshold)
-    t.equal(al.EvaluationPeriods, 2)
-    t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
-    t.equal(al.Namespace, 'AWS/SNS')
-    t.equal(al.Period, 120)
-    t.same(al.Dimensions, [
+    t.equal(al?.MetricName, expectedMetric)
+    t.ok(al?.Statistic)
+    t.equal(al?.Threshold, snsAlarmProperties[expectedMetric].Threshold)
+    t.equal(al?.EvaluationPeriods, 2)
+    t.equal(al?.TreatMissingData, 'breaching')
+    t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al?.Namespace, 'AWS/SNS')
+    t.equal(al?.Period, 120)
+    t.same(al?.Dimensions, [
       {
         Name: 'TopicName',
         Value: '${topic.TopicName}'

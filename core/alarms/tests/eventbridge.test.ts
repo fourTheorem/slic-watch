@@ -45,19 +45,19 @@ test('Events alarms are created', (t) => {
   for (const alarmResource of Object.values(alarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
-    const alarmType = alarmNameToType(al.AlarmName)
+    const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypes[alarmType]
-    t.equal(al.MetricName, expectedMetric)
-    t.ok(al.Statistic)
-    t.equal(al.Threshold, ruleAlarmProperties[expectedMetric].Threshold)
-    t.equal(al.EvaluationPeriods, 2)
-    t.equal(al.TreatMissingData, 'breaching')
-    t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
-    t.equal(al.Namespace, 'AWS/Events')
-    t.equal(al.Period, 120)
-    t.equal(al.Dimensions.length, 1)
-    t.equal(al.Dimensions[0].Name, 'RuleName')
-    t.ok(al.Dimensions[0].Value)
+    t.equal(al?.MetricName, expectedMetric)
+    t.ok(al?.Statistic)
+    t.equal(al?.Threshold, ruleAlarmProperties[expectedMetric].Threshold)
+    t.equal(al?.EvaluationPeriods, 2)
+    t.equal(al?.TreatMissingData, 'breaching')
+    t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
+    t.equal(al?.Namespace, 'AWS/Events')
+    t.equal(al?.Period, 120)
+    t.equal(al?.Dimensions.length, 1)
+    t.equal(al?.Dimensions[0].Name, 'RuleName')
+    t.ok(al?.Dimensions[0].Value)
   }
 
   t.end()

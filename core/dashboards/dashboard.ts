@@ -235,7 +235,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * Object with CloudFormation Lambda Function resources by resource name
    * eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
    */
-  function createLambdaWidgets (functionResources: FunctionDashboardConfigs, eventSourceMappingFunctionResourceNames: string[]): string[] {
+  function createLambdaWidgets (functionResources: FunctionDashboardConfigs, eventSourceMappingFunctionResourceNames: string[]): CreateMetricWidget[] {
     const lambdaWidgets: any = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {

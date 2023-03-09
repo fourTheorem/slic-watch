@@ -35,7 +35,7 @@ function assertCommonAlarmProperties (t, al): void {
  * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} objectj
  * @returns The inferred type
  */
-function alarmNameToType (alarmName): void {
+function alarmNameToType (alarmName) {
   const resolvedName = alarmName['Fn::Sub'] ? alarmName['Fn::Sub'] : alarmName
   const components = resolvedName.split('_')
   components.pop()
@@ -52,7 +52,7 @@ function createTestConfig (from, cascadingChanges): any {
   )
 }
 
-function createTestCloudFormationTemplate (stackDefinition = null): any {
+function createTestCloudFormationTemplate (stackDefinition = null) {
   const data = stackDefinition ?? defaultCfTemplate
 
   return { compiledTemplate: _.cloneDeep(data), additionalResources: {} }

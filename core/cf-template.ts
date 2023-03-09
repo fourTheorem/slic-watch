@@ -49,12 +49,16 @@ export function resolveFunctionResourceName (func): string | undefined {
 }
 
 export function addResource (resourceName: string, resource: Resource, compiledTemplate: Template) {
-  compiledTemplate.Resources[resourceName] = resource
+  if (compiledTemplate.Resources) {
+    compiledTemplate.Resources[resourceName] = resource
+  } else {
+    compiledTemplate.Resources = { [resourceName]: resource }
+  }
 }
 
-export function getResourcesByType (type: string, compiledTemplate, additionalResources = {}): ResourceType {
+export function getResourcesByType (type: string, compiledTemplate: Template, additionalResources = {}): ResourceType {
   const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
-  return filterObject(resources, resource => resource.Type === type)
+  return filterObject(resources, (resource: { Type: string }) => resource.Type === type)
 }
 
 export function getEventSourceMappingFunctions (compiledTemplate, additionalResources = {}): ResourceType {

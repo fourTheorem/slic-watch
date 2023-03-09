@@ -46,7 +46,7 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
     createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
     if (!specifyTableName) {
       for (const tableResource of Object.values(getResourcesByType('AWS::DynamoDB::Table', compiledTemplate))) {
-        delete tableResource.Properties.TableName
+        delete tableResource.Properties?.TableName
       }
     }
 
@@ -57,7 +57,7 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
     for (const alarmResource of Object.values(alarmResources)) {
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
-      const alarmType = alarmNameToType(al.AlarmName)
+      const alarmType = alarmNameToType(al?.AlarmName)
       alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
       alarmsByType[alarmType].add(al)
     }

@@ -20,7 +20,9 @@
   "exclude": [
     "node_modules",
     "cdk.out",
-    "coverage"
+    "coverage",
+    "core/coverage/lcov-report/*",
+    "cf-macro/coverage/lcov-report/*"
   ],
   "include": [
     "core",

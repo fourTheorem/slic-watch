@@ -67,7 +67,7 @@ export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResourc
 }
 
 export interface AllAlarmsConfig {
-  ActionsEnabled?: boolean
+  ActionsEnabled: boolean
   alarms?: SlicWatchAlarmsConfig
 }
 

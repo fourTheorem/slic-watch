@@ -22,7 +22,7 @@
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "c8 tap --test-regex='\/tests\/.+\\.test\\.ts' --test-ignore='.aws-sam'",
+    "test:packages": "c8 tap --test-regex='/tests/.+\\.test\\.ts' --test-ignore='.aws-sam'",
     "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
     "test": "npm run lint && npm run test:packages && npm run coverage",
     "postversion": "./scripts/sync-macro-version.js",
