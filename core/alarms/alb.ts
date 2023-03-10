@@ -30,7 +30,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
   const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, additionalResources)
 
   for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
-    if (albAlarmProperties.HTTPCode_ELB_5XX_Count?.ActionsEnabled) {
+    if (albAlarmProperties.HTTPCode_ELB_5XX_Count?.ActionsEnabled === true) {
       const httpCodeELB5XXCount = createHTTPCodeELB5XXCountAlarm(
         loadBalancerResourceName,
         loadBalancerResource,
@@ -39,7 +39,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
       addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource, compiledTemplate)
     }
 
-    if (albAlarmProperties.RejectedConnectionCount?.ActionsEnabled) {
+    if (albAlarmProperties.RejectedConnectionCount?.ActionsEnabled === true) {
       const rejectedConnectionCount = createRejectedConnectionCountAlarm(
         loadBalancerResourceName,
         loadBalancerResource,

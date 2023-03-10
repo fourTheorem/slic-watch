@@ -39,17 +39,17 @@ export function resolveFunctionResourceName (func): string | undefined {
   if (typeof func === 'string') {
     return func
   }
-  if (func['Fn::GetAtt']) {
+  if (func['Fn::GetAtt'] != null) {
     return func['Fn::GetAtt'][0]
   }
-  if (func.Ref) {
+  if (func.Ref != null) {
     return func.Ref
   }
   logger.warn(`Unable to resolve function resource name from ${JSON.stringify(func)}`)
 }
 
 export function addResource (resourceName: string, resource: Resource, compiledTemplate: Template) {
-  if (compiledTemplate.Resources) {
+  if (compiledTemplate.Resources != null) {
     compiledTemplate.Resources[resourceName] = resource
   } else {
     compiledTemplate.Resources = { [resourceName]: resource }
@@ -70,9 +70,9 @@ export function getEventSourceMappingFunctions (compiledTemplate, additionalReso
     const funcResourceName = resolveFunctionResourceName(
       eventSourceMapping.Properties?.FunctionName
     )
-    if (funcResourceName) {
+    if (funcResourceName != null) {
       const funcResource = lambdaResources[funcResourceName]
-      if (funcResource) {
+      if (funcResource != null) {
         eventSourceMappingFunctions[funcResourceName] = funcResource
       }
     }

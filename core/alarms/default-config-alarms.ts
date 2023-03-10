@@ -8,7 +8,7 @@ import { type DynamoDbAlarmProperties } from './dynamodb'
 import { type EcsAlarm, type EcsAlarmsConfig } from './ecs'
 import { type EventbridgeAlarm, type EventsAlarmsConfig } from './eventbridge'
 import { type KinesisAlarmProperties } from './kinesis'
-import { type LambdaAlarm, type LambdaFunctionAlarmPropertiess } from './lambda'
+import { type LambdaAlarm, type LambdaFunctionAlarmProperties } from './lambda'
 import { type SnsAlarm, type SnsAlarmsConfig } from './sns'
 import { type SqsAlarm, type SqsAlarmsConfig } from './sqs'
 import { type SfAlarmsConfig, type SmAlarm } from './step-functions'
@@ -72,17 +72,17 @@ export interface AllAlarmsConfig {
 }
 
 export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
-& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmPropertiess & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
+& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmProperties & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export interface FunctionAlarmPropertiess {
-  HelloLambdaFunction?: LambdaFunctionAlarmPropertiess
-  ThrottlerLambdaFunction?: LambdaFunctionAlarmPropertiess
-  DriveStreamLambdaFunction?: LambdaFunctionAlarmPropertiess
-  DriveQueueLambdaFunction?: LambdaFunctionAlarmPropertiess
-  DriveTableLambdaFunction?: LambdaFunctionAlarmPropertiess
-  StreamProcessorLambdaFunction?: LambdaFunctionAlarmPropertiess
-  HttpGetterLambdaFunction?: LambdaFunctionAlarmPropertiess
-  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmPropertiess
-  EventsRuleLambdaFunction?: LambdaFunctionAlarmPropertiess
-  AlbEventLambdaFunction?: LambdaFunctionAlarmPropertiess
+  HelloLambdaFunction?: LambdaFunctionAlarmProperties
+  ThrottlerLambdaFunction?: LambdaFunctionAlarmProperties
+  DriveStreamLambdaFunction?: LambdaFunctionAlarmProperties
+  DriveQueueLambdaFunction?: LambdaFunctionAlarmProperties
+  DriveTableLambdaFunction?: LambdaFunctionAlarmProperties
+  StreamProcessorLambdaFunction?: LambdaFunctionAlarmProperties
+  HttpGetterLambdaFunction?: LambdaFunctionAlarmProperties
+  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmProperties
+  EventsRuleLambdaFunction?: LambdaFunctionAlarmProperties
+  AlbEventLambdaFunction?: LambdaFunctionAlarmProperties
 }

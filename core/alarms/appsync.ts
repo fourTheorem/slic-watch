@@ -31,7 +31,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
 
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
     const alarms: any = []
-    if (appSyncAlarmProperties['5XXError'].ActionsEnabled) {
+    if (appSyncAlarmProperties['5XXError'].ActionsEnabled === true) {
       alarms.push(create5XXAlarm(
         appSyncResourceName,
         appSyncResource,
@@ -39,7 +39,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
       ))
     }
 
-    if (appSyncAlarmProperties.Latency.ActionsEnabled) {
+    if (appSyncAlarmProperties.Latency.ActionsEnabled === true) {
       alarms.push(createLatencyAlarm(
         appSyncResourceName,
         appSyncResource,

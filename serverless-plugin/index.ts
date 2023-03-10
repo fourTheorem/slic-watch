@@ -13,8 +13,8 @@ import type Aws from 'serverless/plugins/aws/provider/awsProvider'
 import { type ResourceType } from './../core/cf-template'
 
 interface SlicWatchConfig {
-  topicArn: string
-  enabled: boolean
+  topicArn?: string
+  enabled?: boolean
 }
 class ServerlessPlugin {
   serverless: Serverless
@@ -35,7 +35,7 @@ class ServerlessPlugin {
       throw new Serverless('SLIC Watch only supports AWS')
     }
 
-    if (serverless.configSchemaHandler) {
+    if (serverless.configSchemaHandler != null) {
       serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
       serverless.configSchemaHandler.defineFunctionProperties('aws', functionConfigSchema)
     }
@@ -48,7 +48,7 @@ class ServerlessPlugin {
    * Modify the CloudFormation template before the package is finalized
    */
   createSlicWatchResources (): void {
-    const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch || {}
+    const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch ?? {}
 
     const ajv = new Ajv({
       unicodeRegExp: false
@@ -66,9 +66,7 @@ class ServerlessPlugin {
       return
     }
 
-    if (slicWatchConfig.topicArn) {
-      alarmActions.push(slicWatchConfig.topicArn)
-    }
+    slicWatchConfig.topicArn != null && alarmActions.push(slicWatchConfig.topicArn)
 
     // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
     const context = { alarmActions }
@@ -79,10 +77,10 @@ class ServerlessPlugin {
     const functionAlarmConfigs = {}
     const functionDashboardConfigs = {}
     for (const funcName of this.serverless.service.getAllFunctions()) {
-      const func = this.serverless.service.getFunction(funcName)
+      const func = this.serverless.service.getFunction(funcName) as any // check why they don't return slicWatch
       const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      const funcConfig = func.slicWatch || {}
-      functionAlarmConfigs[functionResName] = funcConfig.alarms || {}
+      const funcConfig = func.slicWatch ?? {}
+      functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
     const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate

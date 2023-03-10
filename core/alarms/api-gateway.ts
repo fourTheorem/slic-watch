@@ -31,9 +31,9 @@ export type ApiAlarm = AlarmProperties & {
  * @param restApiLogicalId The logical ID for the resouce
  * @returns CloudFormation syntax for the API name
  */
-export function resolveRestApiNameAsCfn (restApiResource, restApiLogicalId: string) {
-  const apiName = restApiResource.Properties.Name || restApiResource.Properties?.Body?.info?.title
-  if (!apiName) {
+export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogicalId: string) {
+  const apiName = restApiResource.Properties?.Name ?? restApiResource.Properties?.Body?.info?.title
+  if (apiName === undefined) {
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
   return apiName
@@ -53,17 +53,17 @@ export function resolveRestApiNameAsCfn (restApiResource, restApiLogicalId: stri
  * @param restApiLogicalId The logical ID for the resouce
  * @returns Literal string or Sub variable syntax
  */
-export function resolveRestApiNameForSub (restApiResource, restApiLogicalId: string) {
-  const name = restApiResource.Properties.Name || restApiResource.Properties.Body?.info?.title
-  if (!name) {
+export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string) {
+  const name = (restApiResource.Properties?.Name) ?? (restApiResource.Properties?.Body?.info?.title)
+  if (name === false) {
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
 
-  if (name.GetAtt) {
+  if (name.GetAtt != null) {
     return `\${${name.GetAtt[0]}.${name.GetAtt[1]}}`
-  } else if (name.Ref) {
+  } else if (name.Ref != null) {
     return `\${${name.Ref}}`
-  } else if (name['Fn::Sub']) {
+  } else if (name['Fn::Sub'] != null) {
     return name['Fn::Sub']
   }
   return name
@@ -83,7 +83,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     const alarms: any = []
 
-    if (apiGwAlarmProperties['5XXError'].ActionsEnabled) {
+    if (apiGwAlarmProperties['5XXError'].ActionsEnabled === true) {
       alarms.push(create5XXAlarm(
         apiResourceName,
         apiResource,
@@ -91,7 +91,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties['4XXError'].ActionsEnabled) {
+    if (apiGwAlarmProperties['4XXError'].ActionsEnabled === true) {
       alarms.push(create4XXAlarm(
         apiResourceName,
         apiResource,
@@ -99,7 +99,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties.Latency.ActionsEnabled) {
+    if (apiGwAlarmProperties.Latency.ActionsEnabled === true) {
       alarms.push(createLatencyAlarm(
         apiResourceName,
         apiResource,

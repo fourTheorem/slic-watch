@@ -28,7 +28,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
   const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
 
   for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
-    if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled) {
+    if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].ActionsEnabled === true) {
       const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
         topicLogicalId,
         topicResource,
@@ -37,7 +37,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
       addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource, compiledTemplate)
     }
 
-    if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled) {
+    if (snsAlarmsConfig.NumberOfNotificationsFailed.ActionsEnabled === true) {
       const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
         topicLogicalId,
         topicResource,

@@ -27,7 +27,7 @@ export function handler (event: Event): Event {
   logger.info({ event })
   const outputFragment = event.fragment
   try {
-    const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch || {}
+    const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch ?? {}
 
     if (slicWatchConfig.enabled ?? true) {
       const ajv = new Ajv({
@@ -42,9 +42,9 @@ export function handler (event: Event): Event {
         throw new Error('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
       }
 
-      const alarmActions = []
-      slicWatchConfig?.topicArn && alarmActions.push(slicWatchConfig.topicArn)
-      process.env.ALARM_SNS_TOPIC && alarmActions.push(process.env.ALARM_SNS_TOPIC)
+      const alarmActions: string[] = []
+      slicWatchConfig?.topicArn != null && alarmActions.push(slicWatchConfig.topicArn)
+      process.env.ALARM_SNS_TOPIC != null && alarmActions.push(process.env.ALARM_SNS_TOPIC)
 
       const context = {
         alarmActions
@@ -58,9 +58,9 @@ export function handler (event: Event): Event {
       )
 
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-        const funcConfig = funcResource.Metadata?.slicWatch || {}
-        functionAlarmConfigs[funcResourceName] = funcConfig.alarms || {}
-        functionDashboardConfigs[funcResourceName] = funcConfig.dashboard || {}
+        const funcConfig = funcResource.Metadata?.slicWatch ?? {}
+        functionAlarmConfigs[funcResourceName] = funcConfig.alarms ?? {}
+        functionDashboardConfigs[funcResourceName] = funcConfig.dashboard ?? {}
       }
 
       addAlarms(config.alarms, functionAlarmConfigs, context, outputFragment)

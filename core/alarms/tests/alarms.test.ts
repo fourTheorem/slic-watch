@@ -18,7 +18,7 @@ test('Alarms create all service alarms', (t) => {
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   )) {
-    if (resource.Properties?.Namespace) {
+    if (resource.Properties?.Namespace != null) {
       namespaces.add(resource.Properties.Namespace)
     }
   }
@@ -37,7 +37,7 @@ test('Alarms create all ALB service alarms', (t) => {
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   )) {
-    if (resource.Properties?.Namespace) {
+    if (resource.Properties?.Namespace != null) {
       namespaces.add(resource.Properties.Namespace)
     }
   }

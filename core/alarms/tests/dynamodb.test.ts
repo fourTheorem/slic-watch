@@ -58,7 +58,7 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al?.AlarmName)
-      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
       alarmsByType[alarmType].add(al)
     }
 
@@ -101,7 +101,7 @@ test('DynamoDB alarms are created without GSI', (t) => {
   const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
   createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
   _.cloneDeep(defaultCfTemplate)
-  delete compiledTemplate.Resources.dataTable.Properties.GlobalSecondaryIndexes
+  delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 6) // todo why is not 4

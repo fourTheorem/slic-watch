@@ -39,16 +39,16 @@ export default function addAlarms (AlarmProperties: SlicWatchAlarmsConfig, funct
 
   if (AlarmProperties.ActionsEnabled) {
     createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate, additionalResources)
-    apiGwConfig?.ActionsEnabled && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
-    sfConfig?.ActionsEnabled && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
-    dynamoDbConfig?.ActionsEnabled && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
-    kinesisConfig?.ActionsEnabled && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
-    sqsConfig?.ActionsEnabled && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
-    ecsConfig?.ActionsEnabled && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
-    snsConfig?.ActionsEnabled && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
-    ruleConfig?.ActionsEnabled && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
-    albConfig?.ActionsEnabled && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
-    albTargetConfig?.ActionsEnabled && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
-    appSyncConfig?.ActionsEnabled && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
+    apiGwConfig?.ActionsEnabled != null && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
+    sfConfig?.ActionsEnabled != null && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
+    dynamoDbConfig?.ActionsEnabled != null && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
+    kinesisConfig?.ActionsEnabled != null && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
+    sqsConfig?.ActionsEnabled != null && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
+    ecsConfig?.ActionsEnabled != null && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
+    snsConfig?.ActionsEnabled != null && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
+    ruleConfig?.ActionsEnabled != null && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
+    albConfig?.ActionsEnabled != null && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
+    albTargetConfig?.ActionsEnabled != null && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
+    appSyncConfig?.ActionsEnabled != null && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
   }
 }

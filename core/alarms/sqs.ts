@@ -30,7 +30,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
   for (const [queueResourceName, queueResource] of Object.entries(
     queueResources
   )) {
-    if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled) {
+    if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled === true) {
       const inFlightMsgsAlarm = createInFlightMsgsAlarm(
         queueResourceName,
         queueResource,
@@ -39,7 +39,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
     }
 
-    if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled) {
+    if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled === true) {
       if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }
@@ -58,7 +58,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
-    const hardLimit = queueResource.Properties?.FifoQueue ? 20000 : 120000
+    const hardLimit = (queueResource.Properties?.FifoQueue != null) ? 20000 : 120000
     const thresholdValue = Math.floor(hardLimit * threshold / 100)
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${logicalId}.QueueName}`,

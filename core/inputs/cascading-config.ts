@@ -17,7 +17,7 @@ import {
   type KinesisDashboardBodyProperties, type SqsDashboardBodyProperties, type EcsDashboardBodyProperties, type SnsDashboardBodyProperties, type RuleDashboardBodyProperties,
   type AlbDashboardBodyProperties, type AlbTargetDashboardBodyProperties, type AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
-import { type LambdaFunctionAlarmPropertiess } from '../alarms/lambda'
+import { type LambdaFunctionAlarmProperties } from '../alarms/lambda'
 import { type Statistic } from '../cf-template'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
@@ -37,6 +37,7 @@ interface TimeRange {
 
 export interface Widgets {
   enabled?: boolean // remove later ? mark
+  yAxis?: string[]
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties
@@ -60,7 +61,7 @@ export interface SlicWatchDashboardConfig {
 
 export interface SlicWatchAlarmsConfig {
   ActionsEnabled: boolean
-  Lambda?: LambdaFunctionAlarmPropertiess
+  Lambda?: LambdaFunctionAlarmProperties
   ApiGateway?: ApiGwAlarmProperties
   States?: SfAlarmsConfig
   DynamoDB?: DynamoDbAlarmProperties

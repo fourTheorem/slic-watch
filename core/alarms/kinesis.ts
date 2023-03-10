@@ -40,7 +40,7 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
 
   for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      if (kinesisAlarmProperties[metric].ActionsEnabled) {
+      if (kinesisAlarmProperties[metric].ActionsEnabled === true) {
         const alarm = createStreamAlarm(
           streamResourceName,
           streamResource,

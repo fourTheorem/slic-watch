@@ -6,5 +6,5 @@
  * @param {*} AlarmProperties Alarm configuration
  */
 export function getStatisticName (AlarmProperties) {
-  return AlarmProperties.Statistic || AlarmProperties.ExtendedStatistic
+  return AlarmProperties.Statistic ?? AlarmProperties.ExtendedStatistic
 }

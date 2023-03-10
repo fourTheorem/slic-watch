@@ -17,7 +17,7 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): obj
   // Add all alarm properties to functionAlarmConfig so we can cascade top-level configuration down
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
-    const funcConfig = { ...(functionAlarmConfigs[func].Lambda || {}) }
+    const funcConfig = { ...(functionAlarmConfigs[func].Lambda ?? {}) }
     for (const metric of Object.keys(defaultConfig.alarms.Lambda)) {
       funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }

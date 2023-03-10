@@ -5,10 +5,14 @@ import fs from 'fs'
 import _ from 'lodash'
 import { fileURLToPath } from 'url'
 import YAML from 'yaml'
+import type Template from 'cloudform-types/types/template'
 import { cascade } from '../inputs/cascading-config'
-import defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json' assert { type: 'json'}
-import albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json' assert { type: 'json'}
-import appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json' assert { type: 'json'}
+import _defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json' assert { type: 'json'}
+import _albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json' assert { type: 'json'}
+import _appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json' assert { type: 'json'}
+const defaultCfTemplate = _defaultCfTemplate as Template
+const albCfTemplate = _albCfTemplate as Template
+const appSyncCfTemplate = _appSyncCfTemplate as unknown as Template
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,11 +36,11 @@ function assertCommonAlarmProperties (t, al): void {
 
 /**
  * Derive an alarm 'type' by stripping the last component from the underscore-delimited name
- * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} objectj
+ * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} object
  * @returns The inferred type
  */
 function alarmNameToType (alarmName) {
-  const resolvedName = alarmName['Fn::Sub'] ? alarmName['Fn::Sub'] : alarmName
+  const resolvedName = alarmName['Fn::Sub'] ?? alarmName
   const components = resolvedName.split('_')
   components.pop()
   return components.join('_')

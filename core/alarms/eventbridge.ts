@@ -29,7 +29,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
   const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate, additionalResources)
 
   for (const [ruleResourceName, ruleResource] of Object.entries(ruleResources)) {
-    if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled) {
+    if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled === true) {
       const failedInvocations = createFailedInvocationsAlarm(
         ruleResourceName,
         ruleResource,
@@ -38,7 +38,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
       addResource(failedInvocations.resourceName, failedInvocations.resource, compiledTemplate)
     }
 
-    if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled) {
+    if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled === true) {
       const throttledRules = createThrottledRulesAlarm(
         ruleResourceName,
         ruleResource,

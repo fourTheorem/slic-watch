@@ -52,7 +52,7 @@ test('SQS alarms are created', (t) => {
       const al = alarmResource.Properties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al?.AlarmName)
-      alarmsByType[alarmType] = alarmsByType[alarmType] || new Set()
+      alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
       alarmsByType[alarmType].add(al)
     }
     return alarmsByType as AlarmsByType

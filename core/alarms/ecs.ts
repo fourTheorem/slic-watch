@@ -30,7 +30,7 @@ export function resolveEcsClusterNameAsCfn (cluster): any {
     }
     return cluster
   }
-  if (cluster.GetAtt && cluster.GetAtt[1] === 'Arn') {
+  if (cluster.GetAtt != null && cluster.GetAtt[1] === 'Arn') {
     // AWS::ECS::Cluster returns the cluster name for 'Ref'
     return { Ref: cluster.GetAtt[0] }
   }
@@ -53,7 +53,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
   )) {
     const cluster = serviceResource.Properties?.Cluster
     const clusterName = resolveEcsClusterNameAsCfn(cluster)
-    if (ecsAlarmsConfig.MemoryUtilization.ActionsEnabled) {
+    if (ecsAlarmsConfig.MemoryUtilization.ActionsEnabled === true) {
       const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
         serviceResourceName,
         serviceResource,
@@ -62,7 +62,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
       )
       addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
     }
-    if (ecsAlarmsConfig.CPUUtilization.ActionsEnabled) {
+    if (ecsAlarmsConfig.CPUUtilization.ActionsEnabled === true) {
       const cpuUtilizationAlarm = createCPUUtilizationAlarm(
         serviceResourceName,
         serviceResource,

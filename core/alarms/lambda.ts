@@ -8,7 +8,7 @@ import type Template from 'cloudform-types/types/template'
 import pino from 'pino'
 const logging = pino()
 
-export type LambdaFunctionAlarmPropertiess = AlarmProperties & {
+export type LambdaFunctionAlarmProperties = AlarmProperties & {
   Errors: AlarmProperties
   ThrottlesPc: AlarmProperties
   DurationPc: AlarmProperties
@@ -35,13 +35,13 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
 
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
     const funcConfig = functionAlarmPropertiess[funcLogicalId]
-    if (!funcConfig) {
+    if (funcConfig === false) {
       // Function is likely injected by another plugin and not a top-level user function
       logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
       return
     }
 
-    if (funcConfig.Errors.ActionsEnabled) {
+    if (funcConfig.Errors.ActionsEnabled === true) {
       const errAlarm = createLambdaErrorsAlarm(
         funcLogicalId,
         funcResource,
@@ -50,7 +50,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(errAlarm.resourceName, errAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.ThrottlesPc.ActionsEnabled) {
+    if (funcConfig.ThrottlesPc.ActionsEnabled === true) {
       const throttlesAlarm = createLambdaThrottlesAlarm(
         funcLogicalId,
         funcResource,
@@ -60,7 +60,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(throttlesAlarm.resourceName, throttlesAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.DurationPc.ActionsEnabled) {
+    if (funcConfig.DurationPc.ActionsEnabled === true) {
       const durationAlarm = createLambdaDurationAlarm(
         funcLogicalId,
         funcResource,
@@ -69,7 +69,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(durationAlarm.resourceName, durationAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.Invocations.ActionsEnabled) {
+    if (funcConfig.Invocations.ActionsEnabled === true) {
       if (funcConfig.Invocations.Threshold == null) {
         throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }
@@ -87,7 +87,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
     getEventSourceMappingFunctions(compiledTemplate, additionalResources)
   )) {
     const funcConfig = functionAlarmPropertiess[funcLogicalId]
-    if (funcConfig.IteratorAge.ActionsEnabled) {
+    if (funcConfig.IteratorAge.ActionsEnabled === true) {
       // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
       const iteratorAgeAlarm = createIteratorAgeAlarm(
         funcLogicalId,
@@ -206,7 +206,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
   }
 
   function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
-    const funcTimeout = funcResource.Properties?.Timeout || 3
+    const funcTimeout = funcResource.Properties?.Timeout ?? 3
     const threshold: any = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Duration_${funcLogicalId}`,
