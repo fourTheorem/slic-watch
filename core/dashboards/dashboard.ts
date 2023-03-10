@@ -68,9 +68,9 @@ export function resolveEcsClusterNameForSub (cluster): string | undefined {
   // AWS::ECS::Cluster returns the cluster name for 'Ref'
   // This can be used as a 'Fn::Sub' variable
   if (cluster.GetAtt != null && cluster.GetAtt[1] === 'Arn') {
-    return '${' + cluster.GetAtt[0] + '}'
+    return '${' + `${cluster.GetAtt[0]}` + '}'
   } else if (cluster.Ref != null) {
-    return '${' + cluster.Ref + '}'
+    return '${' + `${cluster.Ref}` + '}'
   } else if (cluster['Fn::Sub'] != null) {
     return cluster['Fn::Sub']
   }

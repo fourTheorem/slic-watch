@@ -41,7 +41,7 @@ const mockServerless = {
   providers: { aws: {} },
   getProvider: () => ({
     naming: {
-      getLambdaLogicalId: (funcName) => {
+      getLambdaLogicalId: (funcName: string) => {
         return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
       }
     }
