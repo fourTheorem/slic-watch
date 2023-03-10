@@ -60,7 +60,7 @@ export interface SlicWatchDashboardConfig {
 }
 
 export interface SlicWatchAlarmsConfig {
-  ActionsEnabled: boolean
+  enabled: boolean
   Lambda?: LambdaFunctionAlarmProperties
   ApiGateway?: ApiGwAlarmProperties
   States?: SfAlarmsConfig

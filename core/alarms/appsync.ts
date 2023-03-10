@@ -1,16 +1,17 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export type AppSyncAlarmProperties = AlarmProperties & {
-  '5XXError': AlarmProperties
-  Latency: AlarmProperties
+export interface AppSyncAlarmProperties {
+  enabled: boolean
+  '5XXError': SlicWatchAlarmProperties
+  Latency: SlicWatchAlarmProperties
 }
 
 export type AppSyncAlarm = AlarmProperties & {
@@ -31,7 +32,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
 
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
     const alarms: any = []
-    if (appSyncAlarmProperties['5XXError'].ActionsEnabled === true) {
+    if (appSyncAlarmProperties['5XXError'].enabled) {
       alarms.push(create5XXAlarm(
         appSyncResourceName,
         appSyncResource,
@@ -39,7 +40,7 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
       ))
     }
 
-    if (appSyncAlarmProperties.Latency.ActionsEnabled === true) {
+    if (appSyncAlarmProperties.Latency.enabled) {
       alarms.push(createLatencyAlarm(
         appSyncResourceName,
         appSyncResource,

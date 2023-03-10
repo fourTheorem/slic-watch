@@ -23,7 +23,7 @@ const AlarmProperties = createTestConfig(
     TreatMissingData: 'breaching',
     ComparisonOperator: 'GreaterThanOrEqualToThreshold',
     DynamoDB: {
-      ActionsEnabled: true,
+      enabled: true,
       ReadThrottleEvents: {
         Threshold: 10
       },
@@ -111,7 +111,7 @@ test('DynamoDB alarms are created without GSI', (t) => {
 test('DynamoDB alarms are not created when disabled', (t) => {
   const AlarmProperties = createTestConfig(defaultConfig.alarms, {
     DynamoDB: {
-      ActionsEnabled: false
+      enabled: false
     }
   })
   const dynamoDbAlarmProperties = AlarmProperties.DynamoDB

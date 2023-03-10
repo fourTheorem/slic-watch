@@ -1,17 +1,18 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export type ApiGwAlarmProperties = AlarmProperties & {
-  '5XXError': AlarmProperties
-  '4XXError': AlarmProperties
-  Latency: AlarmProperties
+export interface ApiGwAlarmProperties {
+  enabled: boolean
+  '5XXError': SlicWatchAlarmProperties
+  '4XXError': SlicWatchAlarmProperties
+  Latency: SlicWatchAlarmProperties
 }
 
 export type ApiAlarm = AlarmProperties & {
@@ -83,7 +84,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     const alarms: any = []
 
-    if (apiGwAlarmProperties['5XXError'].ActionsEnabled === true) {
+    if (apiGwAlarmProperties['5XXError'].enabled) {
       alarms.push(create5XXAlarm(
         apiResourceName,
         apiResource,
@@ -91,7 +92,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties['4XXError'].ActionsEnabled === true) {
+    if (apiGwAlarmProperties['4XXError'].enabled) {
       alarms.push(create4XXAlarm(
         apiResourceName,
         apiResource,
@@ -99,7 +100,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties.Latency.ActionsEnabled === true) {
+    if (apiGwAlarmProperties.Latency.enabled) {
       alarms.push(createLatencyAlarm(
         apiResourceName,
         apiResource,

@@ -68,7 +68,7 @@ test('Events alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       Events: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         FailedInvocations: {
           Threshold: 50

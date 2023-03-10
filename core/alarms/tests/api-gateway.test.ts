@@ -191,7 +191,7 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ApiGateway: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         '5XXError': {
           Threshold: 0.0
@@ -220,18 +220,18 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
     defaultConfig.alarms,
     {
       ApiGateway: {
-        ActionsEnabled: true, // enabled globally
+        enabled: true, // enabled globally
         Period: 60,
         '5XXError': {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0.0
         },
         '4XXError': {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0.05
         },
         Latency: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 5000
         }
       }

@@ -1,14 +1,15 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
-export type SfAlarmsConfig = AlarmProperties & {
-  ExecutionThrottled: AlarmProperties
-  ExecutionsFailed: AlarmProperties
-  ExecutionsTimedOut: AlarmProperties
+export interface SfAlarmsConfig {
+  enabled: boolean
+  ExecutionThrottled: SlicWatchAlarmProperties
+  ExecutionsFailed: SlicWatchAlarmProperties
+  ExecutionsTimedOut: SlicWatchAlarmProperties
 }
 
 export type SmAlarm = AlarmProperties & {
@@ -34,7 +35,7 @@ export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, c
 
   for (const [logicalId] of Object.entries(smResources)) {
     for (const metric of executionMetrics) {
-      if (sfAlarmProperties[metric].ActionsEnabled === true) {
+      if (sfAlarmProperties[metric].enabled === true) {
         const config = sfAlarmProperties[metric]
         const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
         const smAlarmProperties: SmAlarm = {

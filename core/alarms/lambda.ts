@@ -1,19 +1,20 @@
 'use strict'
 
 import { getResourcesByType, addResource, getEventSourceMappingFunctions, type ResourceType } from '../cf-template'
-import { type Context, type FunctionAlarmPropertiess, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, type FunctionAlarmPropertiess, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import pino from 'pino'
 const logging = pino()
 
-export type LambdaFunctionAlarmProperties = AlarmProperties & {
-  Errors: AlarmProperties
-  ThrottlesPc: AlarmProperties
-  DurationPc: AlarmProperties
-  Invocations: AlarmProperties
-  IteratorAge: AlarmProperties
+export interface LambdaFunctionAlarmProperties {
+  enabled: boolean
+  Errors: SlicWatchAlarmProperties
+  ThrottlesPc: SlicWatchAlarmProperties
+  DurationPc: SlicWatchAlarmProperties
+  Invocations: SlicWatchAlarmProperties
+  IteratorAge: SlicWatchAlarmProperties
 }
 
 export type LambdaAlarm = AlarmProperties & {
@@ -41,7 +42,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       return
     }
 
-    if (funcConfig.Errors.ActionsEnabled === true) {
+    if (funcConfig.Errors.enabled === true) {
       const errAlarm = createLambdaErrorsAlarm(
         funcLogicalId,
         funcResource,
@@ -50,7 +51,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(errAlarm.resourceName, errAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.ThrottlesPc.ActionsEnabled === true) {
+    if (funcConfig.ThrottlesPc.enabled === true) {
       const throttlesAlarm = createLambdaThrottlesAlarm(
         funcLogicalId,
         funcResource,
@@ -60,7 +61,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(throttlesAlarm.resourceName, throttlesAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.DurationPc.ActionsEnabled === true) {
+    if (funcConfig.DurationPc.enabled === true) {
       const durationAlarm = createLambdaDurationAlarm(
         funcLogicalId,
         funcResource,
@@ -69,7 +70,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
       addResource(durationAlarm.resourceName, durationAlarm.resource, compiledTemplate)
     }
 
-    if (funcConfig.Invocations.ActionsEnabled === true) {
+    if (funcConfig.Invocations.enabled === true) {
       if (funcConfig.Invocations.Threshold == null) {
         throw new Error('Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }
@@ -87,7 +88,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
     getEventSourceMappingFunctions(compiledTemplate, additionalResources)
   )) {
     const funcConfig = functionAlarmPropertiess[funcLogicalId]
-    if (funcConfig.IteratorAge.ActionsEnabled === true) {
+    if (funcConfig.IteratorAge.enabled === true) {
       // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
       const iteratorAgeAlarm = createIteratorAgeAlarm(
         funcLogicalId,

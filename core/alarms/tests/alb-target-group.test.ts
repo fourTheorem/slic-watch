@@ -261,7 +261,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ApplicationELBTarget: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         HTTPCode_Target_5XX_Count: {
           Threshold: 50

@@ -1,18 +1,19 @@
 'use strict'
 
 import { type ResourceType, getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export type AlbTargetAlarmProperties = AlarmProperties & {
-  HTTPCode_Target_5XX_Count: AlarmProperties
-  UnHealthyHostCount: AlarmProperties
-  LambdaInternalError: AlarmProperties
-  LambdaUserError: AlarmProperties
+export interface AlbTargetAlarmProperties {
+  enabled: boolean
+  HTTPCode_Target_5XX_Count: SlicWatchAlarmProperties
+  UnHealthyHostCount: SlicWatchAlarmProperties
+  LambdaInternalError: SlicWatchAlarmProperties
+  LambdaUserError: SlicWatchAlarmProperties
 }
 
 export type AlbTargetAlarm = AlarmProperties & {
@@ -90,7 +91,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
     for (const tgLogicalId of Object.keys(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count?.ActionsEnabled === true) {
+        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count?.enabled) {
           const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
             targetGroupResourceName,
             targetGroupResource,
@@ -99,7 +100,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
           )
           addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource, compiledTemplate)
         }
-        if (albTargetAlarmProperties.UnHealthyHostCount?.ActionsEnabled === true) {
+        if (albTargetAlarmProperties.UnHealthyHostCount?.enabled) {
           const unHealthyHostCount = createUnHealthyHostCountAlarm(
             targetGroupResourceName,
             targetGroupResource,
@@ -109,7 +110,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
           addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource, compiledTemplate)
         }
         if (targetGroupResource.Properties?.TargetType === 'lambda') {
-          if (albTargetAlarmProperties.LambdaInternalError?.ActionsEnabled === true) {
+          if (albTargetAlarmProperties.LambdaInternalError?.enabled) {
             const lambdaInternalError = createLambdaInternalErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,
@@ -118,7 +119,7 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
             )
             addResource(lambdaInternalError.resourceName, lambdaInternalError.resource, compiledTemplate)
           }
-          if (albTargetAlarmProperties.LambdaUserError?.ActionsEnabled === true) {
+          if (albTargetAlarmProperties.LambdaUserError?.enabled) {
             const lambdaUserError = createLambdaUserErrorAlarm(
               targetGroupResourceName,
               targetGroupResource,

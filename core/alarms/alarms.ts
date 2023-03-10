@@ -37,18 +37,18 @@ export default function addAlarms (AlarmProperties: SlicWatchAlarmsConfig, funct
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
-  if (AlarmProperties.ActionsEnabled) {
+  if (AlarmProperties.enabled) {
     createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate, additionalResources)
-    apiGwConfig?.ActionsEnabled != null && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
-    sfConfig?.ActionsEnabled != null && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
-    dynamoDbConfig?.ActionsEnabled != null && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
-    kinesisConfig?.ActionsEnabled != null && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
-    sqsConfig?.ActionsEnabled != null && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
-    ecsConfig?.ActionsEnabled != null && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
-    snsConfig?.ActionsEnabled != null && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
-    ruleConfig?.ActionsEnabled != null && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
-    albConfig?.ActionsEnabled != null && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
-    albTargetConfig?.ActionsEnabled != null && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
-    appSyncConfig?.ActionsEnabled != null && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
+    apiGwConfig?.enabled != null && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
+    sfConfig?.enabled != null && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
+    dynamoDbConfig?.enabled != null && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
+    kinesisConfig?.enabled != null && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
+    sqsConfig?.enabled != null && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
+    ecsConfig?.enabled != null && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
+    snsConfig?.enabled != null && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
+    ruleConfig?.enabled != null && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
+    albConfig?.enabled != null && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
+    albTargetConfig?.enabled != null && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
+    appSyncConfig?.enabled != null && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
   }
 }

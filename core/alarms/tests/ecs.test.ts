@@ -94,7 +94,7 @@ test('ECS alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       ECS: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 60,
         MemoryUtilization: {
           Threshold: 50

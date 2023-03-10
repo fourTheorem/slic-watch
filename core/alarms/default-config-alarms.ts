@@ -26,6 +26,17 @@ export interface ReturnAlarm {
   resource: Resource
 }
 
+export type SlicWatchAlarmProperties = AlarmProperties & {
+  enabled: boolean
+  Period: number
+  EvaluationPeriods: number
+  TreatMissingData: string
+  ComparisonOperator: string
+  Threshold?: number
+  Statistic?: string[]
+  ExtendedStatistic?: string
+}
+
 export interface Context {
   alarmActions: string[]
 }
@@ -43,6 +54,7 @@ export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnResou
 export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SmAlarm, context?: Context): ReturnResource
+export function createAlarm (alarm: SlicWatchAlarmProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResource {
   return {
     Type: 'AWS::CloudWatch::Alarm',
@@ -67,7 +79,7 @@ export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResourc
 }
 
 export interface AllAlarmsConfig {
-  ActionsEnabled: boolean
+  enabled: boolean
   alarms?: SlicWatchAlarmsConfig
 }
 

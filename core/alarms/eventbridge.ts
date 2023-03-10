@@ -2,15 +2,16 @@
 'use strict'
 
 import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import { type ResourceType } from './../cf-template'
 
-export type EventsAlarmsConfig = AlarmProperties & {
-  FailedInvocations: AlarmProperties
-  ThrottledRules: AlarmProperties
+export interface EventsAlarmsConfig {
+  enabled: boolean
+  FailedInvocations: SlicWatchAlarmProperties
+  ThrottledRules: SlicWatchAlarmProperties
 }
 
 export type EventbridgeAlarm = AlarmProperties & {
@@ -29,7 +30,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
   const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate, additionalResources)
 
   for (const [ruleResourceName, ruleResource] of Object.entries(ruleResources)) {
-    if (eventsAlarmsConfig.FailedInvocations.ActionsEnabled === true) {
+    if (eventsAlarmsConfig.FailedInvocations.enabled) {
       const failedInvocations = createFailedInvocationsAlarm(
         ruleResourceName,
         ruleResource,
@@ -38,7 +39,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
       addResource(failedInvocations.resourceName, failedInvocations.resource, compiledTemplate)
     }
 
-    if (eventsAlarmsConfig.ThrottledRules.ActionsEnabled === true) {
+    if (eventsAlarmsConfig.ThrottledRules.enabled) {
       const throttledRules = createThrottledRulesAlarm(
         ruleResourceName,
         ruleResource,

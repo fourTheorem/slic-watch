@@ -1,20 +1,21 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export type KinesisAlarmProperties = AlarmProperties & {
-  'GetRecords.IteratorAgeMilliseconds': AlarmProperties
-  ReadProvisionedThroughputExceeded: AlarmProperties
-  WriteProvisionedThroughputExceeded: AlarmProperties
-  'PutRecord.Success': AlarmProperties
-  'PutRecords.Success': AlarmProperties
-  'GetRecords.Success': AlarmProperties
+export interface KinesisAlarmProperties {
+  enabled: boolean
+  'GetRecords.IteratorAgeMilliseconds': SlicWatchAlarmProperties
+  ReadProvisionedThroughputExceeded: SlicWatchAlarmProperties
+  WriteProvisionedThroughputExceeded: SlicWatchAlarmProperties
+  'PutRecord.Success': SlicWatchAlarmProperties
+  'PutRecords.Success': SlicWatchAlarmProperties
+  'GetRecords.Success': SlicWatchAlarmProperties
 }
 
 const kinesisAlarmTypes = {
@@ -40,7 +41,7 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
 
   for (const [streamResourceName, streamResource] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      if (kinesisAlarmProperties[metric].ActionsEnabled === true) {
+      if (kinesisAlarmProperties[metric].enabled === true) {
         const alarm = createStreamAlarm(
           streamResourceName,
           streamResource,

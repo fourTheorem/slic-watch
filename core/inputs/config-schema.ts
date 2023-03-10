@@ -42,7 +42,7 @@ const supportedWidgets = {
 }
 
 const commonAlarmProperties = {
-  ActionsEnabled: { type: 'boolean' },
+  enabled: { type: 'boolean' },
   Period: {
     type: ['integer', 'null'],
     anyOf: [
@@ -226,7 +226,7 @@ const functionConfigSchema = {
         alarms: {
           type: 'object',
           properties: {
-            ActionsEnabled: { type: 'boolean' },
+            enabled: { type: 'boolean' },
             Lambda: alarmSchemas.Lambda
           }
         },

@@ -1,14 +1,15 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export type SqsAlarmsConfig = AlarmProperties & {
-  AgeOfOldestMessage: AlarmProperties
-  InFlightMessagesPc: AlarmProperties
+export interface SqsAlarmsConfig {
+  enabled: boolean
+  AgeOfOldestMessage: SlicWatchAlarmProperties
+  InFlightMessagesPc: SlicWatchAlarmProperties
 }
 
 export type SqsAlarm = AlarmProperties & {
@@ -30,7 +31,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
   for (const [queueResourceName, queueResource] of Object.entries(
     queueResources
   )) {
-    if (sqsAlarmsConfig.InFlightMessagesPc.ActionsEnabled === true) {
+    if (sqsAlarmsConfig.InFlightMessagesPc.enabled) {
       const inFlightMsgsAlarm = createInFlightMsgsAlarm(
         queueResourceName,
         queueResource,
@@ -39,7 +40,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
     }
 
-    if (sqsAlarmsConfig.AgeOfOldestMessage.ActionsEnabled === true) {
+    if (sqsAlarmsConfig.AgeOfOldestMessage.enabled) {
       if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }

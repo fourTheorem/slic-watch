@@ -90,7 +90,7 @@ test('Step function alarms are not created when disabled globally', (t) => {
     defaultConfig.alarms,
     {
       States: {
-        ActionsEnabled: false, // disabled globally
+        enabled: false, // disabled globally
         Period: 900,
         ExecutionThrottled: {
           Threshold: 0
@@ -119,18 +119,18 @@ test('Step function alarms are not created when disabled individually', (t) => {
     defaultConfig.alarms,
     {
       States: {
-        ActionsEnabled: true, // enabdled globally
+        enabled: true, // enabdled globally
         Period: 900,
         ExecutionThrottled: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0
         },
         ExecutionsFailed: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0
         },
         ExecutionsTimedOut: {
-          ActionsEnabled: false, // disabled locally
+          enabled: false, // disabled locally
           Threshold: 0
         }
       }
