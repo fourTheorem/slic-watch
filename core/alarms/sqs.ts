@@ -1,15 +1,15 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface SqsAlarmsConfig {
-  enabled: boolean
-  AgeOfOldestMessage: SlicWatchAlarmProperties
-  InFlightMessagesPc: SlicWatchAlarmProperties
+  enabled?: boolean
+  InFlightMessagesPc: DefaultAlarmsProperties
+  AgeOfOldestMessage: DefaultAlarmsProperties
 }
 
 export type SqsAlarm = AlarmProperties & {
@@ -28,10 +28,9 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
    */
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate, additionalResources)
 
-  for (const [queueResourceName, queueResource] of Object.entries(
-    queueResources
-  )) {
-    if (sqsAlarmsConfig.InFlightMessagesPc.enabled) {
+  for (const [queueResourceName, queueResource] of Object.entries(queueResources)) {
+    console.log(sqsAlarmsConfig[queueResourceName])
+    if (sqsAlarmsConfig.InFlightMessagesPc.enabled === true) {
       const inFlightMsgsAlarm = createInFlightMsgsAlarm(
         queueResourceName,
         queueResource,
@@ -40,7 +39,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       addResource(inFlightMsgsAlarm.resourceName, inFlightMsgsAlarm.resource, compiledTemplate)
     }
 
-    if (sqsAlarmsConfig.AgeOfOldestMessage.enabled) {
+    if (sqsAlarmsConfig.AgeOfOldestMessage.enabled === true) {
       if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }

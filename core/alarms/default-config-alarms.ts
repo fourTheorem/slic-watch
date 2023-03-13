@@ -26,15 +26,20 @@ export interface ReturnAlarm {
   resource: Resource
 }
 
-export type SlicWatchAlarmProperties = AlarmProperties & {
-  enabled: boolean
-  Period: number
-  EvaluationPeriods: number
-  TreatMissingData: string
-  ComparisonOperator: string
-  Threshold?: number
-  Statistic?: string[]
+// export interface SlicWatchAlarmProperties {
+//   enabled: boolean
+//   Period: number
+//   EvaluationPeriods: number
+//   TreatMissingData: string
+//   ComparisonOperator: string
+// }
+
+export interface DefaultAlarmsProperties {
+  enabled?: boolean
+  Threshold: number | null
+  Statistic?: string
   ExtendedStatistic?: string
+  ComparisonOperator?: string
 }
 
 export interface Context {
@@ -54,7 +59,6 @@ export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnResou
 export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SmAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: SlicWatchAlarmProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResource {
   return {
     Type: 'AWS::CloudWatch::Alarm',
@@ -86,7 +90,7 @@ export interface AllAlarmsConfig {
 export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
 & EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmProperties & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
-export interface FunctionAlarmPropertiess {
+export interface FunctionAlarmProperties {
   HelloLambdaFunction?: LambdaFunctionAlarmProperties
   ThrottlerLambdaFunction?: LambdaFunctionAlarmProperties
   DriveStreamLambdaFunction?: LambdaFunctionAlarmProperties

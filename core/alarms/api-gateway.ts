@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -9,10 +9,10 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface ApiGwAlarmProperties {
-  enabled: boolean
-  '5XXError': SlicWatchAlarmProperties
-  '4XXError': SlicWatchAlarmProperties
-  Latency: SlicWatchAlarmProperties
+  enabled?: boolean
+  '5XXError': DefaultAlarmsProperties
+  '4XXError': DefaultAlarmsProperties
+  Latency: DefaultAlarmsProperties
 }
 
 export type ApiAlarm = AlarmProperties & {
@@ -84,7 +84,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     const alarms: any = []
 
-    if (apiGwAlarmProperties['5XXError'].enabled) {
+    if (apiGwAlarmProperties['5XXError'].enabled === true) {
       alarms.push(create5XXAlarm(
         apiResourceName,
         apiResource,
@@ -92,7 +92,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties['4XXError'].enabled) {
+    if (apiGwAlarmProperties['4XXError'].enabled === true) {
       alarms.push(create4XXAlarm(
         apiResourceName,
         apiResource,
@@ -100,7 +100,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
       ))
     }
 
-    if (apiGwAlarmProperties.Latency.enabled) {
+    if (apiGwAlarmProperties.Latency.enabled === true) {
       alarms.push(createLatencyAlarm(
         apiResourceName,
         apiResource,

@@ -1,7 +1,7 @@
 'use strict'
 
-import { type SlicWatchAlarmProperties } from '../alarms/default-config-alarms'
-import { type AllDashboardConfig } from '../dashboards/default-config-dashboard'
+import { type AllAlarmsConfig } from '../alarms/default-config-alarms'
+import { type DashboardBodyProperties } from '../dashboards/default-config-dashboard'
 
 /**
  * This is the default configuration for Alarms and Dashboard widgets for all supported AWS services.
@@ -198,7 +198,7 @@ export const defaultConfig = {
         Threshold: 0
       }
     }
-  } as SlicWatchAlarmProperties,
+  } as AllAlarmsConfig,
   dashboard: {
     enabled: true,
     timeRange: {
@@ -389,7 +389,7 @@ export const defaultConfig = {
         }
       }
     }
-  } as AllDashboardConfig
+  } as DashboardBodyProperties
 }
 
 export default defaultConfig

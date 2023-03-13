@@ -1,8 +1,8 @@
 'use strict'
 
-import { cascade, type SlicWatchAlarmsConfig } from '../inputs/cascading-config'
+import { cascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import { type FunctionAlarmPropertiess, type Context } from './default-config-alarms'
+import { type FunctionAlarmProperties, type Context, type AllAlarmsConfig } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 import createLambdaAlarms from './lambda'
@@ -19,7 +19,7 @@ import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { type ResourceType } from './../cf-template'
 
-export default function addAlarms (AlarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
+export default function addAlarms (alarmProperties: AllAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -33,11 +33,11 @@ export default function addAlarms (AlarmProperties: SlicWatchAlarmsConfig, funct
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(AlarmProperties)
+  } = cascade(alarmProperties)
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
-  if (AlarmProperties.enabled) {
+  if (alarmProperties.enabled != null) {
     createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate, additionalResources)
     apiGwConfig?.enabled != null && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
     sfConfig?.enabled != null && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)

@@ -61,6 +61,10 @@ export interface SlicWatchDashboardConfig {
 
 export interface SlicWatchAlarmsConfig {
   enabled: boolean
+  Period: number
+  EvaluationPeriods: number
+  TreatMissingData: string
+  ComparisonOperator: string
   Lambda?: LambdaFunctionAlarmProperties
   ApiGateway?: ApiGwAlarmProperties
   States?: SfAlarmsConfig

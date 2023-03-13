@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -9,13 +9,13 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface KinesisAlarmProperties {
-  enabled: boolean
-  'GetRecords.IteratorAgeMilliseconds': SlicWatchAlarmProperties
-  ReadProvisionedThroughputExceeded: SlicWatchAlarmProperties
-  WriteProvisionedThroughputExceeded: SlicWatchAlarmProperties
-  'PutRecord.Success': SlicWatchAlarmProperties
-  'PutRecords.Success': SlicWatchAlarmProperties
-  'GetRecords.Success': SlicWatchAlarmProperties
+  enabled?: boolean
+  'GetRecords.IteratorAgeMilliseconds': DefaultAlarmsProperties
+  ReadProvisionedThroughputExceeded: DefaultAlarmsProperties
+  WriteProvisionedThroughputExceeded: DefaultAlarmsProperties
+  'PutRecord.Success': DefaultAlarmsProperties
+  'PutRecords.Success': DefaultAlarmsProperties
+  'GetRecords.Success': DefaultAlarmsProperties
 }
 
 const kinesisAlarmTypes = {

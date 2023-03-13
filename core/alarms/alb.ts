@@ -2,16 +2,16 @@
 
 import { addResource, getResourcesByType, type ResourceType } from '../cf-template'
 import type Resource from 'cloudform-types/types/resource'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
 export interface AlbAlarmProperties {
-  enabled: boolean
-  HTTPCode_ELB_5XX_Count: SlicWatchAlarmProperties
-  RejectedConnectionCount: SlicWatchAlarmProperties
+  enabled?: boolean
+  HTTPCode_ELB_5XX_Count: DefaultAlarmsProperties
+  RejectedConnectionCount: DefaultAlarmsProperties
 }
 
 export type AlbAlarm = AlarmProperties & {
@@ -31,7 +31,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
   const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, additionalResources)
 
   for (const [loadBalancerResourceName, loadBalancerResource] of Object.entries(loadBalancerResources)) {
-    if (albAlarmProperties.HTTPCode_ELB_5XX_Count?.enabled) {
+    if (albAlarmProperties.HTTPCode_ELB_5XX_Count?.enabled === true) {
       const httpCodeELB5XXCount = createHTTPCodeELB5XXCountAlarm(
         loadBalancerResourceName,
         loadBalancerResource,
@@ -40,7 +40,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
       addResource(httpCodeELB5XXCount.resourceName, httpCodeELB5XXCount.resource, compiledTemplate)
     }
 
-    if (albAlarmProperties.RejectedConnectionCount?.enabled) {
+    if (albAlarmProperties.RejectedConnectionCount?.enabled === true) {
       const rejectedConnectionCount = createRejectedConnectionCountAlarm(
         loadBalancerResourceName,
         loadBalancerResource,

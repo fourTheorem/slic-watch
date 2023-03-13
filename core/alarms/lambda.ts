@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, getEventSourceMappingFunctions, type ResourceType } from '../cf-template'
-import { type Context, type FunctionAlarmPropertiess, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, type FunctionAlarmProperties, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
@@ -9,12 +9,11 @@ import pino from 'pino'
 const logging = pino()
 
 export interface LambdaFunctionAlarmProperties {
-  enabled: boolean
-  Errors: SlicWatchAlarmProperties
-  ThrottlesPc: SlicWatchAlarmProperties
-  DurationPc: SlicWatchAlarmProperties
-  Invocations: SlicWatchAlarmProperties
-  IteratorAge: SlicWatchAlarmProperties
+  Errors: DefaultAlarmsProperties
+  ThrottlesPc: DefaultAlarmsProperties
+  DurationPc: DefaultAlarmsProperties
+  Invocations: DefaultAlarmsProperties
+  IteratorAge: DefaultAlarmsProperties
 }
 
 export type LambdaAlarm = AlarmProperties & {
@@ -25,7 +24,7 @@ export type LambdaAlarm = AlarmProperties & {
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAlarmPropertiess, context: Context, compiledTemplate: Template, additionalResources: ResourceType) {
+export default function createLambdaAlarms (functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType) {
   /**
    * Add all required Lambda alarms to the provided CloudFormation template
    * based on the Lambda resources found within
@@ -35,7 +34,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
 
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-    const funcConfig = functionAlarmPropertiess[funcLogicalId]
+    const funcConfig = functionAlarmProperties[funcLogicalId]
     if (funcConfig === false) {
       // Function is likely injected by another plugin and not a top-level user function
       logging.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
@@ -87,7 +86,7 @@ export default function createLambdaAlarms (functionAlarmPropertiess: FunctionAl
   for (const [funcLogicalId, funcResource] of Object.entries(
     getEventSourceMappingFunctions(compiledTemplate, additionalResources)
   )) {
-    const funcConfig = functionAlarmPropertiess[funcLogicalId]
+    const funcConfig = functionAlarmProperties[funcLogicalId]
     if (funcConfig.IteratorAge.enabled === true) {
       // The function name may be a literal or an object (e.g., {'Fn::GetAtt': ['stream', 'Arn']})
       const iteratorAgeAlarm = createIteratorAgeAlarm(

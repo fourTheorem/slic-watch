@@ -1,15 +1,15 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface SnsAlarmsConfig {
   enabled: boolean
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': SlicWatchAlarmProperties
-  NumberOfNotificationsFailed: SlicWatchAlarmProperties
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DefaultAlarmsProperties
+  NumberOfNotificationsFailed: DefaultAlarmsProperties
 }
 
 export type SnsAlarm = AlarmProperties & {
@@ -29,7 +29,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
   const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
 
   for (const [topicLogicalId, topicResource] of Object.entries(topicResources)) {
-    if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].enabled) {
+    if (snsAlarmsConfig['NumberOfNotificationsFilteredOut-InvalidAttributes'].enabled === true) {
       const numberOfNotificationsFilteredOutInvalidAttributes = createNumberOfNotificationsFilteredOutInvalidAttributesAlarm(
         topicLogicalId,
         topicResource,
@@ -38,7 +38,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
       addResource(numberOfNotificationsFilteredOutInvalidAttributes.resourceName, numberOfNotificationsFilteredOutInvalidAttributes.resource, compiledTemplate)
     }
 
-    if (snsAlarmsConfig.NumberOfNotificationsFailed.enabled) {
+    if (snsAlarmsConfig.NumberOfNotificationsFailed.enabled === true) {
       const numberOfNotificationsFailed = createNumberOfNotificationsFailedAlarm(
         topicLogicalId,
         topicResource,

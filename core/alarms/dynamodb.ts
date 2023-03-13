@@ -1,17 +1,18 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
 export interface DynamoDbAlarmProperties {
-  enabled: boolean
-  ReadThrottleEvents: SlicWatchAlarmProperties
-  WriteThrottleEvents: SlicWatchAlarmProperties
-  UserErrors: SlicWatchAlarmProperties
-  SystemErrors: SlicWatchAlarmProperties
+  enabled?: boolean
+  Statistic: string
+  ReadThrottleEvents: DefaultAlarmsProperties
+  WriteThrottleEvents: DefaultAlarmsProperties
+  UserErrors: DefaultAlarmsProperties
+  SystemErrors: DefaultAlarmsProperties
 }
 
 /**
@@ -24,31 +25,32 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
    *
    */
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate, additionalResources)
+
   for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
     const tableDimensions = [{ Name: 'TableName', Value: { Ref: tableResourceName } }]
 
     const alarms: any = []
 
     const tableNameSub = `\${${tableResourceName}}`
-    if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled) {
+    if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled === true) {
       alarms.push(
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'ReadThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'ReadThrottleEvents'))
       )
     }
 
-    if (dynamoDbAlarmProperties.WriteThrottleEvents.enabled) {
+    if (dynamoDbAlarmProperties.WriteThrottleEvents.enabled === true) {
       alarms.push(
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'WriteThrottleEvents', makeResourceName('Table', `${tableNameSub}`, 'WriteThrottleEvents'))
       )
     }
 
-    if (dynamoDbAlarmProperties.UserErrors.enabled) {
+    if (dynamoDbAlarmProperties.UserErrors.enabled === true) {
       alarms.push(
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'UserErrors', makeResourceName('Table', `${tableNameSub}`, 'UserErrors'))
       )
     }
 
-    if (dynamoDbAlarmProperties.SystemErrors.enabled) {
+    if (dynamoDbAlarmProperties.SystemErrors.enabled === true) {
       alarms.push(
         createDynamoDbAlarm(tableNameSub, tableDimensions, 'SystemErrors', makeResourceName('Table', `${tableNameSub}`, 'SystemErrors'))
       )
@@ -57,11 +59,11 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
       const gsiName = gsi.IndexName
       const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
       const gsiIdentifierSub = `${tableNameSub}${gsiName}`
-      if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled) {
+      if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled === true) {
         alarms.push(createDynamoDbAlarm(gsiIdentifierSub, gsiDimensions, 'ReadThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'ReadThrottleEvents')))
       }
 
-      if (dynamoDbAlarmProperties.WriteThrottleEvents.enabled) {
+      if (dynamoDbAlarmProperties.WriteThrottleEvents.enabled === true) {
         alarms.push(createDynamoDbAlarm(gsiIdentifierSub, gsiDimensions, 'WriteThrottleEvents', makeResourceName('GSI', `${tableResourceName}${gsiName}`, 'WriteThrottleEvents')))
       }
     }

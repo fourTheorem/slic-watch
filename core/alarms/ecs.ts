@@ -1,15 +1,15 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type SlicWatchAlarmProperties } from './default-config-alarms'
+import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface EcsAlarmsConfig {
-  enabled: boolean
-  MemoryUtilization: SlicWatchAlarmProperties
-  CPUUtilization: SlicWatchAlarmProperties
+  enabled?: boolean
+  MemoryUtilization: DefaultAlarmsProperties
+  CPUUtilization: DefaultAlarmsProperties
 }
 
 export type EcsAlarm = AlarmProperties & {
@@ -54,7 +54,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
   )) {
     const cluster = serviceResource.Properties?.Cluster
     const clusterName = resolveEcsClusterNameAsCfn(cluster)
-    if (ecsAlarmsConfig.MemoryUtilization.enabled) {
+    if (ecsAlarmsConfig.MemoryUtilization.enabled === true) {
       const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
         serviceResourceName,
         serviceResource,
@@ -63,7 +63,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
       )
       addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
     }
-    if (ecsAlarmsConfig.CPUUtilization.enabled) {
+    if (ecsAlarmsConfig.CPUUtilization.enabled === true) {
       const cpuUtilizationAlarm = createCPUUtilizationAlarm(
         serviceResourceName,
         serviceResource,
