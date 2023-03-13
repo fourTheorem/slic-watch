@@ -102,7 +102,7 @@ export default function createLambdaAlarms (functionAlarmProperties: FunctionAla
    * Create alarms for Iterator Age on a Lambda EventSourceMapping
    * The Lambda function name
    */
-  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createIteratorAgeAlarm (funcLogicalId: string, funcResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_IteratorAge_${funcLogicalId}`,
@@ -126,7 +126,7 @@ export default function createLambdaAlarms (functionAlarmProperties: FunctionAla
     }
   }
 
-  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createLambdaErrorsAlarm (funcLogicalId: string, funcResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Errors_${funcLogicalId}`,
@@ -150,7 +150,7 @@ export default function createLambdaAlarms (functionAlarmProperties: FunctionAla
     }
   }
 
-  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createLambdaThrottlesAlarm (funcLogicalId: string, funcResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const period = config.Period
 
@@ -205,9 +205,9 @@ export default function createLambdaAlarms (functionAlarmProperties: FunctionAla
     }
   }
 
-  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
-    const funcTimeout = funcResource.Properties?.Timeout ?? 3
-    const threshold: any = config.Threshold
+  function createLambdaDurationAlarm (funcLogicalId: string, funcResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
+    const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
+    const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Duration_${funcLogicalId}`,
       AlarmDescription: `Max duration for ${funcLogicalId} breaches ${threshold}% of timeout (${funcTimeout})`,
@@ -230,7 +230,7 @@ export default function createLambdaAlarms (functionAlarmProperties: FunctionAla
     }
   }
 
-  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createLambdaInvocationsAlarm (funcLogicalId: string, funcResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const lambdaAlarmProperties: LambdaAlarm = {
       AlarmName: `Lambda_Invocations_${funcLogicalId}`,

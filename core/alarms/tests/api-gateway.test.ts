@@ -61,19 +61,19 @@ test('resolveRestApiNameForSub', (t) => {
     Properties: { Name: { Ref: 'AWS::Stack' } },
     Type: ''
   }, 'logicalId')
-  t.same(fromRef, '$' + '{AWS::Stack}')
+  t.same(fromRef, { Ref: 'AWS::Stack' })
 
   const fromGetAtt = resolveRestApiNameForSub({
     Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } },
     Type: ''
   }, 'logicalId')
-  t.same(fromGetAtt, '$' + '{myResource.MyProperty}')
+  t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
 
   const fromOpenApiRef = resolveRestApiNameForSub({
     Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } },
     Type: ''
   }, 'logicalId')
-  t.same(fromOpenApiRef, '$' + '{AWS::Stack}')
+  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
 
   const fromSub = resolveRestApiNameForSub({
     Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } },

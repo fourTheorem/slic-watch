@@ -60,10 +60,10 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
 
-  if (name.GetAtt != null) {
-    return `\${${name.GetAtt[0]}.${name.GetAtt[1]}}`
+  if (name.GetAtt != null && name.GetAtt[1] === 'Arn') {
+    return { Ref: name.GetAtt[0] }
   } else if (name.Ref != null) {
-    return `\${${name.Ref}}`
+    return { Ref: name.Ref }
   } else if (name['Fn::Sub'] != null) {
     return name['Fn::Sub']
   }
@@ -113,7 +113,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -138,7 +138,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold
@@ -163,7 +163,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
     }
   }
 
-  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
     const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
     const threshold = config.Threshold

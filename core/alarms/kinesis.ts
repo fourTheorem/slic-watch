@@ -54,7 +54,7 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
     }
   }
 
-  function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: AlarmProperties): ReturnAlarm {
+  function createStreamAlarm (streamLogicalId: string, streamResource: Resource, type: string, metric: string, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const kinesisAlarmProperties: AlarmProperties = {
       AlarmName: `Kinesis_${type}_${streamLogicalId}`,

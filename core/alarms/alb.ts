@@ -50,7 +50,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
     }
   }
 
-  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createHTTPCodeELB5XXCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const albAlarmProperties: AlbAlarm = {
       AlarmName: `LoadBalancerHTTPCodeELB5XXCountAlarm_${loadBalancerResourceName}`,
@@ -75,7 +75,7 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
     }
   }
 
-  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createRejectedConnectionCountAlarm (loadBalancerResourceName: string, loadBalancerResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const albAlarmProperties: AlbAlarm = {
       AlarmName: `LoadBalancerRejectedConnectionCountAlarm_${loadBalancerResourceName}`,

@@ -37,7 +37,7 @@ export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, c
   for (const [logicalId] of Object.entries(smResources)) {
     for (const metric of executionMetrics) {
       if (sfAlarmProperties[metric].enabled === true) {
-        const config = sfAlarmProperties[metric]
+        const config: DefaultAlarmsProperties = sfAlarmProperties[metric]
         const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
         const smAlarmProperties: SmAlarm = {
           AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}`,

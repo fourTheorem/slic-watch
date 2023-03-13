@@ -48,7 +48,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
     }
   }
 
-  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createNumberOfNotificationsFilteredOutInvalidAttributesAlarm (topicLogicalId: string, topicResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const snsAlarmProperties: SnsAlarm = {
       AlarmName: `SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm_\${${topicLogicalId}.TopicName}`,
@@ -71,7 +71,7 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
     }
   }
 
-  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createNumberOfNotificationsFailedAlarm (topicLogicalId: string, topicResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const snsAlarmProperties: SnsAlarm = {
       AlarmName: `SNS_NumberOfNotificationsFailedAlarm_\${${topicLogicalId}.TopicName}`,

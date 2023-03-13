@@ -15,6 +15,7 @@ import { type SfAlarmsConfig, type SmAlarm } from './step-functions'
 import { type SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
+import type { Statistic } from '../cf-template'
 
 export interface ReturnResource {
   Type: string
@@ -34,10 +35,10 @@ export interface ReturnAlarm {
 //   ComparisonOperator: string
 // }
 
-export interface DefaultAlarmsProperties {
+export type DefaultAlarmsProperties = AlarmProperties & {
   enabled?: boolean
   Threshold: number | null
-  Statistic?: string
+  Statistic?: Statistic
   ExtendedStatistic?: string
   ComparisonOperator?: string
 }
@@ -46,7 +47,7 @@ export interface Context {
   alarmActions: string[]
 }
 
-type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
+export type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm | DefaultAlarmsProperties
 
 export function createAlarm (alarm: AlarmProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AlbAlarm, context?: Context): ReturnResource
@@ -59,6 +60,7 @@ export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnResou
 export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SmAlarm, context?: Context): ReturnResource
+export function createAlarm (alarm: DefaultAlarmsProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResource {
   return {
     Type: 'AWS::CloudWatch::Alarm',

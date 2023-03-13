@@ -29,7 +29,6 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate, additionalResources)
 
   for (const [queueResourceName, queueResource] of Object.entries(queueResources)) {
-    console.log(sqsAlarmsConfig[queueResourceName])
     if (sqsAlarmsConfig.InFlightMessagesPc.enabled === true) {
       const inFlightMsgsAlarm = createInFlightMsgsAlarm(
         queueResourceName,
@@ -53,8 +52,8 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     }
   }
 
-  function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties): ReturnAlarm {
-    const threshold: any = config.Threshold
+  function createInFlightMsgsAlarm (logicalId: string, queueResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
+    const threshold = config.Threshold
 
     // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
     //        so that in case AWS changes them, the rule will still be valid
@@ -81,7 +80,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     }
   }
 
-  function createOldestMsgAgeAlarm (logicalId: string, queueResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createOldestMsgAgeAlarm (logicalId: string, queueResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const sqsAlarmProperties: SqsAlarm = {
       AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${logicalId}.QueueName}`,

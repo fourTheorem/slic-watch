@@ -56,7 +56,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
       )
     }
     for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes ?? []) {
-      const gsiName = gsi.IndexName
+      const gsiName: string = gsi.IndexName
       const gsiDimensions = [...tableDimensions, { Name: 'GlobalSecondaryIndex', Value: gsiName }]
       const gsiIdentifierSub = `${tableNameSub}${gsiName}`
       if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled === true) {
@@ -74,7 +74,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
   }
 
   function createDynamoDbAlarm (identifierSub: string, dimensions, metricName: string, resourceName: string): ReturnAlarm {
-    const config = dynamoDbAlarmProperties[metricName]
+    const config: DefaultAlarmsProperties = dynamoDbAlarmProperties[metricName]
     const dynamoDBAlarmProperties: AlarmProperties = {
       AlarmName: `DDB_${metricName}_${identifierSub}`,
       AlarmDescription: `DynamoDB ${config.Statistic} for ${identifierSub} breaches ${config.Threshold}`,

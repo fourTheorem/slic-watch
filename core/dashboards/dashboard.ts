@@ -58,7 +58,7 @@ export function resolveTargetGroupFullNameForSub (logicalId: string): string {
  * @param } cluster CloudFormation syntax for an ECS cluster
  * @returns Literal string or Sub variable syntax
  */
-export function resolveEcsClusterNameForSub (cluster): string | undefined {
+export function resolveEcsClusterNameForSub (cluster) {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {
       return cluster.split(':').pop()?.split('/').pop()
@@ -68,9 +68,9 @@ export function resolveEcsClusterNameForSub (cluster): string | undefined {
   // AWS::ECS::Cluster returns the cluster name for 'Ref'
   // This can be used as a 'Fn::Sub' variable
   if (cluster.GetAtt != null && cluster.GetAtt[1] === 'Arn') {
-    return '${' + `${cluster.GetAtt[0]}` + '}'
+    return { Ref: cluster.GetAtt[0] }
   } else if (cluster.Ref != null) {
-    return '${' + `${cluster.Ref}` + '}'
+    return { Ref: cluster.Ref }
   } else if (cluster['Fn::Sub'] != null) {
     return cluster['Fn::Sub']
   }
@@ -332,7 +332,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createApiWidgets (apiResources: ResourceType): CreateMetricWidget[] {
     const apiWidgets: CreateMetricWidget[] = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
-      const apiName = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
+      const apiName: string = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
       const widgetMetrics: WidgetMetrics | any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig?.enabled ?? true) {
@@ -426,7 +426,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
             ddbWidgets.push(metricStatWidget)
           }
           for (const gsi of res.Properties?.GlobalSecondaryIndexes ?? []) {
-            const gsiName = gsi.IndexName
+            const gsiName: string = gsi.IndexName
             for (const stat of metricConfig?.Statistic ?? []) {
               widgetMetrics.push({
                 namespace: 'AWS/DynamoDB',
@@ -742,7 +742,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     }
     const metricConfigs = getConfiguredMetrics(appSyncDashConfig)
     for (const res of Object.values(appSyncResources)) {
-      const appSyncResourceName = res.Properties?.Name
+      const appSyncResourceName: string = res.Properties?.Name
       for (const [logicalId] of Object.entries(appSyncResources)) {
         const graphQLAPIId = resolveGraphlQLId(logicalId)
         for (const [group, metrics] of Object.entries(metricGroups)) {

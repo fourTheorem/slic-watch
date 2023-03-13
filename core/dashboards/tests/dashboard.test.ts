@@ -197,9 +197,9 @@ test('A dashboard includes metrics', (t) => {
     const fromArn = resolveEcsClusterNameForSub('arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster')
     t.equal(fromArn, 'my-cluster')
     const fromRef = resolveEcsClusterNameForSub({ Ref: 'my-cluster' })
-    t.same(fromRef, '$' + '{my-cluster}')
+    t.same(fromRef, { Ref: 'my-cluster' })
     const fromGetAtt = resolveEcsClusterNameForSub({ GetAtt: ['my-cluster', 'Arn'] })
-    t.same(fromGetAtt, '$' + '{my-cluster}')
+    t.same(fromGetAtt, { Ref: 'my-cluster' })
     const fromSub = resolveEcsClusterNameForSub({ 'Fn::Sub': '$' + '{my-cluster}' })
     t.same(fromSub, '$' + '{my-cluster}')
     const unexpected = { Unexpected: 'syntax' }

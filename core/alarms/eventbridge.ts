@@ -49,7 +49,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
     }
   }
 
-  function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createFailedInvocationsAlarm (logicalId: string, ruleResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_FailedInvocationsAlarm_${logicalId}`,
@@ -72,7 +72,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
     }
   }
 
-  function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: AlarmProperties): ReturnAlarm {
+  function createThrottledRulesAlarm (logicalId: string, ruleResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const eventbridgeAlarmProperties: EventbridgeAlarm = {
       AlarmName: `Events_ThrottledRulesAlarm_${logicalId}`,

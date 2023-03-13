@@ -74,7 +74,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     }
   }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties): ReturnAlarm {
+  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
@@ -101,7 +101,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     }
   }
 
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: AlarmProperties): ReturnAlarm {
+  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: DefaultAlarmsProperties): ReturnAlarm {
     const threshold = config.Threshold
     const ecsAlarmProperties: EcsAlarm = {
       AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,

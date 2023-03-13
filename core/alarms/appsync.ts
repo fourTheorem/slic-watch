@@ -52,8 +52,8 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
     }
   }
 
-  function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties): ReturnAlarm {
-    const graphQLName = appSyncResource.Properties?.Name
+  function create5XXAlarm (appSyncResourceName: string, appSyncResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
+    const graphQLName: string = appSyncResource.Properties?.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSync5XXErrorAlarm_${graphQLName}`,
@@ -78,8 +78,8 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
     }
   }
 
-  function createLatencyAlarm (appSyncResourceName: string, appSyncResource: Resource, config: AlarmProperties): ReturnAlarm {
-    const graphQLName = appSyncResource.Properties?.Name
+  function createLatencyAlarm (appSyncResourceName: string, appSyncResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
+    const graphQLName: string = appSyncResource.Properties?.Name
     const threshold = config.Threshold
     const appSyncAlarmProperties: AppSyncAlarm = {
       AlarmName: `AppSyncLatencyAlarm_${graphQLName}`,
