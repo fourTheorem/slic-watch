@@ -15,7 +15,6 @@ import { type SfAlarmsConfig, type SmAlarm } from './step-functions'
 import { type SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
-import type { Statistic } from '../cf-template'
 
 export interface ReturnResource {
   Type: string
@@ -35,19 +34,15 @@ export interface ReturnAlarm {
 //   ComparisonOperator: string
 // }
 
-export type DefaultAlarmsProperties = AlarmProperties & {
+export interface DefaultAlarmsProperties extends AlarmProperties {
   enabled?: boolean
-  Threshold: number | null
-  Statistic?: Statistic
-  ExtendedStatistic?: string
-  ComparisonOperator?: string
 }
 
 export interface Context {
   alarmActions: string[]
 }
 
-export type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm | DefaultAlarmsProperties
+export type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
 
 export function createAlarm (alarm: AlarmProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AlbAlarm, context?: Context): ReturnResource
@@ -60,26 +55,13 @@ export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnResou
 export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnResource
 export function createAlarm (alarm: SmAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: DefaultAlarmsProperties, context?: Context): ReturnResource
 export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResource {
   return {
     Type: 'AWS::CloudWatch::Alarm',
     Properties: {
       ActionsEnabled: true,
       AlarmActions: context?.alarmActions,
-      AlarmName: alarm.AlarmName,
-      AlarmDescription: alarm.AlarmDescription,
-      EvaluationPeriods: alarm.EvaluationPeriods,
-      ComparisonOperator: alarm.ComparisonOperator,
-      Threshold: alarm.Threshold,
-      TreatMissingData: alarm.TreatMissingData,
-      Dimensions: alarm.Dimensions,
-      Metrics: alarm.Metrics,
-      MetricName: alarm.MetricName,
-      Namespace: alarm.Namespace,
-      Period: alarm.Period,
-      Statistic: alarm.Statistic,
-      ExtendedStatistic: alarm.ExtendedStatistic
+      ...alarm
     }
   }
 }

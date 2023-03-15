@@ -1,6 +1,6 @@
 'use strict'
 
-import createALBTargetAlarms, { type AlbTargetAlarmProperties, findLoadBalancersForTargetGroup } from '../alb-target-group'
+import createALBTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {
@@ -213,12 +213,12 @@ test('ALB Target Group alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: AlbTargetAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-    createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
-  }
-  const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
+
+  const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
+  createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate, additionalResources)
+
+  const targetGroupAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const expectedTypesTargetGroup = {
     LoadBalancerHTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -227,15 +227,15 @@ test('ALB Target Group alarms are created', (t) => {
     LoadBalancerLambdaUserErrorAlarm: 'LambdaUserError'
   }
 
-  t.equal(Object.keys(targeGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
-  for (const alarmResource of Object.values(targeGroupAlarmResources)) {
+  t.equal(Object.keys(targetGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
+  for (const alarmResource of Object.values(targetGroupAlarmResources)) {
     const al = alarmResource.Properties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypesTargetGroup[alarmType]
     t.equal(al?.MetricName, expectedMetric)
     t.ok(al?.Statistic)
-    t.equal(al?.Threshold, AlarmPropertiesTargetGroup.ApplicationELBTarget[expectedMetric].Threshold)
+    t.equal(al?.Threshold, albAlarmProperties[expectedMetric].Threshold)
     t.equal(al?.EvaluationPeriods, 2)
     t.equal(al?.TreatMissingData, 'breaching')
     t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -279,13 +279,11 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  function createAlarmResources (elbAlarmProperties: AlbTargetAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-    createALBTargetAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
-  }
-  const targeGroupAlarmResources = createAlarmResources(AlarmPropertiesTargetGroup.ApplicationELBTarget)
+  const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
+  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
+  createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const targetGroupAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
-  t.same({}, targeGroupAlarmResources)
+  t.same({}, targetGroupAlarmResources)
   t.end()
 })

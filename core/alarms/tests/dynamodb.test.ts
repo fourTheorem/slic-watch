@@ -51,7 +51,6 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
     }
 
     const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
-
     const alarmsByType = {}
     t.equal(Object.keys(alarmResources).length, 6)
     for (const alarmResource of Object.values(alarmResources)) {

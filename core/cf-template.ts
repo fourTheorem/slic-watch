@@ -22,8 +22,6 @@ const logger = pino()
 
 export type ResourceType = Record<string, Resource>
 
-export type Statistic = 'Average' | 'Maximum' | 'Minimum' | 'SampleCount' | 'Sum' | 'p95'
-
 // (compiledTemplate: Template, additionalResources: ResourceType = {})
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties

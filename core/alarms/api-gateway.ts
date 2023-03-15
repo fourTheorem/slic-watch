@@ -1,7 +1,7 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
@@ -18,6 +18,8 @@ export interface ApiGwAlarmProperties {
 export type ApiAlarm = AlarmProperties & {
   ApiName: string
 }
+
+// type ApiMetrics = '5XXError' | '4XXError' | 'Latency'
 
 /**
  * Given a CloudFormation resource for an API Gateway REST API, derive CloudFormation syntax for
@@ -70,10 +72,16 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
   return name
 }
 
+const executionMetrics = {
+  '5XXError': 'Availability',
+  '4XXError': '4XXError',
+  Latency: 'Latency'
+}
+
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
@@ -82,109 +90,25 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
 
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-    const alarms: any = []
-
-    if (apiGwAlarmProperties['5XXError'].enabled === true) {
-      alarms.push(create5XXAlarm(
-        apiResourceName,
-        apiResource,
-        apiGwAlarmProperties['5XXError']
-      ))
-    }
-
-    if (apiGwAlarmProperties['4XXError'].enabled === true) {
-      alarms.push(create4XXAlarm(
-        apiResourceName,
-        apiResource,
-        apiGwAlarmProperties['4XXError']
-      ))
-    }
-
-    if (apiGwAlarmProperties.Latency.enabled === true) {
-      alarms.push(createLatencyAlarm(
-        apiResourceName,
-        apiResource,
-        apiGwAlarmProperties.Latency
-      ))
-    }
-
-    for (const alarm of alarms) {
-      addResource(alarm.resourceName, alarm.resource, compiledTemplate)
-    }
-  }
-
-  function create5XXAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties: ApiAlarm = {
-      AlarmName: `APIGW_5XXError_${apiNameForSub}`,
-      AlarmDescription: `API Gateway 5XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: '5XXError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, 'Availability'),
-      resource: createAlarm(apiAlarmProperties, context)
-    }
-  }
-
-  function create4XXAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties: ApiAlarm = {
-      AlarmName: `APIGW_4XXError_${apiNameForSub}`,
-      AlarmDescription: `API Gateway 4XXError ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: '4XXError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, '4XXError'),
-      resource: createAlarm(apiAlarmProperties, context)
-    }
-  }
-
-  function createLatencyAlarm (apiResourceName: string, apiResource: Resource, config: DefaultAlarmsProperties): ReturnAlarm {
-    const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-    const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-    const threshold = config.Threshold
-    const apiAlarmProperties: ApiAlarm = {
-      AlarmName: `APIGW_Latency_${apiNameForSub}`,
-      AlarmDescription: `API Gateway Latency ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-      ApiName: apiName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'Latency',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApiGateway',
-      Dimensions: [{ Name: 'ApiName', Value: apiName }]
-    }
-    return {
-      resourceName: makeResourceName('Api', apiName, 'Latency'),
-      resource: createAlarm(apiAlarmProperties, context)
+    for (const [metric, type] of Object.entries(executionMetrics)) {
+      const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
+      if (config.enabled !== false) {
+        const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
+        const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
+        const threshold = config.Threshold
+        const apiAlarmProperties: ApiAlarm = {
+          AlarmName: `APIGW_${metric}_${apiNameForSub}`,
+          AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
+          ApiName: apiName,
+          MetricName: metric,
+          Namespace: 'AWS/ApiGateway',
+          Dimensions: [{ Name: 'ApiName', Value: apiName }],
+          ...config
+        }
+        const resourceName = makeResourceName('Api', apiName, executionMetrics[type])
+        const resource = createAlarm(apiAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
+      }
     }
   }
 }

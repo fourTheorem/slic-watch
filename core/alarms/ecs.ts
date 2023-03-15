@@ -1,9 +1,8 @@
 'use strict'
 
 import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 export interface EcsAlarmsConfig {
@@ -16,6 +15,8 @@ export type EcsAlarm = AlarmProperties & {
   ServiceName: string
   ClusterName: string
 }
+
+type EcsMEtrics = 'MemoryUtilization' | 'CPUUtilization'
 
 /**
  * Given CloudFormation syntax for an ECS cluster, derive CloudFormation syntax for
@@ -38,6 +39,8 @@ export function resolveEcsClusterNameAsCfn (cluster): any {
   return cluster // Fallback to name
 }
 
+const executionMetrics: EcsMEtrics[] = ['MemoryUtilization', 'CPUUtilization']
+
 /**
  * ecsAlarmsConfig The fully resolved alarm configuration
  */
@@ -49,82 +52,31 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
    * A CloudFormation template object
    */
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate, additionalResources)
-  for (const [serviceResourceName, serviceResource] of Object.entries(
-    serviceResources
-  )) {
-    const cluster = serviceResource.Properties?.Cluster
-    const clusterName = resolveEcsClusterNameAsCfn(cluster)
-    if (ecsAlarmsConfig.MemoryUtilization.enabled === true) {
-      const memoryUtilizationAlarm = createMemoryUtilizationAlarm(
-        serviceResourceName,
-        serviceResource,
-        clusterName,
-        ecsAlarmsConfig.MemoryUtilization
-      )
-      addResource(memoryUtilizationAlarm.resourceName, memoryUtilizationAlarm.resource, compiledTemplate)
-    }
-    if (ecsAlarmsConfig.CPUUtilization.enabled === true) {
-      const cpuUtilizationAlarm = createCPUUtilizationAlarm(
-        serviceResourceName,
-        serviceResource,
-        clusterName,
-        ecsAlarmsConfig.CPUUtilization
-      )
-      addResource(cpuUtilizationAlarm.resourceName, cpuUtilizationAlarm.resource, compiledTemplate)
-    }
-  }
 
-  function createMemoryUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const ecsAlarmProperties: EcsAlarm = {
-      AlarmName: `ECS_MemoryAlarm_\${${logicalId}.Name}`,
-      AlarmDescription: `ECS memory utilization for ${logicalId}.Name breaches ${threshold}`,
-      ServiceName: `\${${logicalId}.Name}`,
-      ClusterName: clusterName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'MemoryUtilization',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ECS',
-      Dimensions: [
-        { Name: 'ServiceName', Value: `\${${logicalId}.Name}` },
-        { Name: 'ClusterName', Value: clusterName }
-      ]
-    }
-    return {
-      resourceName: `slicWatchECSMemoryAlarm${logicalId}`,
-      resource: createAlarm(ecsAlarmProperties, context)
-    }
-  }
-
-  function createCPUUtilizationAlarm (logicalId: string, serviceResource: Resource, clusterName: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const ecsAlarmProperties: EcsAlarm = {
-      AlarmName: `ECS_CPUAlarm_\${${logicalId}.Name}`,
-      AlarmDescription: `ECS CPU utilization for ${logicalId}.Name breaches ${threshold}`,
-      ServiceName: `\${${logicalId}.Name}`,
-      ClusterName: clusterName,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'CPUUtilization',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ECS',
-      Dimensions: [
-        { Name: 'ServiceName', Value: `\${${logicalId}.Name}` },
-        { Name: 'ClusterName', Value: clusterName }
-      ]
-    }
-    return {
-      resourceName: `slicWatchECSCPUAlarm${logicalId}`,
-      resource: createAlarm(ecsAlarmProperties, context)
+  for (const [serviceResourceName, serviceResource] of Object.entries(serviceResources)) {
+    for (const metric of executionMetrics) {
+      const cluster = serviceResource.Properties?.Cluster
+      const clusterName = resolveEcsClusterNameAsCfn(cluster)
+      const config = ecsAlarmsConfig[metric]
+      if (config.enabled !== false) {
+        const threshold = config.Threshold
+        const ecsAlarmProperties: EcsAlarm = {
+          AlarmName: `ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceResourceName}.Name}`,
+          AlarmDescription: `ECS ${metric} for ${serviceResourceName}.Name breaches ${threshold}`,
+          ServiceName: `\${${serviceResourceName}.Name}`,
+          ClusterName: clusterName,
+          MetricName: metric,
+          Namespace: 'AWS/ECS',
+          Dimensions: [
+            { Name: 'ServiceName', Value: `\${${serviceResourceName}.Name}` },
+            { Name: 'ClusterName', Value: clusterName }
+          ],
+          ...config
+        }
+        const resourceName = `slicWatch${metric}Alarm${serviceResourceName}`
+        const resource = createAlarm(ecsAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
+      }
     }
   }
 }

@@ -18,8 +18,8 @@ import {
   type AlbDashboardBodyProperties, type AlbTargetDashboardBodyProperties, type AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
 import { type LambdaFunctionAlarmProperties } from '../alarms/lambda'
-import { type Statistic } from '../cf-template'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type { Statistic } from '@aws-sdk/client-cloudwatch'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 const MAX_DEPTH = 10
 
@@ -32,12 +32,15 @@ interface ParentNode {
 
 interface TimeRange {
   start: string
-  end: string
+  end?: string
 }
 
 export interface Widgets {
-  enabled?: boolean // remove later ? mark
-  yAxis?: string[]
+  enabled?: boolean
+  metricPeriod?: number
+  width?: number
+  height?: number
+  yAxis?: string
   Statistic?: Statistic[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties

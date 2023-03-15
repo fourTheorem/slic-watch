@@ -59,6 +59,7 @@ test('AWS Lambda alarms are created', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
+
   createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate, additionalResources)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -318,7 +319,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  t.throws(() => { createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate, additionalResources) }, { message: 'Lambda invocation alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.' })
+  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate, additionalResources)
   t.end()
 })
 

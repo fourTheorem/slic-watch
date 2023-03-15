@@ -36,23 +36,17 @@ export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, c
 
   for (const [logicalId] of Object.entries(smResources)) {
     for (const metric of executionMetrics) {
-      if (sfAlarmProperties[metric].enabled === true) {
+      if (sfAlarmProperties[metric].enabled !== false) {
         const config: DefaultAlarmsProperties = sfAlarmProperties[metric]
         const alarmResourceName = `slicWatchStates${metric}Alarm${logicalId}`
         const smAlarmProperties: SmAlarm = {
           AlarmName: `StepFunctions_${metric}_\${${logicalId}.Name}`,
           AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${logicalId}.Name}  breaches ${config.Threshold}`,
           StateMachineArn: `${logicalId}`,
-          ComparisonOperator: config.ComparisonOperator,
-          Threshold: config.Threshold,
           MetricName: metric,
-          Statistic: config.Statistic,
-          Period: config.Period,
-          ExtendedStatistic: config.ExtendedStatistic,
-          EvaluationPeriods: config.EvaluationPeriods,
-          TreatMissingData: config.TreatMissingData,
           Namespace: 'AWS/States',
-          Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } as any }]
+          Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: logicalId } as any }],
+          ...config
         }
         const alarmResource = createAlarm(smAlarmProperties, context)
         addResource(alarmResourceName, alarmResource, compiledTemplate)

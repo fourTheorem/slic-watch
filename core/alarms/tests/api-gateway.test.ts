@@ -13,9 +13,9 @@ import {
 import { getResourcesByType } from '../../cf-template'
 
 export interface AlarmsByType {
-  APIGW_4XXError
-  APIGW_5XXError
-  APIGW_Latency
+  APIGW_4XXError?
+  APIGW_5XXError?
+  APIGW_Latency?
 }
 
 test('resolveRestApiNameAsCfn', (t) => {
@@ -115,24 +115,22 @@ test('API Gateway alarms are created', (t) => {
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
-  function getAlarmByType (): AlarmsByType {
-    const alarmsByType = {}
-    for (const alarmResource of Object.values(alarmResources)) {
-      const al = alarmResource.Properties
-      assertCommonAlarmProperties(t, al)
-      const alarmType = alarmNameToType(al?.AlarmName)
-      alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
-      alarmsByType[alarmType].add(al)
-    }
-    return alarmsByType as AlarmsByType
-  }
+  const alarmsByType: AlarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 3)
-  const alarmsByType = getAlarmByType()
+  for (const alarmResource of Object.values(alarmResources)) {
+    const al = alarmResource.Properties
+    assertCommonAlarmProperties(t, al)
+    const alarmType = alarmNameToType(al?.AlarmName)
+    alarmsByType[alarmType] = (alarmsByType[alarmType] === true) || new Set()
+    alarmsByType[alarmType].add(al)
+  }
+
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
     'APIGW_5XXError',
     'APIGW_Latency'
   ])
+
   t.equal(alarmsByType.APIGW_5XXError.size, 1)
   for (const al of alarmsByType.APIGW_5XXError) {
     t.equal(al.MetricName, '5XXError')
@@ -150,6 +148,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
+
   for (const al of alarmsByType.APIGW_4XXError) {
     t.equal(al.MetricName, '4XXError')
     t.equal(al.Statistic, 'Average')
@@ -166,6 +165,7 @@ test('API Gateway alarms are created', (t) => {
       }
     ])
   }
+
   for (const al of alarmsByType.APIGW_Latency) {
     t.equal(al.MetricName, 'Latency')
     t.equal(al.ExtendedStatistic, 'p99')

@@ -1,10 +1,10 @@
 'use strict'
 
 import { type ResourceType, getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type ReturnAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
@@ -20,9 +20,24 @@ export type AlbTargetAlarm = AlarmProperties & {
   TargetGroupResourceName: string
   LoadBalancerLogicalId: string
 }
+
+type TargetGroupMetrics = 'HTTPCode_Target_5XX_Count' | 'UnHealthyHostCount'
+
+type TargetGroupLambdaMetrics = 'LambdaInternalError' | 'LambdaUserError'
+
 function getResourceByName (resourceName: string, compiledTemplate, additionalResources = {}): Resource {
   return compiledTemplate.Resources[resourceName] ?? additionalResources[resourceName]
 }
+
+const executionMetrics: TargetGroupMetrics[] = [
+  'HTTPCode_Target_5XX_Count',
+  'UnHealthyHostCount'
+]
+
+const executionMetricsLambda: TargetGroupLambdaMetrics[] = [
+  'LambdaInternalError',
+  'LambdaUserError'
+]
 
 /**
  * For a given target group defined by its CloudFormation resources Logical ID, find any load balancer
@@ -76,168 +91,52 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   return [...allLoadBalancerLogicalIds]
 }
 
+function alarmProperty (targetGroupResourceName: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmProperties: AlbTargetAlarmProperties, compiledTemplate: Template, context: Context) {
+  for (const metric of metrics) {
+    for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
+      const config = albTargetAlarmProperties[metric]
+      if (config.enabled !== false) {
+        const threshold = config.Threshold
+        const albTargetAlarmProperties: AlbTargetAlarm = {
+          AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${targetGroupResourceName}`,
+          AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
+          TargetGroupResourceName: targetGroupResourceName,
+          LoadBalancerLogicalId: loadBalancerLogicalId,
+          MetricName: metric,
+          Statistic: config.Statistic,
+          Namespace: 'AWS/ApplicationELB',
+          Dimensions: [
+            { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
+            { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
+          ],
+          ...config
+        }
+        const resourceName = makeResourceName('LoadBalancer', targetGroupResourceName, metric)
+        const resource = createAlarm(albTargetAlarmProperties, context)
+        addResource(resourceName, resource, compiledTemplate)
+      }
+    }
+  }
+}
+
 /**
  * The fully resolved alarm configuration
  */
-export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
 /**
  * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
  * based on the resources found within
  *
  * A CloudFormation template object
  */
+
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, additionalResources)
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
-    for (const tgLogicalId of Object.keys(targetGroupResources)) {
-      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
-      for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-        if (albTargetAlarmProperties.HTTPCode_Target_5XX_Count?.enabled === true) {
-          const httpCodeTarget5XXCount = createHTTPCodeTarget5XXCountAlarm(
-            targetGroupResourceName,
-            targetGroupResource,
-            loadBalancerLogicalId,
-            albTargetAlarmProperties.HTTPCode_Target_5XX_Count
-          )
-          addResource(httpCodeTarget5XXCount.resourceName, httpCodeTarget5XXCount.resource, compiledTemplate)
-        }
-        if (albTargetAlarmProperties.UnHealthyHostCount?.enabled === true) {
-          const unHealthyHostCount = createUnHealthyHostCountAlarm(
-            targetGroupResourceName,
-            targetGroupResource,
-            loadBalancerLogicalId,
-            albTargetAlarmProperties.UnHealthyHostCount
-          )
-          addResource(unHealthyHostCount.resourceName, unHealthyHostCount.resource, compiledTemplate)
-        }
-        if (targetGroupResource.Properties?.TargetType === 'lambda') {
-          if (albTargetAlarmProperties.LambdaInternalError?.enabled === true) {
-            const lambdaInternalError = createLambdaInternalErrorAlarm(
-              targetGroupResourceName,
-              targetGroupResource,
-              loadBalancerLogicalId,
-              albTargetAlarmProperties.LambdaInternalError
-            )
-            addResource(lambdaInternalError.resourceName, lambdaInternalError.resource, compiledTemplate)
-          }
-          if (albTargetAlarmProperties.LambdaUserError?.enabled === true) {
-            const lambdaUserError = createLambdaUserErrorAlarm(
-              targetGroupResourceName,
-              targetGroupResource,
-              loadBalancerLogicalId,
-              albTargetAlarmProperties.LambdaUserError
-            )
-            addResource(lambdaUserError.resourceName, lambdaUserError.resource, compiledTemplate)
-          }
-        }
-      }
-    }
-  }
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate, additionalResources)
+    alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context)
 
-  function createHTTPCodeTarget5XXCountAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const albTargetAlarmProperties: AlbTargetAlarm = {
-      AlarmName: `LoadBalancerHTTPCodeTarget5XXCountAlarm_${targetGroupResourceName}`,
-      AlarmDescription: `LoadBalancer HTTP Code Target 5XX Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      TargetGroupResourceName: targetGroupResourceName,
-      LoadBalancerLogicalId: loadBalancerLogicalId,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'HTTPCode_Target_5XX_Count',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApplicationELB',
-      Dimensions: [
-        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
-        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
-      ]
-    }
-    return {
-      resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'HTTPCodeTarget5XXCount'),
-      resource: createAlarm(albTargetAlarmProperties, context)
-    }
-  }
-
-  function createUnHealthyHostCountAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const albTargetAlarmProperties: AlbTargetAlarm = {
-      AlarmName: `LoadBalancerUnHealthyHostCountAlarm_${targetGroupResourceName}`,
-      AlarmDescription: `LoadBalancer UnHealthy Host Count ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      TargetGroupResourceName: targetGroupResourceName,
-      LoadBalancerLogicalId: loadBalancerLogicalId,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'UnHealthyHostCount',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApplicationELB',
-      Dimensions: [
-        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
-        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
-      ]
-    }
-    return {
-      resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'UnHealthyHostCount'),
-      resource: createAlarm(albTargetAlarmProperties, context)
-    }
-  }
-
-  function createLambdaInternalErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const albTargetAlarmProperties: AlbTargetAlarm = {
-      AlarmName: `LoadBalancerLambdaInternalErrorAlarm_${targetGroupResourceName}`,
-      AlarmDescription: `LoadBalancer Lambda Internal Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      TargetGroupResourceName: targetGroupResourceName,
-      LoadBalancerLogicalId: loadBalancerLogicalId,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'LambdaInternalError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApplicationELB',
-      Dimensions: [
-        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
-        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
-      ]
-    }
-    return {
-      resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaInternalError'),
-      resource: createAlarm(albTargetAlarmProperties, context)
-    }
-  }
-
-  function createLambdaUserErrorAlarm (targetGroupResourceName: string, targetGroupResource: Resource, loadBalancerLogicalId: string, config: DefaultAlarmsProperties): ReturnAlarm {
-    const threshold = config.Threshold
-    const albTargetAlarmProperties: AlbTargetAlarm = {
-      AlarmName: `LoadBalancerLambdaUserErrorAlarm_${targetGroupResourceName}`,
-      AlarmDescription: `LoadBalancer Lambda User Error ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-      TargetGroupResourceName: targetGroupResourceName,
-      LoadBalancerLogicalId: loadBalancerLogicalId,
-      ComparisonOperator: config.ComparisonOperator,
-      Threshold: config.Threshold,
-      MetricName: 'LambdaUserError',
-      Statistic: config.Statistic,
-      Period: config.Period,
-      ExtendedStatistic: config.ExtendedStatistic,
-      EvaluationPeriods: config.EvaluationPeriods,
-      TreatMissingData: config.TreatMissingData,
-      Namespace: 'AWS/ApplicationELB',
-      Dimensions: [
-        { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
-        { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
-      ]
-    }
-    return {
-      resourceName: makeResourceName('LoadBalancer', targetGroupResourceName, 'LambdaUserError'),
-      resource: createAlarm(albTargetAlarmProperties, context)
+    if (targetGroupResource.Properties?.TargetType === 'lambda') {
+      alarmProperty(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context)
     }
   }
 }
