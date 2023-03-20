@@ -11,18 +11,18 @@ import {
   albCfTemplate,
   testContext
 } from '../../tests/testing-utils'
-import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 
 test('findLoadBalancersForTargetGroup', (t) => {
   test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
     const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, albCfTemplate)
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
 
   test('returns empty list for non-existent listener', (t) => {
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', {}, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('fakeListener', {})
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -48,7 +48,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
       }
     }
 
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate)
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
@@ -74,7 +74,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
       }
     }
 
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate)
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -103,7 +103,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         }
       }
     }
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate)
     t.same(loadBalancerLogicalIds, ['alb'])
     t.end()
   })
@@ -124,7 +124,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         }
       }
     }
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate)
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -140,7 +140,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         }
       }
     }
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tg', compiledTemplate)
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -157,7 +157,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         }
       }
     }
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate)
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -180,7 +180,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         }
       }
     }
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate, {})
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate)
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
@@ -215,10 +215,9 @@ test('ALB Target Group alarms are created', (t) => {
   )
 
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-  createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
 
-  const targetGroupAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const targetGroupAlarmResources: ResourceType = createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
 
   const expectedTypesTargetGroup = {
     LoadBalancerHTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -280,9 +279,8 @@ test('ALB alarms are not created when disabled globally', (t) => {
   )
 
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-  createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate, additionalResources)
-  const targetGroupAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
+  const targetGroupAlarmResources = createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
 
   t.same({}, targetGroupAlarmResources)
   t.end()

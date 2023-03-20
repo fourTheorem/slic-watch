@@ -1,8 +1,10 @@
 
 'use strict'
 
-import { cascade, type Widgets, type SlicWatchDashboardConfig } from '../inputs/cascading-config'
-import { getResourcesByType, getEventSourceMappingFunctions, addResource, type ResourceType, type Statistic } from '../cf-template'
+import { cascade } from '../inputs/cascading-config'
+import { type Widgets, type SlicWatchDashboardConfig } from '../inputs/cascading-config'
+import { getResourcesByType, getEventSourceMappingFunctions, addResource } from '../cf-template'
+import type { ResourceType } from '../cf-template'
 import type { DashboardBodyProperties, FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
 import pino from 'pino'
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
@@ -86,7 +88,7 @@ const logger = pino()
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
  * @param {*} context The plugin context
  */
-export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig, functionDashboardConfigs, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
+export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig, functionDashboardConfigs, compiledTemplate: Template): void {
   const {
     timeRange,
     widgets: {
@@ -180,7 +182,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     namespace: string
     metric: string
     dimensions: object
-    stat: Statistic
+    stat: string
     yAxis?: string
   }
   interface Properties {
@@ -257,7 +259,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     const lambdaWidgets: any = []
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           if (metric !== 'IteratorAge') {
             for (const stat of metricConfig?.Statistic ?? []) {
               const metricDefs: any = []
@@ -335,7 +337,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       const apiName: string = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
       const widgetMetrics: WidgetMetrics | any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/ApiGateway',
@@ -371,7 +373,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const [logicalId] of Object.entries(smResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/States',
@@ -406,7 +408,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const [logicalId, res] of Object.entries(tableResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/DynamoDB',
@@ -553,7 +555,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
 
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/ECS',
@@ -589,7 +591,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const logicalId of Object.keys(topicResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/SNS',
@@ -624,7 +626,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const [logicalId] of Object.entries(ruleResources)) {
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/Events',
@@ -660,7 +662,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
       const widgetMetrics: any = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
-        if (metricConfig?.enabled ?? true) {
+        if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
             widgetMetrics.push({
               namespace: 'AWS/ApplicationELB',
@@ -694,13 +696,13 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate): CreateMetricWidget[] {
     const targetGroupWidgets: CreateMetricWidget[] = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
-      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate, additionalResources)
+      const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
         const widgetMetrics: any = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
-          if ((metricConfig?.enabled ?? true) &&
+          if ((metricConfig?.enabled !== false) &&
             (targetGroupResource.Properties?.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
             for (const stat of metricConfig?.Statistic ?? []) {
@@ -749,7 +751,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           const widgetMetrics: any = []
           for (const metric of metrics) {
             const metricConfig: DashboardBodyProperties | Widgets = metricConfigs[metric]
-            if (metricConfig?.enabled ?? true) {
+            if (metricConfig?.enabled !== false) {
               for (const stat of metricConfig?.Statistic ?? []) {
                 widgetMetrics.push({
                   namespace: 'AWS/AppSync',

@@ -1,12 +1,12 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
-export interface DynamoDbAlarmProperties {
+export interface DynamoDbAlarmsConfig {
   enabled?: boolean
   Statistic: string
   ReadThrottleEvents: DefaultAlarmsProperties
@@ -22,53 +22,57 @@ const dynamoDbMetrics: DynamoDbMetrics[] = ['ReadThrottleEvents', 'WriteThrottle
 const dynamoDbGsiMetrics: DynamoDbGsiMetrics[] = ['ReadThrottleEvents', 'WriteThrottleEvents']
 
 /**
- * dynamoDbAlarmProperties The fully resolved alarm configuration
+ * DynamoDbAlarmsConfig The fully resolved alarm configuration
  */
-export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlarmsConfig, context: Context, compiledTemplate: Template) {
   /**
    * Add all required DynamoDB alarms to the provided CloudFormation template
    * based on the tables and their global secondary indices.
    *
    */
-  const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate, additionalResources)
+
+  const resources = {}
+  const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
 
   for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
     for (const metric of dynamoDbMetrics) {
-      const config = dynamoDbAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = dynamoDbAlarmsConfig[metric]
+      const { enabled, ...rest } = config
       if (config.enabled !== false) {
-        const config = dynamoDbAlarmProperties[metric]
-        const dynamoDBAlarmProperties: AlarmProperties = {
+        const DynamoDbAlarmsConfig: CfAlarmsProperties = {
           AlarmName: `DDB_${metric}_${tableResourceName}`,
           AlarmDescription: `DynamoDB ${config.Statistic} for ${tableResourceName} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/DynamoDB',
           Dimensions: [{ Name: 'TableName', Value: { Ref: tableResourceName } as any }],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('Table', `${tableResourceName}`, metric)
-        const resource = createAlarm(dynamoDBAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        const resource = createAlarm(DynamoDbAlarmsConfig, context)
+        resources[resourceName] = resource
       }
     }
     for (const metric of dynamoDbGsiMetrics) {
-      const config = dynamoDbAlarmProperties[metric]
+      const config = dynamoDbAlarmsConfig[metric]
       for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes ?? []) {
-        if (dynamoDbAlarmProperties.ReadThrottleEvents.enabled !== false && dynamoDbAlarmProperties.WriteThrottleEvents.enabled !== false) {
+        if (dynamoDbAlarmsConfig.ReadThrottleEvents.enabled !== false && dynamoDbAlarmsConfig.WriteThrottleEvents.enabled !== false) {
+          const { enabled, ...rest } = config
           const gsiName: string = gsi.IndexName
           const gsiIdentifierSub = `${tableResourceName}${gsiName}`
-          const dynamoDBAlarmProperties: AlarmProperties = {
+          const DynamoDbAlarmsConfig: CfAlarmsProperties = {
             AlarmName: `DDB_${metric}_${gsiIdentifierSub}`,
             AlarmDescription: `DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`,
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',
             Dimensions: [{ Name: 'TableName', Value: { Ref: tableResourceName } as any }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
-            ...config
+            ...rest
           }
           const resourceName = makeResourceName('GSI', `${tableResourceName}${gsiName}`, metric)
-          const resource = createAlarm(dynamoDBAlarmProperties, context)
-          addResource(resourceName, resource, compiledTemplate)
+          const resource = createAlarm(DynamoDbAlarmsConfig, context)
+          resources[resourceName] = resource
         }
       }
     }
   }
+  return resources
 }

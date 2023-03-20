@@ -2,6 +2,7 @@
 
 import createKinesisAlarms from '../kinesis'
 import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -28,10 +29,8 @@ test('Kinesis data stream alarms are created', (t) => {
     }
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate, additionalResources)
-
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  const alarmResources: ResourceType = createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
 
   const expectedTypes = {
     Kinesis_StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
@@ -83,8 +82,8 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
     }
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

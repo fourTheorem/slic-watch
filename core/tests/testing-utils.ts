@@ -56,10 +56,8 @@ function createTestConfig (from, cascadingChanges): any {
   )
 }
 
-function createTestCloudFormationTemplate (stackDefinition = null) {
-  const data = stackDefinition ?? defaultCfTemplate
-
-  return { compiledTemplate: _.cloneDeep(data), additionalResources: {} }
+function createTestCloudFormationTemplate (stackDefinition = defaultCfTemplate): Template {
+  return _.cloneDeep(stackDefinition)
 }
 
 export {

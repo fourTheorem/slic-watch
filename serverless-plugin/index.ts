@@ -16,6 +16,7 @@ interface SlicWatchConfig {
   topicArn?: string
   enabled?: boolean
 }
+
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
@@ -62,7 +63,7 @@ class ServerlessPlugin {
 
     const alarmActions: string[] = []
 
-    if (!(slicWatchConfig.enabled ?? true)) {
+    if (!(slicWatchConfig.enabled !== false)) {
       return
     }
 
@@ -83,10 +84,13 @@ class ServerlessPlugin {
       functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
+
     const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
     const additionalResources = this.serverless.service.resources as ResourceType
-    addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate, additionalResources)
-    addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate, additionalResources)
+
+    _.merge(compiledTemplate, additionalResources)
+    addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
+    addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate)
   }
 }
 

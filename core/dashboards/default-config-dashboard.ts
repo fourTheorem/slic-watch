@@ -1,23 +1,17 @@
 'use strict'
 
 import { type Widgets } from '../inputs/cascading-config'
-import { type Statistic } from '../cf-template'
 import type FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
-
-export interface AllDashboardConfig {
-  enabled?: boolean
-  widgets: Widgets
-}
 
 export interface DashboardBodyProperties {
   enabled?: boolean
   metricPeriod?: number
   width?: number
   height?: number
-  yAxis?: YAxis
-  Statistic?: Statistic[]
+  yAxis?: string
+  Statistic?: string[]
 }
 
 export interface ServiceDashConfig {

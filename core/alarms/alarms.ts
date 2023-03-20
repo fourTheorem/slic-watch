@@ -1,8 +1,9 @@
 'use strict'
 
 import { cascade } from '../inputs/cascading-config'
+import type { SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import { type FunctionAlarmProperties, type Context, type AllAlarmsConfig } from './default-config-alarms'
+import type { FunctionAlarmProperties, Context } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 import createLambdaAlarms from './lambda'
@@ -17,9 +18,10 @@ import createRuleAlarms from './eventbridge'
 import createALBAlarms from './alb'
 import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
-import { type ResourceType } from './../cf-template'
+import { addResource } from '../cf-template'
+import type Resource from 'cloudform-types/types/resource'
 
-export default function addAlarms (alarmProperties: AllAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
+export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template): void {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -37,18 +39,21 @@ export default function addAlarms (alarmProperties: AllAlarmsConfig, functionAla
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
-  if (alarmProperties.enabled != null) {
-    createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate, additionalResources)
-    apiGwConfig?.enabled != null && createApiGatewayAlarms(apiGwConfig, context, compiledTemplate, additionalResources)
-    sfConfig?.enabled != null && createStatesAlarms(sfConfig, context, compiledTemplate, additionalResources)
-    dynamoDbConfig?.enabled != null && createDynamoDbAlarms(dynamoDbConfig, context, compiledTemplate, additionalResources)
-    kinesisConfig?.enabled != null && createKinesisAlarms(kinesisConfig, context, compiledTemplate, additionalResources)
-    sqsConfig?.enabled != null && createSQSAlarms(sqsConfig, context, compiledTemplate, additionalResources)
-    ecsConfig?.enabled != null && createECSAlarms(ecsConfig, context, compiledTemplate, additionalResources)
-    snsConfig?.enabled != null && createSNSAlarms(snsConfig, context, compiledTemplate, additionalResources)
-    ruleConfig?.enabled != null && createRuleAlarms(ruleConfig, context, compiledTemplate, additionalResources)
-    albConfig?.enabled != null && createALBAlarms(albConfig, context, compiledTemplate, additionalResources)
-    albTargetConfig?.enabled != null && createALBTargetAlarms(albTargetConfig, context, compiledTemplate, additionalResources)
-    appSyncConfig?.enabled != null && createAppSyncAlarms(appSyncConfig, context, compiledTemplate, additionalResources)
+  const alarmFunctions = [createLambdaAlarms, createApiGatewayAlarms, createStatesAlarms, createDynamoDbAlarms, createKinesisAlarms, createSQSAlarms,
+    createECSAlarms, createSNSAlarms, createRuleAlarms, createALBAlarms, createALBTargetAlarms, createAppSyncAlarms]
+  const alarmConfigs = [cascadedFunctionAlarmProperties, apiGwConfig, sfConfig, dynamoDbConfig, kinesisConfig, sqsConfig, ecsConfig, snsConfig, ruleConfig,
+    albConfig, albTargetConfig, appSyncConfig]
+
+  const resources = {}
+  Object.assign(resources,
+    ...alarmFunctions.map((alarmFn, i) => {
+      const config: any = alarmConfigs[i]
+      if (config?.enabled !== false || i === 0) {
+        return alarmFn(config, context, compiledTemplate) ?? {}
+      }
+      return {}
+    }))
+  for (const resourceName in resources) {
+    addResource(resourceName, resources[resourceName] as Resource, compiledTemplate)
   }
 }

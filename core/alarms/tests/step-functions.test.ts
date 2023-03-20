@@ -2,6 +2,7 @@
 
 import createStatesAlarms from '../step-functions'
 import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -35,9 +36,8 @@ test('Step Function alarms are created', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  const alarmResources: ResourceType = createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
 
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 6)
@@ -105,8 +105,8 @@ test('Step function alarms are not created when disabled globally', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -137,8 +137,8 @@ test('Step function alarms are not created when disabled individually', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

@@ -1,7 +1,7 @@
 'use strict'
 
 import createDynamoDbAlarms from '../dynamodb'
-import { getResourcesByType } from '../../cf-template'
+import { addResource, getResourcesByType } from '../../cf-template'
 
 import { test } from 'tap'
 
@@ -42,8 +42,12 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 
 ;[true, false].forEach(specifyTableName => {
   test(`DynamoDB alarms are created ${specifyTableName ? 'with' : 'without'} a table name property`, (t) => {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-    createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+    const compiledTemplate = createTestCloudFormationTemplate()
+    const resources = createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
+
+    for (const resourceName in resources) {
+      addResource(resourceName, resources[resourceName], compiledTemplate)
+    }
     if (!specifyTableName) {
       for (const tableResource of Object.values(getResourcesByType('AWS::DynamoDB::Table', compiledTemplate))) {
         delete tableResource.Properties?.TableName
@@ -97,8 +101,12 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 })
 
 test('DynamoDB alarms are created without GSI', (t) => {
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  const resources = createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
+  for (const resourceName in resources) {
+    addResource(resourceName, resources[resourceName], compiledTemplate)
+  }
+
   _.cloneDeep(defaultCfTemplate)
   delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
 
@@ -114,10 +122,9 @@ test('DynamoDB alarms are not created when disabled', (t) => {
     }
   })
   const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const alarmResources = createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

@@ -11,7 +11,7 @@ import {
   albCfTemplate,
   testContext
 } from '../../tests/testing-utils'
-import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 
 test('ALB alarms are created', (t) => {
   const AlarmPropertiesELB = createTestConfig(
@@ -33,11 +33,10 @@ test('ALB alarms are created', (t) => {
 
   )
   function createAlarmResources (elbAlarmProperties: AlbAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-    createALBAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+    const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
+    return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }
-  const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
+  const albAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
   const expectedTypesELB = {
     LoadBalancerHTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
@@ -87,9 +86,8 @@ test('ALB alarms are not created when disabled globally', (t) => {
   )
 
   function createAlarmResources (elbAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
-    createALBAlarms(elbAlarmProperties, testContext, compiledTemplate, additionalResources)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+    const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
+    return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }
   const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 

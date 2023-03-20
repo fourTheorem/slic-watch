@@ -1,61 +1,47 @@
 'use strict'
 
-import { type AlbTargetAlarmProperties, type AlbTargetAlarm } from './alb-target-group'
-import { type AlbAlarmProperties, type AlbAlarm } from './alb'
-import { type ApiAlarm, type ApiGwAlarmProperties } from './api-gateway'
-import { type AppSyncAlarm, type AppSyncAlarmProperties } from './appsync'
-import { type DynamoDbAlarmProperties } from './dynamodb'
-import { type EcsAlarm, type EcsAlarmsConfig } from './ecs'
-import { type EventbridgeAlarm, type EventsAlarmsConfig } from './eventbridge'
-import { type KinesisAlarmProperties } from './kinesis'
-import { type LambdaAlarm, type LambdaFunctionAlarmProperties } from './lambda'
-import { type SnsAlarm, type SnsAlarmsConfig } from './sns'
-import { type SqsAlarm, type SqsAlarmsConfig } from './sqs'
-import { type SfAlarmsConfig, type SmAlarm } from './step-functions'
-import { type SlicWatchAlarmsConfig } from '../inputs/cascading-config'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type { AlbTargetAlarmsConfig } from './alb-target-group'
+import type { AlbAlarmsConfig } from './alb'
+import type { ApiGwAlarmsConfig } from './api-gateway'
+import type { AppSyncAlarmsConfig } from './appsync'
+import type { DynamoDbAlarmsConfig } from './dynamodb'
+import type { EcsAlarmsConfig } from './ecs'
+import type { EventsAlarmsConfig } from './eventbridge'
+import type { KinesisAlarmsConfig } from './kinesis'
+import type { LambdaFunctionAlarmsConfig } from './lambda'
+import type { SnsAlarmsConfig } from './sns'
+import type { SqsAlarmsConfig } from './sqs'
+import type { SfAlarmsConfig } from './step-functions'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
+import type { Value } from 'cloudform-types/types/dataTypes'
+import { getResourcesByType } from '../cf-template'
+import { makeResourceName } from './make-name'
+import type Template from 'cloudform-types/types/template'
 
-export interface ReturnResource {
-  Type: string
-  Properties: AlarmProperties
+export function fetchAlarmResources (type: string, service: string, metrics: string[], config: DefaultAlarmsProperties, context: Context, compiledTemplate: Template, getAlarm) {
+  const resources = {}
+  const resourcesOfType = getResourcesByType(type, compiledTemplate)
+
+  for (const resourceName of Object.keys(resourcesOfType)) {
+    for (const metric of metrics) {
+      const { enabled, ...rest } = config[metric]
+      if (enabled !== false) {
+        const alarm = getAlarm({ metric, resourceName, config: rest })
+        const name = makeResourceName(service, resourceName, metric)
+        const resource = createAlarm({
+          MetricName: metric,
+          ...alarm,
+          ...rest
+        }, context)
+        resources[name] = resource
+      }
+    }
+  }
+  return resources
 }
 
-export interface ReturnAlarm {
-  resourceName: string
-  resource: Resource
-}
-
-// export interface SlicWatchAlarmProperties {
-//   enabled: boolean
-//   Period: number
-//   EvaluationPeriods: number
-//   TreatMissingData: string
-//   ComparisonOperator: string
-// }
-
-export interface DefaultAlarmsProperties extends AlarmProperties {
-  enabled?: boolean
-}
-
-export interface Context {
-  alarmActions: string[]
-}
-
-export type AllAlarms = AlarmProperties | AlbAlarm | AlbTargetAlarm | ApiAlarm | AppSyncAlarm | EcsAlarm | EventbridgeAlarm | LambdaAlarm | SnsAlarm | SqsAlarm | SmAlarm
-
-export function createAlarm (alarm: AlarmProperties, context?: Context): ReturnResource
-export function createAlarm (alarm: AlbAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: AlbTargetAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: ApiAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: AppSyncAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: EcsAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: EventbridgeAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: LambdaAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: SnsAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: SqsAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: SmAlarm, context?: Context): ReturnResource
-export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResource {
+export function createAlarm (alarm: CfAlarmsProperties, context?: Context): ReturnResource {
   return {
     Type: 'AWS::CloudWatch::Alarm',
     Properties: {
@@ -65,24 +51,44 @@ export function createAlarm (alarm: AllAlarms, context?: Context): ReturnResourc
     }
   }
 }
-
-export interface AllAlarmsConfig {
-  enabled: boolean
-  alarms?: SlicWatchAlarmsConfig
+export interface ReturnResource {
+  Type: string
+  Properties: CfAlarmsProperties
 }
 
-export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
-& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmProperties & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
+export interface ReturnAlarm {
+  resourceName: string
+  resource: Resource
+}
+
+type Modify<T, R> = Omit<T, keyof R> & R
+export interface DefaultAlarmsProperties extends Modify<AlarmProperties, {
+  EvaluationPeriods?: Value<number>
+  ComparisonOperator?: Value<string>
+  enabled?: boolean
+}> {}
+
+export interface CfAlarmsProperties extends Modify<AlarmProperties, {
+  EvaluationPeriods?: Value<number>
+  ComparisonOperator?: Value<string>
+}> {}
+
+export interface Context {
+  alarmActions: string[]
+}
+
+export type AlarmsConfig = AlbTargetAlarmsConfig & AlbAlarmsConfig & ApiGwAlarmsConfig & AppSyncAlarmsConfig & DynamoDbAlarmsConfig
+& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmsConfig & LambdaFunctionAlarmsConfig & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export interface FunctionAlarmProperties {
-  HelloLambdaFunction?: LambdaFunctionAlarmProperties
-  ThrottlerLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveStreamLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveQueueLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveTableLambdaFunction?: LambdaFunctionAlarmProperties
-  StreamProcessorLambdaFunction?: LambdaFunctionAlarmProperties
-  HttpGetterLambdaFunction?: LambdaFunctionAlarmProperties
-  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmProperties
-  EventsRuleLambdaFunction?: LambdaFunctionAlarmProperties
-  AlbEventLambdaFunction?: LambdaFunctionAlarmProperties
+  HelloLambdaFunction?: LambdaFunctionAlarmsConfig
+  ThrottlerLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveStreamLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveQueueLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveTableLambdaFunction?: LambdaFunctionAlarmsConfig
+  StreamProcessorLambdaFunction?: LambdaFunctionAlarmsConfig
+  HttpGetterLambdaFunction?: LambdaFunctionAlarmsConfig
+  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmsConfig
+  EventsRuleLambdaFunction?: LambdaFunctionAlarmsConfig
+  AlbEventLambdaFunction?: LambdaFunctionAlarmsConfig
 }
