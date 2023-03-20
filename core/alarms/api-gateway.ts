@@ -1,6 +1,6 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { getResourcesByType, addResource } from '../cf-template'
 import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
@@ -14,12 +14,6 @@ export interface ApiGwAlarmProperties {
   '4XXError': DefaultAlarmsProperties
   Latency: DefaultAlarmsProperties
 }
-
-export type ApiAlarm = AlarmProperties & {
-  ApiName: string
-}
-
-// type ApiMetrics = '5XXError' | '4XXError' | 'Latency'
 
 /**
  * Given a CloudFormation resource for an API Gateway REST API, derive CloudFormation syntax for
@@ -71,41 +65,42 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
   }
   return name
 }
+type ApiMetrics = '5XXError' | '4XXError' | 'Latency'
 
-const executionMetrics = {
-  '5XXError': 'Availability',
-  '4XXError': '4XXError',
-  Latency: 'Latency'
-}
+const executionMetrics: ApiMetrics[] = [
+  '5XXError',
+  '4XXError',
+  'Latency'
+]
 
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
+export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template): void {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
    *A CloudFormation template object
    */
-  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate, additionalResources)
+  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
-    for (const [metric, type] of Object.entries(executionMetrics)) {
-      const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
+    for (const metric of executionMetrics) {
+      const config = apiGwAlarmProperties[metric]
+      console.log(metric)
       if (config.enabled !== false) {
+        delete config.enabled
         const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-        const threshold = config.Threshold
-        const apiAlarmProperties: ApiAlarm = {
+        const apiAlarmProperties: AlarmProperties = {
           AlarmName: `APIGW_${metric}_${apiNameForSub}`,
-          AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${threshold}`,
-          ApiName: apiName,
+          AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
           ...config
         }
-        const resourceName = makeResourceName('Api', apiName, executionMetrics[type])
+        const resourceName = makeResourceName('Api', apiName, metric)
         const resource = createAlarm(apiAlarmProperties, context)
         addResource(resourceName, resource, compiledTemplate)
       }

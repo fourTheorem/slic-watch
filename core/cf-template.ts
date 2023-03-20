@@ -22,7 +22,7 @@ const logger = pino()
 
 export type ResourceType = Record<string, Resource>
 
-// (compiledTemplate: Template, additionalResources: ResourceType = {})
+// (compiledTemplate: Template, : ResourceType = {})
 
 export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
 & RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
@@ -54,15 +54,14 @@ export function addResource (resourceName: string, resource: Resource, compiledT
   }
 }
 
-export function getResourcesByType (type: string, compiledTemplate: Template, additionalResources = {}): ResourceType {
-  const resources = Object.assign({}, compiledTemplate.Resources, additionalResources)
-  return filterObject(resources, (resource: { Type: string }) => resource.Type === type)
+export function getResourcesByType (type: string, compiledTemplate: Template): ResourceType {
+  return filterObject(compiledTemplate.Resources ?? {}, (resource: { Type: string }) => resource.Type === type)
 }
 
-export function getEventSourceMappingFunctions (compiledTemplate, additionalResources = {}): ResourceType {
+export function getEventSourceMappingFunctions (compiledTemplate): ResourceType {
   const eventSourceMappings = getResourcesByType(
-    'AWS::Lambda::EventSourceMapping', compiledTemplate, additionalResources)
-  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate, additionalResources)
+    'AWS::Lambda::EventSourceMapping', compiledTemplate)
+  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
   const eventSourceMappingFunctions = {}
   for (const eventSourceMapping of Object.values(eventSourceMappings)) {
     const funcResourceName = resolveFunctionResourceName(

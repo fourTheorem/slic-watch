@@ -16,17 +16,12 @@ export interface AlbTargetAlarmProperties {
   LambdaUserError: DefaultAlarmsProperties
 }
 
-export type AlbTargetAlarm = AlarmProperties & {
-  TargetGroupResourceName: string
-  LoadBalancerLogicalId: string
-}
-
 type TargetGroupMetrics = 'HTTPCode_Target_5XX_Count' | 'UnHealthyHostCount'
 
 type TargetGroupLambdaMetrics = 'LambdaInternalError' | 'LambdaUserError'
 
-function getResourceByName (resourceName: string, compiledTemplate, additionalResources = {}): Resource {
-  return compiledTemplate.Resources[resourceName] ?? additionalResources[resourceName]
+function getResourceByName (resourceName: string, compiledTemplate): Resource {
+  return compiledTemplate.Resources[resourceName]
 }
 
 const executionMetrics: TargetGroupMetrics[] = [
@@ -48,10 +43,10 @@ const executionMetricsLambda: TargetGroupLambdaMetrics[] = [
  * A CloudFormation template instance
  * All Load Balancers CloudFormation logicalIDs
  */
-export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template, additionalResources: ResourceType = {}): string[] {
+export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template): string[] {
   const allLoadBalancerLogicalIds: any = new Set()
   const allListenerRules: ResourceType = {}
-  const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate, additionalResources)
+  const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate)
 
   // First, find Listeners with _default actions_ referencing the target group
   for (const listener of Object.values(listenerResources)) {
@@ -65,7 +60,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
       }
     }
   }
-  const listenerRuleResources = getResourcesByType('AWS::ElasticLoadBalancingV2::ListenerRule', compiledTemplate, additionalResources)
+  const listenerRuleResources = getResourcesByType('AWS::ElasticLoadBalancingV2::ListenerRule', compiledTemplate)
 
   // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
@@ -80,7 +75,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   for (const listenerRule of Object.values(allListenerRules)) {
     const listenerLogicalId = listenerRule.Properties?.ListenerArn.Ref
-    const listener = getResourceByName(listenerLogicalId, compiledTemplate, additionalResources)
+    const listener = getResourceByName(listenerLogicalId, compiledTemplate)
     if (listener != null) {
       const loadBalancerLogicalId = listener.Properties?.LoadBalancerArn?.Ref
       if (loadBalancerLogicalId != null) {
@@ -96,12 +91,10 @@ function alarmProperty (targetGroupResourceName: string, metrics: string[], load
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
       const config = albTargetAlarmProperties[metric]
       if (config.enabled !== false) {
-        const threshold = config.Threshold
-        const albTargetAlarmProperties: AlbTargetAlarm = {
+        delete config.enabled
+        const albTargetAlarmProperties: AlarmProperties = {
           AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${targetGroupResourceName}`,
-          AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${threshold}`,
-          TargetGroupResourceName: targetGroupResourceName,
-          LoadBalancerLogicalId: loadBalancerLogicalId,
+          AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${config.Threshold}`,
           MetricName: metric,
           Statistic: config.Statistic,
           Namespace: 'AWS/ApplicationELB',
@@ -122,7 +115,7 @@ function alarmProperty (targetGroupResourceName: string, metrics: string[], load
 /**
  * The fully resolved alarm configuration
  */
-export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}): void {
+export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template): void {
 /**
  * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
  * based on the resources found within
@@ -130,9 +123,9 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
  * A CloudFormation template object
  */
 
-  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, additionalResources)
+  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate, additionalResources)
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
     alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context)
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {

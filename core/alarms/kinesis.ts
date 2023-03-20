@@ -1,6 +1,6 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { getResourcesByType, addResource } from '../cf-template'
 import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
@@ -29,23 +29,23 @@ const kinesisAlarmTypes = {
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
  */
-export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template) {
   /**
    * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
    * based on the resources found within
    *
    *  A CloudFormation template object
    */
-  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate, additionalResources)
+  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamResourceName] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
       const config: DefaultAlarmsProperties = kinesisAlarmProperties[metric]
       if (config.enabled !== false) {
-        const threshold = config.Threshold
+        delete config.enabled
         const kinesisAlarmProperties: AlarmProperties = {
           AlarmName: `Kinesis_${type}_${streamResourceName}`,
-          AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${threshold} milliseconds`,
+          AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${config.Threshold} milliseconds`,
           MetricName: metric,
           Namespace: 'AWS/Kinesis',
           Dimensions: [{ Name: 'StreamName', Value: { Ref: streamResourceName } as any }],

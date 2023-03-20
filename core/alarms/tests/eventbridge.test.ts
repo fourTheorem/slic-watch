@@ -31,8 +31,8 @@ test('Events alarms are created', (t) => {
     }
   )
   const ruleAlarmProperties = AlarmProperties.Events
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -80,8 +80,8 @@ test('Events alarms are not created when disabled globally', (t) => {
     }
   )
   const ruleAlarmProperties = AlarmProperties.Events
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

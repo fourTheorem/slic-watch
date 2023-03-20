@@ -31,8 +31,8 @@ test('SNS alarms are created', (t) => {
     }
   )
   const snsAlarmProperties = AlarmProperties.SNS
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -83,8 +83,8 @@ test('SNS alarms are not created when disabled globally', (t) => {
     }
   )
   const snsAlarmProperties = AlarmProperties.SNS
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

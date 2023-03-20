@@ -1,6 +1,6 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { getResourcesByType, addResource } from '../cf-template'
 import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
@@ -9,11 +9,6 @@ export interface EcsAlarmsConfig {
   enabled?: boolean
   MemoryUtilization: DefaultAlarmsProperties
   CPUUtilization: DefaultAlarmsProperties
-}
-
-export type EcsAlarm = AlarmProperties & {
-  ServiceName: string
-  ClusterName: string
 }
 
 type EcsMEtrics = 'MemoryUtilization' | 'CPUUtilization'
@@ -44,14 +39,14 @@ const executionMetrics: EcsMEtrics[] = ['MemoryUtilization', 'CPUUtilization']
 /**
  * ecsAlarmsConfig The fully resolved alarm configuration
  */
-export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context, compiledTemplate: Template) {
   /**
    * Add all required ECS alarms to the provided CloudFormation template
    * based on the ECS Service resources
    *
    * A CloudFormation template object
    */
-  const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate, additionalResources)
+  const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
 
   for (const [serviceResourceName, serviceResource] of Object.entries(serviceResources)) {
     for (const metric of executionMetrics) {
@@ -59,12 +54,10 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
       const config = ecsAlarmsConfig[metric]
       if (config.enabled !== false) {
-        const threshold = config.Threshold
-        const ecsAlarmProperties: EcsAlarm = {
+        delete config.enabled
+        const ecsAlarmProperties: AlarmProperties = {
           AlarmName: `ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceResourceName}.Name}`,
-          AlarmDescription: `ECS ${metric} for ${serviceResourceName}.Name breaches ${threshold}`,
-          ServiceName: `\${${serviceResourceName}.Name}`,
-          ClusterName: clusterName,
+          AlarmDescription: `ECS ${metric} for ${serviceResourceName}.Name breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/ECS',
           Dimensions: [

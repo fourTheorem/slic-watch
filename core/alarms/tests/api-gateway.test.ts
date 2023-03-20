@@ -110,8 +110,8 @@ test('API Gateway alarms are created', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -124,7 +124,7 @@ test('API Gateway alarms are created', (t) => {
     alarmsByType[alarmType] = (alarmsByType[alarmType] === true) || new Set()
     alarmsByType[alarmType].add(al)
   }
-
+  // console.log(alarmsByType)
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
     'APIGW_5XXError',
@@ -206,8 +206,8 @@ test('API Gateway alarms are not created when disabled globally', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -238,8 +238,8 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
     }
   )
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

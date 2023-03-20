@@ -33,8 +33,8 @@ test('AppSync alarms are created', (t) => {
 
   )
   function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate, additionalResources)
+    const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
+    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
     return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
@@ -87,8 +87,8 @@ test('AppSync alarms are not created when disabled globally', (t) => {
   )
 
   function createAlarmResources (appSyncAlarmProperties) {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate, additionalResources)
+    const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
+    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
     return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)

@@ -83,10 +83,12 @@ class ServerlessPlugin {
       functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
-    const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
-    const additionalResources = this.serverless.service.resources as ResourceType
-    addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate, additionalResources)
-    addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate, additionalResources)
+    const compiledTemplate = {
+      ...this.serverless.service.provider.compiledCloudFormationTemplate,
+      ...(this.serverless.service.resources as ResourceType)
+    }
+    addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
+    addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate)
   }
 }
 

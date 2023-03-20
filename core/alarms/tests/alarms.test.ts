@@ -8,12 +8,12 @@ import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, test
 import { getResourcesByType } from '../../cf-template'
 
 test('Alarms create all service alarms', (t) => {
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  const compiledTemplate = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -27,12 +27,12 @@ test('Alarms create all service alarms', (t) => {
 })
 
 test('Alarms create all ALB service alarms', (t) => {
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate(albCfTemplate)
+  const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
   const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -52,12 +52,12 @@ test('Alarms are not created when disabled globally', (t) => {
       enabled: false
     }
   )
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
+  const compiledTemplate = createTestCloudFormationTemplate()
   const funcAlarmPropertiess = {}
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(config, funcAlarmPropertiess, testContext, compiledTemplate, additionalResources)
+  addAlarms(config, funcAlarmPropertiess, testContext, compiledTemplate)
 
   const alarmsCreated = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

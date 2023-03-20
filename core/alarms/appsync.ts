@@ -1,6 +1,6 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { getResourcesByType, addResource } from '../cf-template'
 import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
@@ -13,10 +13,6 @@ export interface AppSyncAlarmProperties {
   Latency: DefaultAlarmsProperties
 }
 
-export type AppSyncAlarm = AlarmProperties & {
-  AppSyncResourceName: string
-}
-
 type AppSyncMetrics = '5XXError' | 'Latency'
 
 const executionMetrics: AppSyncMetrics[] = ['5XXError', 'Latency']
@@ -24,26 +20,24 @@ const executionMetrics: AppSyncMetrics[] = ['5XXError', 'Latency']
 /**
  * appSyncAlarmProperties The fully resolved alarm configuration
  */
-export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlarmProperties, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlarmProperties, context: Context, compiledTemplate: Template) {
   /**
    * Add all required AppSync alarms to the provided CloudFormation template
    * based on the AppSync resources found within
    *
    * A CloudFormation template object
    */
-  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate, additionalResources)
+  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
     for (const metric of executionMetrics) {
       const config = appSyncAlarmProperties[metric]
       if (config.enabled !== false) {
         const graphQLName: string = appSyncResource.Properties?.Name
-        const threshold = config.Threshold
         delete config.enabled
-        const appSyncAlarmProperties: AppSyncAlarm = {
+        const appSyncAlarmProperties: AlarmProperties = {
           AlarmName: `AppSync${metric}Alarm_${graphQLName}`,
-          AlarmDescription: `AppSync ${metric} ${getStatisticName(config)} for ${graphQLName} breaches ${threshold}`,
-          AppSyncResourceName: appSyncResourceName,
+          AlarmDescription: `AppSync ${metric} ${getStatisticName(config)} for ${graphQLName} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/AppSync',
           Dimensions: [

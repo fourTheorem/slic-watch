@@ -1,8 +1,8 @@
 'use strict'
 
 import { type Widgets } from '../inputs/cascading-config'
-import { type Statistic } from '../cf-template'
 import type FunctionProperties from 'cloudform-types/types/lambda/function'
+import type { Statistic } from '@aws-sdk/client-cloudwatch'
 
 export type YAxis = 'left' | 'right'
 

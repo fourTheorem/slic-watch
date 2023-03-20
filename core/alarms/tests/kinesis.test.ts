@@ -28,8 +28,8 @@ test('Kinesis data stream alarms are created', (t) => {
     }
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -83,8 +83,8 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
     }
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

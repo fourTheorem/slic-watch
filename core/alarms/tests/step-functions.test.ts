@@ -35,8 +35,8 @@ test('Step Function alarms are created', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   const alarmsByType = {}
@@ -105,8 +105,8 @@ test('Step function alarms are not created when disabled globally', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -137,8 +137,8 @@ test('Step function alarms are not created when disabled individually', (t) => {
     }
   )
   const sfAlarmProperties = AlarmProperties.States
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createStatesAlarms(sfAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

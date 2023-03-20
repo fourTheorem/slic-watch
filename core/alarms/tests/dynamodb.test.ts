@@ -42,8 +42,8 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 
 ;[true, false].forEach(specifyTableName => {
   test(`DynamoDB alarms are created ${specifyTableName ? 'with' : 'without'} a table name property`, (t) => {
-    const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-    createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+    const compiledTemplate = createTestCloudFormationTemplate()
+    createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
     if (!specifyTableName) {
       for (const tableResource of Object.values(getResourcesByType('AWS::DynamoDB::Table', compiledTemplate))) {
         delete tableResource.Properties?.TableName
@@ -97,8 +97,8 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 })
 
 test('DynamoDB alarms are created without GSI', (t) => {
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
   _.cloneDeep(defaultCfTemplate)
   delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
 
@@ -114,8 +114,8 @@ test('DynamoDB alarms are not created when disabled', (t) => {
     }
   })
   const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

@@ -50,8 +50,8 @@ test('ECS MemoryUtilization is created', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -106,8 +106,8 @@ test('ECS alarms are not created when disabled globally', (t) => {
     }
   )
   const ecsAlarmProperties = AlarmProperties.ECS
-  const { compiledTemplate, additionalResources } = createTestCloudFormationTemplate()
-  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate, additionalResources)
+  const compiledTemplate = createTestCloudFormationTemplate()
+  createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

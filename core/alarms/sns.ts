@@ -1,6 +1,6 @@
 'use strict'
 
-import { getResourcesByType, addResource, type ResourceType } from '../cf-template'
+import { getResourcesByType, addResource } from '../cf-template'
 import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
 import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
@@ -11,10 +11,6 @@ export interface SnsAlarmsConfig {
   NumberOfNotificationsFailed: DefaultAlarmsProperties
 }
 
-export type SnsAlarm = AlarmProperties & {
-  TopicName: string
-}
-
 type SnsMetrics = 'NumberOfNotificationsFilteredOut-InvalidAttributes' | 'NumberOfNotificationsFailed'
 
 const executionMetrics: SnsMetrics[] = ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
@@ -22,29 +18,29 @@ const executionMetrics: SnsMetrics[] = ['NumberOfNotificationsFilteredOut-Invali
 /**
  * snsAlarmsConfig The fully resolved alarm configuration
  */
-export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context, compiledTemplate: Template, additionalResources: ResourceType = {}) {
+export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, context: Context, compiledTemplate: Template) {
   /**
    * Add all required SNS alarms to the provided CloudFormation template
    * based on the SNS resources found within
    *
    * A CloudFormation template object
    */
-  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate, additionalResources)
+  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
 
   for (const [topicLogicalId] of Object.entries(topicResources)) {
     for (const metric of executionMetrics) {
       const config = snsAlarmsConfig[metric]
-      if (config.enabled !== false) {
-        const snsAlarmProperties: SnsAlarm = {
+      const { enabled, ...rest } = config
+      if (enabled !== false) {
+        const snsAlarmProperties: AlarmProperties = {
           AlarmName: `SNS_${metric.replaceAll('-', '')}Alarm_\${${topicLogicalId}.TopicName}`,
           AlarmDescription: `${metric} for \${${topicLogicalId}.TopicName} breaches (${config.Threshold}`,
-          TopicName: `\${${topicLogicalId}.TopicName}`,
           MetricName: metric,
           Namespace: 'AWS/SNS',
           Dimensions: [{ Name: 'TopicName', Value: `\${${topicLogicalId}.TopicName}` }],
-          ...config
+          ...rest
         }
-        const resourceName = `slicWatch${metric}Alarm${topicLogicalId}`
+        const resourceName = `slicWatch${metric.replaceAll('-', '')}Alarm${topicLogicalId}`
         const resource = createAlarm(snsAlarmProperties, context)
         addResource(resourceName, resource, compiledTemplate)
       }
