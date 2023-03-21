@@ -15,7 +15,42 @@ import type { SfAlarmsConfig } from './step-functions'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type { Value } from 'cloudform-types/types/dataTypes'
+import { getResourcesByType } from '../cf-template'
+import { makeResourceName } from './make-name'
+import type Template from 'cloudform-types/types/template'
 
+export function fetchAlarmResources (type: string, service: string, metrics: string[], config, context: Context, compiledTemplate: Template, getAlarm) {
+  const resources = {}
+  const resourcesOfType = getResourcesByType(type, compiledTemplate)
+
+  for (const resourceName of Object.keys(resourcesOfType)) {
+    for (const metric of metrics) {
+      const { enabled, ...rest } = config[metric]
+      if (enabled !== false) {
+        const alarm = getAlarm({ metric, resourceName, config: rest })
+        const name = makeResourceName(service, resourceName, metric)
+        const resource = createAlarm({
+          MetricName: metric,
+          ...alarm,
+          ...rest
+        }, context)
+        resources[name] = resource
+      }
+    }
+  }
+  return resources
+}
+
+export function createAlarm (alarm: CfAlarmsProperties, context?: Context): ReturnResource {
+  return {
+    Type: 'AWS::CloudWatch::Alarm',
+    Properties: {
+      ActionsEnabled: true,
+      AlarmActions: context?.alarmActions,
+      ...alarm
+    }
+  }
+}
 export interface ReturnResource {
   Type: string
   Properties: CfAlarmsProperties
@@ -40,17 +75,6 @@ export interface CfAlarmsProperties extends Modify<AlarmProperties, {
 
 export interface Context {
   alarmActions: string[]
-}
-
-export function createAlarm (alarm: CfAlarmsProperties, context?: Context): ReturnResource {
-  return {
-    Type: 'AWS::CloudWatch::Alarm',
-    Properties: {
-      ActionsEnabled: true,
-      AlarmActions: context?.alarmActions,
-      ...alarm
-    }
-  }
 }
 
 export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties

@@ -28,23 +28,19 @@ const kinesisAlarmTypes = {
 
 /**
  * The fully resolved alarm configuration for Kinesis Data Streams
+ * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
+ * based on the resources found within
+ *  A CloudFormation template object
  */
 export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template) {
-  /**
-   * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
-   * based on the resources found within
-   *
-   *  A CloudFormation template object
-   */
-
   const resources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamResourceName] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
       const config: DefaultAlarmsProperties = kinesisAlarmProperties[metric]
+      const { enabled, ...rest } = config
       if (config.enabled !== false) {
-        const { enabled, ...rest } = config
         const kinesisAlarmProperties: CfAlarmsProperties = {
           AlarmName: `Kinesis_${type}_${streamResourceName}`,
           AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${config.Threshold} milliseconds`,

@@ -48,8 +48,8 @@ export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, funct
   Object.assign(resources,
     ...alarmFunctions.map((alarmFn, i) => {
       const config: any = alarmConfigs[i]
-      if (config !== false && config.enabled !== false) {
-        return alarmFn(config, context, compiledTemplate)
+      if (config?.enabled !== false || i === 0) {
+        return alarmFn(config, context, compiledTemplate) ?? {}
       }
       return {}
     }))

@@ -34,9 +34,9 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
     for (const metric of executionMetrics) {
       const config: DefaultAlarmsProperties = appSyncAlarmProperties[metric]
+      const { enabled, ...rest } = config
       if (config.enabled !== false) {
         const graphQLName: string = appSyncResource.Properties?.Name
-        const { enabled, ...rest } = config
         const appSyncAlarmProperties: CfAlarmsProperties = {
           AlarmName: `AppSync${metric}Alarm_${graphQLName}`,
           AlarmDescription: `AppSync ${metric} ${getStatisticName(config)} for ${graphQLName} breaches ${config.Threshold}`,

@@ -37,8 +37,8 @@ export default function createDynamoDbAlarms (dynamoDbAlarmProperties: DynamoDbA
   for (const [tableResourceName, tableResource] of Object.entries(tableResources)) {
     for (const metric of dynamoDbMetrics) {
       const config: DefaultAlarmsProperties = dynamoDbAlarmProperties[metric]
+      const { enabled, ...rest } = config
       if (config.enabled !== false) {
-        const { enabled, ...rest } = config
         const dynamoDBAlarmProperties: CfAlarmsProperties = {
           AlarmName: `DDB_${metric}_${tableResourceName}`,
           AlarmDescription: `DynamoDB ${config.Statistic} for ${tableResourceName} breaches ${config.Threshold}`,

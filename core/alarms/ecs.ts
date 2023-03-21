@@ -38,15 +38,11 @@ const executionMetrics: EcsMEtrics[] = ['MemoryUtilization', 'CPUUtilization']
 
 /**
  * ecsAlarmsConfig The fully resolved alarm configuration
+ * Add all required ECS alarms to the provided CloudFormation template
+ * based on the ECS Service resources
+ * A CloudFormation template object
  */
 export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context, compiledTemplate: Template) {
-  /**
-   * Add all required ECS alarms to the provided CloudFormation template
-   * based on the ECS Service resources
-   *
-   * A CloudFormation template object
-   */
-
   const resources = {}
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
 
@@ -54,9 +50,9 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     for (const metric of executionMetrics) {
       const cluster = serviceResource.Properties?.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
-      const config = ecsAlarmsConfig[metric]
+      const config: DefaultAlarmsProperties = ecsAlarmsConfig[metric]
+      const { enabled, ...rest } = config
       if (config.enabled !== false) {
-        const { enabled, ...rest } = config
         const ecsAlarmProperties: CfAlarmsProperties = {
           AlarmName: `ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceResourceName}.Name}`,
           AlarmDescription: `ECS ${metric} for ${serviceResourceName}.Name breaches ${config.Threshold}`,

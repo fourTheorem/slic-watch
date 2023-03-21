@@ -89,7 +89,6 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
       const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
-      console.log(metric)
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)

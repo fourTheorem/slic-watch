@@ -13,15 +13,11 @@ export interface SqsAlarmsConfig {
 
 /**
  * @param {object} sqsAlarmsConfig The fully resolved alarm configuration
+ * Add all required SQS alarms to the provided CloudFormation template
+ * based on the SQS resources found within
+ * A CloudFormation template object
  */
 export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Context, compiledTemplate: Template) {
-  /**
-   * Add all required SQS alarms to the provided CloudFormation template
-   * based on the SQS resources found within
-   *
-   * A CloudFormation template object
-   */
-
   const resources = {}
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
 

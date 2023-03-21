@@ -123,7 +123,6 @@ test('API Gateway alarms are created', (t) => {
     alarmsByType[alarmType] = (alarmsByType[alarmType] === true) || new Set()
     alarmsByType[alarmType].add(al)
   }
-  // console.log(alarmsByType)
   t.same(Object.keys(alarmsByType).sort(), [
     'APIGW_4XXError',
     'APIGW_5XXError',
