@@ -1,10 +1,10 @@
 'use strict'
 
-import { addResource, getResourcesByType } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
 export interface AlbAlarmProperties {
@@ -32,12 +32,14 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
    */
   const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate)
 
+  const resources = {}
+
   for (const [loadBalancerResourceName] of Object.entries(loadBalancerResources)) {
     for (const metric of executionMetrics) {
       const config = albAlarmProperties[metric]
       if (config.enabled !== false) {
-        delete config.enabled
-        const albAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const albAlarmProperties: CfAlarmsProperties = {
           AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${loadBalancerResourceName}`,
           AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${loadBalancerResourceName} breaches ${config.Threshold}`,
           MetricName: metric,
@@ -45,17 +47,13 @@ export default function createALBAlarms (albAlarmProperties: AlbAlarmProperties,
           Dimensions: [
             { Name: 'LoadBalancer', Value: `\${${loadBalancerResourceName}.LoadBalancerFullName}` }
           ],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('LoadBalancer', loadBalancerResourceName, metric)
         const resource = createAlarm(albAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate) // Suggested alternativre
-        // is to return the resource(s) rather than adding them to the template
-        // THey can be added to the template at a higher level
-        // return {
-        //   [resourceName]: resource
-        // }
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

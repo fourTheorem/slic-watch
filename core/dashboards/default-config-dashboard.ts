@@ -2,7 +2,6 @@
 
 import { type Widgets } from '../inputs/cascading-config'
 import type FunctionProperties from 'cloudform-types/types/lambda/function'
-import type { Statistic } from '@aws-sdk/client-cloudwatch'
 
 export type YAxis = 'left' | 'right'
 
@@ -16,8 +15,8 @@ export interface DashboardBodyProperties {
   metricPeriod?: number
   width?: number
   height?: number
-  yAxis?: YAxis
-  Statistic?: Statistic[]
+  yAxis?: string
+  Statistic?: string[]
 }
 
 export interface ServiceDashConfig {

@@ -15,10 +15,9 @@ import type { AllAlarmsConfig } from '../alarms/default-config-alarms'
 import type {
   AllDashboardConfig, DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
   KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
-  AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties, YAxis
+  AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
 import type { LambdaFunctionAlarmProperties } from '../alarms/lambda'
-import type { Statistic } from '@aws-sdk/client-cloudwatch'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 const MAX_DEPTH = 10
@@ -40,8 +39,8 @@ export interface Widgets {
   metricPeriod?: number
   width?: number
   height?: number
-  yAxis?: YAxis
-  Statistic?: Statistic[]
+  yAxis?: string
+  Statistic?: string[]
   Lambda?: LambdaDashboardBodyProperties
   ApiGateway?: ApiGwDashboardBodyProperties
   States?: SfDashboardBodyProperties

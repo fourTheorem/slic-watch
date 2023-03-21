@@ -2,6 +2,7 @@
 
 import createLambdaAlarms from '../lambda'
 import { getResourcesByType } from '../../cf-template'
+import { type ResourceType } from '../../cf-template'
 import { test } from 'tap'
 import { filterObject } from '../../filter-object'
 import defaultConfig from '../../inputs/default-config'
@@ -60,9 +61,7 @@ test('AWS Lambda alarms are created', (t) => {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
 
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
-
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const alarmResources: ResourceType = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
 
   function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
@@ -175,8 +174,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     albFunctionAlarmProperties[funcLogicalId] = albAlarmProperties.Lambda
   }
-  createLambdaAlarms(albFunctionAlarmProperties, testContext, compiledTemplate)
-  const albAlarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const albAlarmResources: ResourceType = createLambdaAlarms(albFunctionAlarmProperties, testContext, compiledTemplate)
 
   function getAlarmsByType (): AlarmsByType {
     const albAlarmsByType: AlarmsByType = {}
@@ -271,9 +269,8 @@ test('Invocation alarms are created if configured', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
 
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.startsWith('Lambda_Invocations')
@@ -526,9 +523,8 @@ test('Duration alarms are created if no timeout is specified', (t) => {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
     delete resource.Properties?.Timeout
   }
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
 
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.startsWith('Lambda_Duration')

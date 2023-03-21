@@ -1,7 +1,7 @@
 'use strict'
-import { getResourcesByType, addResource, getEventSourceMappingFunctions } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 export interface LambdaFunctionAlarmProperties {
@@ -16,19 +16,20 @@ type LambdaMetrics = 'Errors' | 'ThrottlesPc' | 'DurationPc' | 'Invocations' | '
 
 const lambdaMetrics: LambdaMetrics[] = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
 
-function alarmProperty (config, metric: LambdaMetrics, funcLogicalId: string | number, compiledTemplate: Template, context: Context) {
-  const lambdaAlarmProperties: AlarmProperties = {
+function alarmProperty (config: DefaultAlarmsProperties, metric: LambdaMetrics, funcLogicalId: string | number, compiledTemplate: Template, context: Context) {
+  const { enabled, ...rest } = config
+  const lambdaAlarmProperties: CfAlarmsProperties = {
     AlarmName: `Lambda_${metric.replace(/Pc$/g, '')}_${funcLogicalId}`,
     AlarmDescription: `${metric} for ${funcLogicalId} breaches ${config.Threshold}`,
     Metrics: undefined,
     MetricName: metric.replace(/Pc$/g, ''),
     Namespace: 'AWS/Lambda',
     Dimensions: [{ Name: 'FunctionName', Value: `${funcLogicalId}` }],
-    ...config
+    ...rest
   }
   const resourceName = `slicWatchLambda${metric.replace(/Pc$/g, '')}Alarm${funcLogicalId}`
   const resource = createAlarm(lambdaAlarmProperties, context)
-  addResource(resourceName, resource, compiledTemplate)
+  return { [resourceName]: resource }
 }
 
 /**
@@ -43,6 +44,8 @@ export default function createLambdaAlarms (functionAlarmProperties, context: Co
    *
    *
    */
+
+  const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
@@ -52,8 +55,8 @@ export default function createLambdaAlarms (functionAlarmProperties, context: Co
       if (config.enabled === false || config[metric].enabled === false) {
         continue
       }
-      delete config.enabled
-      delete config[metric].enabled
+      // delete config.enabled
+      // delete config[metric].enabled
       if (metric === 'ThrottlesPc') {
         const properties = config.ThrottlesPc
         properties.Metrics = [
@@ -97,7 +100,7 @@ export default function createLambdaAlarms (functionAlarmProperties, context: Co
         const threshold: number = properties.Threshold as number
         properties.Threshold = threshold !== undefined ? (threshold * funcTimeout * 1000) / 100 : undefined
       }
-      alarmProperty(config[metric], metric, funcLogicalId, compiledTemplate, context)
+      Object.assign(resources, alarmProperty(config[metric], metric, funcLogicalId, compiledTemplate, context))
     }
   }
   for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
@@ -105,6 +108,7 @@ export default function createLambdaAlarms (functionAlarmProperties, context: Co
     if (config.enabled === false || config.IteratorAge.enabled === false) {
       continue
     }
-    alarmProperty(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, context)
+    Object.assign(resources, alarmProperty(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, context))
   }
+  return resources
 }

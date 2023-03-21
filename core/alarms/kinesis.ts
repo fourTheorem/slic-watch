@@ -1,10 +1,10 @@
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
 export interface KinesisAlarmProperties {
@@ -36,25 +36,28 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
    *
    *  A CloudFormation template object
    */
+
+  const resources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamResourceName] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
       const config: DefaultAlarmsProperties = kinesisAlarmProperties[metric]
       if (config.enabled !== false) {
-        delete config.enabled
-        const kinesisAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const kinesisAlarmProperties: CfAlarmsProperties = {
           AlarmName: `Kinesis_${type}_${streamResourceName}`,
           AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${config.Threshold} milliseconds`,
           MetricName: metric,
           Namespace: 'AWS/Kinesis',
           Dimensions: [{ Name: 'StreamName', Value: { Ref: streamResourceName } as any }],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('Kinesis', streamResourceName, type)
         const resource = createAlarm(kinesisAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

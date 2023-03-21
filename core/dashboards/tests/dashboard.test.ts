@@ -381,7 +381,9 @@ test('A dashboard includes metrics for ALB', (t) => {
             TargetType: 'redirect'
           }
         },
-        alb: {}
+        alb: {
+          Type: ''
+        }
       }
     })
     addDashboard(defaultConfig.dashboard, emptyFuncConfigs, compiledTemplate)
@@ -459,8 +461,8 @@ test('A dashboard includes metrics for ALB', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  const tableResource = _.cloneDeep(defaultCfTemplate.Resources.dataTable)
-  delete tableResource.Properties.GlobalSecondaryIndexes
+  const tableResource = _.cloneDeep(defaultCfTemplate.Resources?.dataTable)
+  delete tableResource?.Properties?.GlobalSecondaryIndexes
   const compTemplates = {
     Resources: {
       dataTable: tableResource
@@ -511,7 +513,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   }
   const compiledTemplate = createTestCloudFormationTemplate()
   addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate)
-  const dashResources = getResourcesByType(compiledTemplate, 'AWS::CloudWatch::Dashboard')
+  const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   t.same(dashResources, {})
   t.end()
 })

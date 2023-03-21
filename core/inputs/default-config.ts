@@ -1,18 +1,18 @@
 'use strict'
 
-// import type { SlicWatchAlarmsConfig, SlicWatchDashboardConfig } from '../inputs/cascading-config'
+import type { SlicWatchAlarmsConfig, SlicWatchDashboardConfig } from '../inputs/cascading-config'
 
-// interface DefaultConfig {
-//   alarms: SlicWatchAlarmsConfig
-//   dashboard: SlicWatchDashboardConfig
-// }
+interface DefaultConfig {
+  alarms: SlicWatchAlarmsConfig
+  dashboard: SlicWatchDashboardConfig
+}
 
 /**
  * This is the default configuration for Alarms and Dashboard widgets for all supported AWS services.
  * Any values here can be overridden in the SLIC Watch configuration. See the main README.md for details on how
  * to customise the configuration for any service or specific metric.
  */
-export const defaultConfig = {
+export const defaultConfig: DefaultConfig = {
   alarms: {
     enabled: true,
     Period: 60,
@@ -34,7 +34,6 @@ export const defaultConfig = {
       },
       Invocations: { // No invocation alarms are created by default. Override threshold to create alarms
         enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
-        Threshold: null,
         Statistic: 'Sum'
       },
       IteratorAge: {
@@ -122,8 +121,7 @@ export const defaultConfig = {
       // approximate age of the oldest message in the queue above threshold: messages aren't processed fast enough
       AgeOfOldestMessage: {
         Statistic: 'Maximum',
-        enabled: false, // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
-        Threshold: null
+        enabled: false // Note: this one requires both `enabled: true` and `Threshold: someValue` to be effectively enabled
       },
       // approximate number of messages in flight above threshold (in percentage of hard limit: 120000 for regular queues and 18000 for FIFO queues)
       InFlightMessagesPc: {

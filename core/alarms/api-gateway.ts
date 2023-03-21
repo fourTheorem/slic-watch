@@ -1,10 +1,10 @@
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
@@ -76,34 +76,37 @@ const executionMetrics: ApiMetrics[] = [
 /**
  * apiGwAlarmProperties The fully resolved alarm configuration
  */
-export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template): void {
+export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template) {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
    *A CloudFormation template object
    */
+
+  const resources = {}
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
-      const config = apiGwAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
       console.log(metric)
       if (config.enabled !== false) {
-        delete config.enabled
+        const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-        const apiAlarmProperties: AlarmProperties = {
+        const apiAlarmProperties: CfAlarmsProperties = {
           AlarmName: `APIGW_${metric}_${apiNameForSub}`,
           AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('Api', apiName, metric)
         const resource = createAlarm(apiAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

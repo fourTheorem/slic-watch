@@ -2,6 +2,7 @@
 
 import createSNSAlarms from '../sns'
 import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -32,10 +33,8 @@ test('SNS alarms are created', (t) => {
   )
   const snsAlarmProperties = AlarmProperties.SNS
   const compiledTemplate = createTestCloudFormationTemplate()
-  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
 
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
-
+  const alarmResources: ResourceType = createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
   const expectedTypes = {
     SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
     SNS_NumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'

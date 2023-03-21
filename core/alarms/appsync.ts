@@ -1,10 +1,10 @@
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 
 export interface AppSyncAlarmProperties {
@@ -27,15 +27,17 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
    *
    * A CloudFormation template object
    */
+
+  const resources = {}
   const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
   for (const [appSyncResourceName, appSyncResource] of Object.entries(appSyncResources)) {
     for (const metric of executionMetrics) {
-      const config = appSyncAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = appSyncAlarmProperties[metric]
       if (config.enabled !== false) {
         const graphQLName: string = appSyncResource.Properties?.Name
-        delete config.enabled
-        const appSyncAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const appSyncAlarmProperties: CfAlarmsProperties = {
           AlarmName: `AppSync${metric}Alarm_${graphQLName}`,
           AlarmDescription: `AppSync ${metric} ${getStatisticName(config)} for ${graphQLName} breaches ${config.Threshold}`,
           MetricName: metric,
@@ -43,12 +45,13 @@ export default function createAppSyncAlarms (appSyncAlarmProperties: AppSyncAlar
           Dimensions: [
             { Name: 'GraphQLAPIId', Value: `\${${appSyncResourceName}.ApiId}}` }
           ],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('AppSync', graphQLName, metric)
         const resource = createAlarm(appSyncAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

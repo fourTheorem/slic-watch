@@ -62,7 +62,7 @@ class ServerlessPlugin {
 
     const alarmActions: string[] = []
 
-    if (!(slicWatchConfig.enabled ?? true)) {
+    if (!(slicWatchConfig.enabled !== false)) {
       return
     }
 
@@ -83,10 +83,11 @@ class ServerlessPlugin {
       functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
       functionDashboardConfigs[functionResName] = funcConfig.dashboard
     }
-    const compiledTemplate = {
-      ...this.serverless.service.provider.compiledCloudFormationTemplate,
-      ...(this.serverless.service.resources as ResourceType)
-    }
+
+    const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
+    const additionalResources = this.serverless.service.resources as ResourceType
+
+    Object.assign(compiledTemplate, additionalResources)
     addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
     addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate)
   }

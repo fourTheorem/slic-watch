@@ -1,9 +1,9 @@
 
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 export interface EventsAlarmsConfig {
@@ -25,26 +25,28 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
    * based on the EventBridge Rule found within
    *
    */
+
+  const resources = {}
   const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate)
-  console.log(ruleResources, 'aaaaa')
 
   for (const [ruleResourceName] of Object.entries(ruleResources)) {
     for (const metric of executionMetrics) {
       const config: DefaultAlarmsProperties = eventsAlarmsConfig[metric]
       if (eventsAlarmsConfig[metric].enabled !== false) {
-        delete config.enabled
-        const eventbridgeAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const eventbridgeAlarmProperties: CfAlarmsProperties = {
           AlarmName: `Events_${metric}Alarm_${ruleResourceName}`,
           AlarmDescription: `EventBridge ${metric} for \${${ruleResourceName}} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/Events',
           Dimensions: [{ Name: 'RuleName', Value: { Ref: ruleResourceName } as any }],
-          ...config
+          ...rest
         }
         const resourceName = `slicWatchEvents${metric}Alarm${ruleResourceName}`
         const resource = createAlarm(eventbridgeAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

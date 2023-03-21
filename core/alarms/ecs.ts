@@ -1,8 +1,8 @@
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 export interface EcsAlarmsConfig {
@@ -46,6 +46,8 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
    *
    * A CloudFormation template object
    */
+
+  const resources = {}
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
 
   for (const [serviceResourceName, serviceResource] of Object.entries(serviceResources)) {
@@ -54,8 +56,8 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
       const config = ecsAlarmsConfig[metric]
       if (config.enabled !== false) {
-        delete config.enabled
-        const ecsAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const ecsAlarmProperties: CfAlarmsProperties = {
           AlarmName: `ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceResourceName}.Name}`,
           AlarmDescription: `ECS ${metric} for ${serviceResourceName}.Name breaches ${config.Threshold}`,
           MetricName: metric,
@@ -64,12 +66,13 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
             { Name: 'ServiceName', Value: `\${${serviceResourceName}.Name}` },
             { Name: 'ClusterName', Value: clusterName }
           ],
-          ...config
+          ...rest
         }
         const resourceName = `slicWatch${metric}Alarm${serviceResourceName}`
         const resource = createAlarm(ecsAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }

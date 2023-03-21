@@ -2,7 +2,6 @@
 
 import createAppSyncAlarms, { type AppSyncAlarmProperties } from '../appsync'
 import { test } from 'tap'
-import { getResourcesByType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -12,6 +11,7 @@ import {
   appSyncCfTemplate,
   testContext
 } from '../../tests/testing-utils'
+import type { ResourceType } from '../../cf-template'
 
 test('AppSync alarms are created', (t) => {
   const AlarmPropertiesAppSync = createTestConfig(
@@ -34,10 +34,9 @@ test('AppSync alarms are created', (t) => {
   )
   function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmProperties) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+    return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }
-  const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
+  const appSyncAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 
   const expectedTypesAppSync = {
     AppSync5XXErrorAlarm: '5XXError',
@@ -88,8 +87,7 @@ test('AppSync alarms are not created when disabled globally', (t) => {
 
   function createAlarmResources (appSyncAlarmProperties) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
-    return getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+    return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 

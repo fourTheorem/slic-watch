@@ -1,10 +1,11 @@
 'use strict'
 
-import { type ResourceType, getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
+import type { ResourceType } from '../cf-template'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
-import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
@@ -87,12 +88,13 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 }
 
 function alarmProperty (targetGroupResourceName: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmProperties: AlbTargetAlarmProperties, compiledTemplate: Template, context: Context) {
+  const resources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-      const config = albTargetAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = albTargetAlarmProperties[metric]
       if (config.enabled !== false) {
-        delete config.enabled
-        const albTargetAlarmProperties: AlarmProperties = {
+        const { enabled, ...rest } = config
+        const albTargetAlarmProperties: CfAlarmsProperties = {
           AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${targetGroupResourceName}`,
           AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${config.Threshold}`,
           MetricName: metric,
@@ -102,20 +104,21 @@ function alarmProperty (targetGroupResourceName: string, metrics: string[], load
             { Name: 'TargetGroup', Value: `\${${targetGroupResourceName}.TargetGroupFullName}` },
             { Name: 'LoadBalancer', Value: `\${${loadBalancerLogicalId}.LoadBalancerFullName}` }
           ],
-          ...config
+          ...rest
         }
         const resourceName = makeResourceName('LoadBalancer', targetGroupResourceName, metric)
         const resource = createAlarm(albTargetAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }
 
 /**
  * The fully resolved alarm configuration
  */
-export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template): void {
+export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template) {
 /**
  * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
  * based on the resources found within
@@ -124,12 +127,14 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
  */
 
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
+  const resources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
-    alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context)
+    Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context))
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {
-      alarmProperty(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context)
+      Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context))
     }
   }
+  return resources
 }

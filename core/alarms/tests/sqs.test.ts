@@ -2,6 +2,7 @@
 
 import createSQSAlarms from '../sqs'
 import { getResourcesByType } from '../../cf-template'
+import type { ResourceType } from '../../cf-template'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -38,9 +39,8 @@ test('SQS alarms are created', (t) => {
     })
   const sqsAlarmProperties = AlarmProperties.SQS
   const compiledTemplate = createTestCloudFormationTemplate()
-  createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate)
 
-  const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
+  const alarmResources: ResourceType = createSQSAlarms(sqsAlarmProperties, testContext, compiledTemplate)
 
   // We have 2 queues (a regular one and a fifo one) in our test stack
   // we expect 2 alarms per queue

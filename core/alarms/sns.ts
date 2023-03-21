@@ -1,8 +1,8 @@
 'use strict'
 
-import { getResourcesByType, addResource } from '../cf-template'
-import { type Context, createAlarm, type DefaultAlarmsProperties } from './default-config-alarms'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { getResourcesByType } from '../cf-template'
+import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
+import { createAlarm } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 export interface SnsAlarmsConfig {
@@ -25,14 +25,16 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
    *
    * A CloudFormation template object
    */
+
+  const resources = {}
   const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
 
   for (const [topicLogicalId] of Object.entries(topicResources)) {
     for (const metric of executionMetrics) {
-      const config = snsAlarmsConfig[metric]
+      const config: DefaultAlarmsProperties = snsAlarmsConfig[metric]
       const { enabled, ...rest } = config
       if (enabled !== false) {
-        const snsAlarmProperties: AlarmProperties = {
+        const snsAlarmProperties: CfAlarmsProperties = {
           AlarmName: `SNS_${metric.replaceAll('-', '')}Alarm_\${${topicLogicalId}.TopicName}`,
           AlarmDescription: `${metric} for \${${topicLogicalId}.TopicName} breaches (${config.Threshold}`,
           MetricName: metric,
@@ -42,8 +44,9 @@ export default function createSNSAlarms (snsAlarmsConfig: SnsAlarmsConfig, conte
         }
         const resourceName = `slicWatch${metric.replaceAll('-', '')}Alarm${topicLogicalId}`
         const resource = createAlarm(snsAlarmProperties, context)
-        addResource(resourceName, resource, compiledTemplate)
+        resources[resourceName] = resource
       }
     }
   }
+  return resources
 }
