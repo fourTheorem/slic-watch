@@ -1,8 +1,9 @@
 'use strict'
 
 import { cascade } from '../inputs/cascading-config'
+import type { SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import type { FunctionAlarmProperties, Context, AllAlarmsConfig } from './default-config-alarms'
+import type { FunctionAlarmProperties, Context } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
 import createLambdaAlarms from './lambda'
@@ -20,7 +21,7 @@ import createAppSyncAlarms from './appsync'
 import { addResource } from '../cf-template'
 import type Resource from 'cloudform-types/types/resource'
 
-export default function addAlarms (alarmProperties: AllAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template): void {
+export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template): void {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,

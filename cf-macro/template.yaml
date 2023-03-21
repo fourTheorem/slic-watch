@@ -28,3 +28,11 @@ Resources:
         - x86_64
       Policies:
         - AWSLambdaBasicExecutionRole
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: es2020
+        Sourcemap: true
+        EntryPoints: 
+          - dist/index.js

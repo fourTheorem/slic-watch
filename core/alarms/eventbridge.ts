@@ -32,7 +32,7 @@ export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig
   for (const [ruleResourceName] of Object.entries(ruleResources)) {
     for (const metric of executionMetrics) {
       const config: DefaultAlarmsProperties = eventsAlarmsConfig[metric]
-      if (eventsAlarmsConfig[metric].enabled !== false) {
+      if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const eventbridgeAlarmProperties: CfAlarmsProperties = {
           AlarmName: `Events_${metric}Alarm_${ruleResourceName}`,

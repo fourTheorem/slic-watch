@@ -12,7 +12,6 @@ import type { LambdaFunctionAlarmProperties } from './lambda'
 import type { SnsAlarmsConfig } from './sns'
 import type { SqsAlarmsConfig } from './sqs'
 import type { SfAlarmsConfig } from './step-functions'
-import type { SlicWatchAlarmsConfig } from '../inputs/cascading-config'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type { Value } from 'cloudform-types/types/dataTypes'
@@ -26,14 +25,6 @@ export interface ReturnAlarm {
   resourceName: string
   resource: Resource
 }
-
-// export interface SlicWatchAlarmProperties {
-//   enabled: boolean
-//   Period: number
-//   EvaluationPeriods: number
-//   TreatMissingData: string
-//   ComparisonOperator: string
-// }
 
 type Modify<T, R> = Omit<T, keyof R> & R
 export interface DefaultAlarmsProperties extends Modify<AlarmProperties, {
@@ -60,11 +51,6 @@ export function createAlarm (alarm: CfAlarmsProperties, context?: Context): Retu
       ...alarm
     }
   }
-}
-
-export interface AllAlarmsConfig {
-  enabled: boolean
-  alarms?: SlicWatchAlarmsConfig
 }
 
 export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties

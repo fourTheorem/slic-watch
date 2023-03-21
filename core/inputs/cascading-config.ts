@@ -11,9 +11,8 @@ import type { KinesisAlarmProperties } from '../alarms/kinesis'
 import type { SnsAlarmsConfig } from '../alarms/sns'
 import type { SqsAlarmsConfig } from '../alarms/sqs'
 import type { SfAlarmsConfig } from '../alarms/step-functions'
-import type { AllAlarmsConfig } from '../alarms/default-config-alarms'
 import type {
-  AllDashboardConfig, DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
+  DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
   KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
   AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
@@ -22,7 +21,7 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 const MAX_DEPTH = 10
 
-type ConfigNode = AllDashboardConfig | AllAlarmsConfig
+type ConfigNode = SlicWatchDashboardConfig | SlicWatchAlarmsConfig
 
 interface ParentNode {
   DashboardBodyProperties?: DashboardBodyProperties
@@ -35,7 +34,6 @@ interface TimeRange {
 }
 
 export interface Widgets {
-  enabled?: boolean
   metricPeriod?: number
   width?: number
   height?: number
@@ -88,8 +86,8 @@ export interface SlicWatchAlarmsConfig {
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-export function cascade (node: AllAlarmsConfig, parentNode?: ParentNode, depth?: number): SlicWatchAlarmsConfig
-export function cascade (node: AllDashboardConfig, parentNode?: ParentNode, depth?: number): SlicWatchDashboardConfig
+export function cascade (node: SlicWatchAlarmsConfig, parentNode?: ParentNode, depth?: number): SlicWatchAlarmsConfig
+export function cascade (node: SlicWatchDashboardConfig, parentNode?: ParentNode, depth?: number): SlicWatchDashboardConfig
 export function cascade (node: ConfigNode, parentNode?: ParentNode, depth = 0): SlicWatchAlarmsConfig | SlicWatchDashboardConfig {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
