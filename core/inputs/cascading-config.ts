@@ -1,13 +1,13 @@
 'use strict'
 
-import type { AlbAlarmProperties } from '../alarms/alb'
-import type { AlbTargetAlarmProperties } from '../alarms/alb-target-group'
-import type { ApiGwAlarmProperties } from '../alarms/api-gateway'
-import type { AppSyncAlarmProperties } from '../alarms/appsync'
-import type { DynamoDbAlarmProperties } from '../alarms/dynamodb'
+import type { AlbAlarmsConfig } from '../alarms/alb'
+import type { AlbTargetAlarmsConfig } from '../alarms/alb-target-group'
+import type { ApiGwAlarmsConfig } from '../alarms/api-gateway'
+import type { AppSyncAlarmsConfig } from '../alarms/appsync'
+import type { DynamoDbAlarmsConfig } from '../alarms/dynamodb'
 import type { EcsAlarmsConfig } from '../alarms/ecs'
 import type { EventsAlarmsConfig } from '../alarms/eventbridge'
-import type { KinesisAlarmProperties } from '../alarms/kinesis'
+import type { KinesisAlarmsConfig } from '../alarms/kinesis'
 import type { SnsAlarmsConfig } from '../alarms/sns'
 import type { SqsAlarmsConfig } from '../alarms/sqs'
 import type { SfAlarmsConfig } from '../alarms/step-functions'
@@ -16,8 +16,8 @@ import type {
   KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
   AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
-import type { LambdaFunctionAlarmProperties } from '../alarms/lambda'
-import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import type { LambdaFunctionAlarmsConfig } from '../alarms/lambda'
+import type { DefaultAlarmsProperties } from '../alarms/default-config-alarms'
 
 const MAX_DEPTH = 10
 
@@ -25,7 +25,7 @@ type ConfigNode = SlicWatchDashboardConfig | SlicWatchAlarmsConfig
 
 interface ParentNode {
   DashboardBodyProperties?: DashboardBodyProperties
-  AlarmProperties?: AlarmProperties
+  AlarmProperties?: DefaultAlarmsProperties
 }
 
 interface TimeRange {
@@ -65,18 +65,18 @@ export interface SlicWatchAlarmsConfig {
   EvaluationPeriods: number
   TreatMissingData: string
   ComparisonOperator: string
-  Lambda?: LambdaFunctionAlarmProperties
-  ApiGateway?: ApiGwAlarmProperties
+  Lambda?: LambdaFunctionAlarmsConfig
+  ApiGateway?: ApiGwAlarmsConfig
   States?: SfAlarmsConfig
-  DynamoDB?: DynamoDbAlarmProperties
-  Kinesis?: KinesisAlarmProperties
+  DynamoDB?: DynamoDbAlarmsConfig
+  Kinesis?: KinesisAlarmsConfig
   SQS?: SqsAlarmsConfig
   ECS?: EcsAlarmsConfig
   SNS?: SnsAlarmsConfig
   Events?: EventsAlarmsConfig
-  ApplicationELB?: AlbAlarmProperties
-  ApplicationELBTarget?: AlbTargetAlarmProperties
-  AppSync?: AppSyncAlarmProperties
+  ApplicationELB?: AlbAlarmsConfig
+  ApplicationELBTarget?: AlbTargetAlarmsConfig
+  AppSync?: AppSyncAlarmsConfig
 }
 
 /**

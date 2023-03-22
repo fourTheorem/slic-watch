@@ -9,7 +9,7 @@ import { makeResourceName } from './make-name'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export interface AlbTargetAlarmProperties {
+export interface AlbTargetAlarmsConfig {
   enabled?: boolean
   HTTPCode_Target_5XX_Count: DefaultAlarmsProperties
   UnHealthyHostCount: DefaultAlarmsProperties
@@ -87,14 +87,14 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   return [...allLoadBalancerLogicalIds]
 }
 
-function alarmProperty (targetGroupResourceName: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmProperties: AlbTargetAlarmProperties, compiledTemplate: Template, context: Context) {
+function alarmProperty (targetGroupResourceName: string, metrics: string[], loadBalancerLogicalIds: string[], AlbTargetAlarmsConfig: AlbTargetAlarmsConfig, compiledTemplate: Template, context: Context) {
   const resources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-      const config: DefaultAlarmsProperties = albTargetAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = AlbTargetAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const albTargetAlarmProperties: CfAlarmsProperties = {
+        const AlbTargetAlarmsConfig: CfAlarmsProperties = {
           AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${targetGroupResourceName}`,
           AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupResourceName} breaches ${config.Threshold}`,
           MetricName: metric,
@@ -107,7 +107,7 @@ function alarmProperty (targetGroupResourceName: string, metrics: string[], load
           ...rest
         }
         const resourceName = makeResourceName('LoadBalancer', targetGroupResourceName, metric)
-        const resource = createAlarm(albTargetAlarmProperties, context)
+        const resource = createAlarm(AlbTargetAlarmsConfig, context)
         resources[resourceName] = resource
       }
     }
@@ -118,7 +118,7 @@ function alarmProperty (targetGroupResourceName: string, metrics: string[], load
 /**
  * The fully resolved alarm configuration
  */
-export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTargetAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createALBTargetAlarms (albTargetAlarmsConfig: AlbTargetAlarmsConfig, context: Context, compiledTemplate: Template) {
 /**
  * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
  * based on the resources found within
@@ -130,10 +130,10 @@ export default function createALBTargetAlarms (albTargetAlarmProperties: AlbTarg
   const resources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
-    Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context))
+    Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, compiledTemplate, context))
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {
-      Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmProperties, compiledTemplate, context))
+      Object.assign(resources, alarmProperty(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, compiledTemplate, context))
     }
   }
   return resources

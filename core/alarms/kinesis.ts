@@ -7,7 +7,7 @@ import { getStatisticName } from './get-statistic-name'
 import { makeResourceName } from './make-name'
 import type Template from 'cloudform-types/types/template'
 
-export interface KinesisAlarmProperties {
+export interface KinesisAlarmsConfig {
   enabled?: boolean
   'GetRecords.IteratorAgeMilliseconds': DefaultAlarmsProperties
   ReadProvisionedThroughputExceeded: DefaultAlarmsProperties
@@ -32,16 +32,16 @@ const kinesisAlarmTypes = {
  * based on the resources found within
  *  A CloudFormation template object
  */
-export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createKinesisAlarms (kinesisAlarmsConfig: KinesisAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamResourceName] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      const config: DefaultAlarmsProperties = kinesisAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = kinesisAlarmsConfig[metric]
       const { enabled, ...rest } = config
       if (config.enabled !== false) {
-        const kinesisAlarmProperties: CfAlarmsProperties = {
+        const KinesisAlarmsConfig: CfAlarmsProperties = {
           AlarmName: `Kinesis_${type}_${streamResourceName}`,
           AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamResourceName} breaches ${config.Threshold} milliseconds`,
           MetricName: metric,
@@ -50,7 +50,7 @@ export default function createKinesisAlarms (kinesisAlarmProperties: KinesisAlar
           ...rest
         }
         const resourceName = makeResourceName('Kinesis', streamResourceName, type)
-        const resource = createAlarm(kinesisAlarmProperties, context)
+        const resource = createAlarm(KinesisAlarmsConfig, context)
         resources[resourceName] = resource
       }
     }

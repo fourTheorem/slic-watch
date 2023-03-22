@@ -1,14 +1,14 @@
 'use strict'
 
-import type { AlbTargetAlarmProperties } from './alb-target-group'
-import type { AlbAlarmProperties } from './alb'
-import type { ApiGwAlarmProperties } from './api-gateway'
-import type { AppSyncAlarmProperties } from './appsync'
-import type { DynamoDbAlarmProperties } from './dynamodb'
+import type { AlbTargetAlarmsConfig } from './alb-target-group'
+import type { AlbAlarmsConfig } from './alb'
+import type { ApiGwAlarmsConfig } from './api-gateway'
+import type { AppSyncAlarmsConfig } from './appsync'
+import type { DynamoDbAlarmsConfig } from './dynamodb'
 import type { EcsAlarmsConfig } from './ecs'
 import type { EventsAlarmsConfig } from './eventbridge'
-import type { KinesisAlarmProperties } from './kinesis'
-import type { LambdaFunctionAlarmProperties } from './lambda'
+import type { KinesisAlarmsConfig } from './kinesis'
+import type { LambdaFunctionAlarmsConfig } from './lambda'
 import type { SnsAlarmsConfig } from './sns'
 import type { SqsAlarmsConfig } from './sqs'
 import type { SfAlarmsConfig } from './step-functions'
@@ -19,7 +19,7 @@ import { getResourcesByType } from '../cf-template'
 import { makeResourceName } from './make-name'
 import type Template from 'cloudform-types/types/template'
 
-export function fetchAlarmResources (type: string, service: string, metrics: string[], config, context: Context, compiledTemplate: Template, getAlarm) {
+export function fetchAlarmResources (type: string, service: string, metrics: string[], config: DefaultAlarmsProperties, context: Context, compiledTemplate: Template, getAlarm) {
   const resources = {}
   const resourcesOfType = getResourcesByType(type, compiledTemplate)
 
@@ -77,18 +77,18 @@ export interface Context {
   alarmActions: string[]
 }
 
-export type AlarmsConfig = AlbTargetAlarmProperties & AlbAlarmProperties & ApiGwAlarmProperties & AppSyncAlarmProperties & DynamoDbAlarmProperties
-& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmProperties & LambdaFunctionAlarmProperties & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
+export type AlarmsConfig = AlbTargetAlarmsConfig & AlbAlarmsConfig & ApiGwAlarmsConfig & AppSyncAlarmsConfig & DynamoDbAlarmsConfig
+& EcsAlarmsConfig & EventsAlarmsConfig & KinesisAlarmsConfig & LambdaFunctionAlarmsConfig & SnsAlarmsConfig & SqsAlarmsConfig & SfAlarmsConfig
 
 export interface FunctionAlarmProperties {
-  HelloLambdaFunction?: LambdaFunctionAlarmProperties
-  ThrottlerLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveStreamLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveQueueLambdaFunction?: LambdaFunctionAlarmProperties
-  DriveTableLambdaFunction?: LambdaFunctionAlarmProperties
-  StreamProcessorLambdaFunction?: LambdaFunctionAlarmProperties
-  HttpGetterLambdaFunction?: LambdaFunctionAlarmProperties
-  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmProperties
-  EventsRuleLambdaFunction?: LambdaFunctionAlarmProperties
-  AlbEventLambdaFunction?: LambdaFunctionAlarmProperties
+  HelloLambdaFunction?: LambdaFunctionAlarmsConfig
+  ThrottlerLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveStreamLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveQueueLambdaFunction?: LambdaFunctionAlarmsConfig
+  DriveTableLambdaFunction?: LambdaFunctionAlarmsConfig
+  StreamProcessorLambdaFunction?: LambdaFunctionAlarmsConfig
+  HttpGetterLambdaFunction?: LambdaFunctionAlarmsConfig
+  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmsConfig
+  EventsRuleLambdaFunction?: LambdaFunctionAlarmsConfig
+  AlbEventLambdaFunction?: LambdaFunctionAlarmsConfig
 }

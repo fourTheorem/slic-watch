@@ -12,7 +12,7 @@
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
     "prepublish": "cp ../README.md README.md",
-    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap"
+    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap --watch"
   },
   "devDependencies": {
     "serverless-hooks-plugin": "^1.1.0",

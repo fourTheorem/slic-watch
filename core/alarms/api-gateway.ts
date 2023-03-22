@@ -8,7 +8,7 @@ import { makeResourceName } from './make-name'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
-export interface ApiGwAlarmProperties {
+export interface ApiGwAlarmsConfig {
   enabled?: boolean
   '5XXError': DefaultAlarmsProperties
   '4XXError': DefaultAlarmsProperties
@@ -74,9 +74,9 @@ const executionMetrics: ApiMetrics[] = [
 ]
 
 /**
- * apiGwAlarmProperties The fully resolved alarm configuration
+ * ApiGwAlarmsConfig The fully resolved alarm configuration
  */
-export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createApiGatewayAlarms (apiGwAlarmsConfig: ApiGwAlarmsConfig, context: Context, compiledTemplate: Template) {
   /**
    * Add all required API Gateway alarms to the provided CloudFormation template
    * based on the resources found within
@@ -88,7 +88,7 @@ export default function createApiGatewayAlarms (apiGwAlarmProperties: ApiGwAlarm
 
   for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
-      const config: DefaultAlarmsProperties = apiGwAlarmProperties[metric]
+      const config: DefaultAlarmsProperties = apiGwAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)

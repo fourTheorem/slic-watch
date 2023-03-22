@@ -4,7 +4,7 @@ import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './def
 import { createAlarm } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
 
-export interface LambdaFunctionAlarmProperties {
+export interface LambdaFunctionAlarmsConfig {
   Errors: DefaultAlarmsProperties
   ThrottlesPc: DefaultAlarmsProperties
   DurationPc: DefaultAlarmsProperties
@@ -37,7 +37,7 @@ function alarmProperty (config: DefaultAlarmsProperties, metric: LambdaMetrics, 
  *                                      function-specific overrides by function logical ID
  * context Deployment context (alarmActions)
  */
-export default function createLambdaAlarms (functionAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createLambdaAlarms (functionAlarmProperties: LambdaFunctionAlarmsConfig, context: Context, compiledTemplate: Template) {
   /**
    * Add all required Lambda alarms to the provided CloudFormation template
    * based on the Lambda resources found within
