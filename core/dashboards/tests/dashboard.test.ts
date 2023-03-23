@@ -1,9 +1,8 @@
-'use strict'
 
 import _ from 'lodash'
 import { test } from 'tap'
 
-import addDashboard, { resolveEcsClusterNameForSub } from '../dashboard'
+import addDashboard from '../dashboard'
 import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from '../../tests/testing-utils'
@@ -13,7 +12,7 @@ const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'Conc
 const emptyFuncConfigs = {}
 
 test('An empty template creates no dashboard', (t) => {
-  const compiledTemplate = createTestCloudFormationTemplate({ Resources: [] })
+  const compiledTemplate = createTestCloudFormationTemplate({ Resources: {} })
   addDashboard(defaultConfig.dashboard, emptyFuncConfigs, compiledTemplate)
 
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
@@ -27,7 +26,6 @@ test('A dashboard includes metrics', (t) => {
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
-  // eslint-disable-next-line no-template-curly-in-string
   t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
   const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
@@ -191,23 +189,6 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
-  test('resolveEcsClusterNameForSub', (t) => {
-    const fromLiteral = resolveEcsClusterNameForSub('my-cluster')
-    t.equal(fromLiteral, 'my-cluster')
-    const fromArn = resolveEcsClusterNameForSub('arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster')
-    t.equal(fromArn, 'my-cluster')
-    const fromRef = resolveEcsClusterNameForSub({ Ref: 'my-cluster' })
-    t.same(fromRef, { Ref: 'my-cluster' })
-    const fromGetAtt = resolveEcsClusterNameForSub({ GetAtt: ['my-cluster', 'Arn'] })
-    t.same(fromGetAtt, { Ref: 'my-cluster' })
-    const fromSub = resolveEcsClusterNameForSub({ 'Fn::Sub': '$' + '{my-cluster}' })
-    t.same(fromSub, '$' + '{my-cluster}')
-    const unexpected = { Unexpected: 'syntax' }
-    const fromUnexpected = resolveEcsClusterNameForSub(unexpected)
-    t.same(fromUnexpected, unexpected)
-    t.end()
-  })
-
   t.test('dashboard includes ECS metrics', (t) => {
     const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
       title.startsWith('ECS')
@@ -299,7 +280,6 @@ test('A dashboard includes metrics for ALB', (t) => {
       }
     }
     t.same(namespaces, new Set(['AWS/ApplicationELB']))
-    // eslint-disable-next-line no-template-curly-in-string
     const expectedTitles = new Set(['ALB ${alb.LoadBalancerName}'])
 
     const actualTitles = new Set(
@@ -334,9 +314,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          metricConfig.enabled = false
-        }
+        dashConfig.widgets[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((appSyncCfTemplate))
       addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate)
@@ -349,9 +327,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          metricConfig.enabled = false
-        }
+        dashConfig.widgets[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((albCfTemplate))
       addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate)
@@ -408,7 +384,6 @@ test('A dashboard includes metrics for ALB', (t) => {
     const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
     t.equal(Object.keys(dashResources).length, 1)
     const [, dashResource] = Object.entries(dashResources)[0]
-    // eslint-disable-next-line no-template-curly-in-string
     t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
     const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
@@ -430,8 +405,6 @@ test('A dashboard includes metrics for ALB', (t) => {
         'AppSync API awesome-appsync',
         'AppSync Real-time Subscriptions awesome-appsync'
       ])
-      // eslint-disable-next-line no-template-curly-in-string
-
       const actualTitles = new Set(
         widgets.map((widget) => widget.properties.title)
       )
@@ -443,9 +416,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-          metricConfig.enabled = false
-        }
+        dashConfig.widgets[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((appSyncCfTemplate))
       addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate)
@@ -461,7 +432,7 @@ test('A dashboard includes metrics for ALB', (t) => {
 })
 
 test('DynamoDB widgets are created without GSIs', (t) => {
-  const tableResource = _.cloneDeep(defaultCfTemplate.Resources?.dataTable)
+  const tableResource: any = _.cloneDeep(defaultCfTemplate.Resources?.dataTable)
   delete tableResource?.Properties?.GlobalSecondaryIndexes
   const compTemplates = {
     Resources: {
@@ -507,9 +478,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    for (const metricConfig of Object.values(dashConfig.widgets[service])) {
-      metricConfig.enabled = false
-    }
+    dashConfig.widgets[service].enabled = false
   }
   const compiledTemplate = createTestCloudFormationTemplate()
   addDashboard(dashConfig, emptyFuncConfigs, compiledTemplate)
@@ -521,7 +490,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
 test('A widget is not created for Lambda if disabled at a function level', (t) => {
   const disabledFunctionName = 'serverless-test-project-dev-hello'
   for (const metric of lambdaMetrics) {
-    const funcConfigs = {
+    const funcConfigs: any = {
       [disabledFunctionName]: {
         [metric]: { enabled: false }
       }

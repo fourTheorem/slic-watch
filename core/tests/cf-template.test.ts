@@ -1,11 +1,8 @@
-
-'use strict'
-
-import { resolveFunctionResourceName, getResourcesByType } from '../cf-template'
+import { test } from 'tap'
 import type Template from 'cloudform-types/types/template'
 import { type ResourceType } from './../cf-template'
 
-import { test } from 'tap'
+import { resolveFunctionResourceName, getResourcesByType } from '../cf-template'
 
 test('Function resource name can be resolved using Ref', (t) => {
   const resName = resolveFunctionResourceName({ Ref: 'res1' })
@@ -38,7 +35,9 @@ test('Resource can be resolved by type from template with additional resource ',
     }
   }
   const additionalResources = {
-    b: { Type: 'AWS::SQS::Queue' }
+    Resources: {
+      b: { Type: 'AWS::SQS::Queue' }
+    }
   }
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
   for (const [, tableResource] of Object.entries(tableResources)) {
@@ -52,11 +51,10 @@ test('Resource can be resolved by type from template with additional resource ',
 })
 
 test('Resource can be resolved by type from service resources', (t) => {
-  const compiledTemplate: Template = {}
   const serviceResources: ResourceType = {
     b: { Type: 'AWS::DynamoDB::Table' }
   }
-  const resources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate, serviceResources)
+  const resources = getResourcesByType('AWS::DynamoDB::Table', serviceResources)
   for (const [, tableResource] of Object.entries(resources)) {
     t.equal(tableResource.Type, 'AWS::DynamoDB::Table')
   }

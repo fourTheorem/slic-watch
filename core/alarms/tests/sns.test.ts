@@ -1,9 +1,8 @@
-'use strict'
+import { test } from 'tap'
 
 import createSNSAlarms from '../sns'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
-import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -57,7 +56,7 @@ test('SNS alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'TopicName',
-        Value: '${topic.TopicName}'
+        Value: { 'Fn::GetAtt': ['topic', 'TopicName'] }
       }
     ])
   }

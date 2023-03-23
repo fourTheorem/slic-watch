@@ -1,4 +1,3 @@
-'use strict'
 
 /*
  * Source https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L113
@@ -81,7 +80,9 @@ const commonAlarmProperties = {
   }
 }
 
-const alarmSchemas = {}
+const alarmSchemas = {
+  Lambda: {}
+}
 for (const service of Object.keys(supportedAlarms)) {
   alarmSchemas[service] = {
     type: 'object',
@@ -130,7 +131,9 @@ const commonWidgetProperties = {
   }
 }
 
-const widgetSchemas = {}
+const widgetSchemas = {
+  Lambda: {}
+}
 for (const service of Object.keys(supportedWidgets)) {
   widgetSchemas[service] = {
     type: 'object',

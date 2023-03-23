@@ -1,7 +1,7 @@
-'use strict'
-
-import createALBAlarms, { type AlbAlarmProperties } from '../alb'
 import { test } from 'tap'
+
+import createALBAlarms from '../alb'
+import type { AlbAlarmsConfig } from '../alb'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -32,15 +32,15 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: AlbAlarmProperties) {
+  function createAlarmResources (elbAlarmProperties: AlbAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
     return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }
   const albAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
   const expectedTypesELB = {
-    LoadBalancerHTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
-    LoadBalancerRejectedConnectionCountAlarm: 'RejectedConnectionCount'
+    LoadBalancer_HTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
+    LoadBalancer_RejectedConnectionCountAlarm: 'RejectedConnectionCount'
   }
 
   t.equal(Object.keys(albAlarmResources).length, Object.keys(expectedTypesELB).length)

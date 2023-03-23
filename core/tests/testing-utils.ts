@@ -1,4 +1,3 @@
-'use strict'
 
 import path from 'path'
 import fs from 'fs'
@@ -6,6 +5,7 @@ import _ from 'lodash'
 import { fileURLToPath } from 'url'
 import YAML from 'yaml'
 import type Template from 'cloudform-types/types/template'
+
 import { cascade } from '../inputs/cascading-config'
 import _defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json' assert { type: 'json'}
 import _albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json' assert { type: 'json'}
@@ -26,7 +26,7 @@ const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = { alarmActions: ['dummy-arn'] }
 
-function assertCommonAlarmProperties (t, al): void {
+function assertCommonAlarmProperties (t, al) {
   t.ok(al.AlarmDescription)
   t.ok(al.ActionsEnabled)
   t.equal(al.AlarmActions.length, 1)

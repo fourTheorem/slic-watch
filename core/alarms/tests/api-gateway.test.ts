@@ -1,7 +1,6 @@
-'use strict'
+import { test } from 'tap'
 
 import createApiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
-import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,

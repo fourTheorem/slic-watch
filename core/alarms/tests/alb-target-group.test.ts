@@ -1,7 +1,6 @@
-'use strict'
+import { test } from 'tap'
 
 import createALBTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
-import { test } from 'tap'
 import { defaultConfig } from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -243,11 +242,11 @@ test('ALB Target Group alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'TargetGroup',
-        Value: '${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}'
+        Value: { 'Fn::GetAtt': ['AlbEventAlbTargetGrouphttpListener', 'TargetGroupFullName'] }
       },
       {
         Name: 'LoadBalancer',
-        Value: '${alb.LoadBalancerFullName}'
+        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
       }
     ])
   }

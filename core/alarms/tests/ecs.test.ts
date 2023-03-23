@@ -1,7 +1,6 @@
-'use strict'
+import { test } from 'tap'
 
 import createECSAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
-import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,

@@ -1,32 +1,50 @@
-
-'use strict'
-
-import type { Context, DefaultAlarmsProperties } from './default-config-alarms'
-import { fetchAlarmResources } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
+
+import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import { createCfAlarms } from './alarm-utils'
 
 export interface EventsAlarmsConfig {
   enabled?: boolean
-  FailedInvocations: DefaultAlarmsProperties
-  ThrottledRules: DefaultAlarmsProperties
+  FailedInvocations: SlicWatchAlarmConfig
+  ThrottledRules: SlicWatchAlarmConfig
 }
 
-type EventMetrics = 'FailedInvocations' | 'ThrottledRules'
-
-const executionMetrics: EventMetrics[] = ['FailedInvocations', 'ThrottledRules']
+const executionMetrics = ['FailedInvocations', 'ThrottledRules']
 
 /**
- * The fully resolved alarm configuration
+ * Create CloudFormation CloudWatch Metric alarm properties that are specific to EventBridge Rule resources
+ *
+ * @param metric The EventBridge metric name
+ * @param ruleLogicalId The CloudFormation Logical ID of the Rule resource
+ * @param config The alarm config for this specific metric
+ *
+ * @returns EventBridge-specific CloudFormation Alarm properties
+ */
+function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: string, config: SlicWatchAlarmConfig) {
+  return {
+    Namespace: 'AWS/Events',
+    Dimensions: [{ Name: 'RuleName', Value: { Ref: ruleLogicalId } as any }]
+  }
+}
+
+/**
  * Add all required Events alarms to the provided CloudFormation template
  * based on the EventBridge Rule found within
  *
+ * @param eventsAlarmsConfig The fully resolved alarm configuration
+ * @param context Deployment context (alarmActions)
+ * @param compiledTemplate  A CloudFormation template object
+ *
+ * @returns EventBridge-specific CloudFormation Alarm resources
  */
 export default function createRuleAlarms (eventsAlarmsConfig: EventsAlarmsConfig, context: Context, compiledTemplate: Template) {
-  return fetchAlarmResources('AWS::Events::Rule', 'Events', executionMetrics, eventsAlarmsConfig, context, compiledTemplate,
-    ({ metric, resourceName, config }) => ({
-      AlarmName: `Events_${metric}Alarm_${resourceName}`,
-      AlarmDescription: `EventBridge ${metric} for \${${resourceName}} breaches ${config.Threshold}`,
-      Namespace: 'AWS/Events',
-      Dimensions: [{ Name: 'RuleName', Value: { Ref: resourceName } as any }]
-    }))
+  return createCfAlarms(
+    'AWS::Events::Rule',
+    'Events',
+    executionMetrics,
+    eventsAlarmsConfig,
+    context,
+    compiledTemplate,
+    createEventBridgeAlarmCfProperties
+  )
 }

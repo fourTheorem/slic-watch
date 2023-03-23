@@ -1,18 +1,16 @@
-'use strict'
-
-import { getResourcesByType } from '../cf-template'
-import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
-import { createAlarm } from './default-config-alarms'
-import { getStatisticName } from './get-statistic-name'
-import { makeResourceName } from './make-name'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
+import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
+import { getResourcesByType } from '../cf-template'
+
 export interface ApiGwAlarmsConfig {
   enabled?: boolean
-  '5XXError': DefaultAlarmsProperties
-  '4XXError': DefaultAlarmsProperties
-  Latency: DefaultAlarmsProperties
+  '5XXError': SlicWatchAlarmConfig
+  '4XXError': SlicWatchAlarmConfig
+  Latency: SlicWatchAlarmConfig
 }
 
 /**
@@ -26,6 +24,7 @@ export interface ApiGwAlarmsConfig {
  *
  * @param restApiResource CloudFormation resource for a REST API
  * @param restApiLogicalId The logical ID for the resouce
+ *
  * @returns CloudFormation syntax for the API name
  */
 export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogicalId: string) {
@@ -48,6 +47,7 @@ export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogic
  *
  * @param restApiResource CloudFormation resource for a REST API
  * @param restApiLogicalId The logical ID for the resouce
+ *
  * @returns Literal string or Sub variable syntax
  */
 export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string) {
@@ -65,41 +65,38 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
   }
   return name
 }
-type ApiMetrics = '5XXError' | '4XXError' | 'Latency'
 
-const executionMetrics: ApiMetrics[] = [
-  '5XXError',
-  '4XXError',
-  'Latency'
-]
+const executionMetrics = ['5XXError', '4XXError', 'Latency']
 
 /**
- * ApiGwAlarmsConfig The fully resolved alarm configuration
+ * Add all required API Gateway alarms to the provided CloudFormation template
+ * based on the resources found within
+ *
+ * @param apiGwAlarmsConfig The fully resolved alarm configuration
+ * @param context Deployment context (alarmActions)
+ * @param compiledTemplate  A CloudFormation template object
+ *
+ * @returns API Gateway-specific CloudFormation Alarm resources
  */
 export default function createApiGatewayAlarms (apiGwAlarmsConfig: ApiGwAlarmsConfig, context: Context, compiledTemplate: Template) {
-  /**
-   * Add all required API Gateway alarms to the provided CloudFormation template
-   * based on the resources found within
-   *A CloudFormation template object
-   */
-
   const resources = {}
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 
-  for (const [apiResourceName, apiResource] of Object.entries(apiResources)) {
+  for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
-      const config: DefaultAlarmsProperties = apiGwAlarmsConfig[metric]
+      const config: SlicWatchAlarmConfig = apiGwAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const apiName = resolveRestApiNameAsCfn(apiResource, apiResourceName)
-        const apiNameForSub = resolveRestApiNameForSub(apiResource, apiResourceName)
-        const apiAlarmProperties: CfAlarmsProperties = {
+        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
+        const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
+        const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
+        const apiAlarmProperties: AlarmProperties = {
           AlarmName: `APIGW_${metric}_${apiNameForSub}`,
           AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
-          ...rest
+          ...alarmProps
         }
         const resourceName = makeResourceName('Api', apiName, metric)
         const resource = createAlarm(apiAlarmProperties, context)

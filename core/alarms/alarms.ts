@@ -1,12 +1,12 @@
-'use strict'
-
-import { cascade } from '../inputs/cascading-config'
-import type { SlicWatchAlarmsConfig } from '../inputs/cascading-config'
-import { applyAlarmConfig } from '../inputs/function-config'
-import type { FunctionAlarmProperties, Context } from './default-config-alarms'
+import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
+import { cascade } from '../inputs/cascading-config'
+import { applyAlarmConfig } from '../inputs/function-config'
+import type { Context, SlicWatchAlarmsConfig } from './alarm-types'
+
 import createLambdaAlarms from './lambda'
+import type { FunctionAlarmProperties } from './lambda'
 import createApiGatewayAlarms from './api-gateway'
 import createStatesAlarms from './step-functions'
 import createDynamoDbAlarms from './dynamodb'
@@ -19,9 +19,8 @@ import createALBAlarms from './alb'
 import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { addResource } from '../cf-template'
-import type Resource from 'cloudform-types/types/resource'
 
-export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template): void {
+export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -35,25 +34,34 @@ export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, funct
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmProperties)
+  } = cascade(alarmProperties) as SlicWatchAlarmsConfig
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
-  const alarmFunctions = [createLambdaAlarms, createApiGatewayAlarms, createStatesAlarms, createDynamoDbAlarms, createKinesisAlarms, createSQSAlarms,
-    createECSAlarms, createSNSAlarms, createRuleAlarms, createALBAlarms, createALBTargetAlarms, createAppSyncAlarms]
-  const alarmConfigs = [cascadedFunctionAlarmProperties, apiGwConfig, sfConfig, dynamoDbConfig, kinesisConfig, sqsConfig, ecsConfig, snsConfig, ruleConfig,
-    albConfig, albTargetConfig, appSyncConfig]
-
+  const funcsWithConfig = [
+    { config: apiGwConfig, alarmFunc: createApiGatewayAlarms },
+    { config: sfConfig, alarmFunc: createStatesAlarms },
+    { config: dynamoDbConfig, alarmFunc: createDynamoDbAlarms },
+    { config: kinesisConfig, alarmFunc: createKinesisAlarms },
+    { config: sqsConfig, alarmFunc: createSQSAlarms },
+    { config: ecsConfig, alarmFunc: createECSAlarms },
+    { config: snsConfig, alarmFunc: createSNSAlarms },
+    { config: ruleConfig, alarmFunc: createRuleAlarms },
+    { config: albConfig, alarmFunc: createALBAlarms },
+    { config: albTargetConfig, alarmFunc: createALBTargetAlarms },
+    { config: appSyncConfig, alarmFunc: createAppSyncAlarms }
+  ]
   const resources = {}
-  Object.assign(resources,
-    ...alarmFunctions.map((alarmFn, i) => {
-      const config: any = alarmConfigs[i]
-      if (config?.enabled !== false || i === 0) {
-        return alarmFn(config, context, compiledTemplate) ?? {}
+
+  if (alarmProperties.enabled ?? true) {
+    Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate))
+    for (const { config, alarmFunc } of funcsWithConfig) {
+      if (config?.enabled != null) {
+        Object.assign(resources, alarmFunc(config as any, context, compiledTemplate))
       }
-      return {}
-    }))
-  for (const resourceName in resources) {
-    addResource(resourceName, resources[resourceName] as Resource, compiledTemplate)
+    }
+  }
+  for (const [resourceName, resource] of Object.entries(resources)) {
+    addResource(resourceName, resource as Resource, compiledTemplate)
   }
 }

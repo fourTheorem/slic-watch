@@ -1,17 +1,21 @@
-'use strict'
-
+import { test } from 'tap'
 import _ from 'lodash'
 import Serverless from 'serverless'
-import ServerlessPlugin from '../index'
-import { test } from 'tap'
 import pino from 'pino'
+
+import ServerlessPlugin from '../index'
 
 interface TestData {
   schema?
   functionSchema?
 }
 
-const slsYaml = {
+interface SlsYaml {
+  custom?
+  functions?
+}
+
+const slsYaml: SlsYaml = {
   custom: {
     slicWatch: {
       topicArn: 'test-topic',

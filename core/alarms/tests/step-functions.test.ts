@@ -1,9 +1,8 @@
-'use strict'
+import { test } from 'tap'
 
 import createStatesAlarms from '../step-functions'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
-import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -53,9 +52,9 @@ test('Step Function alarms are created', (t) => {
   }
 
   const executionMetrics = [
-    'StepFunctions_ExecutionThrottled',
-    'StepFunctions_ExecutionsFailed',
-    'StepFunctions_ExecutionsTimedOut'
+    'StepFunctions_ExecutionThrottledAlarm',
+    'StepFunctions_ExecutionsFailedAlarm',
+    'StepFunctions_ExecutionsTimedOutAlarm'
   ]
 
   t.same(new Set(Object.keys(alarmsByType)), new Set(executionMetrics))
@@ -64,7 +63,7 @@ test('Step Function alarms are created', (t) => {
     t.equal(alarmsByType[type].size, 1)
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
-      const metric = type.split('_')[1]
+      const metric = type.split('_')[1].replace(/Alarm$/g, '')
       t.equal(al.Threshold, sfAlarmProperties[metric].Threshold)
       t.equal(al.EvaluationPeriods, 2)
       t.equal(al.TreatMissingData, 'breaching')

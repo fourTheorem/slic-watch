@@ -1,82 +1,21 @@
-
-'use strict'
+import pino from 'pino'
+import type { Entries } from 'type-fest'
+import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
-import { type Widgets, type SlicWatchDashboardConfig } from '../inputs/cascading-config'
 import { getResourcesByType, getEventSourceMappingFunctions, addResource } from '../cf-template'
 import type { ResourceType } from '../cf-template'
-import type { DashboardBodyProperties, FunctionDashboardConfigs, ServiceDashConfig } from './default-config-dashboard'
-import pino from 'pino'
+import type { CreateMetricWidget, DashboardBodyProperties, FunctionDashboardConfigs, MetricDefs, ServiceDashConfig, SlicWatchDashboardConfig, Widgets } from './dashboard-types'
+
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
-import type Template from 'cloudform-types/types/template'
-import type { Entries } from 'type-fest'
+import { resolveEcsClusterNameForSub, resolveGraphlQLId, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } from './dashboard-utils'
 
 declare global {
   interface ObjectConstructor {
     // eslint-disable-next-line @typescript-eslint/method-signature-style
     entries<T extends object>(obj: T): Entries<T>
   }
-}
-
-/**
- * Given CloudFormation syntax for an AppSync GraphQLAPIId, derive a string value or
- * CloudFormation 'Fn::Sub' variable syntax for the GraphQLAPI
- *
- * @param apiId The CloudFormation logical ID for the AppSync GraphQLAPI resource
- * @returns Literal string or Sub variable syntax
- */
-function resolveGraphlQLId (apiId: string) {
-  return `\${${apiId}.ApiId}`
-}
-
-/**
- * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
- * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
- *
- * @param resource The Application Load Balancer resource object
- * @param logicalId The CloudFormation logical ID for the ALB resource
- * @returns Literal string or Sub variable syntax
- */
-export function resolveLoadBalancerFullNameForSub (logicalId: string): string {
-  return `\${${logicalId}.LoadBalancerFullName}`
-}
-
-/**
- * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
- * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
- *
- * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
- * @returns Literal string or Sub variable syntax
- */
-export function resolveTargetGroupFullNameForSub (logicalId: string): string {
-  return `\${${logicalId}.TargetGroupFullName}`
-}
-
-/**
- * Given CloudFormation syntax for an ECS cluster, derive a string value or
- * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
- *
- * @param } cluster CloudFormation syntax for an ECS cluster
- * @returns Literal string or Sub variable syntax
- */
-export function resolveEcsClusterNameForSub (cluster) {
-  if (typeof cluster === 'string') {
-    if (cluster.startsWith('arn:')) {
-      return cluster.split(':').pop()?.split('/').pop()
-    }
-    return cluster
-  }
-  // AWS::ECS::Cluster returns the cluster name for 'Ref'
-  // This can be used as a 'Fn::Sub' variable
-  if (cluster.GetAtt != null && cluster.GetAtt[1] === 'Arn') {
-    return { Ref: cluster.GetAtt[0] }
-  } else if (cluster.Ref != null) {
-    return { Ref: cluster.Ref }
-  } else if (cluster['Fn::Sub'] != null) {
-    return cluster['Fn::Sub']
-  }
-  return cluster
 }
 
 const MAX_WIDTH = 24
@@ -86,9 +25,9 @@ const logger = pino()
 /**
  * @param {*} dashboardConfig The global plugin dashboard configuration
  * @param {*} functionDashboardConfigs The dashboard configuration override by function name
- * @param {*} context The plugin context
+ * @param {*} compiledTemplate A CloudFormation template object
  */
-export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig, functionDashboardConfigs, compiledTemplate: Template): void {
+export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig, functionDashboardConfigs: FunctionDashboardConfigs, compiledTemplate: Template) {
   const {
     timeRange,
     widgets: {
@@ -105,7 +44,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       ApplicationELBTarget: albTargetDashConfig,
       AppSync: appSyncDashConfig
     }
-  } = cascade(dashboardConfig)
+  } = cascade(dashboardConfig) as SlicWatchDashboardConfig
 
   /**
    * Adds a dashboard to the specified CloudFormation template
@@ -161,7 +100,6 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     const dashboardResource = {
       Type: 'AWS::CloudWatch::Dashboard',
       Properties: {
-        // eslint-disable-next-line no-template-curly-in-string
         DashboardName: { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' },
         DashboardBody: { 'Fn::Sub': JSON.stringify(dash) }
       }
@@ -171,64 +109,20 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     logger.info('No dashboard widgets are enabled in SLIC Watch. Dashboard creation will be skipped.')
   }
 
-  interface WidgetMetrics {
-    namespace: string
-    metric: string
-    dimensions: string
-    stat: string
-  }
-
-  interface MetricDefs {
-    namespace: string
-    metric: string
-    dimensions: object
-    stat: string
-    yAxis?: string
-  }
-  interface Properties {
-    metrics: any[]
-    title: string
-    view: string
-    region: string
-    period: number
-  }
-
-  // interface ExtractedConfig {
-  //   enabled?: boolean
-  //   metricPeriod?: number
-  //   width?: number
-  //   height?: number
-  //   yAxis?: number
-  //   Statistic?: string[]
-  // }
-
-  interface CreateMetricWidget {
-    type: string
-    properties: Properties
-    width: number
-    height: number
-  }
-
-  // interface PositionedWidgets {
-  //   x: number
-  //   y: number
-  //   width: number
-  //   height: number
-  // }
   /**
    * Create a metric for the specified metrics
    *
    * @param {string} title The metric title
-   * @param {Array.<object>} metrics The metric definitions to render
-   * @param {Object} Cascaded widget/metric configuration
+   * @param {Array.<object>} metricDefs The metric definitions to render
+   * @param {Object} config Cascaded widget/metric configuration
    */
-  function createMetricWidget (title: string, metricDefs: MetricDefs[], config): CreateMetricWidget {
+  function createMetricWidget (title: string, metricDefs: MetricDefs[], config: DashboardBodyProperties): CreateMetricWidget {
     const metrics = metricDefs.map(
       ({ namespace, metric, dimensions, stat, yAxis }) => [
         namespace,
         metric,
         ...Object.entries(dimensions).reduce(
-          (acc: any, [name, value]) => [...acc, name, value],
+          (acc: string[], [name, value]) => [...acc, name, value],
           []
         ),
         { stat, yAxis }
@@ -243,8 +137,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         region: '${AWS::Region}',
         period: config.metricPeriod
       },
-      width: config.width,
-      height: config.height
+      width: config.width as number,
+      height: config.height as number
     }
   }
 
@@ -260,9 +154,9 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     if (Object.keys(functionResources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
         if (metricConfig?.enabled !== false) {
-          if (metric !== 'IteratorAge') {
+          if (metric !== 'IteratorAge' as any) {
             for (const stat of metricConfig?.Statistic ?? []) {
-              const metricDefs: any = []
+              const metricDefs: MetricDefs[] = []
               for (const logicalId of Object.keys(functionResources)) {
                 const functionConfig = functionDashboardConfigs[logicalId] ?? {}
                 const functionMetricConfig = functionConfig[metric] ?? {}
@@ -280,7 +174,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
                 const metricStatWidget = createMetricWidget(
                   `Lambda ${metric} ${stat} per Function`,
                   metricDefs,
-                  metricConfig
+                  metricConfig as Widgets
                 )
                 lambdaWidgets.push(metricStatWidget)
               }
@@ -296,11 +190,10 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
                   stats.map(stat => ({
                     namespace: 'AWS/Lambda',
                     metric: 'IteratorAge',
-                    // eslint-disable-next-line no-template-curly-in-string
                     dimensions: { FunctionName: `\${${logicalId}}` },
                     stat
                   })),
-                  metricConfig
+                  metricConfig as Widgets
                 )
                 lambdaWidgets.push(iteratorAgeWidget)
               }
@@ -317,7 +210,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * These config objects mix cascaded config literals (like `alarmPeriod: 300`) and metric
    * configurations (like `Errors: { Statistic: ['Sum'] }`) so here we extract the latter.
    *
-   *  The config object for a specific service within the dashboard
+   * @param serviceDashConfig t The config object for a specific service within the dashboard
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
   function getConfiguredMetrics (serviceDashConfig): ServiceDashConfig {
@@ -335,7 +228,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     const apiWidgets: CreateMetricWidget[] = []
     for (const [resourceName, res] of Object.entries(apiResources)) {
       const apiName: string = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
-      const widgetMetrics: WidgetMetrics | any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -353,7 +246,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           const metricStatWidget = createMetricWidget(
             `${metric} API ${apiName}`,
             widgetMetrics,
-            apiGwDashConfig
+            apiGwDashConfig as Widgets
           )
           apiWidgets.push(metricStatWidget)
         }
@@ -371,7 +264,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createStateMachineWidgets (smResources: ResourceType): CreateMetricWidget[] {
     const smWidgets: CreateMetricWidget[] = []
     for (const [logicalId] of Object.entries(smResources)) {
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -390,7 +283,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         const metricStatWidget = createMetricWidget(
           `\${${logicalId}.Name} Step Function Executions`,
           widgetMetrics,
-          sfDashConfig
+          sfDashConfig as Widgets
         )
         smWidgets.push(metricStatWidget)
       }
@@ -406,7 +299,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createDynamoDbWidgets (tableResources: ResourceType): CreateMetricWidget[] {
     const ddbWidgets: CreateMetricWidget[] = []
     for (const [logicalId, res] of Object.entries(tableResources)) {
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -423,7 +316,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
             const metricStatWidget = createMetricWidget(
               `${metric} Table $\{${logicalId}}`,
               widgetMetrics,
-              dynamoDbDashConfig
+              dynamoDbDashConfig as Widgets
             )
             ddbWidgets.push(metricStatWidget)
           }
@@ -444,7 +337,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
               const metricStatWidget = createMetricWidget(
                 `${metric} GSI ${gsiName} in \${${logicalId}}`,
                 widgetMetrics,
-                dynamoDbDashConfig
+                dynamoDbDashConfig as Widgets
               )
               ddbWidgets.push(metricStatWidget)
             }
@@ -472,7 +365,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
 
     for (const [logicalId] of Object.entries(streamResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
-        const widgetMetrics: any = []
+        const widgetMetrics: MetricDefs[] = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
           if (metricConfig.enabled as boolean) {
@@ -490,7 +383,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           streamWidgets.push(createMetricWidget(
             `${group} $\{${logicalId}} Kinesis`,
             widgetMetrics,
-            kinesisDashConfig
+            kinesisDashConfig as Widgets
           ))
         }
       }
@@ -514,10 +407,10 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
 
     for (const [logicalId] of Object.entries(queueResources)) {
       for (const [group, metrics] of Object.entries(metricGroups)) {
-        const widgetMetrics: any = []
+        const widgetMetrics: MetricDefs[] = []
         for (const metric of metrics) {
           const metricConfig = metricConfigs[metric]
-          if (metricConfig.enabled as boolean) {
+          if (metricConfig.enabled !== false) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/SQS',
@@ -534,7 +427,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           queueWidgets.push(createMetricWidget(
             `${group} \${${logicalId}.QueueName} SQS`,
             widgetMetrics,
-            sqsDashConfig
+            sqsDashConfig as Widgets
           ))
         }
       }
@@ -553,7 +446,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties?.Cluster)
 
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -573,7 +466,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         const metricStatWidget = createMetricWidget(
           `ECS Service \${${logicalId}.Name}`,
           widgetMetrics,
-          ecsDashConfig
+          ecsDashConfig as Widgets
         )
         ecsWidgets.push(metricStatWidget)
       }
@@ -589,7 +482,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createTopicWidgets (topicResources: ResourceType): CreateMetricWidget[] {
     const topicWidgets: CreateMetricWidget[] = []
     for (const logicalId of Object.keys(topicResources)) {
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -608,7 +501,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         const metricStatWidget = createMetricWidget(
           `SNS Topic \${${logicalId}.TopicName}`,
           widgetMetrics,
-          snsDashConfig
+          snsDashConfig as Widgets
         )
         topicWidgets.push(metricStatWidget)
       }
@@ -624,7 +517,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
   function createRuleWidgets (ruleResources: ResourceType): CreateMetricWidget[] {
     const ruleWidgets: CreateMetricWidget[] = []
     for (const [logicalId] of Object.entries(ruleResources)) {
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -641,7 +534,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         const metricStatWidget = createMetricWidget(
           `EventBridge Rule \${${logicalId}}`,
           widgetMetrics,
-          ruleDashConfig
+          ruleDashConfig as Widgets
         )
         ruleWidgets.push(metricStatWidget)
       }
@@ -660,7 +553,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
 
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
-      const widgetMetrics: any = []
+      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
         if (metricConfig?.enabled !== false) {
           for (const stat of metricConfig?.Statistic ?? []) {
@@ -679,7 +572,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
         const metricStatWidget = createMetricWidget(
           `ALB ${loadBalancerName}`,
           widgetMetrics,
-          albDashConfig
+          albDashConfig as Widgets
         )
         loadBalancerWidgets.push(metricStatWidget)
       }
@@ -700,7 +593,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
-        const widgetMetrics: any = []
+        const widgetMetrics: MetricDefs[] = []
         for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
           if ((metricConfig?.enabled !== false) &&
             (targetGroupResource.Properties?.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
@@ -722,7 +615,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           const metricStatWidget = createMetricWidget(
             `Target Group \${${loadBalancerLogicalId}.LoadBalancerName}/\${${tgLogicalId}.TargetGroupName}`,
             widgetMetrics,
-            albTargetDashConfig
+            albTargetDashConfig as Widgets
           )
           targetGroupWidgets.push(metricStatWidget)
         }
@@ -748,7 +641,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       for (const [logicalId] of Object.entries(appSyncResources)) {
         const graphQLAPIId = resolveGraphlQLId(logicalId)
         for (const [group, metrics] of Object.entries(metricGroups)) {
-          const widgetMetrics: any = []
+          const widgetMetrics: MetricDefs[] = []
           for (const metric of metrics) {
             const metricConfig: DashboardBodyProperties | Widgets = metricConfigs[metric]
             if (metricConfig?.enabled !== false) {
@@ -767,7 +660,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
             appSyncWidgets.push(createMetricWidget(
               `AppSync ${group} ${appSyncResourceName}`,
               widgetMetrics,
-              sqsDashConfig
+              sqsDashConfig as Widgets
             ))
           }
         }

@@ -1,9 +1,8 @@
-'use strict'
+import { test } from 'tap'
 
 import createRuleAlarms from '../eventbridge'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
-import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,

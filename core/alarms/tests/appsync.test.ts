@@ -1,7 +1,7 @@
-'use strict'
-
-import createAppSyncAlarms, { type AppSyncAlarmProperties } from '../appsync'
 import { test } from 'tap'
+
+import createAppSyncAlarms from '../appsync'
+import type { AppSyncAlarmsConfig } from '../appsync'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -32,7 +32,7 @@ test('AppSync alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmProperties) {
+  function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }
@@ -60,7 +60,7 @@ test('AppSync alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'GraphQLAPIId',
-        Value: '${AwesomeappsyncGraphQlApi.ApiId}}'
+        Value: { 'Fn::GetAtt': ['AwesomeappsyncGraphQlApi', 'ApiId'] }
       }
     ])
   }

@@ -1,16 +1,13 @@
-
-'use strict'
-
 import _ from 'lodash'
 import Ajv from 'ajv'
+import Serverless from 'serverless'
+import type Hooks from 'serverless-hooks-plugin'
+import { type ResourceType } from './../core/cf-template'
+
 import addAlarms from '../core/alarms/alarms'
 import addDashboard from '../core/dashboards/dashboard'
 import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/inputs/config-schema'
 import defaultConfig from '../core/inputs/default-config'
-import Serverless from 'serverless'
-import type Hooks from 'serverless-hooks-plugin'
-import type Aws from 'serverless/plugins/aws/provider/awsProvider'
-import { type ResourceType } from './../core/cf-template'
 
 interface SlicWatchConfig {
   topicArn?: string
@@ -20,19 +17,15 @@ interface SlicWatchConfig {
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
-  providerNaming: Aws
 
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
    * @param {*} serverless The Serverless instance
    */
-  constructor (serverless) {
+  constructor (serverless: Serverless) {
     this.serverless = serverless
 
-    this.providerNaming = serverless.providers.aws.naming
-
     if (serverless.service.provider.name !== 'aws') {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new Serverless('SLIC Watch only supports AWS')
     }
 
@@ -48,7 +41,7 @@ class ServerlessPlugin {
   /**
    * Modify the CloudFormation template before the package is finalized
    */
-  createSlicWatchResources (): void {
+  createSlicWatchResources () {
     const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch ?? {}
 
     const ajv = new Ajv({
@@ -57,7 +50,6 @@ class ServerlessPlugin {
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new Serverless('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 

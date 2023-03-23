@@ -1,31 +1,12 @@
-
-import { filterObject } from './filter-object'
 import pino from 'pino'
-import { type FunctionProperties } from 'cloudform-types/types/lambda/function'
-import { type TopicProperties } from 'cloudform-types/types/sns/topic'
-import { type QueueProperties } from 'cloudform-types/types/sqs/queue'
-import { type StateMachineProperties } from 'cloudform-types/types/stepFunctions/stateMachine'
-import { type StreamProperties } from 'cloudform-types/types/kinesis/stream'
-import { type RuleProperties } from 'cloudform-types/types/events/rule'
-import { type ServiceProperties } from 'cloudform-types/types/ecs/service'
-import { type TableProperties } from 'cloudform-types/types/dynamoDb/table'
-import { type RestApiProperties } from 'cloudform-types/types/apiGateway/restApi'
-import { type TargetGroupProperties } from 'cloudform-types/types/elasticLoadBalancingV2/targetGroup'
-import { type ListenerProperties } from 'cloudform-types/types/elasticLoadBalancingV2/listener'
-import { type ListenerRuleProperties } from 'cloudform-types/types/elasticLoadBalancingV2/listenerRule'
-import { type AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import { type DashboardProperties } from 'cloudform-types/types/cloudWatch/dashboard'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
+
+import { filterObject } from './filter-object'
 
 const logger = pino()
 
 export type ResourceType = Record<string, Resource>
-
-// (compiledTemplate: Template, : ResourceType = {})
-
-export type Properties = TargetGroupProperties & ListenerProperties & ListenerRuleProperties & RestApiProperties & TableProperties & ServiceProperties
-& RuleProperties & StreamProperties & FunctionProperties & TopicProperties & QueueProperties & StateMachineProperties & AlarmProperties & DashboardProperties
 
 /**
    * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's

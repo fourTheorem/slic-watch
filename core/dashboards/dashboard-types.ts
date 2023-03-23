@@ -1,16 +1,69 @@
-'use strict'
-
-import { type Widgets } from '../inputs/cascading-config'
 import type FunctionProperties from 'cloudform-types/types/lambda/function'
 
 export type YAxis = 'left' | 'right'
+
+interface TimeRange {
+  start: string
+  end?: string
+}
+
+export interface MetricDefs {
+  namespace: string
+  metric: string
+  dimensions: object
+  stat: string
+  yAxis?: YAxis
+}
+export interface Properties {
+  metrics: any[][]
+  title: string
+  view: string
+  region: string
+  period?: number
+  yAxis?: YAxis
+}
+
+export interface CreateMetricWidget {
+  type: string
+  properties: Properties
+  width: number
+  height: number
+  yAxis?: YAxis
+}
+
+export interface Widgets {
+  enabled?: boolean
+  metricPeriod?: number
+  width?: number
+  height?: number
+  yAxis?: YAxis
+  Statistic?: string[]
+  Lambda?: LambdaDashboardBodyProperties
+  ApiGateway?: ApiGwDashboardBodyProperties
+  States?: SfDashboardBodyProperties
+  DynamoDB?: DynamoDbDashboardBodyProperties
+  Kinesis?: KinesisDashboardBodyProperties
+  SQS?: SqsDashboardBodyProperties
+  ECS?: EcsDashboardBodyProperties
+  SNS?: SnsDashboardBodyProperties
+  Events?: RuleDashboardBodyProperties
+  ApplicationELB?: AlbDashboardBodyProperties
+  ApplicationELBTarget?: AlbTargetDashboardBodyProperties
+  AppSync?: AppSyncDashboardBodyProperties
+}
+
+export interface SlicWatchDashboardConfig {
+  enabled?: boolean
+  timeRange?: TimeRange
+  widgets: Widgets
+}
 
 export interface DashboardBodyProperties {
   enabled?: boolean
   metricPeriod?: number
   width?: number
   height?: number
-  yAxis?: string
+  yAxis?: YAxis
   Statistic?: string[]
 }
 

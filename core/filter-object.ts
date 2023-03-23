@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * Filter an object to produce a new object with entries matching the supplied predicate

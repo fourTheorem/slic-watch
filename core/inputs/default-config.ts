@@ -1,6 +1,5 @@
-'use strict'
-
-import type { SlicWatchAlarmsConfig, SlicWatchDashboardConfig } from '../inputs/cascading-config'
+import type { SlicWatchAlarmsConfig } from '../alarms/alarm-types'
+import type { SlicWatchDashboardConfig } from '../dashboards/dashboard-types'
 
 interface DefaultConfig {
   alarms: SlicWatchAlarmsConfig

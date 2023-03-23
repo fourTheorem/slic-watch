@@ -1,35 +1,51 @@
-'use strict'
-
-import type { Context, DefaultAlarmsProperties } from './default-config-alarms'
-import { fetchAlarmResources } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'
+
+import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import { createCfAlarms } from './alarm-utils'
 
 export interface SfAlarmsConfig {
   enabled?: boolean
   Statistic: string
-  ExecutionThrottled: DefaultAlarmsProperties
-  ExecutionsFailed: DefaultAlarmsProperties
-  ExecutionsTimedOut: DefaultAlarmsProperties
+  ExecutionThrottled: SlicWatchAlarmConfig
+  ExecutionsFailed: SlicWatchAlarmConfig
+  ExecutionsTimedOut: SlicWatchAlarmConfig
 }
 
-const executionMetrics = [
-  'ExecutionThrottled',
-  'ExecutionsFailed',
-  'ExecutionsTimedOut'
-]
+const executionMetrics = ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut']
 
 /**
- * @param {object} sfAlarmProperties The fully resolved States alarm configuration
+ * Create CloudFormation CloudWatch Metric alarm properties that are specific to Step Function resources
+ * @param metric The Step Function metric name
+ * @param sfLogicalId The CloudFormation Logical ID of the State Machine resource
+ * @param config The alarm config for this specific metric
+ *
+ * @returns Step Function-specific CloudFormation Alarm properties
+ */
+function createStepFunctionAlarmCfProperties (metric: string, sfLogicalId: string, config: SlicWatchAlarmConfig) {
+  return {
+    Namespace: 'AWS/States',
+    Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: sfLogicalId } as any }]
+  }
+}
+
+/**
  * Add all required Step Function alarms to the provided CloudFormation template
  * based on the resources found within
- * A CloudFormation template object
+ *
+ * @param sfAlarmProperties The fully resolved States alarm configuration
+ * @param context Deployment context (alarmActions)
+ * @param compiledTemplate  A CloudFormation template object
+ *
+ * @returns Step Function-specific CloudFormation Alarm resources
 */
 export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context, compiledTemplate: Template) {
-  return fetchAlarmResources('AWS::StepFunctions::StateMachine', 'StepFunctions', executionMetrics, sfAlarmProperties, context, compiledTemplate,
-    ({ metric, resourceName, config }) => ({
-      AlarmName: `StepFunctions_${metric}_${resourceName}`,
-      AlarmDescription: `StepFunctions_${metric} ${config.Statistic} for \${${resourceName}.Name}  breaches ${config.Threshold}`,
-      Namespace: 'AWS/States',
-      Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: resourceName } as any }]
-    }))
+  return createCfAlarms(
+    'AWS::StepFunctions::StateMachine',
+    'StepFunctions',
+    executionMetrics,
+    sfAlarmProperties,
+    context,
+    compiledTemplate,
+    createStepFunctionAlarmCfProperties
+  )
 }

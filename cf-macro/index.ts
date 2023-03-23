@@ -1,14 +1,12 @@
-'use strict'
-
 import _ from 'lodash'
 import Ajv from 'ajv'
+import pino from 'pino'
 
 import addAlarms from 'slic-watch-core/alarms/alarms'
 import addDashboard from 'slic-watch-core/dashboards/dashboard'
 import defaultConfig from 'slic-watch-core/inputs/default-config'
 import { slicWatchSchema } from 'slic-watch-core/inputs/config-schema'
 import { getResourcesByType } from 'slic-watch-core/cf-template'
-import pino from 'pino'
 
 const logger = pino({ name: 'macroHandler' })
 
@@ -67,10 +65,10 @@ export function handler (event: Event): Event {
       addDashboard(config.dashboard, functionDashboardConfigs, outputFragment)
     }
   } catch (err) {
-    console.error(err)
+    logger.error(err)
     status = 'fail'
   }
-  // logger.info({ outputFragment })
+  logger.info({ outputFragment })
 
   return {
     requestId: event.requestId,

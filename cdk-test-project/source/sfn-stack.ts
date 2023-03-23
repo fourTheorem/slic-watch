@@ -1,8 +1,8 @@
 import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as sns from 'aws-cdk-lib/aws-sns'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { CfnResource, Duration } from 'aws-cdk-lib'
+import { Duration } from 'aws-cdk-lib'
+import type { CfnResource } from 'aws-cdk-lib'
 import * as sfn from 'aws-cdk-lib/aws-stepfunctions'
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks'
 

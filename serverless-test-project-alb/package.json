@@ -10,11 +10,10 @@
   },
   "license": "Apache",
   "scripts": {
-    "test": "ALARM_TOPIC=test sls package",
-    "test:v2": "ALARM_TOPIC=test sls package -c serverless-v2.yml"
+    "test": "ALARM_TOPIC=test sls package"
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae",
   "devDependencies": {
-    "serverless-slic-watch-plugin": "^2.1.2"
+    "serverless": "^3.28.1"
   }
 }

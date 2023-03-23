@@ -1,7 +1,5 @@
-/* eslint-disable no-template-curly-in-string */
-'use strict'
-
 import { test } from 'tap'
+
 import { getResourcesByType } from 'slic-watch-core/cf-template'
 import { handler } from '../index'
 import cdkStack from './resources/cdk-ecs-cf.json' assert { type: 'json'}
@@ -24,9 +22,9 @@ test('ECS CDK stack', (t) => {
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
-      'LoadBalancerHTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
+      'LoadBalancer_HTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
+      'LoadBalancer_RejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
       'LoadBalancerHTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      'LoadBalancerRejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
       'LoadBalancerUnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
     t.end()

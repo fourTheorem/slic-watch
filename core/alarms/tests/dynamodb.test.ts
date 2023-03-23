@@ -1,10 +1,8 @@
-'use strict'
+import { test } from 'tap'
+import _ from 'lodash'
 
 import createDynamoDbAlarms from '../dynamodb'
 import { addResource, getResourcesByType } from '../../cf-template'
-
-import { test } from 'tap'
-
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -14,7 +12,6 @@ import {
   testContext,
   defaultCfTemplate
 } from '../../tests/testing-utils'
-import _ from 'lodash'
 
 const AlarmProperties = createTestConfig(
   defaultConfig.alarms, {

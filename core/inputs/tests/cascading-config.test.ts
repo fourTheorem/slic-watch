@@ -1,4 +1,3 @@
-'use strict'
 
 import { test } from 'tap'
 
@@ -90,7 +89,9 @@ test('Circular dependencies cause an error', (t) => {
     c: 7,
     sub1: {
       c: 3,
-      sub2_1: {}
+      sub2_1: {
+        sub_2_1_circ: {}
+      }
     },
     sub2: {
       c: 4
