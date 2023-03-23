@@ -15,7 +15,6 @@
     "serverless-step-functions": "^3.12.1"
   },
   "scripts": {
-    "test": "ALARM_TOPIC=test sls package",
-    "test:v2": "ALARM_TOPIC=test sls package -c serverless-v2.yml"
+    "test": "ALARM_TOPIC=test sls package"
   }
 }

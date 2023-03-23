@@ -1,6 +1,6 @@
-'use strict'
 
-import createAppSyncAlarms, { type AppSyncAlarmProperties } from '../appsync'
+import createAppSyncAlarms from '../appsync'
+import type { AppSyncAlarmsConfig } from '../appsync'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -32,7 +32,7 @@ test('AppSync alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmProperties) {
+  function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }

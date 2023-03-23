@@ -1,4 +1,3 @@
-'use strict'
 
 import createRuleAlarms from '../eventbridge'
 import { getResourcesByType } from '../../cf-template'

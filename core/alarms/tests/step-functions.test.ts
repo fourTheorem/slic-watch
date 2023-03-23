@@ -1,4 +1,3 @@
-'use strict'
 
 import createStatesAlarms from '../step-functions'
 import { getResourcesByType } from '../../cf-template'

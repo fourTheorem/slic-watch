@@ -1,4 +1,3 @@
-'use strict'
 
 import { type Widgets } from '../inputs/cascading-config'
 import type FunctionProperties from 'cloudform-types/types/lambda/function'

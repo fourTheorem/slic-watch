@@ -1,4 +1,3 @@
-'use strict'
 
 import Ajv from 'ajv'
 import { test } from 'tap'

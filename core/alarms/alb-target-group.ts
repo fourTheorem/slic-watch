@@ -1,4 +1,3 @@
-'use strict'
 
 import type { ResourceType } from '../cf-template'
 import { getResourcesByType } from '../cf-template'

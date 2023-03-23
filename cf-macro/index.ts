@@ -1,4 +1,3 @@
-'use strict'
 
 import _ from 'lodash'
 import Ajv from 'ajv'
@@ -67,10 +66,10 @@ export function handler (event: Event): Event {
       addDashboard(config.dashboard, functionDashboardConfigs, outputFragment)
     }
   } catch (err) {
-    console.error(err)
+    logger.error(err)
     status = 'fail'
   }
-  // logger.info({ outputFragment })
+  logger.info({ outputFragment })
 
   return {
     requestId: event.requestId,

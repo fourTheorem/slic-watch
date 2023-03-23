@@ -1,6 +1,4 @@
 
-'use strict'
-
 import type { Context, DefaultAlarmsProperties } from './default-config-alarms'
 import { fetchAlarmResources } from './default-config-alarms'
 import type Template from 'cloudform-types/types/template'

@@ -1,4 +1,3 @@
-'use strict'
 
 /*
  * Source https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L113

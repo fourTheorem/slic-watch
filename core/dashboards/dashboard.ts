@@ -1,6 +1,4 @@
 
-'use strict'
-
 import { cascade } from '../inputs/cascading-config'
 import { type Widgets, type SlicWatchDashboardConfig } from '../inputs/cascading-config'
 import { getResourcesByType, getEventSourceMappingFunctions, addResource } from '../cf-template'

@@ -1,4 +1,3 @@
-'use strict'
 
 import type { SlicWatchAlarmsConfig, SlicWatchDashboardConfig } from '../inputs/cascading-config'
 

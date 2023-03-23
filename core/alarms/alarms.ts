@@ -1,4 +1,3 @@
-'use strict'
 
 import { cascade } from '../inputs/cascading-config'
 import type { SlicWatchAlarmsConfig } from '../inputs/cascading-config'

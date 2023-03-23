@@ -1,4 +1,3 @@
-'use strict'
 
 import type { AlbTargetAlarmsConfig } from './alb-target-group'
 import type { AlbAlarmsConfig } from './alb'
@@ -28,7 +27,7 @@ export function fetchAlarmResources (type: string, service: string, metrics: str
       const { enabled, ...rest } = config[metric]
       if (enabled !== false) {
         const alarm = getAlarm({ metric, resourceName, config: rest })
-        const name = makeResourceName(service, resourceName, metric)
+        const name = makeResourceName(service, resourceName, metric.replaceAll('-', ''))
         const resource = createAlarm({
           MetricName: metric,
           ...alarm,

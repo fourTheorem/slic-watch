@@ -1,4 +1,3 @@
-'use strict'
 
 import type { Context, DefaultAlarmsProperties } from './default-config-alarms'
 import { fetchAlarmResources } from './default-config-alarms'

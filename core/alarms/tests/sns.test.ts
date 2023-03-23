@@ -1,4 +1,3 @@
-'use strict'
 
 import createSNSAlarms from '../sns'
 import { getResourcesByType } from '../../cf-template'

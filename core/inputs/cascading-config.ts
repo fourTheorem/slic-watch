@@ -1,4 +1,3 @@
-'use strict'
 
 import type { AlbAlarmsConfig } from '../alarms/alb'
 import type { AlbTargetAlarmsConfig } from '../alarms/alb-target-group'

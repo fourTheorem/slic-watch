@@ -1,4 +1,3 @@
-'use strict'
 
 import { getResourcesByType } from '../cf-template'
 import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'

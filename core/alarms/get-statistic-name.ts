@@ -1,4 +1,3 @@
-'use strict'
 
 import { type AllAlarms } from './default-config-alarms'
 

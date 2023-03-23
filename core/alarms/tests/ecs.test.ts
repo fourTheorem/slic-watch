@@ -1,4 +1,3 @@
-'use strict'
 
 import createECSAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
 import { test } from 'tap'

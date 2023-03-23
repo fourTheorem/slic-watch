@@ -1,4 +1,3 @@
-'use strict'
 
 import createALBTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { test } from 'tap'

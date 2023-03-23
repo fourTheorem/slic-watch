@@ -1,4 +1,3 @@
-'use strict'
 
 import createKinesisAlarms from '../kinesis'
 import { getResourcesByType } from '../../cf-template'

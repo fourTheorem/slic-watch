@@ -1,4 +1,4 @@
-'use strict'
+
 import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
 import type { Context, DefaultAlarmsProperties, CfAlarmsProperties } from './default-config-alarms'
 import { createAlarm } from './default-config-alarms'

@@ -1,4 +1,3 @@
-'use strict'
 
 import createSQSAlarms from '../sqs'
 import { getResourcesByType } from '../../cf-template'

@@ -9,7 +9,6 @@ import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../co
 import defaultConfig from '../core/inputs/default-config'
 import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'
-import type Aws from 'serverless/plugins/aws/provider/awsProvider'
 import { type ResourceType } from './../core/cf-template'
 
 interface SlicWatchConfig {
@@ -20,16 +19,13 @@ interface SlicWatchConfig {
 class ServerlessPlugin {
   serverless: Serverless
   hooks: Hooks
-  providerNaming: Aws
 
   /**
    * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
    * @param {*} serverless The Serverless instance
    */
-  constructor (serverless) {
+  constructor (serverless: Serverless) {
     this.serverless = serverless
-
-    this.providerNaming = serverless.providers.aws.naming
 
     if (serverless.service.provider.name !== 'aws') {
       // eslint-disable-next-line @typescript-eslint/no-throw-literal

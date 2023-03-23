@@ -1,6 +1,6 @@
-'use strict'
 
-import createALBAlarms, { type AlbAlarmProperties } from '../alb'
+import createALBAlarms from '../alb'
+import type { AlbAlarmsConfig } from '../alb'
 import { test } from 'tap'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -32,7 +32,7 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: AlbAlarmProperties) {
+  function createAlarmResources (elbAlarmProperties: AlbAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
     return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }

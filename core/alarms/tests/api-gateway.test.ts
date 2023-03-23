@@ -1,4 +1,3 @@
-'use strict'
 
 import createApiGatewayAlarms, { resolveRestApiNameAsCfn, resolveRestApiNameForSub } from '../api-gateway'
 import { test } from 'tap'

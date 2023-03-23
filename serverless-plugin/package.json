@@ -15,8 +15,8 @@
     "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap --watch"
   },
   "devDependencies": {
-    "serverless-hooks-plugin": "^1.1.0",
-    "serverless-plugin-utils": "^0.2.0"
+    "serverless": "^3.28.1",
+    "serverless-hooks-plugin": "^1.1.0"
   },
   "engines": {
     "node": ">=10.0"

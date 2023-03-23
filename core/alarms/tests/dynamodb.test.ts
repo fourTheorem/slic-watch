@@ -1,4 +1,3 @@
-'use strict'
 
 import createDynamoDbAlarms from '../dynamodb'
 import { addResource, getResourcesByType } from '../../cf-template'

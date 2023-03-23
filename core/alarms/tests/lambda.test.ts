@@ -1,4 +1,3 @@
-'use strict'
 
 import createLambdaAlarms from '../lambda'
 import { getResourcesByType } from '../../cf-template'

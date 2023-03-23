@@ -5,6 +5,7 @@
     "strict": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
+    "alwaysStrict": true,
     "noEmit": true,
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],
