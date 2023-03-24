@@ -34,7 +34,7 @@ export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, funct
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmProperties)
+  } = cascade(alarmProperties) as SlicWatchAlarmsConfig
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 

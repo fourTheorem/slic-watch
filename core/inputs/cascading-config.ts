@@ -11,21 +11,13 @@ import type { SnsAlarmsConfig } from '../alarms/sns'
 import type { SqsAlarmsConfig } from '../alarms/sqs'
 import type { SfAlarmsConfig } from '../alarms/step-functions'
 import type {
-  DashboardBodyProperties, LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
+  LambdaDashboardBodyProperties, ApiGwDashboardBodyProperties, SfDashboardBodyProperties, DynamoDbDashboardBodyProperties,
   KinesisDashboardBodyProperties, SqsDashboardBodyProperties, EcsDashboardBodyProperties, SnsDashboardBodyProperties, RuleDashboardBodyProperties,
   AlbDashboardBodyProperties, AlbTargetDashboardBodyProperties, AppSyncDashboardBodyProperties
 } from '../dashboards/default-config-dashboard'
 import type { LambdaFunctionAlarmsConfig } from '../alarms/lambda'
-import type { DefaultAlarmsProperties } from '../alarms/default-config-alarms'
 
 const MAX_DEPTH = 10
-
-type ConfigNode = SlicWatchDashboardConfig | SlicWatchAlarmsConfig
-
-interface ParentNode {
-  DashboardBodyProperties?: DashboardBodyProperties
-  AlarmProperties?: DefaultAlarmsProperties
-}
 
 interface TimeRange {
   start: string
@@ -85,9 +77,7 @@ export interface SlicWatchAlarmsConfig {
  * node hierarchical configuration
  * parentNode The configuration from the parent node to be applied to the current node where no conflict occurs
  */
-export function cascade (node: SlicWatchAlarmsConfig, parentNode?: ParentNode, depth?: number): SlicWatchAlarmsConfig
-export function cascade (node: SlicWatchDashboardConfig, parentNode?: ParentNode, depth?: number): SlicWatchDashboardConfig
-export function cascade (node: ConfigNode, parentNode?: ParentNode, depth = 0): SlicWatchAlarmsConfig | SlicWatchDashboardConfig {
+export function cascade (node: object, parentNode?: object, depth = 0): object {
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }
@@ -101,12 +91,12 @@ export function cascade (node: ConfigNode, parentNode?: ParentNode, depth = 0): 
     }
   }
 
-  const compiledChildren = {}
+  const compiledChildren: Record<string, object> = {}
   for (const [key, value] of Object.entries(childNodes)) {
     compiledChildren[key] = cascade(value, compiledNode, depth + 1)
   }
   return {
     ...compiledNode,
     ...compiledChildren
-  } as SlicWatchDashboardConfig | SlicWatchAlarmsConfig
+  }
 }

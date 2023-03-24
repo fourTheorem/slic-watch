@@ -103,7 +103,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
       ApplicationELBTarget: albTargetDashConfig,
       AppSync: appSyncDashConfig
     }
-  } = cascade(dashboardConfig)
+  } = cascade(dashboardConfig) as SlicWatchDashboardConfig
 
   /**
    * Adds a dashboard to the specified CloudFormation template
@@ -315,7 +315,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * These config objects mix cascaded config literals (like `alarmPeriod: 300`) and metric
    * configurations (like `Errors: { Statistic: ['Sum'] }`) so here we extract the latter.
    *
-   *  The config object for a specific service within the dashboard
+   * @param serviceDashConfig t The config object for a specific service within the dashboard
    * @returns {Iterable} An iterable over the alarm-config Object entries
    */
   function getConfiguredMetrics (serviceDashConfig): ServiceDashConfig {
