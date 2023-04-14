@@ -23,12 +23,8 @@
   },
   "license": "Apache",
   "dependencies": {
-    "@types/lodash": "^4.14.191",
     "ajv": "^8.11.0",
-    "case": "^1.6.3",
-    "lodash": "^4.17.21",
-    "slic-watch-core": "^2.0.0-rc4",
-    "yaml": "^1.10.2"
+    "slic-watch-core": "^2.0.0-rc4"
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae"
 }
