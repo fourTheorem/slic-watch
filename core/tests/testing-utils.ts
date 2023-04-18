@@ -1,4 +1,3 @@
-
 import path from 'path'
 import fs from 'fs'
 import _ from 'lodash'
@@ -40,7 +39,7 @@ function assertCommonAlarmProperties (t, al) {
  * @returns The inferred type
  */
 function alarmNameToType (alarmName) {
-  const resolvedName = alarmName['Fn::Sub'] ?? alarmName
+  const resolvedName = typeof alarmName === 'string' ? alarmName : alarmName.payload[0]
   const components = resolvedName.split('_')
   components.pop()
   return components.join('_')

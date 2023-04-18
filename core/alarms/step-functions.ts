@@ -1,4 +1,5 @@
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
@@ -24,7 +25,7 @@ const executionMetrics = ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsT
 function createStepFunctionAlarmCfProperties (metric: string, sfLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/States',
-    Dimensions: [{ Name: 'StateMachineArn', Value: { Ref: sfLogicalId } as any }]
+    Dimensions: [{ Name: 'StateMachineArn', Value: Fn.Ref(sfLogicalId) }]
   }
 }
 

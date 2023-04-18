@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
@@ -36,11 +37,11 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       const hardLimit = (queueResource.Properties?.FifoQueue != null) ? 20000 : 120000
       const thresholdValue = Math.floor(hardLimit * (config.Threshold as any) / 100)
       const sqsAlarmProperties: AlarmProperties = {
-        AlarmName: `SQS_ApproximateNumberOfMessagesNotVisible_\${${queueLogicalId}.QueueName}`,
-        AlarmDescription: `SQS in-flight messages for \${${queueLogicalId}.QueueName} breaches ${thresholdValue} (${config.Threshold}% of the hard limit of ${hardLimit})`,
+        AlarmName: Fn.Sub(`SQS_ApproximateNumberOfMessagesNotVisible_\${${queueLogicalId}.QueueName}`, {}),
+        AlarmDescription: Fn.Sub(`SQS in-flight messages for \${${queueLogicalId}.QueueName} breaches ${thresholdValue} (${config.Threshold}% of the hard limit of ${hardLimit})`, {}),
         MetricName: 'ApproximateNumberOfMessagesNotVisible',
         Namespace: 'AWS/SQS',
-        Dimensions: [{ Name: 'QueueName', Value: `\${${queueLogicalId}.QueueName}` }],
+        Dimensions: [{ Name: 'QueueName', Value: Fn.GetAtt(`${queueLogicalId}`, 'QueueName') }],
         ...alarmProps,
         Threshold: thresholdValue
       }
@@ -57,11 +58,11 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       const { enabled, ...rest } = config
       const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
       const sqsAlarmProperties: AlarmProperties = {
-        AlarmName: `SQS_ApproximateAgeOfOldestMessage_\${${queueLogicalId}.QueueName}`,
-        AlarmDescription: `SQS age of oldest message in the queue \${${queueLogicalId}.QueueName} breaches ${config.Threshold}`,
+        AlarmName: Fn.Sub(`SQS_ApproximateAgeOfOldestMessage_\${${queueLogicalId}.QueueName}`, {}),
+        AlarmDescription: Fn.Sub(`SQS age of oldest message in the queue \${${queueLogicalId}.QueueName} breaches ${config.Threshold}`, {}),
         MetricName: 'ApproximateAgeOfOldestMessage',
         Namespace: 'AWS/SQS',
-        Dimensions: [{ Name: 'QueueName', Value: `\${${queueLogicalId}.QueueName}` }],
+        Dimensions: [{ Name: 'QueueName', Value: Fn.GetAtt(`${queueLogicalId}`, 'QueueName') }],
         ...alarmProps
       }
       const resourceName = `slicWatchSQSOldestMsgAgeAlarm${queueLogicalId}`

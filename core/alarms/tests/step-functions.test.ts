@@ -74,7 +74,8 @@ test('Step Function alarms are created', (t) => {
         {
           Name: 'StateMachineArn',
           Value: {
-            Ref: 'Workflow'
+            name: 'Ref',
+            payload: 'Workflow'
           }
         }
       ])

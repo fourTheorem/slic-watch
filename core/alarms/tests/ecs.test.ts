@@ -75,7 +75,13 @@ test('ECS MemoryUtilization is created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'ServiceName',
-        Value: '${ecsService.Name}'
+        Value: {
+          name: 'Fn::GetAtt',
+          payload: [
+            'ecsService',
+            'Name'
+          ]
+        }
       },
       {
         Name: 'ClusterName',

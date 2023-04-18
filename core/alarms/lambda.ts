@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
@@ -64,7 +65,7 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
               Metric: {
                 Namespace: 'AWS/Lambda',
                 MetricName: 'Throttles',
-                Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
+                Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
               },
               Period: properties.Period as number,
               Stat: properties.Statistic as string
@@ -77,7 +78,7 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
               Metric: {
                 Namespace: 'AWS/Lambda',
                 MetricName: 'Invocations',
-                Dimensions: [{ Name: 'FunctionName', Value: { Ref: funcLogicalId } as any }]
+                Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
               },
               Period: properties.Period as number,
               Stat: properties.Statistic as string
@@ -118,7 +119,7 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
  * @returns Lambda-specific CloudFormation Alarm resources
  */
 
-function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, funcLogicalId: string | number, compiledTemplate: Template, context: Context) {
+function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
   const { enabled, Period, Statistic, ...rest } = config
 
   const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
@@ -132,7 +133,7 @@ function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, func
       : {
           MetricName: metric.replace(/Pc$/g, ''),
           Namespace: 'AWS/Lambda',
-          Dimensions: [{ Name: 'FunctionName', Value: `${funcLogicalId}` }],
+          Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }],
           Statistic: config.Statistic,
           Period: config.Period
         }),

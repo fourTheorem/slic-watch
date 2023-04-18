@@ -18,14 +18,14 @@ test('ECS CDK stack', (t) => {
   test('alarms are generated', (t) => {
     const alarms = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
     t.equal(Object.keys(alarms).length, 6)
-    const alarmNames = Object.values(alarms).map(alarm => alarm.Properties?.AlarmName).sort((a: string, b: string) => a.localeCompare(b))
+    const alarmNames = Object.values(alarms).map(alarm => (typeof alarm.Properties?.AlarmName === 'string' ? alarm.Properties?.AlarmName : alarm.Properties?.AlarmName.payload[0])).sort((a: string, b: string) => a.localeCompare(b))
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
       'LoadBalancer_HTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
+      'LoadBalancer_HTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
       'LoadBalancer_RejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
-      'LoadBalancerHTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      'LoadBalancerUnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
+      'LoadBalancer_UnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
     t.end()
   })

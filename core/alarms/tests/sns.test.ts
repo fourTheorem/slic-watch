@@ -56,7 +56,13 @@ test('SNS alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'TopicName',
-        Value: { 'Fn::GetAtt': ['topic', 'TopicName'] }
+        Value: {
+          name: 'Fn::GetAtt',
+          payload: [
+            'topic',
+            'TopicName'
+          ]
+        }
       }
     ])
   }

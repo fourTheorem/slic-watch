@@ -1,4 +1,5 @@
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
@@ -22,7 +23,7 @@ const executionMetrics = ['NumberOfNotificationsFilteredOut-InvalidAttributes', 
 function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/SNS',
-    Dimensions: [{ Name: 'TopicName', Value: { 'Fn::GetAtt': [snsLogicalId, 'TopicName'] } as any }]
+    Dimensions: [{ Name: 'TopicName', Value: Fn.GetAtt(snsLogicalId, 'TopicName') }]
   }
 }
 

@@ -219,10 +219,10 @@ test('ALB Target Group alarms are created', (t) => {
   const targetGroupAlarmResources: ResourceType = createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
 
   const expectedTypesTargetGroup = {
-    LoadBalancerHTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
-    LoadBalancerUnHealthyHostCountAlarm: 'UnHealthyHostCount',
-    LoadBalancerLambdaInternalErrorAlarm: 'LambdaInternalError',
-    LoadBalancerLambdaUserErrorAlarm: 'LambdaUserError'
+    LoadBalancer_HTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
+    LoadBalancer_UnHealthyHostCountAlarm: 'UnHealthyHostCount',
+    LoadBalancer_LambdaInternalErrorAlarm: 'LambdaInternalError',
+    LoadBalancer_LambdaUserErrorAlarm: 'LambdaUserError'
   }
 
   t.equal(Object.keys(targetGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
@@ -242,11 +242,23 @@ test('ALB Target Group alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'TargetGroup',
-        Value: { 'Fn::GetAtt': ['AlbEventAlbTargetGrouphttpListener', 'TargetGroupFullName'] }
+        Value: {
+          name: 'Fn::GetAtt',
+          payload: [
+            'AlbEventAlbTargetGrouphttpListener',
+            'TargetGroupFullName'
+          ]
+        }
       },
       {
         Name: 'LoadBalancer',
-        Value: { 'Fn::GetAtt': ['alb', 'LoadBalancerFullName'] }
+        Value: {
+          name: 'Fn::GetAtt',
+          payload: [
+            'alb',
+            'LoadBalancerFullName'
+          ]
+        }
       }
     ])
   }

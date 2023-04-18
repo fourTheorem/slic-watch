@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
@@ -58,12 +59,12 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const ecsAlarmProperties: AlarmProperties = {
-          AlarmName: `ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceLogicalId}.Name}`,
-          AlarmDescription: `ECS ${metric} for ${serviceLogicalId}.Name breaches ${config.Threshold}`,
+          AlarmName: Fn.Sub(`ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceLogicalId}.Name}`, {}),
+          AlarmDescription: Fn.Sub(`ECS ${metric} for \${${serviceLogicalId}.Name} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/ECS',
           Dimensions: [
-            { Name: 'ServiceName', Value: `\${${serviceLogicalId}.Name}` },
+            { Name: 'ServiceName', Value: Fn.GetAtt(`${serviceLogicalId}`, 'Name') },
             { Name: 'ClusterName', Value: clusterName }
           ],
           ...alarmProps

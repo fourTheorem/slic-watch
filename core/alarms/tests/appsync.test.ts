@@ -39,8 +39,8 @@ test('AppSync alarms are created', (t) => {
   const appSyncAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 
   const expectedTypesAppSync = {
-    AppSync5XXErrorAlarm: '5XXError',
-    AppSyncLatencyAlarm: 'Latency'
+    AppSync_5XXErrorAlarm: '5XXError',
+    AppSync_LatencyAlarm: 'Latency'
   }
 
   t.equal(Object.keys(appSyncAlarmResources).length, Object.keys(expectedTypesAppSync).length)
@@ -60,7 +60,13 @@ test('AppSync alarms are created', (t) => {
     t.same(al?.Dimensions, [
       {
         Name: 'GraphQLAPIId',
-        Value: { 'Fn::GetAtt': ['AwesomeappsyncGraphQlApi', 'ApiId'] }
+        Value: {
+          name: 'Fn::GetAtt',
+          payload: [
+            'AwesomeappsyncGraphQlApi',
+            'ApiId'
+          ]
+        }
       }
     ])
   }

@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm, createCfAlarms, getStatisticName, makeResourceName } from './alarm-utils'
@@ -25,7 +26,7 @@ function createAlbAlarmCfProperties (metric: string, albLogicalId: string, confi
   return {
     Namespace: 'AWS/ApplicationELB',
     Dimensions: [
-      { Name: 'LoadBalancer', Value: `\${${albLogicalId}.LoadBalancerFullName}` }
+      { Name: 'LoadBalancer', Value: Fn.GetAtt(albLogicalId, 'LoadBalancerFullName') }
     ]
   }
 }

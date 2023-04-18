@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm, makeResourceName } from './alarm-utils'
@@ -42,7 +43,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlar
           AlarmDescription: `DynamoDB ${config.Statistic} for ${tableLogicalId} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/DynamoDB',
-          Dimensions: [{ Name: 'TableName', Value: { Ref: tableLogicalId } as any }],
+          Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }],
           ...alarmProps
         }
         const resourceName = makeResourceName('Table', `${tableLogicalId}`, metric)
@@ -63,7 +64,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlar
             AlarmDescription: `DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`,
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',
-            Dimensions: [{ Name: 'TableName', Value: { Ref: tableLogicalId } as any }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
+            Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
             ...alarmProps
           }
           const resourceName = makeResourceName('GSI', `${tableLogicalId}${gsiName}`, metric)

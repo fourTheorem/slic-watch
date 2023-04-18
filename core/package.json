@@ -15,10 +15,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ajv": "^8.11.0",
     "@types/lodash": "^4.14.191",
     "@types/yaml": "^1.9.7",
+    "ajv": "^8.11.0",
     "case": "^1.6.3",
+    "cloudform": "^7.4.2",
     "lodash": "^4.17.21",
     "pino": "^8.4.2",
     "yaml": "^1.10.2"

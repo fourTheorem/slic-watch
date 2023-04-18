@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Metadata:
   AWS::ServerlessRepo::Application:
@@ -8,7 +8,7 @@ Metadata:
     SpdxLicenseId: Apache-2.0
     LicenseUrl: ../LICENSE
     ReadmeUrl: ../README.md
-    Labels: ['monitoring', 'observability', 'cloudwatch']
+    Labels: ["monitoring", "observability", "cloudwatch"]
     HomePageUrl: https://github.com/fourTheorem/slic-watch
     SemanticVersion: 2.1.2
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
@@ -21,18 +21,19 @@ Resources:
   MacroLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dist/index.handler
+      Handler: cf-macro/dist/index.handler
       Runtime: nodejs16.x
       Timeout: 60
       Architectures:
         - x86_64
       Policies:
         - AWSLambdaBasicExecutionRole
+      MemorySize: 512
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: false
         Target: es2020
         Sourcemap: true
-        EntryPoints: 
-          - dist/index.js
+        EntryPoints:
+          - cf-macro/dist/index.js

@@ -27,9 +27,9 @@ Metadata:
 
 Resources:
   MonitoringTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: SS-Alarm-Topic2
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: SS-Alarm-Topic3
 
   hello:
     Type: AWS::Serverless::Function
@@ -103,19 +103,19 @@ Resources:
           Properties:
             Path: "item"
             Method: GET
-            
+
   eventsRule:
     Type: AWS::Serverless::Function
     Properties:
       Handler: rule-handler.handleRule
-      Runtime: nodejs16.x  
+      Runtime: nodejs16.x
       Events:
         Trigger:
-          Type: CloudWatchEvent 
+          Type: CloudWatchEvent
           Properties:
             Pattern:
-              detail-type: 
-              - Invoke Lambda Function
+              detail-type:
+                - Invoke Lambda Function
             RetryPolicy:
               MaximumRetryAttempts: 0
               MaximumEventAgeInSeconds: 60
@@ -124,15 +124,15 @@ Resources:
         alarms:
           Lambda:
             enabled: false
-  
+
   TestStateMachine:
-    Type: AWS::Serverless::StateMachine 
+    Type: AWS::Serverless::StateMachine
     Properties:
       DefinitionUri: statemachine/test.asl.json
       DefinitionSubstitutions:
         HelloArn: !GetAtt hello.Arn
         AnotherHelloArn: !GetAtt hello.Arn
-      Policies: 
+      Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref hello
         - LambdaInvokePolicy:
@@ -150,7 +150,7 @@ Resources:
     Type: "AWS::SQS::Queue"
     Properties:
       FifoQueue: true
-      
+
   vpc:
     Type: AWS::EC2::VPC
     Properties:
@@ -159,9 +159,9 @@ Resources:
   subnet:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 0
-        - Fn::GetAZs: !Ref 'AWS::Region'
+        - Fn::GetAZs: !Ref "AWS::Region"
       CidrBlock: 10.0.16.0/20
       VpcId: !Ref vpc
 
@@ -190,16 +190,16 @@ Resources:
         - FARGATE
       Cpu: 256
       Memory: 512
-      ContainerDefinitions: 
+      ContainerDefinitions:
         - Name: "busybox"
           Image: "busybox"
           Cpu: 256
-          EntryPoint: 
+          EntryPoint:
             - "sh"
             - "-c"
           Memory: 512
-          Command: 
-            - "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+          Command:
+            - '/bin/sh -c "while true; do echo Hello; sleep 10; done"'
           Essential: true
       NetworkMode: awsvpc
 
@@ -251,4 +251,3 @@ Resources:
             NonKeyAttributes:
               - name
             ProjectionType: INCLUDE
- 

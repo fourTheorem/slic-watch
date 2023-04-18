@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import { getResourcesByType } from '../cf-template'
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
@@ -49,7 +50,7 @@ export default function createKinesisAlarms (kinesisAlarmsConfig: KinesisAlarmsC
           AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamLogicalId} breaches ${config.Threshold} milliseconds`,
           MetricName: metric,
           Namespace: 'AWS/Kinesis',
-          Dimensions: [{ Name: 'StreamName', Value: { Ref: streamLogicalId } as any }],
+          Dimensions: [{ Name: 'StreamName', Value: Fn.Ref(streamLogicalId) }],
           ...alarmProps
         }
         const resourceName = makeResourceName('Kinesis', streamLogicalId, type)

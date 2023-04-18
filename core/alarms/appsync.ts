@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
@@ -35,12 +36,12 @@ export default function createAppSyncAlarms (appSyncAlarmsConfig: AppSyncAlarmsC
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const graphQLName: string = appSyncResource.Properties?.Name
         const appSyncAlarmProperties: AlarmProperties = {
-          AlarmName: `AppSync${metric}Alarm_${graphQLName}`,
+          AlarmName: `AppSync_${metric}Alarm_${graphQLName}`,
           AlarmDescription: `AppSync ${metric} ${getStatisticName(config)} for ${graphQLName} breaches ${config.Threshold}`,
           MetricName: metric,
           Namespace: 'AWS/AppSync',
           Dimensions: [
-            { Name: 'GraphQLAPIId', Value: { 'Fn::GetAtt': [appSyncLogicalId, 'ApiId'] } as any }
+            { Name: 'GraphQLAPIId', Value: Fn.GetAtt(appSyncLogicalId, 'ApiId') }
           ],
           ...alarmProps
         }

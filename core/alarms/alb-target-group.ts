@@ -1,5 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
@@ -99,14 +100,14 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const albTargetAlarmProperties: AlarmProperties = {
-          AlarmName: `LoadBalancer${metric.replaceAll('_', '')}Alarm_${targetGroupLogicalId}`,
+          AlarmName: `LoadBalancer_${metric.replaceAll('_', '')}Alarm_${targetGroupLogicalId}`,
           AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupLogicalId} breaches ${config.Threshold}`,
           MetricName: metric,
           Statistic: config.Statistic,
           Namespace: 'AWS/ApplicationELB',
           Dimensions: [
-            { Name: 'TargetGroup', Value: { 'Fn::GetAtt': [targetGroupLogicalId, 'TargetGroupFullName'] } },
-            { Name: 'LoadBalancer', Value: { 'Fn::GetAtt': [loadBalancerLogicalId, 'LoadBalancerFullName'] } as any }
+            { Name: 'TargetGroup', Value: Fn.GetAtt(targetGroupLogicalId, 'TargetGroupFullName') },
+            { Name: 'LoadBalancer', Value: Fn.GetAtt(loadBalancerLogicalId, 'LoadBalancerFullName') }
           ],
           ...alarmProps
         }

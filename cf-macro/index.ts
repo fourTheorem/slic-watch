@@ -20,13 +20,12 @@ interface SlicWatchConfig {
   topicArn?: string
   enabled?: boolean
 }
-export function handler (event: Event): Event {
+export function handler (event: Event) {
   let status = 'success'
   logger.info({ event })
   const outputFragment = event.fragment
   try {
     const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch ?? {}
-
     if (slicWatchConfig.enabled !== false) {
       const ajv = new Ajv({
         unicodeRegExp: false
@@ -58,9 +57,10 @@ export function handler (event: Event): Event {
       for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
         const funcConfig = funcResource.Metadata?.slicWatch ?? {}
         functionAlarmConfigs[funcResourceName] = funcConfig.alarms ?? {}
-        functionDashboardConfigs[funcResourceName] = funcConfig.dashboard ?? {}
+        functionDashboardConfigs[funcResourceName] = funcConfig.dashboard
       }
 
+      _.merge(outputFragment)
       addAlarms(config.alarms, functionAlarmConfigs, context, outputFragment)
       addDashboard(config.dashboard, functionDashboardConfigs, outputFragment)
     }

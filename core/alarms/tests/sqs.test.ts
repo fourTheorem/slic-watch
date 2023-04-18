@@ -80,7 +80,13 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: '${regularQueue.QueueName}'
+      Value: {
+        name: 'Fn::GetAtt',
+        payload: [
+          'regularQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
@@ -96,7 +102,13 @@ test('SQS alarms are created', (t) => {
   t.same(approximateAgeOfOldMessageAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: '${fifoQueue.QueueName}'
+      Value: {
+        name: 'Fn::GetAtt',
+        payload: [
+          'fifoQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
   const approximateNumberOfMessagesNotVisibileAlarms = [...alarmsByType.SQS_ApproximateNumberOfMessagesNotVisible]
@@ -113,7 +125,13 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[0].Dimensions, [
     {
       Name: 'QueueName',
-      Value: '${regularQueue.QueueName}'
+      Value: {
+        name: 'Fn::GetAtt',
+        payload: [
+          'regularQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 
@@ -129,7 +147,13 @@ test('SQS alarms are created', (t) => {
   t.same(approximateNumberOfMessagesNotVisibileAlarms[1].Dimensions, [
     {
       Name: 'QueueName',
-      Value: '${fifoQueue.QueueName}'
+      Value: {
+        name: 'Fn::GetAtt',
+        payload: [
+          'fifoQueue',
+          'QueueName'
+        ]
+      }
     }
   ])
 

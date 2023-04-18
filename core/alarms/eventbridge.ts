@@ -1,4 +1,5 @@
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
@@ -23,7 +24,7 @@ const executionMetrics = ['FailedInvocations', 'ThrottledRules']
 function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/Events',
-    Dimensions: [{ Name: 'RuleName', Value: { Ref: ruleLogicalId } as any }]
+    Dimensions: [{ Name: 'RuleName', Value: Fn.Ref(ruleLogicalId) }]
   }
 }
 

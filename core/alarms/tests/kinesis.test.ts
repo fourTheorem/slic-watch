@@ -59,7 +59,8 @@ test('Kinesis data stream alarms are created', (t) => {
       {
         Name: 'StreamName',
         Value: {
-          Ref: 'stream'
+          name: 'Ref',
+          payload: 'stream'
         }
       }
     ])
