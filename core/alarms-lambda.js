@@ -190,7 +190,7 @@ module.exports = function LambdaAlarms (functionAlarmConfigs, context) {
     const metrics = [
       {
         Id: 'throttles_pc',
-        Expression: '(throttles / throttles + invocations) * 100',
+        Expression: '(throttles / (throttles + invocations)) * 100',
         Label: '% Throttles',
         ReturnData: true
       },
