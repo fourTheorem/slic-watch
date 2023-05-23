@@ -16,7 +16,7 @@ custom:
     - Key: Stage
       Value: ${self:provider.stage}
   slicWatch:
-    # topicArn: ${env:ALARM_TOPIC}
+    topicArn: ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:
@@ -51,6 +51,6 @@ functions:
             method:
               - POST
           healthCheck: true # it is by default false but can be enbaled true
-          #you can disable it for not getting redundant health-check logs on the CloudWatch logs 
+          #you can disable it for not getting redundant health-check logs on the CloudWatch logs
 
 resources: ${file(./sls-resources.yml)}

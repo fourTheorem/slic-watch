@@ -20,7 +20,9 @@ interface SlicWatchConfig {
   topicArn?: string
   enabled?: boolean
 }
-export function handler (event: Event) {
+
+// macro requires handler to be async
+export async function handler (event: Event) {
   let status = 'success'
   logger.info({ event })
   const outputFragment = event.fragment

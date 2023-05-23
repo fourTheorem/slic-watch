@@ -272,7 +272,7 @@ test('Invocation alarms are created if configured', (t) => {
   const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
   const invocAlarmResources: ResourceType = filterObject(
     alarmResources,
-    (res) => res.Properties?.AlarmName.startsWith('Lambda_Invocations')
+    (res) => res.Properties.AlarmName.payload[0].startsWith('Lambda_Invocations')
   )
   t.equal(Object.keys(invocAlarmResources).length, 8)
   for (const res of Object.values(invocAlarmResources)) {
@@ -526,7 +526,7 @@ test('Duration alarms are created if no timeout is specified', (t) => {
   const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
-    (res) => res.Properties.AlarmName.startsWith('Lambda_Duration')
+    (res) => res.Properties.AlarmName.payload[0].startsWith('Lambda_Duration')
   )
   t.equal(Object.keys(invocAlarmResources).length, 8)
   t.end()

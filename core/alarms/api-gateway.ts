@@ -1,6 +1,7 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
+import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
@@ -91,8 +92,8 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: ApiGwAlarmsCo
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {
-          AlarmName: `APIGW_${metric}_${apiNameForSub}`,
-          AlarmDescription: `API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`,
+          AlarmName: Fn.Sub(`APIGW_${metric}_${apiNameForSub}`, {}),
+          AlarmDescription: Fn.Sub(`API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],

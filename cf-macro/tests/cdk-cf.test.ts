@@ -7,11 +7,11 @@ import cdkStack from './resources/cdk-ecs-cf.json' assert { type: 'json'}
 /**
  * Test the synthesized output from the CDK ECS Stack in `cdk-test-project`
  */
-test('ECS CDK stack', (t) => {
+test('ECS CDK stack', async (t) => {
   const event = {
     fragment: cdkStack
   }
-  const handlerResponse = handler(event)
+  const handlerResponse = await handler(event)
   t.equal(handlerResponse.status, 'success')
   const compiledTemplate = handlerResponse.fragment
 
@@ -22,9 +22,9 @@ test('ECS CDK stack', (t) => {
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
-      'LoadBalancer_HTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
+      'LoadBalancer_HTTPCodeELB5XXCountAlarm_${MyWebServerLB3B5FD3AB}',
       'LoadBalancer_HTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      'LoadBalancer_RejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
+      'LoadBalancer_RejectedConnectionCountAlarm_${MyWebServerLB3B5FD3AB}',
       'LoadBalancer_UnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
     t.end()

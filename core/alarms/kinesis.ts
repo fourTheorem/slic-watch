@@ -46,8 +46,8 @@ export default function createKinesisAlarms (kinesisAlarmsConfig: KinesisAlarmsC
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const kinesisAlarmProperties: AlarmProperties = {
-          AlarmName: `Kinesis_${type}_${streamLogicalId}`,
-          AlarmDescription: `Kinesis ${getStatisticName(config)} ${metric} for ${streamLogicalId} breaches ${config.Threshold} milliseconds`,
+          AlarmName: Fn.Sub(`Kinesis_${type}_\${${streamLogicalId}}`, {}),
+          AlarmDescription: Fn.Sub(`Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${config.Threshold} milliseconds`, {}),
           MetricName: metric,
           Namespace: 'AWS/Kinesis',
           Dimensions: [{ Name: 'StreamName', Value: Fn.Ref(streamLogicalId) }],

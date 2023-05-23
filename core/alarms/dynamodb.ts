@@ -39,8 +39,8 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlar
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const dynamoDbAlarmProperties: AlarmProperties = {
-          AlarmName: `DDB_${metric}_${tableLogicalId}`,
-          AlarmDescription: `DynamoDB ${config.Statistic} for ${tableLogicalId} breaches ${config.Threshold}`,
+          AlarmName: Fn.Sub(`DDB_${metric}_${tableLogicalId}`, {}),
+          AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for ${tableLogicalId} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/DynamoDB',
           Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }],
@@ -60,8 +60,8 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlar
           const gsiName: string = gsi.IndexName
           const gsiIdentifierSub = `${tableLogicalId}${gsiName}`
           const dynamoDbAlarmsConfig: AlarmProperties = {
-            AlarmName: `DDB_${metric}_${gsiIdentifierSub}`,
-            AlarmDescription: `DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`,
+            AlarmName: Fn.Sub(`DDB_${metric}_${gsiIdentifierSub}`, {}),
+            AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`, {}),
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',
             Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
