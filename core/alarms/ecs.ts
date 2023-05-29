@@ -69,7 +69,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
           ],
           ...alarmProps
         }
-        const resourceName = `slicWatch${metric}Alarm${serviceLogicalId}`
+        const resourceName = `slicWatchECS${metric.replaceAll('Utilization', 'Alarm')}${serviceLogicalId}`
         const resource = createAlarm(ecsAlarmProperties, context)
         resources[resourceName] = resource
       }

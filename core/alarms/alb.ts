@@ -25,9 +25,9 @@ const executionMetrics = ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount']
 function createAlbAlarmCfProperties (metric: string, albLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/ApplicationELB',
-    Dimensions: [
-      { Name: 'LoadBalancer', Value: Fn.GetAtt(albLogicalId, 'LoadBalancerFullName') }
-    ]
+    Dimensions: [{ Name: 'LoadBalancer', Value: Fn.GetAtt(albLogicalId, 'LoadBalancerFullName') }],
+    AlarmName: `LoadBalancer_${metric.replaceAll(/[_]/g, '')}Alarm_${albLogicalId}`,
+    AlarmDescription: `LoadBalancer ${metric.replaceAll(/[_]/g, '')} ${getStatisticName(config)} for ${albLogicalId}  breaches ${config.Threshold}`
   }
 }
 
@@ -66,8 +66,8 @@ export function createALBAlarmsExperiment (albAlarmsConfig: AlbAlarmsConfig, con
         const name = makeResourceName(service, resourceName, metric.replaceAll(/[_-]/g, ''))
         const resource = createAlarm({
           AlarmName: makeAlarmName(service, metric, resourceName),
-          MetricName: metric,
           AlarmDescription: makeAlarmDescription(metric, config, resourceName),
+          MetricName: metric,
           Namespace: 'AWS/ApplicationELB',
           Dimensions: [
             { Name: 'LoadBalancer', Value: `\${${resourceName}.LoadBalancerFullName}` }
@@ -83,7 +83,7 @@ export function createALBAlarmsExperiment (albAlarmsConfig: AlbAlarmsConfig, con
 }
 
 function makeAlarmName (service: string, metric: string, resourceName: string): string {
-  return `${service}_${metric.replaceAll(/[_-]/g, '')}Alarm_${resourceName}`
+  return `${service}_${metric.replaceAll(/[_]/g, '')}Alarm_${resourceName}`
 }
 
 function makeAlarmDescription (metric: string, metricAlarmConfig: SlicWatchAlarmConfig, resourceName: string) {

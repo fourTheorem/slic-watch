@@ -25,7 +25,9 @@ const executionMetrics = ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsT
 function createStepFunctionAlarmCfProperties (metric: string, sfLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/States',
-    Dimensions: [{ Name: 'StateMachineArn', Value: Fn.Ref(sfLogicalId) }]
+    Dimensions: [{ Name: 'StateMachineArn', Value: Fn.Ref(sfLogicalId) }],
+    AlarmName: Fn.Sub(`StepFunctions_${metric.replaceAll(/[_-]/g, '')}Alarm_\${${sfLogicalId}.Name}`, {}),
+    AlarmDescription: Fn.Sub(`StepFunctions ${metric.replaceAll(/[_-]/g, '')} ${config.Statistic} for \${${sfLogicalId}.Name}  breaches ${config.Threshold}`, {})
   }
 }
 
@@ -42,7 +44,7 @@ function createStepFunctionAlarmCfProperties (metric: string, sfLogicalId: strin
 export default function createStatesAlarms (sfAlarmProperties: SfAlarmsConfig, context: Context, compiledTemplate: Template) {
   return createCfAlarms(
     'AWS::StepFunctions::StateMachine',
-    'StepFunctions',
+    'States',
     executionMetrics,
     sfAlarmProperties,
     context,

@@ -91,7 +91,14 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
         const properties = config.DurationPc
         const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
         const threshold: number = properties.Threshold as number
+        const alarmDescription = Fn.Sub(`${metric.replace(/Pc$/g, '')} for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
+        properties.AlarmDescription = alarmDescription
         properties.Threshold = threshold !== undefined ? (threshold * funcTimeout * 1000) / 100 : undefined
+      }
+      if (metric === 'Errors') {
+        const properties = config.Errors
+        const alarmDescription = Fn.Sub(`Error count for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
       }
 
       Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, context))
@@ -125,7 +132,7 @@ function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, func
   const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
   const lambdaAlarmProperties: AlarmProperties = {
     AlarmName: Fn.Sub(`Lambda_${metric.replace(/Pc$/g, '')}_\${${funcLogicalId}}`, {}),
-    AlarmDescription: Fn.Sub(`${metric} for \${${funcLogicalId}} breaches ${config.Threshold}`, {}),
+    AlarmDescription: Fn.Sub(`${metric.replace(/Pc$/g, '')} for \${${funcLogicalId}} breaches ${config.Threshold}`, {}),
     Metrics: undefined,
     ...((alarmProps.Metrics != null) // MetricName, Namespace, Dimensions, Statistic, Period should not be set if list of Metrics is set
     // as these properties already set up under Metrics property

@@ -2,7 +2,6 @@ import stringcase from 'case'
 
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
-import { Fn } from 'cloudform'
 
 import type { Context, SlicWatchAlarmConfig, CfAlarmProperties, AlarmTemplate } from './alarm-types'
 import { getResourcesByType } from '../cf-template'
@@ -43,8 +42,6 @@ export function createCfAlarms (type: string, service: string, metrics: string[]
         const alarm = genSpecificAlarmProps(metric, resourceLogicalId, rest)
         const name = makeResourceName(service, resourceLogicalId, metric.replaceAll(/[_-]/g, ''))
         const resource = createAlarm({
-          AlarmName: Fn.Sub(`${service}_${metric.replaceAll(/[_-]/g, '')}Alarm_\${${resourceLogicalId}}`, {}),
-          AlarmDescription: Fn.Sub(`${service} ${metric.replaceAll(/[_-]/g, '')} ${getStatisticName(rest)} for \${${resourceLogicalId}}  breaches ${rest.Threshold}`, {}),
           MetricName: metric,
           ...alarm,
           ...rest

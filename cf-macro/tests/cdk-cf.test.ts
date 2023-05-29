@@ -22,9 +22,9 @@ test('ECS CDK stack', async (t) => {
     t.same(alarmNames, [
       'ECS_CPUAlarm_${MyWebServerService2FE7341D.Name}',
       'ECS_MemoryAlarm_${MyWebServerService2FE7341D.Name}',
-      'LoadBalancer_HTTPCodeELB5XXCountAlarm_${MyWebServerLB3B5FD3AB}',
+      'LoadBalancer_HTTPCodeELB5XXCountAlarm_MyWebServerLB3B5FD3AB',
       'LoadBalancer_HTTPCodeTarget5XXCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3',
-      'LoadBalancer_RejectedConnectionCountAlarm_${MyWebServerLB3B5FD3AB}',
+      'LoadBalancer_RejectedConnectionCountAlarm_MyWebServerLB3B5FD3AB',
       'LoadBalancer_UnHealthyHostCountAlarm_MyWebServerLBPublicListenerECSGroup5AB9F1C3'
     ])
     t.end()

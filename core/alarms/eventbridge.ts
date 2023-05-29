@@ -24,7 +24,9 @@ const executionMetrics = ['FailedInvocations', 'ThrottledRules']
 function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: string, config: SlicWatchAlarmConfig) {
   return {
     Namespace: 'AWS/Events',
-    Dimensions: [{ Name: 'RuleName', Value: Fn.Ref(ruleLogicalId) }]
+    Dimensions: [{ Name: 'RuleName', Value: Fn.Ref(ruleLogicalId) }],
+    AlarmName: Fn.Sub(`Events_${metric}Alarm_\${${ruleLogicalId}}`, {}),
+    AlarmDescription: Fn.Sub(`EventBridge ${metric} for \${${ruleLogicalId}}  breaches ${config.Threshold}`, {})
   }
 }
 
