@@ -91,13 +91,25 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
         const properties = config.DurationPc
         const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
         const threshold: number = properties.Threshold as number
-        const alarmDescription = Fn.Sub(`${metric.replace(/Pc$/g, '')} for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
+        const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
         properties.AlarmDescription = alarmDescription
         properties.Threshold = threshold !== undefined ? (threshold * funcTimeout * 1000) / 100 : undefined
       }
       if (metric === 'Errors') {
         const properties = config.Errors
         const alarmDescription = Fn.Sub(`Error count for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
+      }
+
+      if (metric === 'ThrottlesPc') {
+        const properties = config.ThrottlesPc
+        const alarmDescription = Fn.Sub(`Throttles % for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
+      }
+
+      if (metric === 'Invocations') {
+        const properties = config.Invocations
+        const alarmDescription = Fn.Sub(`Total invocations for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
         properties.AlarmDescription = alarmDescription
       }
 

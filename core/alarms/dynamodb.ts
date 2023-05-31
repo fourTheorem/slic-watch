@@ -58,7 +58,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: DynamoDbAlar
           const { enabled, ...rest } = config
           const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
           const gsiName: string = gsi.IndexName
-          const gsiIdentifierSub = `${tableLogicalId}${gsiName}`
+          const gsiIdentifierSub = `\${${tableLogicalId}}${gsiName}`
           const dynamoDbAlarmsConfig: AlarmProperties = {
             AlarmName: Fn.Sub(`DDB_${metric}_${gsiIdentifierSub}`, {}),
             AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`, {}),
