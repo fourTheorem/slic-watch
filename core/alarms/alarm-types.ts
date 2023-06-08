@@ -1,6 +1,6 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Resource from 'cloudform-types/types/resource'
-import type { Value } from 'cloudform-types/types/dataTypes'
+import type { IntrinsicFunction } from 'cloudform'
 
 import type { LambdaFunctionAlarmsConfig } from './lambda'
 import type { ApiGwAlarmsConfig } from './api-gateway'
@@ -15,11 +15,9 @@ import type { AlbAlarmsConfig } from './alb'
 import type { AlbTargetAlarmsConfig } from './alb-target-group'
 import type { AppSyncAlarmsConfig } from './appsync'
 
-export interface CfAlarm {
-  Type: string
-  Properties: CfAlarmProperties
-}
+export type OptionalAlarmProps = 'EvaluationPeriods' | 'ComparisonOperator'
 
+export declare type Value<T> = T | IntrinsicFunction
 export interface AlarmTemplate {
   Type: string
   Properties: AlarmProperties
@@ -29,18 +27,10 @@ export interface ReturnAlarm {
   resourceName: string
   resource: Resource
 }
-
-type Modify<T, R> = Omit<T, keyof R> & R
-export interface SlicWatchAlarmConfig extends Modify<AlarmProperties, {
-  EvaluationPeriods?: Value<number>
-  ComparisonOperator?: Value<string>
+export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlarmProps> {
+  ComparisonOperator?: string
   enabled?: boolean
-}> {}
-
-export interface CfAlarmProperties extends Modify<AlarmProperties, {
-  EvaluationPeriods?: Value<number>
-  ComparisonOperator?: Value<string>
-}> {}
+}
 
 export interface Context {
   alarmActions: string[]

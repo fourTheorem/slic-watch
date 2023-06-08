@@ -3,7 +3,7 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context, SlicWatchAlarmConfig, Value } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 
 export interface LambdaFunctionAlarmsConfig {
@@ -67,8 +67,8 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
                 MetricName: 'Throttles',
                 Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
               },
-              Period: properties.Period as number,
-              Stat: properties.Statistic as string
+              Period: properties.Period as Value<number>,
+              Stat: properties.Statistic as Value<string>
             },
             ReturnData: false
           },
@@ -80,8 +80,8 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
                 MetricName: 'Invocations',
                 Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
               },
-              Period: properties.Period as number,
-              Stat: properties.Statistic as string
+              Period: properties.Period as Value<number>,
+              Stat: properties.Statistic as Value<string>
             },
             ReturnData: false
           }

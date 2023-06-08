@@ -3,7 +3,7 @@ import stringcase from 'case'
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-import type { Context, SlicWatchAlarmConfig, CfAlarmProperties, AlarmTemplate } from './alarm-types'
+import type { Context, SlicWatchAlarmConfig, AlarmTemplate, OptionalAlarmProps } from './alarm-types'
 import { getResourcesByType } from '../cf-template'
 
 /**
@@ -16,7 +16,7 @@ import { getResourcesByType } from '../cf-template'
  * can generate a description and dimensions from the CloudFormation resource for the
  * load balancer, referencing that load balancer's logical ID, name or "LoadBalancerFullName"
  */
-type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchAlarmConfig) => CfAlarmProperties
+type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchAlarmConfig) => Omit<AlarmProperties, OptionalAlarmProps>
 
 /**
  * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specfic resources type
@@ -38,13 +38,14 @@ export function createCfAlarms (type: string, service: string, metrics: string[]
   for (const resourceLogicalId of Object.keys(resourcesOfType)) {
     for (const metric of metrics) {
       const { enabled, ...rest } = config[metric]
+      const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
       if (enabled !== false) {
         const alarm = genSpecificAlarmProps(metric, resourceLogicalId, rest)
         const name = makeResourceName(service, resourceLogicalId, metric.replaceAll(/[_-]/g, ''))
         const resource = createAlarm({
           MetricName: metric,
           ...alarm,
-          ...rest
+          ...alarmProps
         }, context)
         resources[name] = resource
       }
