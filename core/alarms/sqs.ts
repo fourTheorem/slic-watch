@@ -2,14 +2,14 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SqsAlarmsConfig {
+export interface SlicWatchSqsAlarmsConfig {
   enabled?: boolean
-  InFlightMessagesPc: SlicWatchAlarmConfig
-  AgeOfOldestMessage: SlicWatchAlarmConfig
+  InFlightMessagesPc: AlarmProperties
+  AgeOfOldestMessage: AlarmProperties
 }
 
 /**
@@ -22,7 +22,7 @@ export interface SqsAlarmsConfig {
  *
  * @returns SQS-specific CloudFormation Alarm resources
  */
-export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
   const resources = {}
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
 
@@ -31,9 +31,8 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
     if (sqsAlarmsConfig.InFlightMessagesPc.enabled !== false) {
       // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
       //        so that in case AWS changes them, the rule will still be valid
-      const config: SlicWatchAlarmConfig = sqsAlarmsConfig.InFlightMessagesPc
+      const config = sqsAlarmsConfig.InFlightMessagesPc
       const { enabled, ...rest } = config
-      const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
       const hardLimit = (queueResource.Properties?.FifoQueue != null) ? 20000 : 120000
       const thresholdValue = Math.floor(hardLimit * (config.Threshold as any) / 100)
       const sqsAlarmProperties: AlarmProperties = {
@@ -42,7 +41,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
         MetricName: 'ApproximateNumberOfMessagesNotVisible',
         Namespace: 'AWS/SQS',
         Dimensions: [{ Name: 'QueueName', Value: Fn.GetAtt(`${queueLogicalId}`, 'QueueName') }],
-        ...alarmProps,
+        ...rest,
         Threshold: thresholdValue
       }
       const resourceName = `slicWatchSQSInFlightMsgsAlarm${queueLogicalId}`
@@ -54,7 +53,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SqsAlarmsConfig, conte
       if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }
-      const config: SlicWatchAlarmConfig = sqsAlarmsConfig.AgeOfOldestMessage
+      const config = sqsAlarmsConfig.AgeOfOldestMessage
       const { enabled, ...rest } = config
       const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
       const sqsAlarmProperties: AlarmProperties = {

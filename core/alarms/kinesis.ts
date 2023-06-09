@@ -3,17 +3,17 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getResourcesByType } from '../cf-template'
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 
-export interface KinesisAlarmsConfig {
+export interface SlicWatchKinesisAlarmsConfig {
   enabled?: boolean
-  'GetRecords.IteratorAgeMilliseconds': SlicWatchAlarmConfig
-  ReadProvisionedThroughputExceeded: SlicWatchAlarmConfig
-  WriteProvisionedThroughputExceeded: SlicWatchAlarmConfig
-  'PutRecord.Success': SlicWatchAlarmConfig
-  'PutRecords.Success': SlicWatchAlarmConfig
-  'GetRecords.Success': SlicWatchAlarmConfig
+  'GetRecords.IteratorAgeMilliseconds': AlarmProperties
+  ReadProvisionedThroughputExceeded: AlarmProperties
+  WriteProvisionedThroughputExceeded: AlarmProperties
+  'PutRecord.Success': AlarmProperties
+  'PutRecords.Success': AlarmProperties
+  'GetRecords.Success': AlarmProperties
 }
 
 const kinesisAlarmTypes = {
@@ -35,23 +35,22 @@ const kinesisAlarmTypes = {
  *
  * @returns Kinesis Data Stream-specific CloudFormation Alarm resources
  */
-export default function createKinesisAlarms (kinesisAlarmsConfig: KinesisAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamLogicalId] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      const config: SlicWatchAlarmConfig = kinesisAlarmsConfig[metric]
+      const config: SlicWatchKinesisAlarmsConfig & AlarmProperties = kinesisAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const kinesisAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`Kinesis_${type}_\${${streamLogicalId}}`, {}),
           AlarmDescription: Fn.Sub(`Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${config.Threshold} milliseconds`, {}),
           MetricName: metric,
           Namespace: 'AWS/Kinesis',
           Dimensions: [{ Name: 'StreamName', Value: Fn.Ref(streamLogicalId) }],
-          ...alarmProps
+          ...rest
         }
         const resourceName = makeResourceName('Kinesis', streamLogicalId, type)
         const resource = createAlarm(kinesisAlarmProperties, context)

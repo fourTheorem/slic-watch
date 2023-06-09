@@ -3,8 +3,13 @@ import stringcase from 'case'
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-import type { Context, SlicWatchAlarmConfig, AlarmTemplate, OptionalAlarmProps } from './alarm-types'
+import type { Context, AlarmTemplate, OptionalAlarmProps } from './alarm-types'
 import { getResourcesByType } from '../cf-template'
+import type { SlicWatchAlbAlarmsConfig } from './alb'
+import type { SlicWatchDynamoDbAlarmsConfig } from './dynamodb'
+import type { SlicWatchEventsAlarmsConfig } from './eventbridge'
+import type { SlicWatchSnsAlarmsConfig } from './sns'
+import type { SlicWatchSfAlarmsConfig } from './step-functions'
 
 /**
  * Alarm properties such as the description and dimensions vary according to the
@@ -16,8 +21,9 @@ import { getResourcesByType } from '../cf-template'
  * can generate a description and dimensions from the CloudFormation resource for the
  * load balancer, referencing that load balancer's logical ID, name or "LoadBalancerFullName"
  */
-type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchAlarmConfig) => Omit<AlarmProperties, OptionalAlarmProps>
+type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: AlarmProperties) => Omit<AlarmProperties, OptionalAlarmProps>
 
+type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig | SlicWatchDynamoDbAlarmsConfig | SlicWatchEventsAlarmsConfig | SlicWatchSnsAlarmsConfig | SlicWatchSfAlarmsConfig
 /**
  * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specfic resources type
  *
@@ -31,21 +37,20 @@ type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: s
  *
  * @returns An object containing the alarm resources in CloudFormation syntax by logical ID
  */
-export function createCfAlarms (type: string, service: string, metrics: string[], config: SlicWatchAlarmConfig, context: Context, compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction) {
+export function createCfAlarms (type: string, service: string, metrics: string[], config: CommonAlarmsConfigs & AlarmProperties, context: Context, compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction) {
   const resources = {}
   const resourcesOfType = getResourcesByType(type, compiledTemplate)
 
   for (const resourceLogicalId of Object.keys(resourcesOfType)) {
     for (const metric of metrics) {
       const { enabled, ...rest } = config[metric]
-      const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
       if (enabled !== false) {
         const alarm = genSpecificAlarmProps(metric, resourceLogicalId, rest)
         const name = makeResourceName(service, resourceLogicalId, metric.replaceAll(/[_-]/g, ''))
         const resource = createAlarm({
           MetricName: metric,
           ...alarm,
-          ...alarmProps
+          ...rest
         }, context)
         resources[name] = resource
       }
@@ -83,6 +88,6 @@ export function makeResourceName (service: string, givenName: string, alarm: str
  * @param alarmConfig The alarm configuration for this specific resource type
  * @returns  An statistic type for specific resource
  */
-export function getStatisticName (alarmConfig: SlicWatchAlarmConfig) {
+export function getStatisticName (alarmConfig: AlarmProperties) {
   return alarmConfig.Statistic ?? alarmConfig.ExtendedStatistic
 }

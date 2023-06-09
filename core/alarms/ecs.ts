@@ -2,14 +2,14 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface EcsAlarmsConfig {
+export interface SlicWatchEcsAlarmsConfig {
   enabled?: boolean
-  MemoryUtilization: SlicWatchAlarmConfig
-  CPUUtilization: SlicWatchAlarmConfig
+  MemoryUtilization: AlarmProperties
+  CPUUtilization: AlarmProperties
 }
 
 /**
@@ -46,7 +46,7 @@ const executionMetrics = ['MemoryUtilization', 'CPUUtilization']
  *
  * @returns ECS-specific CloudFormation Alarm resources
  */
-export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createECSAlarms (ecsAlarmsConfig: SlicWatchEcsAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
 
@@ -54,7 +54,7 @@ export default function createECSAlarms (ecsAlarmsConfig: EcsAlarmsConfig, conte
     for (const metric of executionMetrics) {
       const cluster = serviceResource.Properties?.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
-      const config: SlicWatchAlarmConfig = ecsAlarmsConfig[metric]
+      const config = ecsAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading

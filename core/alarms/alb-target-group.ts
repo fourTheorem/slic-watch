@@ -2,17 +2,17 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import type { ResourceType } from '../cf-template'
 import { getResourcesByType } from '../cf-template'
 
-export interface AlbTargetAlarmsConfig {
+export interface SlicWatchAlbTargetAlarmsConfig {
   enabled?: boolean
-  HTTPCode_Target_5XX_Count: SlicWatchAlarmConfig
-  UnHealthyHostCount: SlicWatchAlarmConfig
-  LambdaInternalError: SlicWatchAlarmConfig
-  LambdaUserError: SlicWatchAlarmConfig
+  HTTPCode_Target_5XX_Count: AlarmProperties
+  UnHealthyHostCount: AlarmProperties
+  LambdaInternalError: AlarmProperties
+  LambdaUserError: AlarmProperties
 }
 
 function getResourceByName (resourceName: string, compiledTemplate: Template) {
@@ -91,11 +91,11 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: AlbTargetAlarmsConfig, compiledTemplate: Template, context: Context) {
+function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig, compiledTemplate: Template, context: Context) {
   const resources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-      const config: SlicWatchAlarmConfig = albTargetAlarmsConfig[metric]
+      const config = albTargetAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
@@ -130,7 +130,7 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-export default function createALBTargetAlarms (albTargetAlarmsConfig: AlbTargetAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createALBTargetAlarms (albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig, context: Context, compiledTemplate: Template) {
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
   const resources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {

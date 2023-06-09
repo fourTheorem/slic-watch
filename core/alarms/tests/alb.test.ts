@@ -1,7 +1,7 @@
 import { test } from 'tap'
 
 import createALBAlarms from '../alb'
-import type { AlbAlarmsConfig } from '../alb'
+import type { SlicWatchAlbAlarmsConfig } from '../alb'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -32,7 +32,7 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: AlbAlarmsConfig) {
+  function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
     return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }

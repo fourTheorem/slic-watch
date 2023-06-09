@@ -2,14 +2,14 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm, createCfAlarms, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface AlbAlarmsConfig {
+export interface SlicWatchAlbAlarmsConfig {
   enabled?: boolean
-  HTTPCode_ELB_5XX_Count: SlicWatchAlarmConfig
-  RejectedConnectionCount: SlicWatchAlarmConfig
+  HTTPCode_ELB_5XX_Count: AlarmProperties
+  RejectedConnectionCount: AlarmProperties
 }
 
 const executionMetrics = ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount']
@@ -22,7 +22,7 @@ const executionMetrics = ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount']
  *
  * @returns ALB-specific CloudFormation Alarm properties
  */
-function createAlbAlarmCfProperties (metric: string, albLogicalId: string, config: SlicWatchAlarmConfig) {
+function createAlbAlarmCfProperties (metric: string, albLogicalId: string, config: AlarmProperties) {
   return {
     Namespace: 'AWS/ApplicationELB',
     Dimensions: [{ Name: 'LoadBalancer', Value: Fn.GetAtt(albLogicalId, 'LoadBalancerFullName') }],
@@ -41,7 +41,7 @@ function createAlbAlarmCfProperties (metric: string, albLogicalId: string, confi
  *
  * @returns ALB-specific CloudFormation Alarm resources
  */
-export default function createALBAlarms (albAlarmsConfig: AlbAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
   return createCfAlarms(
     'AWS::ElasticLoadBalancingV2::LoadBalancer',
     'LoadBalancer',
@@ -53,14 +53,14 @@ export default function createALBAlarms (albAlarmsConfig: AlbAlarmsConfig, conte
   )
 }
 
-export function createALBAlarmsExperiment (albAlarmsConfig: AlbAlarmsConfig, context: Context, compiledTemplate: Template) {
+export function createALBAlarmsExperiment (albAlarmsConfig: SlicWatchAlbAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const type = 'AWS::ElasticLoadBalancingV2::LoadBalancer'
   const service = 'LoadBalancer'
   const resourcesOfType = getResourcesByType(type, compiledTemplate)
   for (const resourceName of Object.keys(resourcesOfType)) {
     for (const metric of executionMetrics) {
-      const config: SlicWatchAlarmConfig = albAlarmsConfig[metric]
+      const config = albAlarmsConfig[metric]
       if (config.enabled !== false) {
         const alarmProps = config as AlarmProperties // All mandatory properties are set following cascading
         const name = makeResourceName(service, resourceName, metric.replaceAll(/[_-]/g, ''))
@@ -86,6 +86,6 @@ function makeAlarmName (service: string, metric: string, resourceName: string): 
   return `${service}_${metric.replaceAll(/[_]/g, '')}Alarm_${resourceName}`
 }
 
-function makeAlarmDescription (metric: string, metricAlarmConfig: SlicWatchAlarmConfig, resourceName: string) {
+function makeAlarmDescription (metric: string, metricAlarmConfig: AlarmProperties, resourceName: string) {
   return `LoadBalancer ${metric} ${getStatisticName(metricAlarmConfig)} for ${resourceName} breaches ${metricAlarmConfig.Threshold}`
 }

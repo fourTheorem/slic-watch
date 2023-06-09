@@ -1,7 +1,7 @@
 import { test } from 'tap'
 
 import createAppSyncAlarms from '../appsync'
-import type { AppSyncAlarmsConfig } from '../appsync'
+import type { SlicWatchAppSyncAlarmsConfig } from '../appsync'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -32,7 +32,7 @@ test('AppSync alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (appSyncAlarmProperties: AppSyncAlarmsConfig) {
+  function createAlarmResources (appSyncAlarmProperties: SlicWatchAppSyncAlarmsConfig) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }

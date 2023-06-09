@@ -3,29 +3,29 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
-import type { Context, SlicWatchAlarmConfig, Value } from './alarm-types'
+import type { Context, Value } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 
-export interface LambdaFunctionAlarmsConfig {
+export interface SlicWatchLambdaAlarmsConfig {
   enabled?: boolean
-  Errors: SlicWatchAlarmConfig
-  ThrottlesPc: SlicWatchAlarmConfig
-  DurationPc: SlicWatchAlarmConfig
-  Invocations: SlicWatchAlarmConfig
-  IteratorAge: SlicWatchAlarmConfig
+  Errors: AlarmProperties
+  ThrottlesPc: AlarmProperties
+  DurationPc: AlarmProperties
+  Invocations: AlarmProperties
+  IteratorAge: AlarmProperties
 }
 
 export interface FunctionAlarmProperties {
-  HelloLambdaFunction?: LambdaFunctionAlarmsConfig
-  ThrottlerLambdaFunction?: LambdaFunctionAlarmsConfig
-  DriveStreamLambdaFunction?: LambdaFunctionAlarmsConfig
-  DriveQueueLambdaFunction?: LambdaFunctionAlarmsConfig
-  DriveTableLambdaFunction?: LambdaFunctionAlarmsConfig
-  StreamProcessorLambdaFunction?: LambdaFunctionAlarmsConfig
-  HttpGetterLambdaFunction?: LambdaFunctionAlarmsConfig
-  SubscriptionHandlerLambdaFunction?: LambdaFunctionAlarmsConfig
-  EventsRuleLambdaFunction?: LambdaFunctionAlarmsConfig
-  AlbEventLambdaFunction?: LambdaFunctionAlarmsConfig
+  HelloLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  ThrottlerLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  DriveStreamLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  DriveQueueLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  DriveTableLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  StreamProcessorLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  HttpGetterLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  SubscriptionHandlerLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  EventsRuleLambdaFunction?: SlicWatchLambdaAlarmsConfig
+  AlbEventLambdaFunction?: SlicWatchLambdaAlarmsConfig
 }
 
 const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
@@ -39,12 +39,12 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
-export default function createLambdaAlarms (functionAlarmProperties: LambdaFunctionAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-    const config: LambdaFunctionAlarmsConfig = functionAlarmProperties[funcLogicalId]
+    const config: SlicWatchLambdaAlarmsConfig = functionAlarmProperties[funcLogicalId]
 
     for (const metric of lambdaMetrics) {
       if (config.enabled === false || config[metric].enabled === false) {
@@ -138,15 +138,14 @@ export default function createLambdaAlarms (functionAlarmProperties: LambdaFunct
  * @returns Lambda-specific CloudFormation Alarm resources
  */
 
-function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
+function createLambdaCfAlarm (config: AlarmProperties & SlicWatchLambdaAlarmsConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
   const { enabled, Period, Statistic, ...rest } = config
 
-  const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
   const lambdaAlarmProperties: AlarmProperties = {
     AlarmName: Fn.Sub(`Lambda_${metric.replace(/Pc$/g, '')}_\${${funcLogicalId}}`, {}),
     AlarmDescription: Fn.Sub(`${metric.replace(/Pc$/g, '')} for \${${funcLogicalId}} breaches ${config.Threshold}`, {}),
     Metrics: undefined,
-    ...((alarmProps.Metrics != null) // MetricName, Namespace, Dimensions, Statistic, Period should not be set if list of Metrics is set
+    ...((rest.Metrics != null) // MetricName, Namespace, Dimensions, Statistic, Period should not be set if list of Metrics is set
     // as these properties already set up under Metrics property
       ? {}
       : {
@@ -156,7 +155,7 @@ function createLambdaCfAlarm (config: SlicWatchAlarmConfig, metric: string, func
           Statistic: config.Statistic,
           Period: config.Period
         }),
-    ...alarmProps
+    ...rest
   }
   const resourceName = `slicWatchLambda${metric.replace(/Pc$/g, '')}Alarm${funcLogicalId}`
   const resource = createAlarm(lambdaAlarmProperties, context)

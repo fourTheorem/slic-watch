@@ -2,14 +2,14 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface AppSyncAlarmsConfig {
+export interface SlicWatchAppSyncAlarmsConfig {
   enabled?: boolean
-  '5XXError': SlicWatchAlarmConfig
-  Latency: SlicWatchAlarmConfig
+  '5XXError': AlarmProperties
+  Latency: AlarmProperties
 }
 
 const executionMetrics = ['5XXError', 'Latency']
@@ -24,13 +24,13 @@ const executionMetrics = ['5XXError', 'Latency']
  *
  * @returns AppSync Gateway-specific CloudFormation Alarm resources
  */
-export default function createAppSyncAlarms (appSyncAlarmsConfig: AppSyncAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
   const resources = {}
   const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
   for (const [appSyncLogicalId, appSyncResource] of Object.entries(appSyncResources)) {
     for (const metric of executionMetrics) {
-      const config: SlicWatchAlarmConfig = appSyncAlarmsConfig[metric]
+      const config = appSyncAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading

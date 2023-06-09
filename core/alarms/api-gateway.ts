@@ -3,15 +3,15 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, SlicWatchAlarmConfig } from './alarm-types'
+import type { Context } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface ApiGwAlarmsConfig {
+export interface SlicWatchApiGwAlarmsConfig {
   enabled?: boolean
-  '5XXError': SlicWatchAlarmConfig
-  '4XXError': SlicWatchAlarmConfig
-  Latency: SlicWatchAlarmConfig
+  '5XXError': AlarmProperties
+  '4XXError': AlarmProperties
+  Latency: AlarmProperties
 }
 
 /**
@@ -79,13 +79,13 @@ const executionMetrics = ['5XXError', '4XXError', 'Latency']
  *
  * @returns API Gateway-specific CloudFormation Alarm resources
  */
-export default function createApiGatewayAlarms (apiGwAlarmsConfig: ApiGwAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig, context: Context, compiledTemplate: Template) {
   const resources = {}
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 
   for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
-      const config: SlicWatchAlarmConfig = apiGwAlarmsConfig[metric]
+      const config = apiGwAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading

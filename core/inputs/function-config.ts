@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
-import type { LambdaFunctionAlarmsConfig } from '../alarms/lambda'
+import type { SlicWatchLambdaAlarmsConfig } from '../alarms/lambda'
 
 /**
  * Merges the global Lambda alarm configuration with any function-specific overrides, ensuring
@@ -13,7 +13,7 @@ import type { LambdaFunctionAlarmsConfig } from '../alarms/lambda'
  * functionAlarmConfig An object per function name specifying any function-specific alarm configuration overrides
  * A per-function configuration consolidating all inputs
  */
-function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): LambdaFunctionAlarmsConfig {
+function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): SlicWatchLambdaAlarmsConfig {
   // Add all alarm properties to functionAlarmConfig so we can cascade top-level configuration down
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
@@ -23,7 +23,7 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): Lam
     }
     mergedFuncAlarmConfigs[func] = _.merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
   }
-  return mergedFuncAlarmConfigs as LambdaFunctionAlarmsConfig
+  return mergedFuncAlarmConfigs as SlicWatchLambdaAlarmsConfig
 }
 
 /**

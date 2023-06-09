@@ -3,7 +3,7 @@ import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import type { Context, SlicWatchAlarmsConfig } from './alarm-types'
+import type { Context, SlicWatchCascadeAlarmsConfig } from './alarm-types'
 
 import createLambdaAlarms from './lambda'
 import type { FunctionAlarmProperties } from './lambda'
@@ -20,7 +20,7 @@ import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { addResource } from '../cf-template'
 
-export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -34,7 +34,7 @@ export default function addAlarms (alarmProperties: SlicWatchAlarmsConfig, funct
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmProperties) as SlicWatchAlarmsConfig
+  } = cascade(alarmProperties) as SlicWatchCascadeAlarmsConfig
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
