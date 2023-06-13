@@ -23,6 +23,17 @@ export interface AlarmTemplate {
   Properties: AlarmProperties
 }
 
+export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlarmProps> {
+  ComparisonOperator?: string
+  enabled?: boolean
+}
+
+export interface SlicWatchMergedConfig extends AlarmProperties {
+  enabled?: boolean
+}
+
+export type InputOutput = SlicWatchAlarmConfig | SlicWatchMergedConfig
+
 export interface ReturnAlarm {
   resourceName: string
   resource: Resource
@@ -32,18 +43,18 @@ export interface Context {
   alarmActions: string[]
 }
 
-export interface SlicWatchCascadeAlarmsConfig {
+export interface SlicWatchCascadeAlarmsConfig<T extends InputOutput> extends AlarmProperties {
   enabled: boolean
-  Lambda?: SlicWatchLambdaAlarmsConfig
-  ApiGateway?: SlicWatchApiGwAlarmsConfig
-  States?: SlicWatchSfAlarmsConfig
-  DynamoDB?: SlicWatchDynamoDbAlarmsConfig
-  Kinesis?: SlicWatchKinesisAlarmsConfig
-  SQS?: SlicWatchSqsAlarmsConfig
-  ECS?: SlicWatchEcsAlarmsConfig
-  SNS?: SlicWatchSnsAlarmsConfig
-  Events?: SlicWatchEventsAlarmsConfig
-  ApplicationELB?: SlicWatchAlbAlarmsConfig
-  ApplicationELBTarget?: SlicWatchAlbTargetAlarmsConfig
-  AppSync?: SlicWatchAppSyncAlarmsConfig
+  Lambda?: SlicWatchLambdaAlarmsConfig<T>
+  ApiGateway?: SlicWatchApiGwAlarmsConfig<T>
+  States?: SlicWatchSfAlarmsConfig<T>
+  DynamoDB?: SlicWatchDynamoDbAlarmsConfig<T>
+  Kinesis?: SlicWatchKinesisAlarmsConfig<T>
+  SQS?: SlicWatchSqsAlarmsConfig<T>
+  ECS?: SlicWatchEcsAlarmsConfig<T>
+  SNS?: SlicWatchSnsAlarmsConfig<T>
+  Events?: SlicWatchEventsAlarmsConfig<T>
+  ApplicationELB?: SlicWatchAlbAlarmsConfig<T>
+  ApplicationELBTarget?: SlicWatchAlbTargetAlarmsConfig<T>
+  AppSync?: SlicWatchAppSyncAlarmsConfig<T>
 }

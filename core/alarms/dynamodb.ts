@@ -2,16 +2,15 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchDynamoDbAlarmsConfig {
-  enabled?: boolean
-  ReadThrottleEvents: AlarmProperties
-  WriteThrottleEvents: AlarmProperties
-  UserErrors: AlarmProperties
-  SystemErrors: AlarmProperties
+export interface SlicWatchDynamoDbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  ReadThrottleEvents: T
+  WriteThrottleEvents: T
+  UserErrors: T
+  SystemErrors: T
 }
 
 const dynamoDbMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors']
@@ -27,7 +26,7 @@ const dynamoDbGsiMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents']
  *
  * @returns DynamoDB-specific CloudFormation Alarm resources
  */
-export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
 
@@ -51,7 +50,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
       }
     }
     for (const metric of dynamoDbGsiMetrics) {
-      const config: SlicWatchDynamoDbAlarmsConfig & AlarmProperties = dynamoDbAlarmsConfig[metric]
+      const config = dynamoDbAlarmsConfig[metric]
       for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes ?? []) {
         if (dynamoDbAlarmsConfig.ReadThrottleEvents.enabled !== false && dynamoDbAlarmsConfig.WriteThrottleEvents.enabled !== false) {
           const { enabled, ...rest } = config

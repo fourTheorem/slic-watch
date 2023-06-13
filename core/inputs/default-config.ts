@@ -1,8 +1,8 @@
-import type { SlicWatchCascadeAlarmsConfig } from '../alarms/alarm-types'
+import type { SlicWatchCascadeAlarmsConfig, SlicWatchAlarmConfig } from '../alarms/alarm-types'
 import type { SlicWatchDashboardConfig } from '../dashboards/dashboard-types'
 
 interface DefaultConfig {
-  alarms: SlicWatchCascadeAlarmsConfig
+  alarms: SlicWatchCascadeAlarmsConfig<SlicWatchAlarmConfig>
   dashboard: SlicWatchDashboardConfig
 }
 

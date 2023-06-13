@@ -3,10 +3,14 @@ import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
-import type { Context, SlicWatchCascadeAlarmsConfig } from './alarm-types'
+import type {
+  Context, InputOutput,
+  SlicWatchAlarmConfig,
+  SlicWatchCascadeAlarmsConfig, SlicWatchMergedConfig
+} from './alarm-types'
 
-import createLambdaAlarms from './lambda'
 import type { FunctionAlarmProperties } from './lambda'
+import createLambdaAlarms from './lambda'
 import createApiGatewayAlarms from './api-gateway'
 import createStatesAlarms from './step-functions'
 import createDynamoDbAlarms from './dynamodb'
@@ -20,7 +24,7 @@ import createALBTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { addResource } from '../cf-template'
 
-export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig, functionAlarmProperties: FunctionAlarmProperties, context: Context, compiledTemplate: Template) {
+export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig<SlicWatchAlarmConfig>, functionAlarmProperties: FunctionAlarmProperties<InputOutput>, context: Context, compiledTemplate: Template) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -34,7 +38,7 @@ export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmProperties) as SlicWatchCascadeAlarmsConfig
+  } = cascade(alarmProperties) as SlicWatchCascadeAlarmsConfig<SlicWatchMergedConfig>
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
@@ -57,7 +61,8 @@ export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig
     Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate))
     for (const { config, alarmFunc } of funcsWithConfig) {
       if (config?.enabled != null) {
-        Object.assign(resources, alarmFunc(config as any, context, compiledTemplate))
+        // @ts-expect-error Can't find a way to type this
+        Object.assign(resources, alarmFunc(config, context, compiledTemplate))
       }
     }
   }

@@ -2,14 +2,13 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchAppSyncAlarmsConfig {
-  enabled?: boolean
-  '5XXError': AlarmProperties
-  Latency: AlarmProperties
+export interface SlicWatchAppSyncAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  '5XXError': T
+  Latency: T
 }
 
 const executionMetrics = ['5XXError', 'Latency']
@@ -24,7 +23,7 @@ const executionMetrics = ['5XXError', 'Latency']
  *
  * @returns AppSync Gateway-specific CloudFormation Alarm resources
  */
-export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 

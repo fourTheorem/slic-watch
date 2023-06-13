@@ -2,14 +2,13 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, createCfAlarms, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchAlbAlarmsConfig {
-  enabled?: boolean
-  HTTPCode_ELB_5XX_Count: AlarmProperties
-  RejectedConnectionCount: AlarmProperties
+export interface SlicWatchAlbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  HTTPCode_ELB_5XX_Count: T
+  RejectedConnectionCount: T
 }
 
 const executionMetrics = ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount']
@@ -41,7 +40,7 @@ function createAlbAlarmCfProperties (metric: string, albLogicalId: string, confi
  *
  * @returns ALB-specific CloudFormation Alarm resources
  */
-export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   return createCfAlarms(
     'AWS::ElasticLoadBalancingV2::LoadBalancer',
     'LoadBalancer',
@@ -53,7 +52,7 @@ export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConf
   )
 }
 
-export function createALBAlarmsExperiment (albAlarmsConfig: SlicWatchAlbAlarmsConfig, context: Context, compiledTemplate: Template) {
+export function createALBAlarmsExperiment (albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const type = 'AWS::ElasticLoadBalancingV2::LoadBalancer'
   const service = 'LoadBalancer'

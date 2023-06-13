@@ -2,14 +2,13 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchSqsAlarmsConfig {
-  enabled?: boolean
-  InFlightMessagesPc: AlarmProperties
-  AgeOfOldestMessage: AlarmProperties
+export interface SlicWatchSqsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  InFlightMessagesPc: T
+  AgeOfOldestMessage: T
 }
 
 /**
@@ -22,7 +21,7 @@ export interface SlicWatchSqsAlarmsConfig {
  *
  * @returns SQS-specific CloudFormation Alarm resources
  */
-export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
 

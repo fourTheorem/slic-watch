@@ -3,17 +3,16 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getResourcesByType } from '../cf-template'
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 
-export interface SlicWatchKinesisAlarmsConfig {
-  enabled?: boolean
-  'GetRecords.IteratorAgeMilliseconds': AlarmProperties
-  ReadProvisionedThroughputExceeded: AlarmProperties
-  WriteProvisionedThroughputExceeded: AlarmProperties
-  'PutRecord.Success': AlarmProperties
-  'PutRecords.Success': AlarmProperties
-  'GetRecords.Success': AlarmProperties
+export interface SlicWatchKinesisAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  'GetRecords.IteratorAgeMilliseconds': T
+  ReadProvisionedThroughputExceeded: T
+  WriteProvisionedThroughputExceeded: T
+  'PutRecord.Success': T
+  'PutRecords.Success': T
+  'GetRecords.Success': T
 }
 
 const kinesisAlarmTypes = {
@@ -35,13 +34,13 @@ const kinesisAlarmTypes = {
  *
  * @returns Kinesis Data Stream-specific CloudFormation Alarm resources
  */
-export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamLogicalId] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      const config: SlicWatchKinesisAlarmsConfig & AlarmProperties = kinesisAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = kinesisAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
         const kinesisAlarmProperties: AlarmProperties = {

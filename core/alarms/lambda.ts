@@ -2,30 +2,29 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import { getResourcesByType, getEventSourceMappingFunctions } from '../cf-template'
-import type { Context, Value } from './alarm-types'
+import { getEventSourceMappingFunctions, getResourcesByType } from '../cf-template'
+import type { Context, InputOutput, Value, SlicWatchMergedConfig, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 
-export interface SlicWatchLambdaAlarmsConfig {
-  enabled?: boolean
-  Errors: AlarmProperties
-  ThrottlesPc: AlarmProperties
-  DurationPc: AlarmProperties
-  Invocations: AlarmProperties
-  IteratorAge: AlarmProperties
+export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  Errors: T
+  ThrottlesPc: T
+  DurationPc: T
+  Invocations: T
+  IteratorAge: T
 }
 
-export interface FunctionAlarmProperties {
-  HelloLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  ThrottlerLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  DriveStreamLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  DriveQueueLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  DriveTableLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  StreamProcessorLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  HttpGetterLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  SubscriptionHandlerLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  EventsRuleLambdaFunction?: SlicWatchLambdaAlarmsConfig
-  AlbEventLambdaFunction?: SlicWatchLambdaAlarmsConfig
+export interface FunctionAlarmProperties<T extends InputOutput> {
+  HelloLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  ThrottlerLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  DriveStreamLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  DriveQueueLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  DriveTableLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  StreamProcessorLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  HttpGetterLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  SubscriptionHandlerLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  EventsRuleLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
+  AlbEventLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
 }
 
 const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
@@ -39,12 +38,12 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
-export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-    const config: SlicWatchLambdaAlarmsConfig = functionAlarmProperties[funcLogicalId]
+    const config: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = functionAlarmProperties[funcLogicalId]
 
     for (const metric of lambdaMetrics) {
       if (config.enabled === false || config[metric].enabled === false) {
@@ -138,8 +137,8 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
  * @returns Lambda-specific CloudFormation Alarm resources
  */
 
-function createLambdaCfAlarm (config: AlarmProperties & SlicWatchLambdaAlarmsConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
-  const { enabled, Period, Statistic, ...rest } = config
+function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
+  const { Period, Statistic, ...rest } = config
 
   const lambdaAlarmProperties: AlarmProperties = {
     AlarmName: Fn.Sub(`Lambda_${metric.replace(/Pc$/g, '')}_\${${funcLogicalId}}`, {}),

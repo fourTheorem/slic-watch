@@ -3,15 +3,14 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchApiGwAlarmsConfig {
-  enabled?: boolean
-  '5XXError': AlarmProperties
-  '4XXError': AlarmProperties
-  Latency: AlarmProperties
+export interface SlicWatchApiGwAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  '5XXError': T
+  '4XXError': T
+  Latency: T
 }
 
 /**
@@ -79,7 +78,7 @@ const executionMetrics = ['5XXError', '4XXError', 'Latency']
  *
  * @returns API Gateway-specific CloudFormation Alarm resources
  */
-export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const resources = {}
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 

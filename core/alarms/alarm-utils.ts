@@ -3,7 +3,7 @@ import stringcase from 'case'
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
-import type { Context, AlarmTemplate, OptionalAlarmProps } from './alarm-types'
+import type { Context, AlarmTemplate, OptionalAlarmProps, SlicWatchMergedConfig } from './alarm-types'
 import { getResourcesByType } from '../cf-template'
 import type { SlicWatchAlbAlarmsConfig } from './alb'
 import type { SlicWatchDynamoDbAlarmsConfig } from './dynamodb'
@@ -23,7 +23,7 @@ import type { SlicWatchSfAlarmsConfig } from './step-functions'
  */
 type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: AlarmProperties) => Omit<AlarmProperties, OptionalAlarmProps>
 
-type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig | SlicWatchDynamoDbAlarmsConfig | SlicWatchEventsAlarmsConfig | SlicWatchSnsAlarmsConfig | SlicWatchSfAlarmsConfig
+type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>
 /**
  * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specfic resources type
  *
@@ -37,7 +37,7 @@ type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig | SlicWatchDynamoDbAlarmsCon
  *
  * @returns An object containing the alarm resources in CloudFormation syntax by logical ID
  */
-export function createCfAlarms (type: string, service: string, metrics: string[], config: CommonAlarmsConfigs & AlarmProperties, context: Context, compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction) {
+export function createCfAlarms (type: string, service: string, metrics: string[], config: CommonAlarmsConfigs, context: Context, compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction) {
   const resources = {}
   const resourcesOfType = getResourcesByType(type, compiledTemplate)
 

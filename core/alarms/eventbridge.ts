@@ -1,14 +1,12 @@
-import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
 
-export interface SlicWatchEventsAlarmsConfig {
-  enabled?: boolean
-  FailedInvocations: AlarmProperties
-  ThrottledRules: AlarmProperties
+export interface SlicWatchEventsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  FailedInvocations: T
+  ThrottledRules: T
 }
 
 const executionMetrics = ['FailedInvocations', 'ThrottledRules']
@@ -22,7 +20,7 @@ const executionMetrics = ['FailedInvocations', 'ThrottledRules']
  *
  * @returns EventBridge-specific CloudFormation Alarm properties
  */
-function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: string, config: AlarmProperties) {
+function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: string, config: SlicWatchMergedConfig) {
   return {
     Namespace: 'AWS/Events',
     Dimensions: [{ Name: 'RuleName', Value: Fn.Ref(ruleLogicalId) }],
@@ -41,7 +39,7 @@ function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: stri
  *
  * @returns EventBridge-specific CloudFormation Alarm resources
  */
-export default function createRuleAlarms (eventsAlarmsConfig: SlicWatchEventsAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createRuleAlarms (eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   return createCfAlarms(
     'AWS::Events::Rule',
     'Events',

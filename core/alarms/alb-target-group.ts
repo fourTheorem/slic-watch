@@ -2,17 +2,16 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
 import type { ResourceType } from '../cf-template'
 import { getResourcesByType } from '../cf-template'
 
-export interface SlicWatchAlbTargetAlarmsConfig {
-  enabled?: boolean
-  HTTPCode_Target_5XX_Count: AlarmProperties
-  UnHealthyHostCount: AlarmProperties
-  LambdaInternalError: AlarmProperties
-  LambdaUserError: AlarmProperties
+export interface SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  HTTPCode_Target_5XX_Count: T
+  UnHealthyHostCount: T
+  LambdaInternalError: T
+  LambdaUserError: T
 }
 
 function getResourceByName (resourceName: string, compiledTemplate: Template) {
@@ -91,7 +90,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig, compiledTemplate: Template, context: Context) {
+function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, compiledTemplate: Template, context: Context) {
   const resources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
@@ -130,7 +129,7 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-export default function createALBTargetAlarms (albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig, context: Context, compiledTemplate: Template) {
+export default function createALBTargetAlarms (albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
   const resources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {

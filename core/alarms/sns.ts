@@ -1,14 +1,12 @@
-import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context } from './alarm-types'
+import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
 
-export interface SlicWatchSnsAlarmsConfig {
-  enabled?: boolean
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': AlarmProperties
-  NumberOfNotificationsFailed: AlarmProperties
+export interface SlicWatchSnsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': T
+  NumberOfNotificationsFailed: T
 }
 
 const executionMetrics = ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed']
@@ -21,7 +19,7 @@ const executionMetrics = ['NumberOfNotificationsFilteredOut-InvalidAttributes', 
  *
  * @returns SNS-specific CloudFormation Alarm properties
  */
-function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, config: AlarmProperties) {
+function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, config: SlicWatchMergedConfig) {
   return {
     Namespace: 'AWS/SNS',
     Dimensions: [{ Name: 'TopicName', Value: Fn.GetAtt(snsLogicalId, 'TopicName') }],
@@ -39,7 +37,7 @@ function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, 
  *
  * @returns SNS-specific CloudFormation Alarm resources
  */
-export default function createSNSAlarms (snsAlarmsConfig: SlicWatchSnsAlarmsConfig & AlarmProperties, context: Context, compiledTemplate: Template) {
+export default function createSNSAlarms (snsAlarmsConfig: SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
   return createCfAlarms(
     'AWS::SNS::Topic',
     'SNS',
