@@ -53,10 +53,9 @@ export default function createECSAlarms (ecsAlarmsConfig: SlicWatchEcsAlarmsConf
     for (const metric of executionMetrics) {
       const cluster = serviceResource.Properties?.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
-      const config = ecsAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = ecsAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const ecsAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceLogicalId}.Name}`, {}),
           AlarmDescription: Fn.Sub(`ECS ${metric} for \${${serviceLogicalId}.Name} breaches ${config.Threshold}`, {}),
@@ -66,7 +65,7 @@ export default function createECSAlarms (ecsAlarmsConfig: SlicWatchEcsAlarmsConf
             { Name: 'ServiceName', Value: Fn.GetAtt(`${serviceLogicalId}`, 'Name') },
             { Name: 'ClusterName', Value: clusterName }
           ],
-          ...alarmProps
+          ...rest
         }
         const resourceName = `slicWatchECS${metric.replaceAll('Utilization', 'Alarm')}${serviceLogicalId}`
         const resource = createAlarm(ecsAlarmProperties, context)

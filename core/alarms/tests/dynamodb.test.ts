@@ -99,16 +99,15 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
 
 test('DynamoDB alarms are created without GSI', (t) => {
   const compiledTemplate = createTestCloudFormationTemplate()
+  _.cloneDeep(defaultCfTemplate)
+  delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
   const resources = createDynamoDbAlarms(dynamoDbAlarmProperties, testContext, compiledTemplate)
   for (const resourceName in resources) {
     addResource(resourceName, resources[resourceName], compiledTemplate)
   }
 
-  _.cloneDeep(defaultCfTemplate)
-  delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
-
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
-  t.equal(Object.keys(alarmResources).length, 6) // todo why is not 4
+  t.equal(Object.keys(alarmResources).length, 4)
   t.end()
 })
 

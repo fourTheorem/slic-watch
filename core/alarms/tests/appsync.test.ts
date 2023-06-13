@@ -12,6 +12,7 @@ import {
   testContext
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
+import type { SlicWatchMergedConfig } from '../alarm-types'
 
 test('AppSync alarms are created', (t) => {
   const AlarmPropertiesAppSync = createTestConfig(
@@ -32,7 +33,7 @@ test('AppSync alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (appSyncAlarmProperties: SlicWatchAppSyncAlarmsConfig) {
+  function createAlarmResources (appSyncAlarmProperties: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
     return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
   }

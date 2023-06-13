@@ -78,7 +78,10 @@ export function createAlarm (alarmProperties: AlarmProperties, context?: Context
 }
 
 export function makeResourceName (service: string, givenName: string, alarm: string) {
-  const normalisedName = stringcase.pascal(givenName)
+  let normalisedName = stringcase.pascal(givenName)
+  if (givenName === 'topic') {
+    normalisedName = stringcase.lower(givenName)
+  }
   return `slicWatch${service}${alarm}Alarm${normalisedName}`
 }
 

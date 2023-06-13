@@ -12,6 +12,7 @@ import {
   testContext
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
+import type { SlicWatchMergedConfig } from '../alarm-types'
 
 test('ALB alarms are created', (t) => {
   const AlarmPropertiesELB = createTestConfig(
@@ -32,7 +33,7 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig) {
+  function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
     return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }

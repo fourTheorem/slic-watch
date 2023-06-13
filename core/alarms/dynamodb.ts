@@ -32,17 +32,16 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
 
   for (const [tableLogicalId, tableResource] of Object.entries(tableResources)) {
     for (const metric of dynamoDbMetrics) {
-      const config = dynamoDbAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = dynamoDbAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps: AlarmProperties = rest // All mandatory properties are set following cascading
         const dynamoDbAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`DDB_${metric}_\${${tableLogicalId}}`, {}),
           AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for \${${tableLogicalId}} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/DynamoDB',
           Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }],
-          ...alarmProps
+          ...rest
         }
         const resourceName = makeResourceName('Table', `${tableLogicalId}`, metric)
         const resource = createAlarm(dynamoDbAlarmProperties, context)
@@ -50,11 +49,10 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
       }
     }
     for (const metric of dynamoDbGsiMetrics) {
-      const config = dynamoDbAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = dynamoDbAlarmsConfig[metric]
       for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes ?? []) {
         if (dynamoDbAlarmsConfig.ReadThrottleEvents.enabled !== false && dynamoDbAlarmsConfig.WriteThrottleEvents.enabled !== false) {
           const { enabled, ...rest } = config
-          const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
           const gsiName: string = gsi.IndexName
           const gsiIdentifierSub = `\${${tableLogicalId}}${gsiName}`
           const dynamoDbAlarmsConfig: AlarmProperties = {
@@ -63,7 +61,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',
             Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
-            ...alarmProps
+            ...rest
           }
           const resourceName = makeResourceName('GSI', `${tableLogicalId}${gsiName}`, metric)
           const resource = createAlarm(dynamoDbAlarmsConfig, context)

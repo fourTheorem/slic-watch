@@ -29,10 +29,9 @@ export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSy
 
   for (const [appSyncLogicalId, appSyncResource] of Object.entries(appSyncResources)) {
     for (const metric of executionMetrics) {
-      const config = appSyncAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = appSyncAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const graphQLName: string = appSyncResource.Properties?.Name
         const appSyncAlarmProperties: AlarmProperties = {
           AlarmName: `AppSync_${metric}Alarm_${graphQLName}`,
@@ -42,7 +41,7 @@ export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSy
           Dimensions: [
             { Name: 'GraphQLAPIId', Value: Fn.GetAtt(appSyncLogicalId, 'ApiId') }
           ],
-          ...alarmProps
+          ...rest
         }
         const resourceName = makeResourceName('AppSync', graphQLName, metric)
         const resource = createAlarm(appSyncAlarmProperties, context)

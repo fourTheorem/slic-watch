@@ -94,10 +94,9 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
   const resources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
-      const config = albTargetAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = albTargetAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const albTargetAlarmProperties: AlarmProperties = {
           AlarmName: `LoadBalancer_${metric.replaceAll('_', '')}Alarm_${targetGroupLogicalId}`,
           AlarmDescription: `LoadBalancer ${metric} ${getStatisticName(config)} for ${targetGroupLogicalId} breaches ${config.Threshold}`,
@@ -108,7 +107,7 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
             { Name: 'TargetGroup', Value: Fn.GetAtt(targetGroupLogicalId, 'TargetGroupFullName') },
             { Name: 'LoadBalancer', Value: Fn.GetAtt(loadBalancerLogicalId, 'LoadBalancerFullName') }
           ],
-          ...alarmProps
+          ...rest
         }
         const resourceName = makeResourceName('LoadBalancer', targetGroupLogicalId, metric.replaceAll('_', ''))
         const resource = createAlarm(albTargetAlarmProperties, context)

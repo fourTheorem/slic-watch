@@ -84,10 +84,9 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
 
   for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
-      const config = apiGwAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = apiGwAlarmsConfig[metric]
       if (config.enabled !== false) {
         const { enabled, ...rest } = config
-        const alarmProps = rest as AlarmProperties // All mandatory properties are set following cascading
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {
@@ -96,7 +95,7 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
-          ...alarmProps
+          ...rest
         }
         const resourceName = makeResourceName('Api', apiName, metric)
         const resource = createAlarm(apiAlarmProperties, context)

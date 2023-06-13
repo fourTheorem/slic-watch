@@ -89,7 +89,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
       if (metric === 'DurationPc') {
         const properties = config.DurationPc
         const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
-        const threshold: number = properties.Threshold as number
+        const threshold: Value<number> = properties.Threshold as number
         const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
         properties.AlarmDescription = alarmDescription
         properties.Threshold = threshold !== undefined ? (threshold * funcTimeout * 1000) / 100 : undefined
@@ -138,7 +138,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
  */
 
 function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
-  const { Period, Statistic, ...rest } = config
+  const { enabled, Period, Statistic, ...rest } = config
 
   const lambdaAlarmProperties: AlarmProperties = {
     AlarmName: Fn.Sub(`Lambda_${metric.replace(/Pc$/g, '')}_\${${funcLogicalId}}`, {}),

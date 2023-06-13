@@ -3,8 +3,7 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, createCfAlarms, getStatisticName, makeResourceName } from './alarm-utils'
-import { getResourcesByType } from '../cf-template'
+import { createCfAlarms, getStatisticName } from './alarm-utils'
 
 export interface SlicWatchAlbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
   HTTPCode_ELB_5XX_Count: T
@@ -50,41 +49,4 @@ export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConf
     compiledTemplate,
     createAlbAlarmCfProperties
   )
-}
-
-export function createALBAlarmsExperiment (albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
-  const type = 'AWS::ElasticLoadBalancingV2::LoadBalancer'
-  const service = 'LoadBalancer'
-  const resourcesOfType = getResourcesByType(type, compiledTemplate)
-  for (const resourceName of Object.keys(resourcesOfType)) {
-    for (const metric of executionMetrics) {
-      const config = albAlarmsConfig[metric]
-      if (config.enabled !== false) {
-        const alarmProps = config as AlarmProperties // All mandatory properties are set following cascading
-        const name = makeResourceName(service, resourceName, metric.replaceAll(/[_-]/g, ''))
-        const resource = createAlarm({
-          AlarmName: makeAlarmName(service, metric, resourceName),
-          AlarmDescription: makeAlarmDescription(metric, config, resourceName),
-          MetricName: metric,
-          Namespace: 'AWS/ApplicationELB',
-          Dimensions: [
-            { Name: 'LoadBalancer', Value: `\${${resourceName}.LoadBalancerFullName}` }
-          ],
-          ...alarmProps
-        }, context)
-        resources[name] = resource
-      }
-    }
-  }
-
-  return resources
-}
-
-function makeAlarmName (service: string, metric: string, resourceName: string): string {
-  return `${service}_${metric.replaceAll(/[_]/g, '')}Alarm_${resourceName}`
-}
-
-function makeAlarmDescription (metric: string, metricAlarmConfig: AlarmProperties, resourceName: string) {
-  return `LoadBalancer ${metric} ${getStatisticName(metricAlarmConfig)} for ${resourceName} breaches ${metricAlarmConfig.Threshold}`
 }
