@@ -28,7 +28,7 @@
     "test:packages": "c8 tap --test-regex='/tests/.+\\.test\\.ts' --test-ignore='.aws-sam'",
     "test": "npm run lint && npm run test:packages && npm run coverage",
     "prepare": "test ! -d '.git' || is-ci || husky install",
-    "version": "npm version $npm_package_version --workspaces && git add **/package.json cf-macro/template.yaml",
+    "version": "npm version $npm_package_version --workspaces && git add **/package.json && git add cf-macro/template.yaml",
     "postinstall": "npm run build",
     "postversion": "./scripts/sync-macro-version.cjs"
   },
