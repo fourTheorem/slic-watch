@@ -10,13 +10,13 @@ Metadata:
     ReadmeUrl: ../README.md
     Labels: ["monitoring", "observability", "cloudwatch"]
     HomePageUrl: https://github.com/fourTheorem/slic-watch
-    SemanticVersion: 2.1.2
+    SemanticVersion: 3.0.0-rc1
     SourceCodeUrl: https://github.com/fourTheorem/slic-watch
 Resources:
   SlicWatch:
     Type: AWS::CloudFormation::Macro
     Properties:
-      Name: SlicWatch-v2
+      Name: SlicWatch-v3
       FunctionName: !GetAtt MacroLambdaFunction.Arn
   MacroLambdaFunction:
     Type: AWS::Serverless::Function
