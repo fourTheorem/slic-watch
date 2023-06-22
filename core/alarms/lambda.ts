@@ -54,7 +54,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
         properties.Metrics = [
           {
             Id: 'throttles_pc',
-            Expression: '(throttles / throttles + invocations) * 100',
+            Expression: '(throttles / ( throttles + invocations )) * 100',
             Label: '% Throttles',
             ReturnData: true
           },

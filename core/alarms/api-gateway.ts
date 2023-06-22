@@ -97,7 +97,7 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
           ...rest
         }
-        const resourceName = makeResourceName('Api', apiName, metric)
+        const resourceName = makeResourceName('Api', apiLogicalId, metric)
         const resource = createAlarm(apiAlarmProperties, context)
         resources[resourceName] = resource
       }
