@@ -3,8 +3,8 @@ import Ajv from 'ajv'
 import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'
 
-import { type ResourceType } from 'slic-watch-core'
-import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema, slicWatchSchema, defaultConfig } from 'slic-watch-core'
+import { type ResourceType } from '../core/index'
+import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema, slicWatchSchema, defaultConfig } from '../core/index'
 
 interface SlicWatchConfig {
   topicArn?: string
