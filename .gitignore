@@ -122,6 +122,7 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+core/dist/
 downloads/
 eggs/
 .eggs/

@@ -2,12 +2,9 @@ import _ from 'lodash'
 import Ajv from 'ajv'
 import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'
-import { type ResourceType } from '../core/cf-template'
 
-import addAlarms from '../core/alarms/alarms'
-import addDashboard from '../core/dashboards/dashboard'
-import { pluginConfigSchema, functionConfigSchema, slicWatchSchema } from '../core/inputs/config-schema'
-import defaultConfig from '../core/inputs/default-config'
+import { type ResourceType } from 'slic-watch-core'
+import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema, slicWatchSchema, defaultConfig } from 'slic-watch-core'
 
 interface SlicWatchConfig {
   topicArn?: string

@@ -2,11 +2,7 @@ import _ from 'lodash'
 import Ajv from 'ajv'
 import pino from 'pino'
 
-import addAlarms from '../core/alarms/alarms'
-import addDashboard from '../core/dashboards/dashboard'
-import defaultConfig from '../core/inputs/default-config'
-import { slicWatchSchema } from '../core/inputs/config-schema'
-import { getResourcesByType } from '../core/cf-template'
+import { addAlarms, addDashboard, defaultConfig, slicWatchSchema, getResourcesByType } from 'slic-watch-core'
 
 const logger = pino({ name: 'macroHandler' })
 
