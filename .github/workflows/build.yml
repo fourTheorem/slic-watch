@@ -31,6 +31,9 @@ jobs:
       - working-directory: ./serverless-test-project-alb
         name: Run Serverless Framework packaging test for ALB test project
         run: npm test
+      - working-directory: ./serverless-test-project-appsync
+        name: Run Serverless Framework packaging test for AppSync test project
+        run: npm test
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
