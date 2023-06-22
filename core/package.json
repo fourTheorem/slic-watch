@@ -23,7 +23,6 @@
     "cloudform": "^7.4.2",
     "lodash": "^4.17.21",
     "pino": "^8.4.2",
-    "slic-watch-core": "^2.1.2",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
