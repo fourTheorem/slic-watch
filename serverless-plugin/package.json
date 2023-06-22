@@ -12,7 +12,8 @@
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
     "prepublish": "cp ../README.md README.md",
-    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap --watch"
+    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap",
+    "watch": "npm run build -- --watch"
   },
   "devDependencies": {
     "serverless": "^3.28.1",

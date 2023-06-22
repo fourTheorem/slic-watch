@@ -12,7 +12,8 @@
   "private": true,
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
-    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap --watch"
+    "build": "esbuild ./index.ts --outfile=dist/index.js --platform=node --format=esm --packages=external --bundle --sourcemap",
+    "watch": "npm run build -- --watch"
   },
   "tap": {
     "node-arg": [

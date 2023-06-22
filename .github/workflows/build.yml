@@ -24,6 +24,13 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test
+        name: Run unit tests
+      - working-directory: ./serverless-test-project
+        run: npm test
+        name: Run Serverless Framework packaging test
+      - working-directory: ./serverless-test-project-alb
+        name: Run Serverless Framework packaging test for ALB test project
+        run: npm test
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:

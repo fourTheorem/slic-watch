@@ -2,7 +2,7 @@
   "name": "slic-watch-core",
   "version": "2.1.2",
   "description": "SLIC Watch core library for adding alarms and dashboards to CloudFormation",
-  "main": "dist/slic-watch-core/index.js",
+  "main": "dist/index.js",
   "type": "module",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
-    "build": "esbuild **/*.ts index.ts --outdir=dist/slic-watch-core --platform=node --format=esm --packages=external --bundle --sourcemap"
+    "build": "esbuild **/*.ts index.ts --outdir=dist/ --platform=node --format=esm --packages=external --bundle --sourcemap"
   },
   "author": "",
   "license": "ISC",

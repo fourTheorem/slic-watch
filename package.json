@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
+    "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
     "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
     "coverage:html": "c8 report --reporter=html",
     "lint": "eslint .",
@@ -27,6 +28,7 @@
     "test:packages": "c8 tap --test-regex='/tests/.+\\.test\\.ts' --test-ignore='.aws-sam'",
     "test": "npm run lint && npm run test:packages && npm run coverage",
     "prepare": "test ! -d '.git' || is-ci || husky install",
+    "postinstall": "npm run build",
     "postversion": "./scripts/sync-macro-version.js"
   },
   "tap": {
@@ -58,6 +60,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
+    "is-ci": "^3.0.1",
     "lint-staged": "^13.1.2",
     "regenerator-runtime": "^0.13.11",
     "tap": "^16.3.4",
