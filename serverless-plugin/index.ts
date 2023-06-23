@@ -1,4 +1,4 @@
-import {merge} from 'lodash'
+import { merge } from 'lodash'
 import Ajv from 'ajv'
 import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'

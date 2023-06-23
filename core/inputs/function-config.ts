@@ -1,5 +1,5 @@
 
-import {get, merge} from 'lodash'
+import { get, merge } from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
