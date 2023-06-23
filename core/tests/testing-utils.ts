@@ -6,13 +6,14 @@ import YAML from 'yaml'
 import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
-import _defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json' assert { type: 'json'}
-import _albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json' assert { type: 'json'}
-import _appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json' assert { type: 'json'}
+import _defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json'
+import _albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json'
+import _appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json'
 const defaultCfTemplate = _defaultCfTemplate as Template
 const albCfTemplate = _albCfTemplate as Template
 const appSyncCfTemplate = _appSyncCfTemplate as unknown as Template
 
+// @ts-expect-error ignoring for now
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 

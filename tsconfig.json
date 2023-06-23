@@ -1,7 +1,7 @@
 {
   "esm": true,
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "commonjs",
     "strict": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
@@ -12,7 +12,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "ts-node": {
     "swc": true,

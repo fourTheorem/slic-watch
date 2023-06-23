@@ -3,7 +3,7 @@ import _ from 'lodash'
 import Serverless from 'serverless'
 import pino from 'pino'
 
-import ServerlessPlugin from '../index'
+import ServerlessPlugin from '../serverless-plugin'
 
 interface TestData {
   schema?
