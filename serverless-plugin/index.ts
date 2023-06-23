@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import {merge} from 'lodash'
 import Ajv from 'ajv'
 import Serverless from 'serverless'
 import type Hooks from 'serverless-hooks-plugin'
@@ -61,7 +61,7 @@ class ServerlessPlugin {
     // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
     const context = { alarmActions }
 
-    const config = _.merge(defaultConfig, slicWatchConfig)
+    const config = merge(defaultConfig, slicWatchConfig)
     const awsProvider = this.serverless.getProvider('aws')
 
     const functionAlarmConfigs = {}
@@ -77,10 +77,10 @@ class ServerlessPlugin {
     const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
     const additionalResources = this.serverless.service.resources as ResourceType
 
-    _.merge(compiledTemplate, additionalResources)
+    merge(compiledTemplate, additionalResources)
     addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
     addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate)
   }
 }
 
-export default ServerlessPlugin
+module.exports = ServerlessPlugin

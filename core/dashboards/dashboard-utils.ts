@@ -41,7 +41,7 @@ export function resolveTargetGroupFullNameForSub (logicalId: string): string {
  * @returns Literal string or Sub variable syntax
  */
 
-export function resolveEcsClusterNameForSub (cluster: string) {
+export function resolveEcsClusterNameForSub (cluster: string | object) {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {
       return cluster.split(':').pop()?.split('/').pop()

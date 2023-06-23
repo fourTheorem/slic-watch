@@ -1,5 +1,5 @@
 
-import _ from 'lodash'
+import {get, merge} from 'lodash'
 
 import { cascade } from './cascading-config'
 import defaultConfig from './default-config'
@@ -20,9 +20,9 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): Sli
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda ?? {}) }
     for (const metric of Object.keys(defaultConfig.alarms.Lambda ?? {})) {
-      funcConfig[metric] = _.get(functionAlarmConfigs, [func, 'Lambda', metric], {})
+      funcConfig[metric] = get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
-    mergedFuncAlarmConfigs[func] = _.merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
+    mergedFuncAlarmConfigs[func] = merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))
   }
   return mergedFuncAlarmConfigs as SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>
 }

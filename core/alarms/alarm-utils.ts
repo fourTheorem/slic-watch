@@ -1,4 +1,4 @@
-import stringcase from 'case'
+import * as stringcase from 'case'
 
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
