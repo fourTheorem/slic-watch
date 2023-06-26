@@ -9,8 +9,18 @@
     "directory": "core"
   },
   "scripts": {
-    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
+    "test:packages": "tap --no-check-coverage --no-coverage-report --test-regex='tests\\/.*(test.ts)'",
+    "test:coverage": "tap --check-coverage --coverage-report=html --no-browser --branches=95 --lines=99 --statements=99 --functions=99",
+    "test": "npm run test:packages && npm run test:coverage",
     "build": "esbuild **/*.ts index.ts --outdir=dist/ --platform=node --format=esm --packages=external --bundle --sourcemap"
+  },
+  "tap": {
+    "node-arg": [
+      "--no-warnings",
+      "--loader=ts-node/esm",
+      "--experimental-specifier-resolution=node",
+      "--trace-deprecation"
+    ]
   },
   "author": "",
   "license": "ISC",

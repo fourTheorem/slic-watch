@@ -3,7 +3,7 @@ import _ from 'lodash'
 import type Template from 'cloudform-types/types/template'
 
 import { handler } from '../index'
-import _template from './event.json' assert { type: 'json'}
+import _template from './event.json'
 
 const template = _template as Template
 
