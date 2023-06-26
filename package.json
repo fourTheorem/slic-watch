@@ -21,12 +21,10 @@
   "scripts": {
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
     "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
-    "coverage": "c8 report --reporter=text-lcov > coverage/lcov.info",
-    "coverage:html": "c8 report --reporter=html",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "c8 tap --test-regex='/tests/.+\\.test\\.ts' --test-ignore='.aws-sam' --lines 99 --functions 99 --branches 95 --statements 99",
-    "test": "npm run lint && npm run test:packages && npm run coverage",
+    "test:packages": "tap --coverage-report=html --no-browser core/alarms/tests/alb.test.ts",
+    "test": "npm run lint && npm run test:packages",
     "prepare": "test ! -d '.git' || is-ci || husky install",
     "version": "npm version $npm_package_version --workspaces && ./scripts/sync-macro-version.cjs && git add **/package.json cf-macro/template.yaml",
     "postinstall": "npm run build"

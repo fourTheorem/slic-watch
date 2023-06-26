@@ -20,6 +20,6 @@
     "cf-macro/coverage",
     "serverless-plugin/dist/index.js",
     "cf-macro/dist/index.js",
-    "core/dist/*"
+    "**/dist/*"
   ]
 }
