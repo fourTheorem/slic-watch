@@ -109,7 +109,7 @@ Once you have deployed the macro, you can start using SLIC Watch in SAM or Cloud
 ```yaml
 Transform:
   - ...
-  - SlicWatch-v2
+  - SlicWatch-v3
 ```
 
 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
@@ -135,7 +135,7 @@ export class MyStack extends cdk.Stack {
   constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    this.addTransform('SlicWatch-v2')
+    this.addTransform('SlicWatch-v3')
     ...
   }
 }
@@ -143,16 +143,16 @@ export class MyStack extends cdk.Stack {
 
 ```python
 # Python:
-self.add_transform("SlicWatch-v2")
+self.add_transform("SlicWatch-v3")
 ```
 ```csharp
 // C#:
-this.AddTransform("SlicWatch-v2")
+this.AddTransform("SlicWatch-v3")
 ```
 
 ```java
 // Java:
-this.addTransform("SlicWatch-v2");
+this.addTransform("SlicWatch-v3");
 ```
 
 🪛 _Optionally_, add some configuration for the plugin as below:

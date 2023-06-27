@@ -4,7 +4,7 @@ Description: >-
 
 Transform:
   - AWS::Serverless-2016-10-31
-  - SlicWatch-v2
+  - SlicWatch-v3
 
 Metadata:
   slicWatch:
