@@ -15,9 +15,7 @@ export interface SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> extends S
 }
 
 function getResourceByName (resourceName: string, compiledTemplate: Template) {
-  if (compiledTemplate.Resources != null) {
-    return compiledTemplate.Resources[resourceName]
-  }
+  return compiledTemplate?.Resources?.[resourceName] ?? null
 }
 
 const executionMetrics = [

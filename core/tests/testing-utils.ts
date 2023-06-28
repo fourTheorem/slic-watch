@@ -1,8 +1,4 @@
-import path from 'path'
-import fs from 'fs'
 import _ from 'lodash'
-import { fileURLToPath } from 'url'
-import YAML from 'yaml'
 import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
@@ -12,17 +8,6 @@ import _appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-
 const defaultCfTemplate = _defaultCfTemplate as Template
 const albCfTemplate = _albCfTemplate as Template
 const appSyncCfTemplate = _appSyncCfTemplate as unknown as Template
-
-// @ts-expect-error ignoring for now
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
-
-const slsYamlPath = path.resolve(
-  dirname,
-  '../../serverless-test-project/serverless.yml'
-)
-
-const slsYaml = YAML.parse(fs.readFileSync(slsYamlPath, 'utf8'))
 
 const testContext = { alarmActions: ['dummy-arn'] }
 
@@ -61,7 +46,6 @@ function createTestCloudFormationTemplate (stackDefinition = defaultCfTemplate):
 }
 
 export {
-  slsYaml,
   albCfTemplate,
   appSyncCfTemplate,
   defaultCfTemplate,

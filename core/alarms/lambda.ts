@@ -92,7 +92,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
         const threshold: Value<number> = properties.Threshold as number
         const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
         properties.AlarmDescription = alarmDescription
-        properties.Threshold = threshold !== undefined ? (threshold * funcTimeout * 1000) / 100 : undefined
+        properties.Threshold = (threshold * funcTimeout * 1000) / 100
       }
       if (metric === 'Errors') {
         const properties = config.Errors

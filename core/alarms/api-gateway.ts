@@ -51,13 +51,15 @@ export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogic
  * @returns Literal string or Sub variable syntax
  */
 export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string) {
-  const name = (restApiResource.Properties?.Name) ?? (restApiResource.Properties?.Body?.info?.title)
-  if (name === false) {
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  const name = (restApiResource.Properties?.Name) || (restApiResource.Properties?.Body?.info?.title)
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (!name) {
     throw new Error(`No API name specified for REST API ${restApiLogicalId}. Either Name or Body.info.title should be specified`)
   }
 
-  if (name.GetAtt != null && name.GetAtt[1] === 'Arn') {
-    return { Ref: name.GetAtt[0] }
+  if (name.GetAtt != null) {
+    return `\${${name.GetAtt[0]}.${name.GetAtt[1]}}`
   } else if (name.Ref != null) {
     return { Ref: name.Ref }
   } else if (name['Fn::Sub'] != null) {

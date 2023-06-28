@@ -30,8 +30,6 @@ export function resolveFunctionResourceName (func): string | undefined {
 export function addResource (resourceName: string, resource: Resource, compiledTemplate: Template) {
   if (compiledTemplate.Resources != null) {
     compiledTemplate.Resources[resourceName] = resource
-  } else {
-    compiledTemplate.Resources = { [resourceName]: resource }
   }
 }
 
