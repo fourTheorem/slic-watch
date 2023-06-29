@@ -33,7 +33,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
   for (const [tableLogicalId, tableResource] of Object.entries(tableResources)) {
     for (const metric of dynamoDbMetrics) {
       const config: SlicWatchMergedConfig = dynamoDbAlarmsConfig[metric]
-      if (config.enabled !== false) {
+      if (config.enabled) {
         const { enabled, ...rest } = config
         const dynamoDbAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`DDB_${metric}_\${${tableLogicalId}}`, {}),
@@ -51,7 +51,7 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
     for (const metric of dynamoDbGsiMetrics) {
       const config: SlicWatchMergedConfig = dynamoDbAlarmsConfig[metric]
       for (const gsi of tableResource.Properties?.GlobalSecondaryIndexes ?? []) {
-        if (dynamoDbAlarmsConfig.ReadThrottleEvents.enabled !== false && dynamoDbAlarmsConfig.WriteThrottleEvents.enabled !== false) {
+        if (dynamoDbAlarmsConfig.ReadThrottleEvents.enabled && dynamoDbAlarmsConfig.WriteThrottleEvents.enabled) {
           const { enabled, ...rest } = config
           const gsiName: string = gsi.IndexName
           const gsiIdentifierSub = `\${${tableLogicalId}}${gsiName}`

@@ -47,9 +47,10 @@ test('macro uses topicArn if specified', async t => {
 
 test('Macro skips SLIC Watch if top-level enabled==false', async t => {
   const testevent = _.cloneDeep(event)
-  if (testevent.fragment.Metadata?.slicWatch.enabled === false) {
-    await handler(testevent)
-  }
+  testevent.fragment.Metadata = { slicWatch: { enabled: false } }
+  const output = await handler(testevent)
+  t.equal(output.status, 'success')
+  t.equal(output.fragment, testevent.fragment)
   t.end()
 })
 
@@ -74,10 +75,9 @@ test('Macro adds dashboard and alarms if no function configuration is provided',
 
 test('Macro execution fails if an invalid SLIC Watch config is provided', async t => {
   const testevent = _.cloneDeep(event)
-  if (testevent.fragment.Metadata?.slicWatch.topicArrrrn === 'pirateTopic') {
-    const result = await handler(testevent)
-    t.equal(result.status, 'fail')
-  }
+  testevent.fragment.Metadata = { slicWatch: { topicArrrrn: 'pirateTopic' } }
+  const result = await handler(testevent)
+  t.equal(result.status, 'fail')
   t.end()
 })
 

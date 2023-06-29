@@ -27,7 +27,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConf
 
   for (const [queueLogicalId, queueResource] of Object.entries(queueResources)) {
     if (sqsAlarmsConfig.enabled === false) continue
-    if (sqsAlarmsConfig.InFlightMessagesPc.enabled !== false) {
+    if (sqsAlarmsConfig.InFlightMessagesPc.enabled) {
       // TODO: verify if there is a way to reference these hard limits directly as variables in the alarm
       //        so that in case AWS changes them, the rule will still be valid
       const config = sqsAlarmsConfig.InFlightMessagesPc
@@ -48,7 +48,7 @@ export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConf
       resources[resourceName] = resource
     }
 
-    if (sqsAlarmsConfig.AgeOfOldestMessage.enabled !== false) {
+    if (sqsAlarmsConfig.AgeOfOldestMessage.enabled) {
       if (sqsAlarmsConfig.AgeOfOldestMessage.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
       }

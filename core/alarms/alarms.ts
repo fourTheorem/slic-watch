@@ -60,10 +60,8 @@ export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig
   if (alarmProperties.enabled) {
     Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate))
     for (const { config, alarmFunc } of funcsWithConfig) {
-      if (config?.enabled !== undefined && config.enabled !== null) {
-        // @ts-expect-error Can't find a way to type this
-        Object.assign(resources, alarmFunc(config, context, compiledTemplate))
-      }
+      // @ts-expect-error Can't find a way to type this
+      Object.assign(resources, alarmFunc(config, context, compiledTemplate))
     }
   }
   for (const [resourceName, resource] of Object.entries(resources)) {

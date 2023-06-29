@@ -1,6 +1,6 @@
 import { test } from 'tap'
 import type Template from 'cloudform-types/types/template'
-import { type ResourceType } from './../cf-template'
+import { addResource, getEventSourceMappingFunctions, type ResourceType } from './../cf-template'
 
 import { resolveFunctionResourceName, getResourcesByType } from '../cf-template'
 
@@ -72,5 +72,24 @@ test('Function resource name can be resolved using GetAtt', (t) => {
 test('Function resource name is undefined otherwise', (t) => {
   const resName = resolveFunctionResourceName({})
   t.equal(typeof resName, 'undefined')
+  t.end()
+})
+
+test('should noat affect the compiled template if the resources are missing', (t) => {
+  const compiledTemplate = {}
+  addResource('testResource', { Type: 'MissingResources' }, compiledTemplate)
+  t.same(Object.keys(compiledTemplate), [])
+  t.end()
+})
+
+test('should not contain any event source mapping functions when the lambda is not found', (t) => {
+  const compiledTemplate = {
+    Resources: {
+      eventMapping: { Type: 'AWS::Lambda::EventSourceMapping', Properties: { FunctionName: 'testFunction' } },
+      MyTestFunction: { Type: 'AWS::Lambda::Function' }
+    }
+  }
+  const result = getEventSourceMappingFunctions(compiledTemplate)
+  t.same(Object.keys(result), [])
   t.end()
 })

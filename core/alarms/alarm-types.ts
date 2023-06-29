@@ -29,7 +29,7 @@ export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlar
 }
 
 export interface SlicWatchMergedConfig extends AlarmProperties {
-  enabled?: boolean
+  enabled: boolean
 }
 
 export type InputOutput = SlicWatchAlarmConfig | SlicWatchMergedConfig

@@ -19,7 +19,7 @@ function applyAlarmConfig (cascadedLambdaAlarmConfig, functionAlarmConfigs): Sli
   const mergedFuncAlarmConfigs = {}
   for (const func of Object.keys(functionAlarmConfigs)) {
     const funcConfig = { ...(functionAlarmConfigs[func].Lambda ?? {}) }
-    for (const metric of Object.keys(defaultConfig.alarms.Lambda ?? {})) {
+    for (const metric of Object.keys({ ...defaultConfig.alarms.Lambda })) {
       funcConfig[metric] = get(functionAlarmConfigs, [func, 'Lambda', metric], {})
     }
     mergedFuncAlarmConfigs[func] = merge({}, cascadedLambdaAlarmConfig, cascade(funcConfig))

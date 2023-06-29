@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
+    "build": "cd .. && sam build --base-dir . --template-file cf-macro/template.yaml",
     "watch": "npm run build -- --watch"
   },
   "tap": {

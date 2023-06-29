@@ -184,7 +184,8 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
               const functionConfig = functionDashboardConfigs[logicalId] ?? {}
               const functionMetricConfig = functionConfig[metric] ?? {}
               if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
-                const stats = metricConfig?.Statistic ?? []
+                const stats: string[] = []
+                metricConfig?.Statistic?.forEach(a => stats.push(a))
                 const iteratorAgeWidget = createMetricWidget(
                   `Lambda IteratorAge \${${logicalId}} ${stats?.join(',')}`,
                   stats.map(stat => ({
@@ -645,7 +646,9 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
           for (const metric of metrics) {
             const metricConfig: DashboardBodyProperties | Widgets = metricConfigs[metric]
             if (metricConfig?.enabled !== false) {
-              for (const stat of metricConfig?.Statistic ?? []) {
+              const stats: string[] = []
+              metricConfig?.Statistic?.forEach(stat => stats.push(stat))
+              for (const stat of stats) {
                 widgetMetrics.push({
                   namespace: 'AWS/AppSync',
                   metric,

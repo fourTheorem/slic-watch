@@ -54,7 +54,7 @@ export default function createECSAlarms (ecsAlarmsConfig: SlicWatchEcsAlarmsConf
       const cluster = serviceResource.Properties?.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
       const config: SlicWatchMergedConfig = ecsAlarmsConfig[metric]
-      if (config.enabled !== false) {
+      if (config.enabled) {
         const { enabled, ...rest } = config
         const ecsAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceLogicalId}.Name}`, {}),

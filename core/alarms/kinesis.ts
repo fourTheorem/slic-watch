@@ -41,7 +41,7 @@ export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKines
   for (const [streamLogicalId] of Object.entries(streamResources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
       const config: SlicWatchMergedConfig = kinesisAlarmsConfig[metric]
-      if (config.enabled !== false) {
+      if (config.enabled) {
         const { enabled, ...rest } = config
         const kinesisAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`Kinesis_${type}_\${${streamLogicalId}}`, {}),

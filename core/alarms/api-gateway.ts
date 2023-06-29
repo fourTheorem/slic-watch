@@ -87,7 +87,7 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
   for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
     for (const metric of executionMetrics) {
       const config: SlicWatchMergedConfig = apiGwAlarmsConfig[metric]
-      if (config.enabled !== false) {
+      if (config.enabled) {
         const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)

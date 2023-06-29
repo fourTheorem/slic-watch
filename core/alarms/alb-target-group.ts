@@ -93,7 +93,7 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
       const config: SlicWatchMergedConfig = albTargetAlarmsConfig[metric]
-      if (config.enabled !== false) {
+      if (config.enabled) {
         const { enabled, ...rest } = config
         const albTargetAlarmProperties: AlarmProperties = {
           AlarmName: `LoadBalancer_${metric.replaceAll('_', '')}Alarm_${targetGroupLogicalId}`,

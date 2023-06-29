@@ -21,7 +21,7 @@ import type { SlicWatchSfAlarmsConfig } from './step-functions'
  * can generate a description and dimensions from the CloudFormation resource for the
  * load balancer, referencing that load balancer's logical ID, name or "LoadBalancerFullName"
  */
-type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: AlarmProperties) => Omit<AlarmProperties, OptionalAlarmProps>
+type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchMergedConfig) => Omit<AlarmProperties, OptionalAlarmProps>
 
 type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>
 /**

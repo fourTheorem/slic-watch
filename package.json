@@ -24,7 +24,7 @@
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:packages": "tap --no-check-coverage --no-coverage-report --test-regex='tests\\/.*(test.ts)'",
-    "test:coverage": "tap --check-coverage --coverage-report=html --no-browser --branches=95 --lines=99 --statements=99 --functions=99",
+    "test:coverage": "tap --check-coverage --coverage-report=html --no-browser",
     "test": "npm run lint && npm run test:packages && npm run test:coverage",
     "prepare": "test ! -d '.git' || is-ci || husky install",
     "version": "npm version $npm_package_version --workspaces && ./scripts/sync-macro-version.cjs && git add **/package.json cf-macro/template.yaml"
