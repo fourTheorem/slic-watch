@@ -19,7 +19,7 @@
     "sam-test-project"
   ],
   "scripts": {
-    "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev fix",
+    "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev",
     "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
