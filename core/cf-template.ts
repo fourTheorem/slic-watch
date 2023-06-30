@@ -9,11 +9,11 @@ const logger = pino()
 export type ResourceType = Record<string, Resource>
 
 /**
-   * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
-   * CloudFormation logical ID from within this stack
-   *
-   *The function logical ID or CloudFormation intrinsic resolving a function
-   */
+ * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's
+ * CloudFormation logical ID from within this stack
+ *
+ *The function logical ID or CloudFormation intrinsic resolving a function
+  */
 export function resolveFunctionResourceName (func): string | undefined {
   if (typeof func === 'string') {
     return func
