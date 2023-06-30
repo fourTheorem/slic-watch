@@ -25,6 +25,8 @@ jobs:
       - run: npm ci
       - run: npm test
         name: Run unit tests
+      - name: Build TypeScript
+        run: npm run build
       - working-directory: ./serverless-test-project
         run: npm test
         name: Run Serverless Framework packaging test
