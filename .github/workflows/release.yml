@@ -39,6 +39,8 @@ jobs:
         run: npm install esbuild -g
       - name: Install dependencies
         run: npm ci
+      - name: Build TypeScript
+        run: npm run build
       - name: NPM security audit
         run: npm run audit
       - name: configure aws credentials
