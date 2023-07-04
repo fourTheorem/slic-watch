@@ -61,6 +61,23 @@ const mockServerless = {
   }
 }
 
+function compileServerlessFunctionsToCloudformation (functions: Record<string, any>, provider: () => {
+  naming: { getLambdaLogicalId: (funcName: string) => string }
+}) {
+  const compiledCloudFormationTemplate = Object.keys(functions).map(lambda => {
+    const compiledLambdaLogicalId = provider().naming.getLambdaLogicalId(lambda)
+    const result = {}
+    result[`${compiledLambdaLogicalId}`] = {
+      Type: 'AWS::Lambda::Function',
+      MemorySize: 256,
+      Runtime: 'nodejs12',
+      Timeout: 60
+    }
+    return result
+  }).reduce((accum, currentValue) => ({ ...accum, ...currentValue }))
+  return { Resources: compiledCloudFormationTemplate }
+}
+
 test('index', t => {
   t.test('plugin uses v3 logger if provided', t => {
     const dummyV3Logger = {}
@@ -204,5 +221,76 @@ test('index', t => {
     t.end()
   })
 
+  t.test('should create only the dashboard when a lambda is not referenced in the serverless functions config', t => {
+    const mockServerless = {
+      getProvider: () => {
+      },
+      service: {
+        getAllFunctions: () => [],
+        provider: {
+          name: 'aws',
+          compiledCloudFormationTemplate: {
+            Resources: {
+              HelloTestLambda: {
+                Type: 'AWS::Lambda::Function',
+                MemorySize: 256,
+                Runtime: 'nodejs12',
+                Timeout: 60
+              }
+            }
+          }
+        },
+        custom: {
+          slicWatch: {
+            enabled: true
+          }
+        }
+      }
+    }
+    const plugin = new ServerlessPlugin(mockServerless)
+    plugin.createSlicWatchResources()
+    t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources), ['HelloTestLambda', 'slicWatchDashboard'])
+    t.end()
+  })
+
+  t.test('should create only the dashboard and lambda alarm when the lambda is referenced in the serverless functions config', t => {
+    const functions = { MyServerlessFunction: {} }
+    const provider = () => ({
+      naming: {
+        getLambdaLogicalId: (funcName: string) => {
+          return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
+        }
+      }
+    })
+    const compiledCloudFormationTemplate = compileServerlessFunctionsToCloudformation(functions, provider)
+
+    const mockServerless = {
+      getProvider: provider,
+      service: {
+        getAllFunctions: () => Object.keys(functions),
+        provider: {
+          name: 'aws',
+          compiledCloudFormationTemplate
+        },
+        custom: {
+          slicWatch: {
+            enabled: true
+          }
+        },
+        getFunction: (funcRef) => functions[funcRef]
+      }
+    }
+    const plugin = new ServerlessPlugin(mockServerless)
+    plugin.createSlicWatchResources()
+    t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources),
+      [
+        'MyServerlessFunctionLambdaFunction',
+        'slicWatchDashboard',
+        'slicWatchLambdaErrorsAlarmMyServerlessFunctionLambdaFunction',
+        'slicWatchLambdaThrottlesAlarmMyServerlessFunctionLambdaFunction',
+        'slicWatchLambdaDurationAlarmMyServerlessFunctionLambdaFunction'
+      ])
+    t.end()
+  })
   t.end()
 })

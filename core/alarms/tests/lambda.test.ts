@@ -531,3 +531,14 @@ test('Duration alarms are created if no timeout is specified', (t) => {
   t.equal(Object.keys(invocAlarmResources).length, 8)
   t.end()
 })
+
+test('Lambda alarms are not created if the slic watch config does not exist', (t) => {
+  const AlarmProperties = createTestConfig(defaultConfig.alarms, {})
+  const compiledTemplate = createTestCloudFormationTemplate()
+  const perLambdaConfig = AlarmProperties
+  perLambdaConfig.HelloLambdaFunction = AlarmProperties.Lambda
+  const createdAlarms = createLambdaAlarms(perLambdaConfig, testContext, compiledTemplate)
+
+  t.same(Object.keys(createdAlarms), ['slicWatchLambdaErrorsAlarmHelloLambdaFunction', 'slicWatchLambdaThrottlesAlarmHelloLambdaFunction', 'slicWatchLambdaDurationAlarmHelloLambdaFunction'])
+  t.end()
+})
