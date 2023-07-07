@@ -1,6 +1,6 @@
 {
   "name": "slic-watch",
-  "version": "3.0.0-rc3",
+  "version": "3.0.0-rc4",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
   "type": "module",
