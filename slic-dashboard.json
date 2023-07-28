@@ -1,0 +1,80 @@
+{
+  "Fn::Sub": "{"start":"-PT3H","widgets":[{"type":"metric","properties":{"metrics":[["AWS/ApiGateway","5XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}]],"title":"5XXError API dev-serverless-test-project","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":0,"y":0},{"type":"metric","properties":{"metrics":[["AWS/ApiGateway","5XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}],["AWS/ApiGateway","4XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}]],"title":"4XXError API dev-serverless-test-project","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":8,"y":0},{"type":"metric","properties":{"metrics":[["AWS/ApiGateway","5XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}],["AWS/ApiGateway","4XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}],["AWS/ApiGateway","Latency","ApiName","dev-serverless-test-project",{"stat":"Average"}],["AWS/ApiGateway","Latency","ApiName","dev-serverless-test-project",{"stat":"p95"}]],"title":"Latency API dev-serverless-test-project","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":16,"y":0},{"type":"metric","properties":{"metrics":[["AWS/ApiGateway","5XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}],["AWS/ApiGateway","4XXError","ApiName","dev-serverless-test-project",{"stat":"Sum"}],["AWS/ApiGateway","Latency","ApiName","dev-serverless-test-project",{"stat":"Average"}],["AWS/ApiGateway","Latency","ApiName","dev-serverless-test-project",{"stat":"p95"}],["AWS/ApiGateway","Count","ApiName","dev-serverless-test-project",{"stat":"Sum"}]],"title":"Count API dev-serverless-test-project","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":0,"y":6},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Errors","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Errors","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Sum"}]],"title":"Lambda Errors Sum per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":8,"y":6},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Throttles","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Sum"}]],"title":"Lambda Throttles Sum per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":16,"y":6},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Duration","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Average"}],["AWS/Lambda","Duration","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Average"}]],"title":"Lambda Duration Average per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":0,"y":12},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Duration","FunctionName","${HelloLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"p95"}],["AWS/Lambda","Duration","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"p95"}]],"title":"Lambda Duration p95 per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":8,"y":12},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Duration","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Maximum"}]],"title":"Lambda Duration Maximum per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":16,"y":12},{"type":"metric","properties":{"metrics":[["AWS/Lambda","Invocations","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Sum"}],["AWS/Lambda","Invocations","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Sum"}]],"title":"Lambda Invocations Sum per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":0,"y":18},{"type":"metric","properties":{"metrics":[["AWS/Lambda","ConcurrentExecutions","FunctionName","${HelloLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${ThrottlerLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${DriveStreamLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${DriveQueueLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${DriveTableLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${HttpGetterLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${SubscriptionHandlerLambdaFunction
+  }",{"stat":"Maximum"}],["AWS/Lambda","ConcurrentExecutions","FunctionName","${EventsRuleLambdaFunction
+  }",{"stat":"Maximum"}]],"title":"Lambda ConcurrentExecutions Maximum per Function","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":8,"y":18},{"type":"metric","properties":{"metrics":[["AWS/Lambda","IteratorAge","FunctionName","${StreamProcessorLambdaFunction
+  }",{"stat":"Maximum"}]],"title":"Lambda IteratorAge ${StreamProcessorLambdaFunction
+  } Maximum","view":"timeSeries","region":"${AWS: :Region
+  }","period":300},"width":8,"height":6,"x":16,"y":18}]}"
+}

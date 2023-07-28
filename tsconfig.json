@@ -8,13 +8,20 @@
     "alwaysStrict": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "./core/dashboards/dashboad.md"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ESNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
+  "files": [
+    "./globals.d.ts"
+  ],
+  "use": {
+    "loader": "markdown-loader"
+  },
+  "resolve": ["ts", "tsx", "js", "jsx", "md"],
   "ts-node": {
     "swc": true,
     "esm": true

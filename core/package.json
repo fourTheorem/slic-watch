@@ -19,7 +19,9 @@
       "--no-warnings",
       "--loader=ts-node/esm",
       "--experimental-specifier-resolution=node",
-      "--trace-deprecation"
+      "--trace-deprecation",
+      "--loader=markdown-loader",
+      "--loader=raw-loader"
     ]
   },
   "author": "",

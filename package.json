@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev",
-    "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
+    "build": "npm run build -w core && npm run build -w serverless-plugin",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
     "test:packages": "tap --no-check-coverage --no-coverage-report --test-regex='tests\\/.*(test.ts)'",
@@ -34,7 +34,9 @@
       "--no-warnings",
       "--loader=ts-node/esm",
       "--experimental-specifier-resolution=node",
-      "--trace-deprecation"
+      "--trace-deprecation",
+      "--loader=markdown-loader",
+      "--loader=raw-loader"
     ]
   },
   "devDependencies": {
@@ -59,6 +61,7 @@
     "husky": "^8.0.3",
     "is-ci": "^3.0.1",
     "lint-staged": "^13.1.2",
+    "markdown-loader": "^8.0.0",
     "regenerator-runtime": "^0.13.11",
     "tap": "^16.3.7",
     "ts-node": "^10.9.1",

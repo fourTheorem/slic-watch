@@ -8,7 +8,7 @@ plugins:
   - serverless-slic-watch-plugin
 custom:
   slicWatch:
-    topicArn: ${env:ALARM_TOPIC}
+    # topicArn: ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:
