@@ -10,6 +10,7 @@ import {
   testContext
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
+import type Resource from 'cloudform-types/types/resource'
 
 export interface AlarmsByType {
   APIGW_4XXError?
@@ -228,7 +229,7 @@ test('API Gateway alarms are created', (t) => {
     const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
     t.same(Object.keys(alarmResources).sort(), [
       'slicWatchApi4XXErrorAlarmMyApi',
-      'slicWatchApi5XXErrorAlarmMyApi',
+      'slicWatchApiAvailabilityAlarmMyApi',
       'slicWatchApiLatencyAlarmMyApi'
     ])
     t.end()
@@ -263,5 +264,23 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
 
   const alarmResources = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
   t.same({}, alarmResources)
+  t.end()
+})
+
+test('Alarm Resource Id should have a postfix using the Name of the Api', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms, {})
+  const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Name: 'SimpleTest' } }
+  const Resources: Record<string, Resource> = { test: apiGatewayResource }
+  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
+  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApiAvailabilityAlarmSimpleTest', 'slicWatchApi4XXErrorAlarmSimpleTest', 'slicWatchApiLatencyAlarmSimpleTest'])
+  t.end()
+})
+
+test('Alarm Resource Id should have a postfix using the Title of the Api Body', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms, {})
+  const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Body: { info: { title: 'UsingTitle' } } } }
+  const Resources: Record<string, Resource> = { test: apiGatewayResource }
+  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
+  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApiAvailabilityAlarmUsingTitle', 'slicWatchApi4XXErrorAlarmUsingTitle', 'slicWatchApiLatencyAlarmUsingTitle'])
   t.end()
 })

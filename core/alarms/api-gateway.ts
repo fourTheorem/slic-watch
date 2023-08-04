@@ -90,6 +90,8 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
       if (config.enabled) {
         const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
+        const useLogicalId = typeof apiName !== 'string'// this is temporary work around to where the api name is derived from cf functions to prevent ugly naming
+        const metricNameForResourceId = metric.replaceAll('5XXError', 'Availability') // this is to keep compatability with release v2
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`APIGW_${metric}_${apiNameForSub}`, {}),
@@ -99,7 +101,7 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
           ...rest
         }
-        const resourceName = makeResourceName('Api', apiLogicalId, metric)
+        const resourceName = makeResourceName('Api', useLogicalId ? apiLogicalId : apiName, metricNameForResourceId)
         const resource = createAlarm(apiAlarmProperties, context)
         resources[resourceName] = resource
       }
