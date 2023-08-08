@@ -13,9 +13,9 @@ import type { ResourceType } from '../../cf-template'
 import type Resource from 'cloudform-types/types/resource'
 
 export interface AlarmsByType {
-  APIGW_4XXError?
-  APIGW_5XXError?
-  APIGW_Latency?
+  ApiGW_4XXError?
+  ApiGW_5XXError?
+  ApiGW_Latency?
 }
 
 test('resolveRestApiNameAsCfn', (t) => {
@@ -26,10 +26,10 @@ test('resolveRestApiNameAsCfn', (t) => {
   t.equal(fromLiteral, 'my-api-name')
 
   const fromRef = resolveRestApiNameAsCfn({
-    Properties: { Name: { Ref: 'AWS::Stack' } },
+    Properties: { Name: { Ref: 'AWS::StackName' } },
     Type: ''
   }, 'logicalId')
-  t.same(fromRef, { Ref: 'AWS::Stack' })
+  t.same(fromRef, { Ref: 'AWS::StackName' })
 
   const fromGetAtt = resolveRestApiNameAsCfn({
     Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } },
@@ -38,10 +38,10 @@ test('resolveRestApiNameAsCfn', (t) => {
   t.same(fromGetAtt, { GetAtt: ['myResource', 'MyProperty'] })
 
   const fromOpenApiRef = resolveRestApiNameAsCfn({
-    Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } },
+    Properties: { Body: { info: { title: { Ref: 'AWS::StackName' } } } },
     Type: ''
   }, 'logicalId')
-  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
+  t.same(fromOpenApiRef, { Ref: 'AWS::StackName' })
 
   t.throws(() => resolveRestApiNameAsCfn({
     Properties: {},
@@ -58,10 +58,10 @@ test('resolveRestApiNameForSub', (t) => {
   t.equal(fromLiteral, 'my-api-name')
 
   const fromRef = resolveRestApiNameForSub({
-    Properties: { Name: { Ref: 'AWS::Stack' } },
+    Properties: { Name: { Ref: 'AWS::StackName' } },
     Type: ''
   }, 'logicalId')
-  t.same(fromRef, { Ref: 'AWS::Stack' })
+  t.same(fromRef, '${AWS::StackName}')
 
   const fromGetAtt = resolveRestApiNameForSub({
     Properties: { Name: { GetAtt: ['myResource', 'MyProperty'] } },
@@ -71,10 +71,10 @@ test('resolveRestApiNameForSub', (t) => {
   console.log(fromGetAtt)
 
   const fromOpenApiRef = resolveRestApiNameForSub({
-    Properties: { Body: { info: { title: { Ref: 'AWS::Stack' } } } },
+    Properties: { Body: { info: { title: { Ref: 'AWS::StackName' } } } },
     Type: ''
   }, 'logicalId')
-  t.same(fromOpenApiRef, { Ref: 'AWS::Stack' })
+  t.same(fromOpenApiRef, '${AWS::StackName}')
 
   const fromSub = resolveRestApiNameForSub({
     Properties: { Name: { 'Fn::Sub': '${AWS::StackName}Suffix' } },
@@ -127,13 +127,13 @@ test('API Gateway alarms are created', (t) => {
       alarmsByType[alarmType].add(al)
     }
     t.same(Object.keys(alarmsByType).sort(), [
-      'APIGW_4XXError',
-      'APIGW_5XXError',
-      'APIGW_Latency'
+      'ApiGW_4XXError',
+      'ApiGW_5XXError',
+      'ApiGW_Latency'
     ])
 
-    t.equal(alarmsByType.APIGW_5XXError.size, 1)
-    for (const al of alarmsByType.APIGW_5XXError) {
+    t.equal(alarmsByType.ApiGW_5XXError.size, 1)
+    for (const al of alarmsByType.ApiGW_5XXError) {
       t.equal(al.MetricName, '5XXError')
       t.equal(al.Statistic, 'Average')
       t.equal(al.Threshold, apiGwAlarmProperties['5XXError'].Threshold)
@@ -150,7 +150,7 @@ test('API Gateway alarms are created', (t) => {
       ])
     }
 
-    for (const al of alarmsByType.APIGW_4XXError) {
+    for (const al of alarmsByType.ApiGW_4XXError) {
       t.equal(al.MetricName, '4XXError')
       t.equal(al.Statistic, 'Average')
       t.equal(al.Threshold, apiGwAlarmProperties['4XXError'].Threshold)
@@ -167,7 +167,7 @@ test('API Gateway alarms are created', (t) => {
       ])
     }
 
-    for (const al of alarmsByType.APIGW_Latency) {
+    for (const al of alarmsByType.ApiGW_Latency) {
       t.equal(al.MetricName, 'Latency')
       t.equal(al.ExtendedStatistic, 'p99')
       t.equal(al.Threshold, apiGwAlarmProperties.Latency.Threshold)
@@ -228,9 +228,9 @@ test('API Gateway alarms are created', (t) => {
     })
     const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
     t.same(Object.keys(alarmResources).sort(), [
-      'slicWatchApi4XXErrorAlarmMyApi',
-      'slicWatchApiAvailabilityAlarmMyApi',
-      'slicWatchApiLatencyAlarmMyApi'
+      'slicWatchApi4XXErrorAlarmAWSStackName',
+      'slicWatchApi5XXErrorAlarmAWSStackName',
+      'slicWatchApiLatencyAlarmAWSStackName'
     ])
     t.end()
   })
@@ -272,7 +272,7 @@ test('Alarm Resource Id should have a postfix using the Name of the Api', (t) =>
   const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Name: 'SimpleTest' } }
   const Resources: Record<string, Resource> = { test: apiGatewayResource }
   const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
-  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApiAvailabilityAlarmSimpleTest', 'slicWatchApi4XXErrorAlarmSimpleTest', 'slicWatchApiLatencyAlarmSimpleTest'])
+  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApi5XXErrorAlarmSimpleTest', 'slicWatchApi4XXErrorAlarmSimpleTest', 'slicWatchApiLatencyAlarmSimpleTest'])
   t.end()
 })
 
@@ -281,6 +281,6 @@ test('Alarm Resource Id should have a postfix using the Title of the Api Body', 
   const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Body: { info: { title: 'UsingTitle' } } } }
   const Resources: Record<string, Resource> = { test: apiGatewayResource }
   const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
-  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApiAvailabilityAlarmUsingTitle', 'slicWatchApi4XXErrorAlarmUsingTitle', 'slicWatchApiLatencyAlarmUsingTitle'])
+  t.same(Object.keys(apiGatewayAlarms), ['slicWatchApi5XXErrorAlarmUsingTitle', 'slicWatchApi4XXErrorAlarmUsingTitle', 'slicWatchApiLatencyAlarmUsingTitle'])
   t.end()
 })

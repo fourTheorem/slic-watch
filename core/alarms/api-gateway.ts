@@ -50,7 +50,7 @@ export function resolveRestApiNameAsCfn (restApiResource: Resource, restApiLogic
  *
  * @returns Literal string or Sub variable syntax
  */
-export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string) {
+export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogicalId: string): string {
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   const name = (restApiResource.Properties?.Name) || (restApiResource.Properties?.Body?.info?.title)
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -61,7 +61,7 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
   if (name.GetAtt != null) {
     return `\${${name.GetAtt[0]}.${name.GetAtt[1]}}`
   } else if (name.Ref != null) {
-    return { Ref: name.Ref }
+    return `\${${name.Ref}}`
   } else if (name['Fn::Sub'] != null) {
     return name['Fn::Sub']
   }
@@ -90,18 +90,16 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
       if (config.enabled) {
         const { enabled, ...rest } = config
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
-        const useLogicalId = typeof apiName !== 'string'// this is temporary work around to where the api name is derived from cf functions to prevent ugly naming
-        const metricNameForResourceId = metric.replaceAll('5XXError', 'Availability') // this is to keep compatability with release v2
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {
-          AlarmName: Fn.Sub(`APIGW_${metric}_${apiNameForSub}`, {}),
+          AlarmName: Fn.Sub(`ApiGW_${metric}_${apiNameForSub}`, {}),
           AlarmDescription: Fn.Sub(`API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
           ...rest
         }
-        const resourceName = makeResourceName('Api', useLogicalId ? apiLogicalId : apiName, metricNameForResourceId)
+        const resourceName = makeResourceName('Api', apiNameForSub, metric)
         const resource = createAlarm(apiAlarmProperties, context)
         resources[resourceName] = resource
       }
