@@ -1,7 +1,7 @@
 {
     "name": "sam-test-project",
     "description": "SLIC Watch test project for CloudFormation Macro",
-    "version": "3.0.0-rc4",
+    "version": "3.0.0-rc5",
     "main": "basic-handler.js",
     "repository": {
         "type": "git",
