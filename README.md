@@ -33,7 +33,7 @@ Supported tools include:
     - [SNS](#sns)
     - [EventBridge](#eventbridge)
     - [Application Load Balancer](#application-load-balancer)
-    - [AppSync](#appsync) 
+    - [AppSync](#appsync)
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
     - [Function-level configuration](#function-level-configuration)

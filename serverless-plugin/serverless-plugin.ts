@@ -33,6 +33,7 @@ class ServerlessPlugin {
       throw new ServerlessError('SLIC Watch only supports AWS')
     }
 
+    // Serverless framework provides the logger we must use to output updates and errors
     setLogger(pluginUtils.log)
 
     if (serverless.configSchemaHandler != null) {

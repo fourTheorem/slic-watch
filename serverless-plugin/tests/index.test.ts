@@ -91,7 +91,8 @@ function compileServerlessFunctionsToCloudformation (functions: Record<string, a
 }
 
 test('index', t => {
-  t.test('plugin uses v3 logger if provided', t => {
+  t.test('plugin uses v3 logger', t => {
+    // Since v3, Serverless Framework provides a logger that we must use to log output
     const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     t.same(getLogger(), logger)
     t.ok(plugin)
