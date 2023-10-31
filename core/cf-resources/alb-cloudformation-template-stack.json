@@ -164,7 +164,7 @@
           "S3Key": "serverless/serverless-test-project-alb/dev/1664186319340-2022-09-26T09:58:39.340Z/serverless-test-project-alb.zip"
         },
         "Handler": "alb-handler.handleALB",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-alb-dev-albEvent",
         "MemorySize": 1024,
         "Timeout": 6,

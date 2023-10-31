@@ -35,7 +35,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
     Metadata:
       slicWatch:
         alarms:
@@ -47,7 +47,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
     Metadata:
       slicWatch:
         dashboard:
@@ -57,32 +57,32 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
       ReservedConcurrentExecutions: 0
 
   driveStream:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stream-test-handler.handleDrive
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
 
   driveQueue:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
 
   driveTable:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
 
   streamProcessor:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
       Events:
         Stream:
           Type: Kinesis
@@ -96,7 +96,7 @@ Resources:
     Properties:
       Handler: apigw-handler.handleGet
       Timeout: 30
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
       Events:
         HttpApiEvent:
           Type: HttpApi
@@ -108,7 +108,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: rule-handler.handleRule
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
       Events:
         Trigger:
           Type: CloudWatchEvent

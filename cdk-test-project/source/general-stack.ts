@@ -44,7 +44,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     const helloFunction = new lambda.Function(this, 'HelloHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
@@ -64,7 +64,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     const pingFunction = new lambda.Function(this, 'PingHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
@@ -80,7 +80,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     new lambda.Function(this, 'ThrottlerHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler',
         reservedConcurrentExecutions: 0
@@ -88,21 +88,21 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     new lambda.Function(this, 'DriveStreamHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'stream-test-handler.handleDrive'
       })
 
     new lambda.Function(this, 'DriveQueueHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
 
     new lambda.Function(this, 'DriveTableHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })

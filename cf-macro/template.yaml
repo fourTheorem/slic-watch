@@ -22,7 +22,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: cf-macro/dist/index.handler
-      Runtime: nodejs16.x
+      Runtime: nodejs18.x
       Timeout: 60
       Architectures:
         - x86_64

@@ -223,7 +223,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-hello",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -248,7 +248,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-ping",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -273,7 +273,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-throttler",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -299,7 +299,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "stream-test-handler.handleDrive",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-driveStream",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -331,7 +331,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "queue-test-handler.handleDrive",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-driveQueue",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -356,7 +356,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "table-test-hander.handleDrive",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-driveTable",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -381,7 +381,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "stream-handler.handle",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-streamProcessor",
         "MemorySize": 1024,
         "Timeout": 6,
@@ -406,7 +406,7 @@
           "S3Key": "serverless/serverless-test-project/dev/1653074572190-2022-05-20T19:22:52.190Z/serverless-test-project.zip"
         },
         "Handler": "apigw-handler.handleGet",
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "FunctionName": "serverless-test-project-dev-httpGetter",
         "MemorySize": 1024,
         "Timeout": 30,
