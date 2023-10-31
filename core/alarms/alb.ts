@@ -2,7 +2,7 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms, getStatisticName } from './alarm-utils'
 
 export interface SlicWatchAlbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -39,7 +39,9 @@ function createAlbAlarmCfProperties (metric: string, albLogicalId: string, confi
  *
  * @returns ALB-specific CloudFormation Alarm resources
  */
-export default function createALBAlarms (albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
+export default function createAlbAlarms (
+  albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
   return createCfAlarms(
     'AWS::ElasticLoadBalancingV2::LoadBalancer',
     'LoadBalancer',

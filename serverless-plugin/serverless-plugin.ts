@@ -26,7 +26,7 @@ class ServerlessPlugin {
      *
      * @param {*} serverless The Serverless instance
      */
-  constructor (serverless: Serverless, _cliOptions, pluginUtils: ServerlessPluginUtils) {
+  constructor (serverless: Serverless, _cliOptions: any, pluginUtils: ServerlessPluginUtils) {
     this.serverless = serverless
 
     if (serverless.service.provider.name !== 'aws') {

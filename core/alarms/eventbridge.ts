@@ -1,7 +1,7 @@
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
 
 export interface SlicWatchEventsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -39,7 +39,9 @@ function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: stri
  *
  * @returns EventBridge-specific CloudFormation Alarm resources
  */
-export default function createRuleAlarms (eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
+export default function createRuleAlarms (
+  eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
   return createCfAlarms(
     'AWS::Events::Rule',
     'Events',

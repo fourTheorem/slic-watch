@@ -2,7 +2,7 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
@@ -45,8 +45,10 @@ const executionMetrics = ['MemoryUtilization', 'CPUUtilization']
  *
  * @returns ECS-specific CloudFormation Alarm resources
  */
-export default function createECSAlarms (ecsAlarmsConfig: SlicWatchEcsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
+export default function createECSAlarms (
+  ecsAlarmsConfig: SlicWatchEcsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
 
   for (const [serviceLogicalId, serviceResource] of Object.entries(serviceResources)) {

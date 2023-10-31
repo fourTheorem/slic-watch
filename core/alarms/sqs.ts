@@ -2,7 +2,7 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
@@ -21,8 +21,10 @@ export interface SlicWatchSqsAlarmsConfig<T extends InputOutput> extends SlicWat
  *
  * @returns SQS-specific CloudFormation Alarm resources
  */
-export default function createSQSAlarms (sqsAlarmsConfig: SlicWatchSqsAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
+export default function createSQSAlarms (
+  sqsAlarmsConfig: SlicWatchSqsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
 
   for (const [queueLogicalId, queueResource] of Object.entries(queueResources)) {

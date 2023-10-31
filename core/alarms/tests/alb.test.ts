@@ -1,6 +1,6 @@
 import { test } from 'tap'
 
-import createALBAlarms from '../alb'
+import createAlbAlarms from '../alb'
 import type { SlicWatchAlbAlarmsConfig } from '../alb'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -35,7 +35,7 @@ test('ALB alarms are created', (t) => {
   )
   function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
+    return createAlbAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }
   const albAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
@@ -94,7 +94,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
 
   function createAlarmResources (elbAlarmProperties) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    return createALBAlarms(elbAlarmProperties, testContext, compiledTemplate)
+    return createAlbAlarms(elbAlarmProperties, testContext, compiledTemplate)
   }
   const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 

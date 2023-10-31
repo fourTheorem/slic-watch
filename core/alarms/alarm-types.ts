@@ -39,22 +39,24 @@ export interface ReturnAlarm {
   resource: Resource
 }
 
-export interface Context {
+export interface AlarmActionsConfig {
   alarmActions: string[]
 }
 
-export interface SlicWatchCascadeAlarmsConfig<T extends InputOutput> extends AlarmProperties {
+export interface SlicWatchCascadedAlarmsConfig<T extends InputOutput> extends AlarmProperties {
   enabled: boolean
-  Lambda?: SlicWatchLambdaAlarmsConfig<T>
-  ApiGateway?: SlicWatchApiGwAlarmsConfig<T>
-  States?: SlicWatchSfAlarmsConfig<T>
-  DynamoDB?: SlicWatchDynamoDbAlarmsConfig<T>
-  Kinesis?: SlicWatchKinesisAlarmsConfig<T>
-  SQS?: SlicWatchSqsAlarmsConfig<T>
-  ECS?: SlicWatchEcsAlarmsConfig<T>
-  SNS?: SlicWatchSnsAlarmsConfig<T>
-  Events?: SlicWatchEventsAlarmsConfig<T>
-  ApplicationELB?: SlicWatchAlbAlarmsConfig<T>
-  ApplicationELBTarget?: SlicWatchAlbTargetAlarmsConfig<T>
-  AppSync?: SlicWatchAppSyncAlarmsConfig<T>
+  Lambda: SlicWatchLambdaAlarmsConfig<T>
+  ApiGateway: SlicWatchApiGwAlarmsConfig<T>
+  States: SlicWatchSfAlarmsConfig<T>
+  DynamoDB: SlicWatchDynamoDbAlarmsConfig<T>
+  Kinesis: SlicWatchKinesisAlarmsConfig<T>
+  SQS: SlicWatchSqsAlarmsConfig<T>
+  ECS: SlicWatchEcsAlarmsConfig<T>
+  SNS: SlicWatchSnsAlarmsConfig<T>
+  Events: SlicWatchEventsAlarmsConfig<T>
+  ApplicationELB: SlicWatchAlbAlarmsConfig<T>
+  ApplicationELBTarget: SlicWatchAlbTargetAlarmsConfig<T>
+  AppSync: SlicWatchAppSyncAlarmsConfig<T>
 }
+
+export type CloudFormationResources = Record<string, Resource>

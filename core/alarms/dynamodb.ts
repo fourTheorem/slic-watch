@@ -2,8 +2,8 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, makeResourceName } from './alarm-utils'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { createAlarm, makeAlarmLogicalId } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
 export interface SlicWatchDynamoDbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -18,7 +18,7 @@ const dynamoDbGsiMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents']
 
 /**
  * Add all required DynamoDB alarms to the provided CloudFormation template
- * based on the tables and their global secondary indices.
+ * based on the tables and any global secondary indices (GSIs).
  *
  * @param dynamoDbAlarmsConfig The fully resolved alarm configuration
  * @param context Deployment context (alarmActions)
@@ -26,8 +26,10 @@ const dynamoDbGsiMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents']
  *
  * @returns DynamoDB-specific CloudFormation Alarm resources
  */
-export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
+export default function createDynamoDbAlarms (
+  dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
 
   for (const [tableLogicalId, tableResource] of Object.entries(tableResources)) {
@@ -43,9 +45,9 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
           Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }],
           ...rest
         }
-        const resourceName = makeResourceName('Table', `${tableLogicalId}`, metric)
+        const alarmLogicalId = makeAlarmLogicalId('Table', tableLogicalId, metric)
         const resource = createAlarm(dynamoDbAlarmProperties, context)
-        resources[resourceName] = resource
+        resources[alarmLogicalId] = resource
       }
     }
     for (const metric of dynamoDbGsiMetrics) {
@@ -63,9 +65,9 @@ export default function createDynamoDbAlarms (dynamoDbAlarmsConfig: SlicWatchDyn
             Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
             ...rest
           }
-          const resourceName = makeResourceName('GSI', `${tableLogicalId}${gsiName}`, metric)
+          const alarmLogicalId = makeAlarmLogicalId('GSI', `${tableLogicalId}${gsiName}`, metric)
           const resource = createAlarm(dynamoDbAlarmsConfig, context)
-          resources[resourceName] = resource
+          resources[alarmLogicalId] = resource
         }
       }
     }

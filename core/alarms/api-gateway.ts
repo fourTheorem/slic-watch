@@ -3,8 +3,8 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
 export interface SlicWatchApiGwAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -71,17 +71,18 @@ export function resolveRestApiNameForSub (restApiResource: Resource, restApiLogi
 const executionMetrics = ['5XXError', '4XXError', 'Latency']
 
 /**
- * Add all required API Gateway alarms to the provided CloudFormation template
- * based on the resources found within
+ * Add all required API Gateway REST API alarms to the provided CloudFormation template based on the resources found within
  *
  * @param apiGwAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Deployment context (alarmActions)
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns API Gateway-specific CloudFormation Alarm resources
  */
-export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
+export default function createApiGatewayAlarms (
+  apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
 
   for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
@@ -99,9 +100,9 @@ export default function createApiGatewayAlarms (apiGwAlarmsConfig: SlicWatchApiG
           Dimensions: [{ Name: 'ApiName', Value: apiName }],
           ...rest
         }
-        const resourceName = makeResourceName('Api', apiNameForSub, metric)
-        const resource = createAlarm(apiAlarmProperties, context)
-        resources[resourceName] = resource
+        const alarmLogicalId = makeAlarmLogicalId('Api', apiNameForSub, metric)
+        const resource = createAlarm(apiAlarmProperties, alarmActionsConfig)
+        resources[alarmLogicalId] = resource
       }
     }
   }

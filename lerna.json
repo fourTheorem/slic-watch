@@ -1,9 +1,0 @@
-{
-  "packages": [
-    "serverless-plugin",
-    "serverless-test-project",
-    "serverless-test-project-alb",
-    "serverless-test-project-appsync"
-  ],
-  "version": "1.3.0"
-}

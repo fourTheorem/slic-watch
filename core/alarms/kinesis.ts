@@ -3,8 +3,8 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getResourcesByType } from '../cf-template'
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 
 export interface SlicWatchKinesisAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
   'GetRecords.IteratorAgeMilliseconds': T
@@ -34,8 +34,10 @@ const kinesisAlarmTypes = {
  *
  * @returns Kinesis Data Stream-specific CloudFormation Alarm resources
  */
-export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
-  const resources = {}
+export default function createKinesisAlarms (
+  kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
 
   for (const [streamLogicalId] of Object.entries(streamResources)) {
@@ -51,9 +53,9 @@ export default function createKinesisAlarms (kinesisAlarmsConfig: SlicWatchKines
           Dimensions: [{ Name: 'StreamName', Value: Fn.Ref(streamLogicalId) }],
           ...rest
         }
-        const resourceName = makeResourceName('Kinesis', streamLogicalId, type)
+        const alarmLogicalId = makeAlarmLogicalId('Kinesis', streamLogicalId, type)
         const resource = createAlarm(kinesisAlarmProperties, context)
-        resources[resourceName] = resource
+        resources[alarmLogicalId] = resource
       }
     }
   }

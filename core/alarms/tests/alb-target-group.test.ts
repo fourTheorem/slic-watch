@@ -1,6 +1,6 @@
 import { test } from 'tap'
 
-import createALBTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
+import createAlbTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { defaultConfig } from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -216,7 +216,7 @@ test('ALB Target Group alarms are created', (t) => {
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
 
-  const targetGroupAlarmResources: ResourceType = createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
+  const targetGroupAlarmResources: ResourceType = createAlbTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
 
   const expectedTypesTargetGroup = {
     LoadBalancer_HTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -291,7 +291,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
 
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-  const targetGroupAlarmResources = createALBTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
+  const targetGroupAlarmResources = createAlbTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
 
   t.same({}, targetGroupAlarmResources)
   t.end()

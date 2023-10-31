@@ -2,8 +2,8 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import { getResourcesByType } from '../cf-template'
 
 export interface SlicWatchAppSyncAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -18,12 +18,14 @@ const executionMetrics = ['5XXError', 'Latency']
  * based on the AppSync resources found within
  *
  * @param appSyncAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Deployment context (alarmActions)
  * @param compiledTemplate  A CloudFormation template object
  *
- * @returns AppSync Gateway-specific CloudFormation Alarm resources
+ * @returns AppSync-specific CloudFormation Alarm resources
  */
-export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
+export default function createAppSyncAlarms (
+  appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
   const resources = {}
   const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
 
@@ -43,9 +45,9 @@ export default function createAppSyncAlarms (appSyncAlarmsConfig: SlicWatchAppSy
           ],
           ...rest
         }
-        const resourceName = makeResourceName('AppSync', graphQLName, metric)
-        const resource = createAlarm(appSyncAlarmProperties, context)
-        resources[resourceName] = resource
+        const alarmLogicalId = makeAlarmLogicalId('AppSync', graphQLName, metric)
+        const resource = createAlarm(appSyncAlarmProperties, alarmActionsConfig)
+        resources[alarmLogicalId] = resource
       }
     }
   }

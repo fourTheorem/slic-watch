@@ -1,13 +1,13 @@
 
 /**
- * Given CloudFormation syntax for an AppSync GraphQLAPIId, derive a string value or
- * CloudFormation 'Fn::Sub' variable syntax for the GraphQLAPI
+ * Given CloudFormation syntax for an AppSync GraphQLAPI resource logical ID, derive the
+ * CloudFormation 'Fn::Sub' variable syntax for the resource's ApiId.
  *
- * @param apiId The CloudFormation logical ID for the AppSync GraphQLAPI resource
- * @returns Literal string or Sub variable syntax
+ * @param graphQlApiLogicalId The CloudFormation logical ID for the AppSync GraphQLAPI resource
+ * @returns Sub variable syntax for the resource's ApiId.
  */
-export function resolveGraphlQLId (apiId: string) {
-  return `\${${apiId}.ApiId}`
+export function resolveGraphQLId (graphQlApiLogicalId: string) {
+  return `\${${graphQlApiLogicalId}.ApiId}`
 }
 
 /**
@@ -26,8 +26,8 @@ export function resolveLoadBalancerFullNameForSub (logicalId: string): string {
  * Given CloudFormation syntax for an Application Load Balancer Full Name, derive a string value or
  * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
  *
- * @param } cluster CloudFormation syntax for an Application Load Balancer Full Name
- * @returns Literal string or Sub variable syntax
+ * @param logicalId The TargetGroup resource's logical ID
+ * @returns Sub variable syntax for the target group's FullName
  */
 export function resolveTargetGroupFullNameForSub (logicalId: string): string {
   return `\${${logicalId}.TargetGroupFullName}`
@@ -37,10 +37,9 @@ export function resolveTargetGroupFullNameForSub (logicalId: string): string {
  * Given CloudFormation syntax for an ECS cluster, derive a string value or
  * CloudFormation 'Fn::Sub' variable syntax for the cluster's name
  *
- * @param } cluster CloudFormation syntax for an ECS cluster
+ * @param cluster CloudFormation syntax for an ECS cluster
  * @returns Literal string or Sub variable syntax
  */
-
 export function resolveEcsClusterNameForSub (cluster: string | object) {
   if (typeof cluster === 'string') {
     if (cluster.startsWith('arn:')) {

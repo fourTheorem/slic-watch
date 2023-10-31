@@ -1,6 +1,6 @@
 import { test } from 'tap'
 
-import { getStatisticName, makeResourceName } from '../alarm-utils'
+import { getStatisticName, makeAlarmLogicalId } from '../alarm-utils'
 
 test('getStatisticName chooses Statistic then ExtendedStatistic property', (t) => {
   t.equal(getStatisticName({
@@ -22,9 +22,12 @@ test('getStatisticName chooses Statistic then ExtendedStatistic property', (t) =
   t.end()
 })
 
-test('makeResourceName takes a human readable name for the service, resourceLogicalId, and metric then creates proper resource names  ', (t) => {
-  t.equal(makeResourceName('SNS', 'topic', 'NumberOfNotificationsFilteredOutInvalidAttributes'), 'slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarmtopic')
-  t.equal(makeResourceName('SNS', 'topic', 'NumberOfNotificationsFailed'), 'slicWatchSNSNumberOfNotificationsFailedAlarmtopic')
-  t.equal(makeResourceName('LoadBalancer', 'AlbEventAlbTargetGrouphttpListener', 'UnHealthyHostCount'), 'slicWatchLoadBalancerUnHealthyHostCountAlarmAlbEventAlbTargetGrouphttpListener')
+test('makeAlarmLogicalId takes a human readable name for the service, resourceLogicalId, and metric then creates a valid CloudFormation logical ID', (t) => {
+  t.equal(makeAlarmLogicalId('SNS', 'topic', 'NumberOfNotificationsFilteredOutInvalidAttributes'), 'slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarmtopic')
+  t.equal(makeAlarmLogicalId('SNS', 'topic', 'NumberOfNotificationsFailed'), 'slicWatchSNSNumberOfNotificationsFailedAlarmtopic')
+  t.equal(makeAlarmLogicalId('InfiniDash', '$Dash_!@#$$&*()7', 'Number_Of_Dashes'), 'slicWatchInfiniDashNumberOfDashesAlarmDash7')
+  t.equal(makeAlarmLogicalId(
+    'LoadBalancer', 'AlbEventAlbTargetGrouphttpListener', 'UnHealthyHostCount'
+  ), 'slicWatchLoadBalancerUnHealthyHostCountAlarmAlbEventAlbTargetGrouphttpListener')
   t.end()
 })

@@ -1,6 +1,6 @@
 import { test } from 'tap'
 
-import createSNSAlarms from '../sns'
+import createSnsAlarms from '../sns'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'
@@ -33,7 +33,7 @@ test('SNS alarms are created', (t) => {
   const snsAlarmProperties = AlarmProperties.SNS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources: ResourceType = createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createSnsAlarms(snsAlarmProperties, testContext, compiledTemplate)
   const expectedTypes = {
     SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
     SNS_NumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
@@ -88,7 +88,7 @@ test('SNS alarms are not created when disabled globally', (t) => {
   )
   const snsAlarmProperties = AlarmProperties.SNS
   const compiledTemplate = createTestCloudFormationTemplate()
-  createSNSAlarms(snsAlarmProperties, testContext, compiledTemplate)
+  createSnsAlarms(snsAlarmProperties, testContext, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

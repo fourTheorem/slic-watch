@@ -4,9 +4,9 @@ import type Template from 'cloudform-types/types/template'
 import { cascade } from '../inputs/cascading-config'
 import { applyAlarmConfig } from '../inputs/function-config'
 import type {
-  Context, InputOutput,
+  AlarmActionsConfig, InputOutput,
   SlicWatchAlarmConfig,
-  SlicWatchCascadeAlarmsConfig, SlicWatchMergedConfig
+  SlicWatchCascadedAlarmsConfig, SlicWatchMergedConfig
 } from './alarm-types'
 
 import type { FunctionAlarmProperties } from './lambda'
@@ -17,14 +17,27 @@ import createDynamoDbAlarms from './dynamodb'
 import createKinesisAlarms from './kinesis'
 import createSQSAlarms from './sqs'
 import createECSAlarms from './ecs'
-import createSNSAlarms from './sns'
+import createSnsAlarms from './sns'
 import createRuleAlarms from './eventbridge'
-import createALBAlarms from './alb'
-import createALBTargetAlarms from './alb-target-group'
+import createAlbAlarms from './alb'
+import createAlbTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
 import { addResource } from '../cf-template'
 
-export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig<SlicWatchAlarmConfig>, functionAlarmProperties: FunctionAlarmProperties<InputOutput>, context: Context, compiledTemplate: Template) {
+/**
+ * Add Alarm resources for all supported and enabled services and metrics
+ *
+ * @param alarmProperties The cascaded SLIC Watch alarm configuration (still without optional alarm properties like EvaluatedPeriods)
+ * @param functionAlarmProperties Specific properties optionally set per Lambda function
+ * @param alarmActionsConfig Defines whether actions occur when alarms change status
+ * @param compiledTemplate The template to which alarms will be added
+ */
+export default function addAlarms (
+  alarmProperties: SlicWatchCascadedAlarmsConfig<SlicWatchAlarmConfig>,
+  functionAlarmProperties: FunctionAlarmProperties<InputOutput>,
+  alarmActionsConfig: AlarmActionsConfig,
+  compiledTemplate: Template
+) {
   const {
     Lambda: lambdaConfig,
     ApiGateway: apiGwConfig,
@@ -38,30 +51,29 @@ export default function addAlarms (alarmProperties: SlicWatchCascadeAlarmsConfig
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig
-  } = cascade(alarmProperties) as SlicWatchCascadeAlarmsConfig<SlicWatchMergedConfig>
+  } = cascade(alarmProperties) as SlicWatchCascadedAlarmsConfig<SlicWatchMergedConfig>
 
   const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
-  const funcsWithConfig = [
+  const funcsWithConfig: Array<{ config: SlicWatchAlarmConfig, alarmFunc: any }> = [
     { config: apiGwConfig, alarmFunc: createApiGatewayAlarms },
     { config: sfConfig, alarmFunc: createStatesAlarms },
     { config: dynamoDbConfig, alarmFunc: createDynamoDbAlarms },
     { config: kinesisConfig, alarmFunc: createKinesisAlarms },
     { config: sqsConfig, alarmFunc: createSQSAlarms },
     { config: ecsConfig, alarmFunc: createECSAlarms },
-    { config: snsConfig, alarmFunc: createSNSAlarms },
+    { config: snsConfig, alarmFunc: createSnsAlarms },
     { config: ruleConfig, alarmFunc: createRuleAlarms },
-    { config: albConfig, alarmFunc: createALBAlarms },
-    { config: albTargetConfig, alarmFunc: createALBTargetAlarms },
+    { config: albConfig, alarmFunc: createAlbAlarms },
+    { config: albTargetConfig, alarmFunc: createAlbTargetAlarms },
     { config: appSyncConfig, alarmFunc: createAppSyncAlarms }
   ]
   const resources = {}
 
   if (alarmProperties.enabled) {
-    Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, context, compiledTemplate))
+    Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, alarmActionsConfig, compiledTemplate))
     for (const { config, alarmFunc } of funcsWithConfig) {
-      // @ts-expect-error Can't find a way to type this
-      Object.assign(resources, alarmFunc(config, context, compiledTemplate))
+      Object.assign(resources, alarmFunc(config, alarmActionsConfig, compiledTemplate))
     }
   }
   for (const [resourceName, resource] of Object.entries(resources)) {

@@ -2,8 +2,8 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { Context, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
-import { createAlarm, getStatisticName, makeResourceName } from './alarm-utils'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import type { ResourceType } from '../cf-template'
 import { getResourcesByType } from '../cf-template'
 
@@ -12,10 +12,6 @@ export interface SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> extends S
   UnHealthyHostCount: T
   LambdaInternalError: T
   LambdaUserError: T
-}
-
-function getResourceByName (resourceName: string, compiledTemplate: Template) {
-  return compiledTemplate?.Resources?.[resourceName] ?? null
 }
 
 const executionMetrics = [
@@ -31,11 +27,12 @@ const executionMetricsLambda = ['LambdaInternalError', 'LambdaUserError']
  * referenced load balancer.
  *
  * @param targetGroupLogicalId The CloudFormation Logical ID of the ALB Target Group
- * @param compiledTemplate A CloudFormation template object
+ * @param compiledTemplate A CloudFormation template objec
+ *
+ * @returns A list of load balancer Logical IDs relating to the target group
  */
 export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template): string[] {
   const allLoadBalancerLogicalIds: any = new Set()
-  const allListenerRules: ResourceType = {}
   const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate)
 
   // First, find Listeners with _default actions_ referencing the target group
@@ -50,9 +47,10 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
       }
     }
   }
-  const listenerRuleResources = getResourcesByType('AWS::ElasticLoadBalancingV2::ListenerRule', compiledTemplate)
 
-  // Second, find ListenerRules with actions referncing the target group, then follow to the rules' listeners
+  const allListenerRules: ResourceType = {}
+  // Second, find ListenerRules with actions referencing the target group, then follow to the rules' listeners
+  const listenerRuleResources = getResourcesByType('AWS::ElasticLoadBalancingV2::ListenerRule', compiledTemplate)
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
     for (const action of listenerRule.Properties?.Actions ?? []) {
       const targetGroupArn = action.TargetGroupArn
@@ -65,7 +63,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 
   for (const listenerRule of Object.values(allListenerRules)) {
     const listenerLogicalId = listenerRule.Properties?.ListenerArn.Ref
-    const listener = getResourceByName(listenerLogicalId, compiledTemplate)
+    const listener = compiledTemplate?.Resources?.[listenerLogicalId]
     if (listener != null) {
       const loadBalancerLogicalId = listener.Properties?.LoadBalancerArn?.Ref
       if (loadBalancerLogicalId != null) {
@@ -77,19 +75,20 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
 }
 
 /**
- * Create CloudFormation CloudWatch Metric alarm properties that are specific to Application Load Balancer Target Group resources
+ * Create CloudFormation CloudWatch Metric alarms that are specific to the specified Application Load Balancer Target Group resources
  *
  * @param targetGroupLogicalId The CloudFormation Logical ID of the ALB Target Group
- * @param metrics The Target Group metris name
+ * @param metrics The Target Group metric names
  * @param loadBalancerLogicalIds The CloudFormation Logical IDs of the ALB resource
  * @param albTargetAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
- * @param compiledTemplate  A CloudFormation template object
+ * @param alarmActionsConfig Deployment context (alarmActions)
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, compiledTemplate: Template, context: Context) {
-  const resources = {}
+function createAlbTargetCfAlarm (
+  targetGroupLogicalId: string, metrics: string[], loadBalancerLogicalIds: string[], albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig
+): CloudFormationResources {
+  const resources: CloudFormationResources = {}
   for (const metric of metrics) {
     for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
       const config: SlicWatchMergedConfig = albTargetAlarmsConfig[metric]
@@ -107,9 +106,9 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
           ],
           ...rest
         }
-        const resourceName = makeResourceName('LoadBalancer', targetGroupLogicalId, metric.replaceAll('_', ''))
-        const resource = createAlarm(albTargetAlarmProperties, context)
-        resources[resourceName] = resource
+        const alarmLogicalId = makeAlarmLogicalId('LoadBalancer', targetGroupLogicalId, metric)
+        const resource = createAlarm(albTargetAlarmProperties, alarmActionsConfig)
+        resources[alarmLogicalId] = resource
       }
     }
   }
@@ -117,7 +116,7 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
 }
 
 /**
- * Add all required Application Load Balancer alarms for Target Group to the provided CloudFormation template
+ * Add all required Application Load Balancer alarms for a Target Group to the provided CloudFormation template
  * based on the resources found within
  *
  * @param albTargetAlarmsConfig The fully resolved alarm configuration
@@ -126,15 +125,18 @@ function createAlbTargetCfAlarm (targetGroupLogicalId: string, metrics: string[]
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
-export default function createALBTargetAlarms (albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
+export default function createAlbTargetAlarms (
+  albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+): CloudFormationResources {
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
-  const resources = {}
+  const resources: CloudFormationResources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
-    Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, compiledTemplate, context))
+    Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, context))
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {
-      Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, compiledTemplate, context))
+      // Create additional alarms for Lambda-specific ALB metrics
+      Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, context))
     }
   }
   return resources

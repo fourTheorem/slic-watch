@@ -3,7 +3,7 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
 import { getEventSourceMappingFunctions, getResourcesByType } from '../cf-template'
-import type { Context, InputOutput, Value, SlicWatchMergedConfig, SlicWatchAlarmConfig } from './alarm-types'
+import type { AlarmActionsConfig, InputOutput, Value, SlicWatchMergedConfig, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
 
 export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
@@ -38,7 +38,7 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
-export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, context: Context, compiledTemplate: Template) {
+export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
@@ -142,7 +142,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
  * @returns Lambda-specific CloudFormation Alarm resources
  */
 
-function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: Context) {
+function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: AlarmActionsConfig) {
   const { enabled, Period, Statistic, ...rest } = config
 
   const lambdaAlarmProperties: AlarmProperties = {

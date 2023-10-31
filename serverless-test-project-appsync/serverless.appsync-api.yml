@@ -19,5 +19,3 @@ dataSources:
     name: booksTable
     config: 
       tableName: !Ref BooksTable
-
-

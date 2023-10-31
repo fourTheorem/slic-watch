@@ -8,7 +8,7 @@ import type { CreateMetricWidget, DashboardBodyProperties, FunctionDashboardConf
 
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
-import { resolveEcsClusterNameForSub, resolveGraphlQLId, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } from './dashboard-utils'
+import { resolveEcsClusterNameForSub, resolveGraphQLId, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } from './dashboard-utils'
 import { getLogger } from '../logging'
 
 declare global {
@@ -181,6 +181,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
             }
           } else {
             for (const logicalId of eventSourceMappingFunctionResourceNames) {
+              // Add IteratorAge alarm if the Lambda function has an EventSourceMapping trigger
               const functionConfig = functionDashboardConfigs[logicalId] ?? {}
               const functionMetricConfig = functionConfig[metric] ?? {}
               if (functionConfig.enabled !== false && (functionMetricConfig.enabled !== false)) {
@@ -587,7 +588,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate): CreateMetricWidget[] {
+  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate: Template): CreateMetricWidget[] {
     const targetGroupWidgets: CreateMetricWidget[] = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate)
@@ -640,7 +641,7 @@ export default function addDashboard (dashboardConfig: SlicWatchDashboardConfig,
     for (const res of Object.values(appSyncResources)) {
       const appSyncResourceName: string = res.Properties?.Name
       for (const [logicalId] of Object.entries(appSyncResources)) {
-        const graphQLAPIId = resolveGraphlQLId(logicalId)
+        const graphQLAPIId = resolveGraphQLId(logicalId)
         for (const [group, metrics] of Object.entries(metricGroups)) {
           const widgetMetrics: MetricDefs[] = []
           for (const metric of metrics) {
