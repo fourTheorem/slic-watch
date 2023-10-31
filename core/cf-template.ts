@@ -1,10 +1,10 @@
-import pino from 'pino'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 import { filterObject } from './filter-object'
+import { getLogger } from './logging'
 
-const logger = pino()
+const logger = getLogger()
 
 export type ResourceType = Record<string, Resource>
 

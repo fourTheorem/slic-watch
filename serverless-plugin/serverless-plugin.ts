@@ -1,14 +1,20 @@
 import { merge } from 'lodash'
 import Ajv from 'ajv'
-import Serverless from 'serverless'
+import type Serverless from 'serverless'
+import ServerlessError from 'serverless/lib/serverless-error'
 import type Hooks from 'serverless-hooks-plugin'
 
 import { type ResourceType } from '../core/index'
 import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema, slicWatchSchema, defaultConfig } from '../core/index'
+import { setLogger } from '../core/logging'
 
 interface SlicWatchConfig {
   topicArn?: string
   enabled?: boolean
+}
+
+interface ServerlessPluginUtils {
+  log: any // The Serverless Framework's logger which may be used by plugins to create output
 }
 
 class ServerlessPlugin {
@@ -16,15 +22,18 @@ class ServerlessPlugin {
   hooks: Hooks
 
   /**
-     * Plugin constructor according to the Serverless Framework v2/v3 plugin signature
+     * Plugin constructor according to the Serverless Framework v3 plugin signature
+     *
      * @param {*} serverless The Serverless instance
      */
-  constructor (serverless: Serverless) {
+  constructor (serverless: Serverless, _cliOptions, pluginUtils: ServerlessPluginUtils) {
     this.serverless = serverless
 
     if (serverless.service.provider.name !== 'aws') {
-      throw new Serverless('SLIC Watch only supports AWS')
+      throw new ServerlessError('SLIC Watch only supports AWS')
     }
+
+    setLogger(pluginUtils.log)
 
     if (serverless.configSchemaHandler != null) {
       serverless.configSchemaHandler.defineCustomProperties(pluginConfigSchema)
@@ -47,7 +56,7 @@ class ServerlessPlugin {
     const slicWatchValidate = ajv.compile(slicWatchSchema)
     const slicWatchValid = slicWatchValidate(slicWatchConfig)
     if (!slicWatchValid) {
-      throw new Serverless('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+      throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
     }
 
     const alarmActions: string[] = []

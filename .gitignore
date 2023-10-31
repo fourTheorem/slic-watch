@@ -250,6 +250,7 @@ src/
 
 node_modules/
 .nyc_output/
+.tap/
 .serverless/
 coverage/
 .vscode/

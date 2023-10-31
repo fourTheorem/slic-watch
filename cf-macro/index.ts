@@ -3,8 +3,10 @@ import Ajv from 'ajv'
 import pino from 'pino'
 
 import { addAlarms, addDashboard, defaultConfig, slicWatchSchema, getResourcesByType } from '../core/index'
+import { setLogger } from 'slic-watch-core/logging'
 
 const logger = pino({ name: 'macroHandler' })
+setLogger(logger)
 
 interface Event {
   requestId?

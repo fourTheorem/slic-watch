@@ -1,4 +1,3 @@
-import pino from 'pino'
 import type { Entries } from 'type-fest'
 import type Template from 'cloudform-types/types/template'
 
@@ -10,6 +9,7 @@ import type { CreateMetricWidget, DashboardBodyProperties, FunctionDashboardConf
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
 import { resolveEcsClusterNameForSub, resolveGraphlQLId, resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub } from './dashboard-utils'
+import { getLogger } from '../logging'
 
 declare global {
   interface ObjectConstructor {
@@ -20,7 +20,7 @@ declare global {
 
 const MAX_WIDTH = 24
 
-const logger = pino()
+const logger = getLogger()
 
 /**
  * @param {*} dashboardConfig The global plugin dashboard configuration

@@ -1,9 +1,11 @@
 import { test } from 'tap'
 import _ from 'lodash'
-import Serverless from 'serverless'
+import ServerlessError from 'serverless/lib/serverless-error'
+
 import pino from 'pino'
 
 import ServerlessPlugin from '../serverless-plugin'
+import { getLogger } from 'slic-watch-core/logging'
 
 interface TestData {
   schema?
@@ -14,6 +16,15 @@ interface SlsYaml {
   custom?
   functions?
 }
+
+// Serverless Framework provides plugins with a logger to use, so we simulate that with this:
+const logger = Object.assign({}, pino())
+const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
+for (const extra of extras) {
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+  delete logger[extra]
+}
+const pluginUtils = { log: logger }
 
 const slsYaml: SlsYaml = {
   custom: {
@@ -27,6 +38,7 @@ const slsYaml: SlsYaml = {
     }
   }
 }
+
 const testCfTemplate = {
   Resources: {
     HelloLambdaFunction: {
@@ -80,15 +92,8 @@ function compileServerlessFunctionsToCloudformation (functions: Record<string, a
 
 test('index', t => {
   t.test('plugin uses v3 logger if provided', t => {
-    const dummyV3Logger = {}
-    const plugin = new ServerlessPlugin(mockServerless)
-    const logger = Object.assign({}, pino())
-    const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
-    for (const extra of extras) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete logger[extra]
-    }
-    t.same(logger, dummyV3Logger)
+    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
+    t.same(getLogger(), logger)
     t.ok(plugin)
     t.end()
   })
@@ -100,12 +105,12 @@ test('index', t => {
         ...mockServerless.service,
         provider: { name: 'azure' }
       }
-    }))
+    }, null, pluginUtils))
     t.end()
   })
 
   t.test('createSlicWatchResources adds dashboard and alarms', t => {
-    const plugin = new ServerlessPlugin(mockServerless)
+    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -117,7 +122,7 @@ test('index', t => {
         ...mockServerless.service,
         custom: undefined
       }
-    })
+    }, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -135,7 +140,7 @@ test('index', t => {
           testData.functionSchema = schema
         }
       }
-    })
+    }, null, pluginUtils)
     t.equal(typeof testData.schema, 'object')
     t.end()
   })
@@ -147,7 +152,7 @@ test('index', t => {
         ...mockServerless.service,
         custom: {}
       }
-    })
+    }, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -155,36 +160,32 @@ test('index', t => {
   t.test('Plugin execution succeeds if no SNS Topic is provided', t => {
     const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
     delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
-    const plugin = new ServerlessPlugin(
-      {
-        ...mockServerless,
-        service: {
-          ...mockServerless.service,
-          ...serviceYmlWithoutTopic
-        }
+    const plugin = new ServerlessPlugin({
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithoutTopic
       }
-    )
+    }, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
 
   t.test('Plugin execution succeeds if resources are provided', t => {
-    const plugin = new ServerlessPlugin(
-      {
-        ...mockServerless,
-        service: {
-          ...mockServerless.service,
-          resources: {
-            Resources: {
-              queue: {
-                Type: 'AWS::SQS::Queue',
-                Properties: {}
-              }
+    const plugin = new ServerlessPlugin({
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        resources: {
+          Resources: {
+            queue: {
+              Type: 'AWS::SQS::Queue',
+              Properties: {}
             }
           }
         }
       }
-    )
+    }, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -192,31 +193,27 @@ test('index', t => {
   t.test('Plugin execution fails if an invalid SLIC Watch config is provided', t => {
     const serviceYmlWithBadProperty = _.cloneDeep(slsYaml)
     serviceYmlWithBadProperty.custom.slicWatch.topicArrrrn = 'pirateTopic'
-    const plugin = new ServerlessPlugin(
-      {
-        ...mockServerless,
-        service: {
-          ...mockServerless.service,
-          ...serviceYmlWithBadProperty
-        }
+    const plugin = new ServerlessPlugin({
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithBadProperty
       }
-    )
-    t.throws(() => { plugin.createSlicWatchResources() }, Serverless)
+    }, null, pluginUtils)
+    t.throws(() => { plugin.createSlicWatchResources() }, ServerlessError)
     t.end()
   })
 
   t.test('Plugin skips SLIC Watch if top-level enabled==false', t => {
     const serviceYmlWithDisabled = _.cloneDeep(slsYaml)
     serviceYmlWithDisabled.custom.slicWatch.enabled = false
-    const plugin = new ServerlessPlugin(
-      {
-        ...mockServerless,
-        service: {
-          ...mockServerless.service,
-          ...serviceYmlWithDisabled
-        }
+    const plugin = new ServerlessPlugin({
+      ...mockServerless,
+      service: {
+        ...mockServerless.service,
+        ...serviceYmlWithDisabled
       }
-    )
+    }, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -247,7 +244,7 @@ test('index', t => {
         }
       }
     }
-    const plugin = new ServerlessPlugin(mockServerless)
+    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources), ['HelloTestLambda', 'slicWatchDashboard'])
     t.end()
@@ -280,7 +277,7 @@ test('index', t => {
         getFunction: (funcRef) => functions[funcRef]
       }
     }
-    const plugin = new ServerlessPlugin(mockServerless)
+    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     plugin.createSlicWatchResources()
     t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources),
       [

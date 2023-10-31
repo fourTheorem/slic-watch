@@ -42,7 +42,7 @@ jobs:
           github-token: ${{ secrets.github_token }}
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
-          path-to-lcov: coverage/lcov.info
+          path-to-lcov: .tap/report/lcov.info
   finish:
     needs: build
     runs-on: ubuntu-latest
