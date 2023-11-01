@@ -2,13 +2,13 @@ Resources:
   stream:
     Type: AWS::Kinesis::Stream
     Properties:
-      Name: awesome-savage-stream
+      Name: !Sub 'slic-watch-test-project-stream-${AWS::AccountId}-${AWS::Region}'
       ShardCount: 1
 
   bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: awesome-savage-bucket
+      BucketName: !Sub 'slic-watch-test-project-bucket-${AWS::AccountId}-${AWS::Region}'
 
   dataTable:
     Type: AWS::DynamoDB::Table
@@ -139,7 +139,7 @@ Resources:
   topic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: awesome-savage-topic
+      TopicName: !Sub 'slic-watch-test-project-topic-${AWS::AccountId}-${AWS::Region}'
 
   subscriptionTest:
       Type: AWS::SNS::Subscription
