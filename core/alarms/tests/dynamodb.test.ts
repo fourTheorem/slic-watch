@@ -63,10 +63,10 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
     }
 
     const alarmCounts = {
-      DDB_ReadThrottleEvents: 2,
-      DDB_WriteThrottleEvents: 2,
-      DDB_UserErrors: 1,
-      DDB_SystemErrors: 1
+      DDB_ReadThrottleEvents_Alarm: 2,
+      DDB_WriteThrottleEvents_Alarm: 2,
+      DDB_UserErrors_Alarm: 1,
+      DDB_SystemErrors_Alarm: 1
     }
 
     t.same(new Set(Object.keys(alarmsByType)), new Set(Object.keys(alarmCounts)))

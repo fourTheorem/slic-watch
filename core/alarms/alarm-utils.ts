@@ -1,7 +1,6 @@
-import * as stringcase from 'case'
-
 import type { Template } from 'cloudform'
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+import { pascal } from 'case'
 
 import type { AlarmActionsConfig, AlarmTemplate, CloudFormationResources, OptionalAlarmProps, SlicWatchMergedConfig } from './alarm-types'
 import { getResourcesByType } from '../cf-template'
@@ -55,7 +54,7 @@ export function createCfAlarms (
       const { enabled, ...rest } = config[metric]
       if (enabled !== false) {
         const alarm = genSpecificAlarmProps(metric, resourceLogicalId, rest)
-        const alarmLogicalId = makeAlarmLogicalId(service, resourceLogicalId, metric)
+        const alarmLogicalId = makeAlarmLogicalId(service, pascal(resourceLogicalId), metric)
         const resource = createAlarm({
           MetricName: metric,
           ...alarm,
@@ -91,23 +90,20 @@ export function createAlarm (alarmProperties: AlarmProperties, context?: AlarmAc
  * Generate a CloudFormation logical identifier for an Alarm resource based on the service,
  * it's "given name" (any descriptive name), and a human-readable identifier for the metrics
  *
+ * IMPORTANT: Any changes in Logical ID.  We keep logical IDs unaltered for backwards compatibility
+ *            with older syntax, because altering logical IDs can cause updates happening as a
+ *            create-new-then-delete-old sequence. If other unique fields in the resource haven't
+ *            changed between the old and new version, the create will fail, causing the whole
+ *            deployment to fail.
+ *
  * @param service The AWS Service name
  * @param givenName A human-readable name for the alarm
  * @param metricIdentifier A human-readable identifier for the related metric(s)
  *
- * @returns A valid CloudFormation logicalId
+ * @returns A valid CloudFormation logical ID
  */
 export function makeAlarmLogicalId (service: string, givenName: string, metricIdentifier: string) {
-  let normalisedName
-  if (service === 'SNS') {
-    // We keep SNS logical IDs unaltered for backwards compatibility with older syntax, because altering logical IDs
-    // can cause updates happening as a create-new-then-delete-old sequence. If other unique fields
-    // in the resource haven't changed between the old and new version, the create will fail, causing the
-    // whole deployment to fail.
-    normalisedName = givenName
-  } else {
-    normalisedName = stringcase.pascal(givenName).replace(LOGICAL_ID_FILTER_REGEX, '')
-  }
+  const normalisedName = givenName.replace(LOGICAL_ID_FILTER_REGEX, '')
   const normalisedMetricIdentifier = metricIdentifier.replace(LOGICAL_ID_FILTER_REGEX, '')
   return `slicWatch${service}${normalisedMetricIdentifier}Alarm${normalisedName}`
 }

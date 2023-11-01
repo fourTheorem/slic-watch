@@ -35,8 +35,8 @@ test('Events alarms are created', (t) => {
   const alarmResources: ResourceType = createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate)
 
   const expectedTypes = {
-    Events_FailedInvocationsAlarm: 'FailedInvocations',
-    Events_ThrottledRulesAlarm: 'ThrottledRules'
+    Events_FailedInvocations_Alarm: 'FailedInvocations',
+    Events_ThrottledRules_Alarm: 'ThrottledRules'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)

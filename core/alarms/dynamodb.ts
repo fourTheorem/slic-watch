@@ -38,7 +38,7 @@ export default function createDynamoDbAlarms (
       if (config.enabled) {
         const { enabled, ...rest } = config
         const dynamoDbAlarmProperties: AlarmProperties = {
-          AlarmName: Fn.Sub(`DDB_${metric}_\${${tableLogicalId}}`, {}),
+          AlarmName: Fn.Sub(`DDB_${metric}_Alarm_\${${tableLogicalId}}`, {}),
           AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for \${${tableLogicalId}} breaches ${config.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/DynamoDB',
@@ -58,7 +58,7 @@ export default function createDynamoDbAlarms (
           const gsiName: string = gsi.IndexName
           const gsiIdentifierSub = `\${${tableLogicalId}}${gsiName}`
           const dynamoDbAlarmsConfig: AlarmProperties = {
-            AlarmName: Fn.Sub(`DDB_${metric}_${gsiIdentifierSub}`, {}),
+            AlarmName: Fn.Sub(`DDB_${metric}_Alarm_${gsiIdentifierSub}`, {}),
             AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`, {}),
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',

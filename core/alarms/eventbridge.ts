@@ -24,8 +24,8 @@ function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: stri
   return {
     Namespace: 'AWS/Events',
     Dimensions: [{ Name: 'RuleName', Value: Fn.Ref(ruleLogicalId) }],
-    AlarmName: Fn.Sub(`Events_${metric}Alarm_\${${ruleLogicalId}}`, {}),
-    AlarmDescription: Fn.Sub(`EventBridge ${metric} for \${${ruleLogicalId}}  breaches ${config.Threshold}`, {})
+    AlarmName: Fn.Sub(`Events_${metric}_Alarm_\${${ruleLogicalId}}`, {}),
+    AlarmDescription: Fn.Sub(`EventBridge ${metric} for \${${ruleLogicalId}} breaches ${config.Threshold}`, {})
   }
 }
 

@@ -35,8 +35,8 @@ test('SNS alarms are created', (t) => {
 
   const alarmResources: ResourceType = createSnsAlarms(snsAlarmProperties, testContext, compiledTemplate)
   const expectedTypes = {
-    SNS_NumberOfNotificationsFilteredOutInvalidAttributesAlarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
-    SNS_NumberOfNotificationsFailedAlarm: 'NumberOfNotificationsFailed'
+    SNS_NumberOfNotificationsFilteredOutInvalidAttributes_Alarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
+    SNS_NumberOfNotificationsFailed_Alarm: 'NumberOfNotificationsFailed'
   }
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
@@ -45,6 +45,7 @@ test('SNS alarms are created', (t) => {
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypes[alarmType]
+    t.ok(expectedMetric)
     t.equal(al?.MetricName, expectedMetric)
     t.ok(al?.Statistic)
     t.equal(al?.Threshold, snsAlarmProperties[expectedMetric].Threshold)

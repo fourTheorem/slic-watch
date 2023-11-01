@@ -1,6 +1,7 @@
 import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
+import { pascal } from 'case'
 
 import { getResourcesByType } from '../cf-template'
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
@@ -53,7 +54,7 @@ export default function createKinesisAlarms (
           Dimensions: [{ Name: 'StreamName', Value: Fn.Ref(streamLogicalId) }],
           ...rest
         }
-        const alarmLogicalId = makeAlarmLogicalId('Kinesis', streamLogicalId, type)
+        const alarmLogicalId = makeAlarmLogicalId('Kinesis', pascal(streamLogicalId), type)
         const resource = createAlarm(kinesisAlarmProperties, context)
         resources[alarmLogicalId] = resource
       }

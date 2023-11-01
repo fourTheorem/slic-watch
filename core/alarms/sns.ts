@@ -23,8 +23,8 @@ function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, 
   return {
     Namespace: 'AWS/SNS',
     Dimensions: [{ Name: 'TopicName', Value: Fn.GetAtt(snsLogicalId, 'TopicName') }],
-    AlarmName: Fn.Sub(`SNS_${metric.replaceAll(/[-]/g, '')}Alarm_\${${snsLogicalId}.TopicName}`, {}),
-    AlarmDescription: Fn.Sub(`SNS of  ${metric.replaceAll(/[-]/g, '')} for \${${snsLogicalId}.TopicName} breaches ${config.Threshold}`, {})
+    AlarmName: Fn.Sub(`SNS_${metric.replaceAll(/[-]/g, '')}_Alarm_\${${snsLogicalId}.TopicName}`, {}),
+    AlarmDescription: Fn.Sub(`SNS ${metric.replaceAll(/[-]/g, '')} for \${${snsLogicalId}.TopicName} breaches ${config.Threshold}`, {})
   }
 }
 
