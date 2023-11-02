@@ -33,7 +33,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs18.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
   stage: dev
@@ -51,6 +51,6 @@ functions:
             method:
               - POST
           healthCheck: true # it is by default false but can be enbaled true
-          #you can disable it for not getting redundant health-check logs on the CloudWatch logs 
+          #you can disable it for not getting redundant health-check logs on the CloudWatch logs
 
 resources: ${file(./sls-resources.yml)}

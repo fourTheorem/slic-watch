@@ -6,7 +6,7 @@ export class CdkECSStack extends cdk.Stack {
   constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    this.addTransform('SlicWatch-v2')
+    this.addTransform('SlicWatch-v3')
     this.templateOptions.metadata = {
       slicWatch: {
         enabled: true,

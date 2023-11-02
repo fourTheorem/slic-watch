@@ -1,7 +1,8 @@
 import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as sns from 'aws-cdk-lib/aws-sns'
-import { CfnResource, Duration } from 'aws-cdk-lib'
+import { Duration } from 'aws-cdk-lib'
+import type { CfnResource } from 'aws-cdk-lib'
 import * as sfn from 'aws-cdk-lib/aws-stepfunctions'
 import { LambdaInvoke } from 'aws-cdk-lib/aws-stepfunctions-tasks'
 
@@ -9,7 +10,7 @@ export class CdkSFNStack extends cdk.Stack {
   constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    this.addTransform('SlicWatch-v2')
+    this.addTransform('SlicWatch-v3')
     this.templateOptions.metadata = {
       slicWatch: {
         enabled: true,
@@ -41,7 +42,7 @@ export class CdkSFNStack extends cdk.Stack {
 
     const hello = new lambda.Function(this, 'HelloHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })

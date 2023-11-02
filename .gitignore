@@ -122,6 +122,7 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+core/dist/
 downloads/
 eggs/
 .eggs/
@@ -249,6 +250,7 @@ src/
 
 node_modules/
 .nyc_output/
+.tap/
 .serverless/
 coverage/
 .vscode/

@@ -1,25 +1,26 @@
 {
-    "name": "cf-macro-slic-watch",
-    "description": "SLIC Watch CloudFormation Macro for automatic alarms and dashboards",
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/fourTheorem/slic-watch.git",
-        "directory": "cf-macro"
-    },
-    "version": "2.1.3",
-    "private": true,
-    "scripts": {
-        "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.js"
-    },
-    "devDependencies": {
-        "proxyquire": "^2.1.3"
-    },
-    "dependencies": {
-        "ajv": "^8.9.0",
-        "case": "^1.6.3",
-        "lodash": "^4.17.21",
-        "slic-watch-core": "^2.0.0-rc1",
-        "yaml": "^1.10.2"
-    }
+  "name": "cf-macro-slic-watch",
+  "description": "SLIC Watch CloudFormation Macro for automatic alarms and dashboards",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-watch.git",
+    "directory": "cf-macro"
+  },
+  "version": "3.0.0-rc5",
+  "private": true,
+  "scripts": {
+    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
+    "build": "cd .. && sam build --base-dir . --template-file cf-macro/template.yaml",
+    "watch": "npm run build -- --watch"
+  },
+  "tap": {
+    "node-arg": [
+      "--loader=ts-node/esm"
+    ]
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "esbuild": "^0.17.16"
+  }
 }

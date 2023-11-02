@@ -14,31 +14,37 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [18, 20]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}.x
-      - name: Ensure npm >= 7
-        run: npm i -g npm@^7
+          cache: 'npm'
       - run: npm ci
-      - run: npm run audit
       - run: npm test
-      - name: Coveralls Parallel
+        name: Run unit tests
+      - name: Build TypeScript
+        run: npm run build
+      - working-directory: ./serverless-test-project
+        run: npm test
+        name: Run Serverless Framework packaging test
+      - working-directory: ./serverless-test-project-alb
+        name: Run Serverless Framework packaging test for ALB test project
+        run: npm test
+      - working-directory: ./serverless-test-project-appsync
+        name: Run Serverless Framework packaging test for AppSync test project
+        run: npm test
+      - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
-          path-to-lcov: coverage/lcov.info
-      - name: Package test project with Serverless v2
-        working-directory: ./serverless-test-project
-        run: |
-          npm i serverless@2
-          npm run test:v2
+          path-to-lcov: .tap/report/lcov.info
+        if: ${{ matrix.node-version != 18 }} # Node 18 is reporting inaccurate coverage data, so we ignore its report
+
   finish:
     needs: build
     runs-on: ubuntu-latest
@@ -48,4 +54,4 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           parallel-finished: true
-          path-to-lcov: coverage/lcov.info
+          path-to-lcov: .tap/report/lcov.info

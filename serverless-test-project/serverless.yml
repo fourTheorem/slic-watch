@@ -26,7 +26,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
   stage: dev
@@ -91,13 +91,13 @@ functions:
     handler: rule-handler.handleRule
     slicWatch:
       alarms:
-          Lambda:
-            enabled: false
+        Lambda:
+          enabled: false
     events:
       - eventBridge:
           pattern:
-            detail-type: 
-            - Invoke Lambda Function
+            detail-type:
+              - Invoke Lambda Function
           retryPolicy:
             maximumEventAge: 60
             maximumRetryAttempts: 2
@@ -123,4 +123,3 @@ stepFunctions:
         includeExecutionData: true
         destinations:
           - Fn::GetAtt: [expressWorkflowLogGroup, Arn]
-

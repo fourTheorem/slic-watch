@@ -1,0 +1,23 @@
+{
+  /* cSpell: disable */
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": false
+  },
+  "include": ["index.ts"],
+  "exclude": ["node_modules", "dist", "**/__tests__/*.test.ts"] // do not compile tests
+}

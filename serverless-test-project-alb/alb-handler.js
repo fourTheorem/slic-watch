@@ -4,7 +4,7 @@ module.exports = {
   handleALB
 }
 
-async function handleALB (event, context) {
+async function handleALB (event) {
   console.log(event)
   const body = JSON.parse(event.body || '{}')
   console.log(body)

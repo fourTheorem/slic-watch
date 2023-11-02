@@ -1,0 +1,36 @@
+schema{
+  query: Query
+  mutation: Mutation,
+  subscription: Subscription 
+}
+
+type Subscription {
+  onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
+}
+
+type Query {
+  getBookById(bookId: ID!): Book!
+}
+
+type Book {
+  bookId: ID!
+  title: String!
+  description: String
+  imageUrl: AWSURL
+  author: String!
+  price: Float!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Mutation {
+  createBook(newBook: BookInput): Book! @aws_auth(cognito_groups: ["Admin"])
+}
+
+input BookInput {
+  title: String!
+  description: String
+  imageUrl: AWSURL
+  author: String!
+  price: Float!
+}

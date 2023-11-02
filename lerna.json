@@ -1,8 +1,0 @@
-{
-  "packages": [
-    "serverless-plugin",
-    "serverless-test-project",
-    "serverless-test-project-alb"
-  ],
-  "version": "1.3.0"
-}

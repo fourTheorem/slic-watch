@@ -4,7 +4,7 @@ import * as sns from 'aws-cdk-lib/aws-sns'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as sqs from 'aws-cdk-lib/aws-sqs'
-import { CfnResource } from 'aws-cdk-lib'
+import type { CfnResource } from 'aws-cdk-lib'
 import * as events from 'aws-cdk-lib/aws-events'
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets'
 
@@ -12,7 +12,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
   constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    this.addTransform('SlicWatch-v2')
+    this.addTransform('SlicWatch-v3')
     this.templateOptions.metadata = {
       slicWatch: {
         enabled: true,
@@ -44,7 +44,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     const helloFunction = new lambda.Function(this, 'HelloHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
@@ -64,7 +64,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     const pingFunction = new lambda.Function(this, 'PingHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
@@ -80,7 +80,7 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     new lambda.Function(this, 'ThrottlerHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler',
         reservedConcurrentExecutions: 0
@@ -88,21 +88,21 @@ export class CdkTestGeneralStack extends cdk.Stack {
 
     new lambda.Function(this, 'DriveStreamHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'stream-test-handler.handleDrive'
       })
 
     new lambda.Function(this, 'DriveQueueHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })
 
     new lambda.Function(this, 'DriveTableHandler',
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         code: lambda.Code.fromAsset('lambda'),
         handler: 'hello.handler'
       })

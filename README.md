@@ -8,10 +8,10 @@
 
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge and Application Load Balancer._  
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge, Application Load Balancer and AppSync._  
 
 Supported tools include:
- * ⚡️ **Serverless Framework** v2 and v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
+ * ⚡️ **Serverless Framework** v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
  * 🐿 **AWS SAM**, 📦 **AWS CDK**  and ☁️ **CloudFormation** using the [_CloudFormation Macro_](#getting-started-with-aws-sam-cdk-or-cloudformation), published in the Serverless Application Repository (SAR).
 
 ## Contents
@@ -33,6 +33,7 @@ Supported tools include:
     - [SNS](#sns)
     - [EventBridge](#eventbridge)
     - [Application Load Balancer](#application-load-balancer)
+    - [AppSync](#appsync)
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
     - [Function-level configuration](#function-level-configuration)
@@ -96,6 +97,11 @@ The snippet of CloudFormation is as follows.
           ApplicationId: arn:aws:serverlessrepo:eu-west-1:949339270388:applications~slic-watch-app 
           SemanticVersion: <enter latest version>
  ```
+To determine the list of available versions, you can use the AWS CLI:
+```bash
+aws serverlessrepo list-application-versions \
+  --application-id arn:aws:serverlessrepo:eu-west-1:949339270388:applications/slic-watch-app
+```
 - **Option 3** (manual Macro deployment using SAM directly from source):
 ```bash
 npm install
@@ -108,7 +114,7 @@ Once you have deployed the macro, you can start using SLIC Watch in SAM or Cloud
 ```yaml
 Transform:
   - ...
-  - SlicWatch-v2
+  - SlicWatch-v3
 ```
 
 🪛 _Optionally_, add some configuration for the plugin to the `Metadata -> slicWatch` section of `template.yml`.
@@ -134,7 +140,7 @@ export class MyStack extends cdk.Stack {
   constructor (scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    this.addTransform('SlicWatch-v2')
+    this.addTransform('SlicWatch-v3')
     ...
   }
 }
@@ -142,16 +148,16 @@ export class MyStack extends cdk.Stack {
 
 ```python
 # Python:
-self.add_transform("SlicWatch-v2")
+self.add_transform("SlicWatch-v3")
 ```
 ```csharp
 // C#:
-this.AddTransform("SlicWatch-v2")
+this.AddTransform("SlicWatch-v3")
 ```
 
 ```java
 // Java:
-this.addTransform("SlicWatch-v2");
+this.addTransform("SlicWatch-v3");
 ```
 
 🪛 _Optionally_, add some configuration for the plugin as below:
@@ -303,6 +309,18 @@ Application Load Balancer dashboard widgets show:
 |**UnHealthy Host Count**|**Lambda User Error**|**Lambda Internal Error**|
 |![UnHealthyHostCount](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/unHealthyHostCount.png) |![LambdaUserError](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/lambdaUserError.png)| |
 
+### AppSync
+AppSync alarms are created for:
+1. 5XX Error
+2. Latency
+
+AppSync dashboard widgets show:
+
+|5XX Error, Latency, 4XX Error, Request|
+|--|
+|![API Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncAPI.png)|
+|**Connect Server Error**, **Disconnect Server Error**, **Subscribe Server Error**, **Unsubscribe Server Error**,**PublishDataMessageServerError**|
+|![Real-time Subscriptions Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncRealTimeSubscriptions.png)|
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.

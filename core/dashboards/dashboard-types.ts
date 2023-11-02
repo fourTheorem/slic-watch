@@ -1,0 +1,180 @@
+import type FunctionProperties from 'cloudform-types/types/lambda/function'
+
+export type YAxis = 'left' | 'right'
+
+interface TimeRange {
+  start: string
+  end?: string
+}
+
+export interface MetricDefs {
+  namespace: string
+  metric: string
+  dimensions: object
+  stat: string
+  yAxis?: YAxis
+}
+export interface Properties {
+  metrics: any[][]
+  title: string
+  view: string
+  region: string
+  period?: number
+  yAxis?: YAxis
+}
+
+export interface CreateMetricWidget {
+  type: string
+  properties: Properties
+  width: number
+  height: number
+  yAxis?: YAxis
+}
+
+export interface Widgets {
+  enabled?: boolean
+  metricPeriod?: number
+  width?: number
+  height?: number
+  yAxis?: YAxis
+  Statistic?: string[]
+  Lambda?: LambdaDashboardBodyProperties
+  ApiGateway?: ApiGwDashboardBodyProperties
+  States?: SfDashboardBodyProperties
+  DynamoDB?: DynamoDbDashboardBodyProperties
+  Kinesis?: KinesisDashboardBodyProperties
+  SQS?: SqsDashboardBodyProperties
+  ECS?: EcsDashboardBodyProperties
+  SNS?: SnsDashboardBodyProperties
+  Events?: RuleDashboardBodyProperties
+  ApplicationELB?: AlbDashboardBodyProperties
+  ApplicationELBTarget?: AlbTargetDashboardBodyProperties
+  AppSync?: AppSyncDashboardBodyProperties
+}
+
+export interface SlicWatchDashboardConfig {
+  enabled?: boolean
+  timeRange?: TimeRange
+  widgets: Widgets
+}
+
+export interface DashboardBodyProperties {
+  enabled?: boolean
+  metricPeriod?: number
+  width?: number
+  height?: number
+  yAxis?: YAxis
+  Statistic?: string[]
+}
+
+export interface ServiceDashConfig {
+  DashboardBodyProperties?: DashboardBodyProperties
+  widgets?: Widgets
+}
+
+export interface LambdaDashboardBodyProperties {
+  Errors: DashboardBodyProperties
+  Throttles: DashboardBodyProperties
+  Duration: DashboardBodyProperties
+  Invocations: DashboardBodyProperties
+  ConcurrentExecutions: DashboardBodyProperties
+  IteratorAge: DashboardBodyProperties
+}
+
+export interface ApiGwDashboardBodyProperties {
+  '5XXError': DashboardBodyProperties
+  '4XXError': DashboardBodyProperties
+  Latency: DashboardBodyProperties
+  Count: DashboardBodyProperties
+}
+
+export interface SfDashboardBodyProperties {
+  ExecutionsFailed: DashboardBodyProperties
+  ExecutionThrottled: DashboardBodyProperties
+  ExecutionsTimedOut: DashboardBodyProperties
+}
+
+export interface DynamoDbDashboardBodyProperties {
+  ReadThrottleEvents: DashboardBodyProperties
+  WriteThrottleEvents: DashboardBodyProperties
+}
+
+export interface KinesisDashboardBodyProperties {
+  'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties
+  ReadProvisionedThroughputExceeded: DashboardBodyProperties
+  WriteProvisionedThroughputExceeded: DashboardBodyProperties
+  'PutRecord.Success': DashboardBodyProperties
+  'PutRecords.Success': DashboardBodyProperties
+  'GetRecords.Success': DashboardBodyProperties
+}
+
+export interface SqsDashboardBodyProperties {
+  NumberOfMessagesSent: DashboardBodyProperties
+  NumberOfMessagesReceived: DashboardBodyProperties
+  NumberOfMessagesDeleted: DashboardBodyProperties
+  ApproximateAgeOfOldestMessage: DashboardBodyProperties
+  ApproximateNumberOfMessagesVisible: DashboardBodyProperties
+}
+
+export interface EcsDashboardBodyProperties {
+  enabled?: boolean
+  MemoryUtilization: DashboardBodyProperties
+  CPUUtilization: DashboardBodyProperties
+}
+
+export interface SnsDashboardBodyProperties {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties
+  NumberOfNotificationsFailed: DashboardBodyProperties
+}
+
+export interface RuleDashboardBodyProperties {
+  FailedInvocations: DashboardBodyProperties
+  ThrottledRules: DashboardBodyProperties
+  Invocations: DashboardBodyProperties
+}
+
+export interface AlbDashboardBodyProperties {
+  HTTPCode_ELB_5XX_Count: DashboardBodyProperties
+  RejectedConnectionCount: DashboardBodyProperties
+}
+
+export interface AlbTargetDashboardBodyProperties {
+  HTTPCode_Target_5XX_Count: DashboardBodyProperties
+  UnHealthyHostCount: DashboardBodyProperties
+  LambdaInternalError: DashboardBodyProperties
+  LambdaUserError: DashboardBodyProperties
+}
+
+export interface AppSyncDashboardBodyProperties {
+  '5XXError': DashboardBodyProperties
+  '4XXError': DashboardBodyProperties
+  Latency: DashboardBodyProperties
+  Requests: DashboardBodyProperties
+  ConnectServerError: DashboardBodyProperties
+  DisconnectServerError: DashboardBodyProperties
+  SubscribeServerError: DashboardBodyProperties
+  UnsubscribeServerError: DashboardBodyProperties
+  PublishDataMessageServerError: DashboardBodyProperties
+}
+
+// Lambda resources
+
+export interface FunctionResources {
+  Type: string
+  Properties: FunctionProperties
+  DependsOn: string[]
+}
+
+export interface FunctionDashboardConfigs {
+  HelloLambdaFunction?: FunctionResources
+  PingLambdaFunction?: FunctionResources
+  ThrottlerLambdaFunction?: FunctionResources
+  DriveStreamLambdaFunction?: FunctionResources
+  DriveQueueLambdaFunction?: FunctionResources
+  DriveTableLambdaFunction?: FunctionResources
+  StreamProcessorLambdaFunction?: FunctionResources
+  HttpGetterLambdaFunction?: FunctionResources
+  SubscriptionHandlerLambdaFunction?: FunctionResources
+  EventsRuleLambdaFunction?: FunctionResources
+  AlbEventLambdaFunction?: FunctionResources
+}
