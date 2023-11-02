@@ -28,7 +28,7 @@ const kinesisAlarmTypes = {
 /**
  * Add all required Kinesis Data Stream alarms to the provided CloudFormation template
  * based on the resources found within
- *
+*
  * @param kinesisAlarmsConfig The fully resolved alarm configuration for Kinesis Data Streams
  * @param context Deployment context (alarmActions)
  * @param compiledTemplate  A CloudFormation template object
