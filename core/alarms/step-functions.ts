@@ -34,20 +34,20 @@ function createStepFunctionAlarmCfProperties (metric: string, sfLogicalId: strin
  * based on the resources found within
  *
  * @param sfAlarmProperties The fully resolved States alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns Step Function-specific CloudFormation Alarm resources
 */
 export default function createStatesAlarms (
-  sfAlarmProperties: SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  sfAlarmProperties: SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
     'AWS::StepFunctions::StateMachine',
     'States',
     executionMetrics,
     sfAlarmProperties,
-    context,
+    alarmActionsConfig,
     compiledTemplate,
     createStepFunctionAlarmCfProperties
   )

@@ -12,7 +12,7 @@ import {
   createTestConfig,
   createTestCloudFormationTemplate,
   albCfTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import { applyAlarmConfig } from '../../inputs/function-config'
 
@@ -60,7 +60,7 @@ test('AWS Lambda alarms are created', (t) => {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
 
-  const alarmResources: ResourceType = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
@@ -173,7 +173,7 @@ test('AWS Lambda alarms are created for ALB', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     albFunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  const albAlarmResources: ResourceType = createLambdaAlarms(albFunctionAlarmProperties, testContext, compiledTemplate)
+  const albAlarmResources: ResourceType = createLambdaAlarms(albFunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   function getAlarmsByType (): AlarmsByType {
     const albAlarmsByType: AlarmsByType = {}
@@ -269,7 +269,7 @@ test('Invocation alarms are created if configured', (t) => {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
 
-  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   const invocAlarmResources: ResourceType = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.payload[0].startsWith('Lambda_Invocations')
@@ -315,7 +315,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   t.end()
 })
 
@@ -371,7 +371,7 @@ test('Invocation alarms throws if misconfigured (enabled but no threshold set)',
     for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
       FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
     }
-    createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+    createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
     const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
     t.equal(Object.keys(alarmResources).length, 0)
     t.end()
@@ -406,7 +406,7 @@ test('Lambda alarms are not created when disabled globally', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
   t.same({}, alarmResources)
@@ -446,7 +446,7 @@ test('Lambda alarms are not created when disabled individually', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     FunctionAlarmProperties[funcLogicalId] = AlarmProperties.Lambda
   }
-  createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -483,7 +483,7 @@ test('AWS Lambda alarms are not created if disabled at function level', (t) => {
     AlarmProperties.Lambda, {
       HelloLambdaFunction: { Lambda: { enabled: false } }
     })
-  createLambdaAlarms(disabledFunctionAlarmProperties, testContext, compiledTemplate)
+  createLambdaAlarms(disabledFunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 0)
@@ -506,7 +506,7 @@ test('AWS Lambda alarms are not created if function configuration is not provide
     funcAlarmProperties.Lambda, {
       HelloLambdaFunction: { Lambda: { enabled: false } }
     })
-  createLambdaAlarms(disabledFunctionAlarmProperties, testContext, compiledTemplate)
+  createLambdaAlarms(disabledFunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
   t.equal(Object.keys(alarmResources).length, 0)
@@ -523,7 +523,7 @@ test('Duration alarms are created if no timeout is specified', (t) => {
     delete resource.Properties?.Timeout
   }
 
-  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testContext, compiledTemplate)
+  const alarmResources = createLambdaAlarms(FunctionAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   const invocAlarmResources = filterObject(
     alarmResources,
     (res) => res.Properties.AlarmName.payload[0].startsWith('Lambda_Duration')
@@ -537,7 +537,7 @@ test('Lambda alarms are not created if the slic watch config does not exist', (t
   const compiledTemplate = createTestCloudFormationTemplate()
   const perLambdaConfig = AlarmProperties
   perLambdaConfig.HelloLambdaFunction = AlarmProperties.Lambda
-  const createdAlarms = createLambdaAlarms(perLambdaConfig, testContext, compiledTemplate)
+  const createdAlarms = createLambdaAlarms(perLambdaConfig, testAlarmActionsConfig, compiledTemplate)
 
   t.same(Object.keys(createdAlarms), ['slicWatchLambdaErrorsAlarmHelloLambdaFunction', 'slicWatchLambdaThrottlesAlarmHelloLambdaFunction', 'slicWatchLambdaDurationAlarmHelloLambdaFunction'])
   t.end()

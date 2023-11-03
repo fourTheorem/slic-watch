@@ -1,17 +1,12 @@
 import { merge } from 'lodash'
-import Ajv from 'ajv'
 import type Serverless from 'serverless'
 import ServerlessError from 'serverless/lib/serverless-error'
 import type Hooks from 'serverless-hooks-plugin'
 
 import { type ResourceType } from '../core/index'
-import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema, slicWatchSchema, defaultConfig } from '../core/index'
+import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema } from '../core/index'
+import { resolveSlicWatchConfig, type ResolvedConfiguration, type SlicWatchConfig } from '../core/inputs/general-config'
 import { setLogger } from '../core/logging'
-
-interface SlicWatchConfig {
-  topicArn?: string
-  enabled?: boolean
-}
 
 interface ServerlessPluginUtils {
   log: any // The Serverless Framework's logger which may be used by plugins to create output
@@ -51,45 +46,33 @@ class ServerlessPlugin {
   createSlicWatchResources () {
     const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch ?? {}
 
-    const ajv = new Ajv({
-      unicodeRegExp: false
-    })
-    const slicWatchValidate = ajv.compile(slicWatchSchema)
-    const slicWatchValid = slicWatchValidate(slicWatchConfig)
-    if (!slicWatchValid) {
-      throw new ServerlessError('SLIC Watch configuration is invalid: ' + ajv.errorsText(slicWatchValidate.errors))
+    let config: ResolvedConfiguration
+    try {
+      config = resolveSlicWatchConfig(slicWatchConfig)
+    } catch (err) {
+      throw new ServerlessError((err as Error).message)
     }
 
-    const alarmActions: string[] = []
+    if (config.enabled) {
+      const awsProvider = this.serverless.getProvider('aws')
 
-    if (!(slicWatchConfig.enabled !== false)) {
-      return
+      const functionAlarmConfigs = {}
+      const functionDashboardConfigs = {}
+      for (const funcName of this.serverless.service.getAllFunctions()) {
+        const func = this.serverless.service.getFunction(funcName) as any // check why they don't return slicWatch
+        const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
+        const funcConfig = func.slicWatch ?? {}
+        functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
+        functionDashboardConfigs[functionResName] = funcConfig.dashboard
+      }
+
+      const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
+      const additionalResources = this.serverless.service.resources as ResourceType
+
+      merge(compiledTemplate, additionalResources)
+      addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
+      addAlarms(config.alarms, functionAlarmConfigs, config.alarmActionsConfig, compiledTemplate)
     }
-
-    slicWatchConfig.topicArn != null && alarmActions.push(slicWatchConfig.topicArn)
-
-    // Validate and fail fast on config validation errors since this is a warning in Serverless Framework 2.x
-    const context = { alarmActions }
-
-    const config = merge(defaultConfig, slicWatchConfig)
-    const awsProvider = this.serverless.getProvider('aws')
-
-    const functionAlarmConfigs = {}
-    const functionDashboardConfigs = {}
-    for (const funcName of this.serverless.service.getAllFunctions()) {
-      const func = this.serverless.service.getFunction(funcName) as any // check why they don't return slicWatch
-      const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-      const funcConfig = func.slicWatch ?? {}
-      functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
-      functionDashboardConfigs[functionResName] = funcConfig.dashboard
-    }
-
-    const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
-    const additionalResources = this.serverless.service.resources as ResourceType
-
-    merge(compiledTemplate, additionalResources)
-    addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
-    addAlarms(config.alarms, functionAlarmConfigs, context, compiledTemplate)
   }
 }
 

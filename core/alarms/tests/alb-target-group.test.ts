@@ -8,7 +8,7 @@ import {
   createTestConfig,
   createTestCloudFormationTemplate,
   albCfTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 
@@ -216,7 +216,7 @@ test('ALB Target Group alarms are created', (t) => {
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
 
-  const targetGroupAlarmResources: ResourceType = createAlbTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
+  const targetGroupAlarmResources: ResourceType = createAlbTargetAlarms(albAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypesTargetGroup = {
     LoadBalancer_HTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -291,7 +291,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
 
   const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-  const targetGroupAlarmResources = createAlbTargetAlarms(albAlarmProperties, testContext, compiledTemplate)
+  const targetGroupAlarmResources = createAlbTargetAlarms(albAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   t.same({}, targetGroupAlarmResources)
   t.end()

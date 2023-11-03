@@ -9,7 +9,7 @@ import {
   createTestConfig,
   createTestCloudFormationTemplate,
   albCfTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 import type { SlicWatchMergedConfig } from '../alarm-types'
@@ -35,7 +35,7 @@ test('ALB alarms are created', (t) => {
   )
   function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    return createAlbAlarms(elbAlarmProperties, testContext, compiledTemplate)
+    return createAlbAlarms(elbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   }
   const albAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 
@@ -94,7 +94,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
 
   function createAlarmResources (elbAlarmProperties) {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    return createAlbAlarms(elbAlarmProperties, testContext, compiledTemplate)
+    return createAlbAlarms(elbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   }
   const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
 

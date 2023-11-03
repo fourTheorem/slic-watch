@@ -2,7 +2,7 @@ import { test } from 'tap'
 
 import addAlarms from '../alarms'
 import defaultConfig from '../../inputs/default-config'
-import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testContext } from '../../tests/testing-utils'
+import { createTestCloudFormationTemplate, albCfTemplate, createTestConfig, testAlarmActionsConfig } from '../../tests/testing-utils'
 import { getResourcesByType } from '../../cf-template'
 
 test('Alarms create all service alarms', (t) => {
@@ -11,7 +11,7 @@ test('Alarms create all service alarms', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate)
+  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -30,7 +30,7 @@ test('Alarms create all ALB service alarms', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testContext, compiledTemplate)
+  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -55,7 +55,7 @@ test('Alarms are not created when disabled globally', (t) => {
   for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
     funcAlarmPropertiess[funcLogicalId] = {}
   }
-  addAlarms(config, funcAlarmPropertiess, testContext, compiledTemplate)
+  addAlarms(config, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
 
   const alarmsCreated = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

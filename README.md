@@ -65,7 +65,9 @@ so you can receive alarm notifications via email, Slack, etc.
 ```yaml
 custom:
   slicWatch:
-    topicArn: {'Fn::Ref': myTopic}
+    alarmActionsConfig: {
+      alarmActions: [{'Fn::Ref': myTopic}]
+    }
 ```
 See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
 
@@ -125,7 +127,9 @@ so you can receive alarm notifications via email, Slack, etc.
 Metadata:
   slicWatch:
     enabled: true
-    topicArn: !Ref MonitoringTopic
+    alarmActionsConfig:
+      alarmActions:
+        - !Ref MonitoringTopic
 ```
 See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
 
@@ -166,7 +170,11 @@ this.addTransform("SlicWatch-v3");
 this.templateOptions.metadata = {
   slicWatch: {
     enabled: true,
-    topicArn: "arn:aws:sns:eu-west-1:xxxxxxx:topic",
+    alarmActionsConfig: {
+      alarmActions: ["arn:aws:sns:eu-west-1:xxxxxxx:topic"],
+      okActions: ["arn:aws:sns:eu-west-1:xxxxxxx:topic"],
+      actionsEnabled: true
+    }
   }
 }
 ```
@@ -358,7 +366,17 @@ this.templateOptions.metadata = {
 }
 ```
 
-- The `topicArn` may be optionally provided as an SNS Topic destination for all alarms.  If you omit the topic, alarms are still created but are not sent to any destination.
+- The `alarmActionsConfig` may be optionally added to specifc one or more SNS Topic destinations for all alarm status changes to `ALARM` and `OK`.  If you omit destination topics, alarms are still created but are not sent to any destination. For example:
+```yaml
+slicWatch:
+  alarmActionsConfig:
+    alarmActions: # Default to no actions
+      - arn:aws:sns:eu-west-1:123456789012
+    okActions: # Defaults to no actions
+      - arn:aws:sns:eu-west-1:123456789012
+    actionsEnabled: 
+      - true # Defaults to true
+```
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
 A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)

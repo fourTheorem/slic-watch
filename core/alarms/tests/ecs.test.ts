@@ -7,7 +7,7 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 
@@ -51,7 +51,7 @@ test('ECS MemoryUtilization is created', (t) => {
   const ecsAlarmProperties = AlarmProperties.ECS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources: ResourceType = createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createECSAlarms(ecsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypes = {
     ECS_MemoryAlarm: 'MemoryUtilization',
@@ -112,7 +112,7 @@ test('ECS alarms are not created when disabled globally', (t) => {
   const ecsAlarmProperties = AlarmProperties.ECS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources = createECSAlarms(ecsAlarmProperties, testContext, compiledTemplate)
+  const alarmResources = createECSAlarms(ecsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

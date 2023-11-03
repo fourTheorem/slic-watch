@@ -21,13 +21,13 @@ const dynamoDbGsiMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents']
  * based on the tables and any global secondary indices (GSIs).
  *
  * @param dynamoDbAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns DynamoDB-specific CloudFormation Alarm resources
  */
 export default function createDynamoDbAlarms (
-  dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
@@ -46,7 +46,7 @@ export default function createDynamoDbAlarms (
           ...rest
         }
         const alarmLogicalId = makeAlarmLogicalId('Table', tableLogicalId, metric)
-        const resource = createAlarm(dynamoDbAlarmProperties, context)
+        const resource = createAlarm(dynamoDbAlarmProperties, alarmActionsConfig)
         resources[alarmLogicalId] = resource
       }
     }
@@ -66,7 +66,7 @@ export default function createDynamoDbAlarms (
             ...rest
           }
           const alarmLogicalId = makeAlarmLogicalId('GSI', `${tableLogicalId}${gsiName}`, metric)
-          const resource = createAlarm(dynamoDbAlarmsConfig, context)
+          const resource = createAlarm(dynamoDbAlarmsConfig, alarmActionsConfig)
           resources[alarmLogicalId] = resource
         }
       }

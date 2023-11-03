@@ -32,20 +32,20 @@ function createSnsTopicAlarmCfProperties (metric: string, snsLogicalId: string, 
  * Add all required SNS alarms to the provided CloudFormation template
  *
  * @param snsAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate A CloudFormation template object
  *
  * @returns SNS-specific CloudFormation Alarm resources
  */
 export default function createSnsAlarms (
-  snsAlarmsConfig: SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  snsAlarmsConfig: SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
     'AWS::SNS::Topic',
     'SNS',
     executionMetrics,
     snsAlarmsConfig,
-    context,
+    alarmActionsConfig,
     compiledTemplate,
     createSnsTopicAlarmCfProperties
   )

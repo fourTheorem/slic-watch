@@ -1,3 +1,4 @@
+import { type JSONSchema4 } from 'json-schema'
 
 /*
  * Source https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L113
@@ -5,7 +6,7 @@
 const iso8601Pattern = '^\\d\\d\\d\\d-[0-1]\\d-[0-3]\\d[t\\s](?:[0-2]\\d:[0-5]\\d:[0-5]\\d|23:59:60)(?:\\.\\d+)?(?:z|[+-]\\d\\d(?::?\\d\\d)?)?$'
 const percentilePattern = '^p(\\d{1,2}(\\.\\d{0,2})?|100)$'
 
-const statisticType = {
+const statisticType: JSONSchema4 = {
   type: ['string', 'null'],
   enum: ['Average', 'Maximum', 'Minimum', 'SampleCount', 'Sum']
 }
@@ -40,7 +41,7 @@ const supportedWidgets = {
   AppSync: ['5XXError', '4XXError', 'Latency', 'Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
 }
 
-const commonAlarmProperties = {
+const commonAlarmProperties: JSONSchema4Properties = {
   enabled: { type: 'boolean' },
   Period: {
     type: ['integer', 'null'],
@@ -80,7 +81,7 @@ const commonAlarmProperties = {
   }
 }
 
-const alarmSchemas = {
+const alarmSchemas: JSONSchema4 = {
   Lambda: {}
 }
 for (const service of Object.keys(supportedAlarms)) {
@@ -102,7 +103,7 @@ for (const service of Object.keys(supportedAlarms)) {
   }
 }
 
-const alarmsSchema = {
+const alarmsSchema: JSONSchema4 = {
   type: 'object',
   properties: {
     ...commonAlarmProperties,
@@ -111,7 +112,9 @@ const alarmsSchema = {
   additionalProperties: false
 }
 
-const commonWidgetProperties = {
+type JSONSchema4Properties = Record<string, JSONSchema4>
+
+const commonWidgetProperties: JSONSchema4Properties = {
   enabled: { type: 'boolean' },
   width: { type: ['integer', 'null'], minimum: 1, maximum: 24 },
   height: { type: ['integer', 'null'], minimum: 1, maximum: 1000 },
@@ -131,9 +134,10 @@ const commonWidgetProperties = {
   }
 }
 
-const widgetSchemas = {
+const widgetSchemas: JSONSchema4 = {
   Lambda: {}
 }
+
 for (const service of Object.keys(supportedWidgets)) {
   widgetSchemas[service] = {
     type: 'object',
@@ -153,7 +157,7 @@ for (const service of Object.keys(supportedWidgets)) {
   }
 }
 
-const dashboardSchema = {
+const dashboardSchema: JSONSchema4 = {
   type: 'object',
   properties: {
     enabled: { type: 'boolean' },
@@ -185,15 +189,25 @@ const dashboardSchema = {
   additionalProperties: false
 }
 
+const resourceRef: JSONSchema4 = { anyOf: [{ type: 'string' }, { type: 'object' }] }
+
 /**
  * JSON Schema for SLIC Watch
  */
-const slicWatchSchema = {
+const slicWatchSchema: JSONSchema4 = {
   type: 'object',
   properties: {
     alarms: alarmsSchema,
     dashboard: dashboardSchema,
-    topicArn: { anyOf: [{ type: 'string' }, { type: 'object' }] },
+    topicArn: resourceRef,
+    alarmActionsConfig: {
+      type: 'object',
+      properties: {
+        alarmActions: { type: 'array', items: resourceRef },
+        okActions: { type: 'array', items: resourceRef },
+        actionsEnabled: { type: 'boolean', default: true }
+      }
+    },
     enabled: { type: 'boolean' }
   },
   required: [],
@@ -203,7 +217,7 @@ const slicWatchSchema = {
 /**
  * JSON Schema for SLIC Watch configuration
  */
-const pluginConfigSchema = {
+const pluginConfigSchema: JSONSchema4 = {
   $schema: 'http://json-schema.org/draft-07/schema',
   title: 'SLIC Watch configuration',
   type: 'object',
@@ -217,7 +231,7 @@ const pluginConfigSchema = {
 /**
  * JSON Schema for the SLIC Watch configuration at an individual function level
  */
-const functionConfigSchema = {
+const functionConfigSchema: JSONSchema4 = {
   $schema: 'http://json-schema.org/draft-07/schema',
   title: 'SLIC Watch function configuration',
   type: 'object',

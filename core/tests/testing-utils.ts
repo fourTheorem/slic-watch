@@ -5,11 +5,12 @@ import { cascade } from '../inputs/cascading-config'
 import _defaultCfTemplate from '../cf-resources/cloudformation-template-stack.json'
 import _albCfTemplate from '../cf-resources/alb-cloudformation-template-stack.json'
 import _appSyncCfTemplate from '../cf-resources/appsync-cloudformation-template-stack.json'
+import { type AlarmActionsConfig } from '../alarms/alarm-types'
 const defaultCfTemplate = _defaultCfTemplate as Template
 const albCfTemplate = _albCfTemplate as Template
 const appSyncCfTemplate = _appSyncCfTemplate as unknown as Template
 
-const testContext = { alarmActions: ['dummy-arn'] }
+const testAlarmActionsConfig: AlarmActionsConfig = { alarmActions: ['dummy-arn'], actionsEnabled: true }
 
 function assertCommonAlarmProperties (t, al) {
   t.ok(al.AlarmDescription)
@@ -49,7 +50,7 @@ export {
   albCfTemplate,
   appSyncCfTemplate,
   defaultCfTemplate,
-  testContext,
+  testAlarmActionsConfig,
   assertCommonAlarmProperties,
   alarmNameToType,
   createTestConfig,

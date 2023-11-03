@@ -18,7 +18,7 @@ const executionMetrics = ['5XXError', 'Latency']
  * based on the AppSync resources found within
  *
  * @param appSyncAlarmsConfig The fully resolved alarm configuration
- * @param alarmActionsConfig Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns AppSync-specific CloudFormation Alarm resources

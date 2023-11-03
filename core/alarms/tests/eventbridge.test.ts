@@ -9,7 +9,7 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 
 test('Events alarms are created', (t) => {
@@ -32,7 +32,7 @@ test('Events alarms are created', (t) => {
   )
   const ruleAlarmProperties = AlarmProperties.Events
   const compiledTemplate = createTestCloudFormationTemplate()
-  const alarmResources: ResourceType = createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createRuleAlarms(ruleAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypes = {
     Events_FailedInvocations_Alarm: 'FailedInvocations',
@@ -79,7 +79,7 @@ test('Events alarms are not created when disabled globally', (t) => {
   )
   const ruleAlarmProperties = AlarmProperties.Events
   const compiledTemplate = createTestCloudFormationTemplate()
-  createRuleAlarms(ruleAlarmProperties, testContext, compiledTemplate)
+  createRuleAlarms(ruleAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

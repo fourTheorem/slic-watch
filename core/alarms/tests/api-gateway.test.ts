@@ -7,7 +7,7 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 import type Resource from 'cloudform-types/types/resource'
@@ -115,7 +115,7 @@ test('API Gateway alarms are created', (t) => {
   t.test('with full template', (t) => {
     const compiledTemplate = createTestCloudFormationTemplate()
 
-    const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
+    const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
     const alarmsByType: AlarmsByType = {}
     t.equal(Object.keys(alarmResources).length, 3)
@@ -209,7 +209,7 @@ test('API Gateway alarms are created', (t) => {
     const apiGwAlarmProperties = AlarmProperties.ApiGateway
     const compiledTemplate = createTestCloudFormationTemplate()
 
-    const alarmResources = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
+    const alarmResources = createApiGatewayAlarms(apiGwAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
     t.same({}, alarmResources)
     t.end()
@@ -226,7 +226,7 @@ test('API Gateway alarms are created', (t) => {
         }
       }
     })
-    const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
+    const alarmResources: ResourceType = createApiGatewayAlarms(apiGwAlarmProperties, testAlarmActionsConfig, compiledTemplate)
     t.same(Object.keys(alarmResources).sort(), [
       'slicWatchApi4XXErrorAlarmAWSStackName',
       'slicWatchApi5XXErrorAlarmAWSStackName',
@@ -262,7 +262,7 @@ test('API Gateway alarms are not created when disabled individually', (t) => {
   const apiGwAlarmProperties = AlarmProperties.ApiGateway
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources = createApiGatewayAlarms(apiGwAlarmProperties, testContext, compiledTemplate)
+  const alarmResources = createApiGatewayAlarms(apiGwAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   t.same({}, alarmResources)
   t.end()
 })
@@ -271,7 +271,7 @@ test('Alarm Resource Id should have a postfix using the Name of the Api', (t) =>
   const testConfig = createTestConfig(defaultConfig.alarms, {})
   const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Name: 'SimpleTest' } }
   const Resources: Record<string, Resource> = { test: apiGatewayResource }
-  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
+  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testAlarmActionsConfig, { Resources })
   t.same(Object.keys(apiGatewayAlarms), ['slicWatchApi5XXErrorAlarmSimpleTest', 'slicWatchApi4XXErrorAlarmSimpleTest', 'slicWatchApiLatencyAlarmSimpleTest'])
   t.end()
 })
@@ -280,7 +280,7 @@ test('Alarm Resource Id should have a postfix using the Title of the Api Body', 
   const testConfig = createTestConfig(defaultConfig.alarms, {})
   const apiGatewayResource: Resource = { Type: 'AWS::ApiGateway::RestApi', Properties: { Body: { info: { title: 'UsingTitle' } } } }
   const Resources: Record<string, Resource> = { test: apiGatewayResource }
-  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testContext, { Resources })
+  const apiGatewayAlarms = createApiGatewayAlarms(testConfig.ApiGateway, testAlarmActionsConfig, { Resources })
   t.same(Object.keys(apiGatewayAlarms), ['slicWatchApi5XXErrorAlarmUsingTitle', 'slicWatchApi4XXErrorAlarmUsingTitle', 'slicWatchApiLatencyAlarmUsingTitle'])
   t.end()
 })

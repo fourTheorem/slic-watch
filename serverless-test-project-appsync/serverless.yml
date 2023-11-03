@@ -21,7 +21,9 @@ custom:
   appSync:
     - ${file(serverless.appsync-api.yml)}
   slicWatch:
-    topicArn: ${env:ALARM_TOPIC}
+    alarmActionsConfig:
+      alarmActions: 
+        - ${env:ALARM_TOPIC}
     alarms:
       Lambda:
         Invocations:

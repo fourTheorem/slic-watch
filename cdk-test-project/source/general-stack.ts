@@ -40,7 +40,9 @@ export class CdkTestGeneralStack extends cdk.Stack {
     }
 
     const topic = new sns.Topic(this, 'MyTopic')
-    this.templateOptions.metadata.slicWatch.topicArn = topic.topicArn
+    this.templateOptions.metadata.slicWatch.alarmActionsConfig = {
+      alarmActions: topic.topicArn
+    }
 
     const helloFunction = new lambda.Function(this, 'HelloHandler',
       {

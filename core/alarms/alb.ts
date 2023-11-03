@@ -34,20 +34,20 @@ function createAlbAlarmCfProperties (metric: string, albLogicalId: string, confi
  * based on the resources found within
  *
  * @param albAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns ALB-specific CloudFormation Alarm resources
  */
 export default function createAlbAlarms (
-  albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  albAlarmsConfig: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
     'AWS::ElasticLoadBalancingV2::LoadBalancer',
     'LoadBalancer',
     executionMetrics,
     albAlarmsConfig,
-    context,
+    alarmActionsConfig,
     compiledTemplate,
     createAlbAlarmCfProperties
   )

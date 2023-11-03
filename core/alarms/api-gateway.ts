@@ -74,7 +74,7 @@ const executionMetrics = ['5XXError', '4XXError', 'Latency']
  * Add all required API Gateway REST API alarms to the provided CloudFormation template based on the resources found within
  *
  * @param apiGwAlarmsConfig The fully resolved alarm configuration
- * @param alarmActionsConfig Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns API Gateway-specific CloudFormation Alarm resources

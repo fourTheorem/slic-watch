@@ -70,17 +70,18 @@ export function createCfAlarms (
  * Create a CloudFormation Alarm resourc
  *
  * @param alarmProperties The alarm configuration for this specific resource type
- * @param context Alarm actions
+ * @param alarmActionsConfig Alarm actions
  *
  * @returns An template object for the Cloudformation alarm
  */
 
-export function createAlarm (alarmProperties: AlarmProperties, context?: AlarmActionsConfig): AlarmTemplate {
+export function createAlarm (alarmProperties: AlarmProperties, alarmActionsConfig?: AlarmActionsConfig): AlarmTemplate {
   return {
     Type: 'AWS::CloudWatch::Alarm',
     Properties: {
-      ActionsEnabled: true,
-      AlarmActions: context?.alarmActions,
+      ActionsEnabled: alarmActionsConfig?.actionsEnabled,
+      AlarmActions: alarmActionsConfig?.alarmActions,
+      OKActions: alarmActionsConfig?.okActions,
       ...alarmProperties
     }
   }
