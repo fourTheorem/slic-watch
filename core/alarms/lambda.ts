@@ -33,12 +33,12 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  * Add all required Lambda alarms to the provided CloudFormation templatebased on the Lambda resources found within
  *
  * @param functionAlarmPropertiess The cascaded Lambda alarm configuration with function-specific overrides by function logical ID
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @compiledTemplate  CloudFormation template object
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
-export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template) {
+export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
@@ -115,7 +115,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
           properties.AlarmDescription = alarmDescription
         }
 
-        Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, context))
+        Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
       }
     }
     for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
@@ -123,7 +123,7 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
       if (config === undefined) {
         console.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
       } else if (config.enabled !== false && config.IteratorAge.enabled !== false) {
-        Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, context))
+        Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, alarmActionsConfig))
       }
     }
   }
@@ -137,12 +137,12 @@ export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLa
  * @param metric The Lambda metric name
  * @param funcLogicalId The CloudFormation Logical ID of the Lambda resource
  * @param compiledTemplate A CloudFormation template object
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
 
-function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, context: AlarmActionsConfig) {
+function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, funcLogicalId: string, compiledTemplate: Template, alarmActionsConfig: AlarmActionsConfig) {
   const { enabled, Period, Statistic, ...rest } = config
 
   const lambdaAlarmProperties: AlarmProperties = {
@@ -162,6 +162,6 @@ function createLambdaCfAlarm (config: SlicWatchMergedConfig, metric: string, fun
     ...rest
   }
   const resourceName = `slicWatchLambda${metric.replace(/Pc$/g, '')}Alarm${funcLogicalId}`
-  const resource = createAlarm(lambdaAlarmProperties, context)
+  const resource = createAlarm(lambdaAlarmProperties, alarmActionsConfig)
   return { [resourceName]: resource }
 }

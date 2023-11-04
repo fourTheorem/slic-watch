@@ -25,6 +25,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/json-schema": "^7.0.14",
     "@types/lodash": "^4.14.191",
     "@types/yaml": "^1.9.7",
     "ajv": "^8.11.0",

@@ -40,7 +40,9 @@ export interface ReturnAlarm {
 }
 
 export interface AlarmActionsConfig {
-  alarmActions: string[]
+  actionsEnabled?: boolean
+  okActions?: string[]
+  alarmActions?: string[]
 }
 
 export interface SlicWatchCascadedAlarmsConfig<T extends InputOutput> extends AlarmProperties {

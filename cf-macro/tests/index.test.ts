@@ -15,18 +15,9 @@ test('macro returns success', async t => {
   t.end()
 })
 
-test('macro uses SNS Topic environment variable if specified', async t => {
-  process.env.ALARM_SNS_TOPIC = 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
-  try {
-    const result = await handler(event)
-    t.equal(result.status, 'success')
-  } finally {
-    delete process.env.ALARM_SNS_TOPIC
-  }
-  t.end()
-})
-
 test('macro uses topicArn if specified', async t => {
+  const topicArn = 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
+
   const eventWithTopic = {
     ...event,
     fragment: {
@@ -35,13 +26,18 @@ test('macro uses topicArn if specified', async t => {
         ...event.fragment.Metadata,
         slicWatch: {
           ...event.fragment.Metadata?.slicWatch,
-          topicArn: 'arn:aws:sns:eu-west-1:123456789123:TestTopic'
+          alarmActionsConfig: {
+            alarmActions: [topicArn],
+            okActions: [topicArn]
+          }
         }
       }
     }
   }
   const result = await handler(eventWithTopic)
   t.equal(result.status, 'success')
+  t.notOk(result.errorMessage)
+  t.same(result.fragment.Resources.slicWatchLambdaDurationAlarmHelloLambdaFunction.Properties.AlarmActions, [topicArn])
   t.end()
 })
 
@@ -68,7 +64,7 @@ test('Macro adds dashboard and alarms if no function configuration is provided',
       }
     }
   }
-  const compiledTemplate = await (await handler(testEvent)).fragment
+  const compiledTemplate = (await handler(testEvent)).fragment
   t.same(compiledTemplate.Resources.Properties, template.Resources?.Properties)
   t.end()
 })
@@ -78,6 +74,7 @@ test('Macro execution fails if an invalid SLIC Watch config is provided', async 
   testevent.fragment.Metadata = { slicWatch: { topicArrrrn: 'pirateTopic' } }
   const result = await handler(testevent)
   t.equal(result.status, 'fail')
+  t.ok(result.errorMessage)
   t.end()
 })
 
@@ -91,6 +88,7 @@ test('Macro execution succeeds with no slicWatch config', t => {
 test('Macro execution succeeds if no SNS Topic is provided', t => {
   const testevent = _.cloneDeep(event)
   delete testevent.fragment.Metadata?.slicWatch.topicArn
+  delete testevent.fragment.Metadata?.slicWatch.alarmActionsConfig
   handler(testevent)
   t.end()
 })

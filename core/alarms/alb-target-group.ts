@@ -81,7 +81,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
  * @param metrics The Target Group metric names
  * @param loadBalancerLogicalIds The CloudFormation Logical IDs of the ALB resource
  * @param albTargetAlarmsConfig The fully resolved alarm configuration
- * @param alarmActionsConfig Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
@@ -120,23 +120,23 @@ function createAlbTargetCfAlarm (
  * based on the resources found within
  *
  * @param albTargetAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns ALB Target Group-specific CloudFormation Alarm resources
  */
 export default function createAlbTargetAlarms (
-  albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
   const resources: CloudFormationResources = {}
   for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
-    Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, context))
+    Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, alarmActionsConfig))
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {
       // Create additional alarms for Lambda-specific ALB metrics
-      Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, context))
+      Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, alarmActionsConfig))
     }
   }
   return resources

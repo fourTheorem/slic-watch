@@ -9,7 +9,7 @@
     "directory": "serverless-plugin"
   },
   "scripts": {
-    "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
+    "test": "tap --include='**/tests/**/*.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
     "prepublish": "cp ../README.md README.md",
     "build": "esbuild index.ts --outdir=dist --bundle --format=cjs --platform=node --sourcemap",
     "watch": "npm run build -- --watch"

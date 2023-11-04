@@ -7,7 +7,11 @@ import { pluginConfigSchema, slicWatchSchema } from '../config-schema'
 test('Default config conforms to the config schema', (t) => {
   const slicWatchConfig = {
     ...defaultConfig,
-    topicArn: 'dummy-topic-arn'
+    topicArn: 'dummy-topic-arn',
+    alarmActionsConfig: {
+      alarmActions: [],
+      okActions: []
+    }
   }
   const ajv = new Ajv({
     unicodeRegExp: false

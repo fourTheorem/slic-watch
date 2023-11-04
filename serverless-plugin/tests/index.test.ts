@@ -161,6 +161,7 @@ test('index', t => {
   t.test('Plugin execution succeeds if no SNS Topic is provided', t => {
     const serviceYmlWithoutTopic = _.cloneDeep(slsYaml)
     delete serviceYmlWithoutTopic.custom.slicWatch.topicArn
+    delete serviceYmlWithoutTopic.custom.slicWatch.alarmActionsConfig
     const plugin = new ServerlessPlugin({
       ...mockServerless,
       service: {

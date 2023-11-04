@@ -30,13 +30,13 @@ const kinesisAlarmTypes = {
  * based on the resources found within
 *
  * @param kinesisAlarmsConfig The fully resolved alarm configuration for Kinesis Data Streams
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns Kinesis Data Stream-specific CloudFormation Alarm resources
  */
 export default function createKinesisAlarms (
-  kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
@@ -55,7 +55,7 @@ export default function createKinesisAlarms (
           ...rest
         }
         const alarmLogicalId = makeAlarmLogicalId('Kinesis', pascal(streamLogicalId), type)
-        const resource = createAlarm(kinesisAlarmProperties, context)
+        const resource = createAlarm(kinesisAlarmProperties, alarmActionsConfig)
         resources[alarmLogicalId] = resource
       }
     }

@@ -10,7 +10,7 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 
 test('Kinesis data stream alarms are created', (t) => {
@@ -30,7 +30,7 @@ test('Kinesis data stream alarms are created', (t) => {
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
   const compiledTemplate = createTestCloudFormationTemplate()
-  const alarmResources: ResourceType = createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createKinesisAlarms(kinesisAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypes = {
     Kinesis_StreamIteratorAge: 'GetRecords.IteratorAgeMilliseconds',
@@ -84,7 +84,7 @@ test('Kinesis data stream alarms are not created when disabled globally', (t) =>
   )
   const kinesisAlarmProperties = AlarmProperties.Kinesis
   const compiledTemplate = createTestCloudFormationTemplate()
-  createKinesisAlarms(kinesisAlarmProperties, testContext, compiledTemplate)
+  createKinesisAlarms(kinesisAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

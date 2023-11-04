@@ -9,8 +9,11 @@ Transform:
 Metadata:
   slicWatch:
     enabled: true
-    # topicArn: ${env:ALARM_TOPIC}
-    topicArn: !Ref MonitoringTopic
+    alarmActionsConfig: {
+      alarmActions: [!Ref MonitoringTopic],
+      okActions: [!Ref MonitoringTopic],
+      actionsEnabled: true
+    }
     alarms:
       Lambda:
         Invocations:

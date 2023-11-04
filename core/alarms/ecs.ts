@@ -40,13 +40,13 @@ const executionMetrics = ['MemoryUtilization', 'CPUUtilization']
  * based on the ECS Service resources
  *
  * @param ecsAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns ECS-specific CloudFormation Alarm resources
  */
 export default function createECSAlarms (
-  ecsAlarmsConfig: SlicWatchEcsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  ecsAlarmsConfig: SlicWatchEcsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
@@ -70,7 +70,7 @@ export default function createECSAlarms (
           ...rest
         }
         const resourceName = `slicWatchECS${metric.replaceAll('Utilization', 'Alarm')}${serviceLogicalId}`
-        const resource = createAlarm(ecsAlarmProperties, context)
+        const resource = createAlarm(ecsAlarmProperties, alarmActionsConfig)
         resources[resourceName] = resource
       }
     }

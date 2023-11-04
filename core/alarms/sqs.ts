@@ -16,13 +16,13 @@ export interface SlicWatchSqsAlarmsConfig<T extends InputOutput> extends SlicWat
  * based on the SQS resources found within
  *
  * @param sqsAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns SQS-specific CloudFormation Alarm resources
  */
 export default function createSQSAlarms (
-  sqsAlarmsConfig: SlicWatchSqsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  sqsAlarmsConfig: SlicWatchSqsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
@@ -46,7 +46,7 @@ export default function createSQSAlarms (
         Threshold: thresholdValue
       }
       const resourceName = `slicWatchSQSInFlightMsgsAlarm${queueLogicalId}`
-      const resource = createAlarm(sqsAlarmProperties, context)
+      const resource = createAlarm(sqsAlarmProperties, alarmActionsConfig)
       resources[resourceName] = resource
     }
 
@@ -66,7 +66,7 @@ export default function createSQSAlarms (
         ...alarmProps
       }
       const resourceName = `slicWatchSQSOldestMsgAgeAlarm${queueLogicalId}`
-      const resource = createAlarm(sqsAlarmProperties, context)
+      const resource = createAlarm(sqsAlarmProperties, alarmActionsConfig)
       resources[resourceName] = resource
     }
   }

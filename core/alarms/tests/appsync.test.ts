@@ -9,7 +9,7 @@ import {
   createTestConfig,
   createTestCloudFormationTemplate,
   appSyncCfTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 import type { SlicWatchMergedConfig } from '../alarm-types'
@@ -35,7 +35,7 @@ test('AppSync alarms are created', (t) => {
   )
   function createAlarmResources (appSyncAlarmProperties: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
+    return createAppSyncAlarms(appSyncAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   }
   const appSyncAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 
@@ -94,7 +94,7 @@ test('AppSync alarms are not created when disabled globally', (t) => {
 
   function createAlarmResources (appSyncAlarmProperties) {
     const compiledTemplate = createTestCloudFormationTemplate(appSyncCfTemplate)
-    return createAppSyncAlarms(appSyncAlarmProperties, testContext, compiledTemplate)
+    return createAppSyncAlarms(appSyncAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   }
   const appSyncAlarmResources = createAlarmResources(AlarmPropertiesAppSync.AppSync)
 

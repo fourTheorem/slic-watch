@@ -9,7 +9,7 @@ import {
   alarmNameToType,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testContext
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 
 test('SNS alarms are created', (t) => {
@@ -33,7 +33,7 @@ test('SNS alarms are created', (t) => {
   const snsAlarmProperties = AlarmProperties.SNS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources: ResourceType = createSnsAlarms(snsAlarmProperties, testContext, compiledTemplate)
+  const alarmResources: ResourceType = createSnsAlarms(snsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   const expectedTypes = {
     SNS_NumberOfNotificationsFilteredOutInvalidAttributes_Alarm: 'NumberOfNotificationsFilteredOut-InvalidAttributes',
     SNS_NumberOfNotificationsFailed_Alarm: 'NumberOfNotificationsFailed'
@@ -89,7 +89,7 @@ test('SNS alarms are not created when disabled globally', (t) => {
   )
   const snsAlarmProperties = AlarmProperties.SNS
   const compiledTemplate = createTestCloudFormationTemplate()
-  createSnsAlarms(snsAlarmProperties, testContext, compiledTemplate)
+  createSnsAlarms(snsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

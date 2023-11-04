@@ -10,7 +10,7 @@ export class CdkECSStack extends cdk.Stack {
     this.templateOptions.metadata = {
       slicWatch: {
         enabled: true,
-        // "topicArn": "arn:aws:xxxxxx:mytopic",
+        // alarmActionsConfig: { alarmActions: ["arn:aws:xxxxxx:mytopic"] },
         alarms: {
           Lambda: {
             Invocations: {

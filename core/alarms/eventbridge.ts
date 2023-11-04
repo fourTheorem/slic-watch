@@ -34,20 +34,20 @@ function createEventBridgeAlarmCfProperties (metric: string, ruleLogicalId: stri
  * based on the EventBridge Rule found within
  *
  * @param eventsAlarmsConfig The fully resolved alarm configuration
- * @param context Deployment context (alarmActions)
+ * @param alarmActionsConfig Notification configuration for alarm status change events
  * @param compiledTemplate  A CloudFormation template object
  *
  * @returns EventBridge-specific CloudFormation Alarm resources
  */
 export default function createRuleAlarms (
-  eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, context: AlarmActionsConfig, compiledTemplate: Template
+  eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
     'AWS::Events::Rule',
     'Events',
     executionMetrics,
     eventsAlarmsConfig,
-    context,
+    alarmActionsConfig,
     compiledTemplate,
     createEventBridgeAlarmCfProperties
   )
