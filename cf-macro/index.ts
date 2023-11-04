@@ -4,32 +4,43 @@ import pino from 'pino'
 import { addAlarms, addDashboard, getResourcesByType } from '../core/index'
 import { setLogger } from 'slic-watch-core/logging'
 import { type SlicWatchConfig, resolveSlicWatchConfig } from 'slic-watch-core/inputs/general-config'
+import { type Template } from 'cloudform-types'
 
 const logger = pino({ name: 'macroHandler' })
 setLogger(logger)
 
 interface Event {
-  requestId?
-  status?: string
-  fragment
+  requestId: string
+  fragment: Template
 }
 
-// macro requires handler to be async
-export async function handler (event: Event) {
+interface MacroResponse {
+  requestId: string
+  status: string
+  errorMessage?: string
+  fragment?: Template
+}
+
+/**
+ * CloudFormation Macro implementation. Accepts the CloudFormation fragment to be transformed
+ * and generates the transformed teamplte with alarms and dashboard
+ */
+export async function handler (event: Event): Promise<MacroResponse> {
   let status = 'success'
   let errorMessage: string | undefined
 
   logger.info({ event })
-  const outputFragment = event.fragment
+  const transformedTemplate = event.fragment
+  let outputFragment: Template | undefined
   try {
-    const slicWatchConfig: SlicWatchConfig = outputFragment.Metadata?.slicWatch ?? {}
+    const slicWatchConfig: SlicWatchConfig = transformedTemplate.Metadata?.slicWatch ?? {}
 
     const config = resolveSlicWatchConfig(slicWatchConfig)
 
     const functionAlarmConfigs = {}
     const functionDashboardConfigs = {}
 
-    const lambdaResources = getResourcesByType('AWS::Lambda::Function', outputFragment)
+    const lambdaResources = getResourcesByType('AWS::Lambda::Function', transformedTemplate)
 
     for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
       const funcConfig = funcResource.Metadata?.slicWatch ?? {}
@@ -37,16 +48,17 @@ export async function handler (event: Event) {
       functionDashboardConfigs[funcResourceName] = funcConfig.dashboard
     }
 
-    _.merge(outputFragment)
-    addAlarms(config.alarms, functionAlarmConfigs, config.alarmActionsConfig, outputFragment)
-    addDashboard(config.dashboard, functionDashboardConfigs, outputFragment)
+    _.merge(transformedTemplate)
+    addAlarms(config.alarms, functionAlarmConfigs, config.alarmActionsConfig, transformedTemplate)
+    addDashboard(config.dashboard, functionDashboardConfigs, transformedTemplate)
+    outputFragment = transformedTemplate
   } catch (err) {
     logger.error(err)
     errorMessage = (err as Error).message
     status = 'fail'
   }
 
-  logger.info({ outputFragment })
+  logger.info({ outputFragment: transformedTemplate })
 
   return {
     status,

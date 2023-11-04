@@ -1,5 +1,5 @@
 import { test } from 'tap'
-
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import createSQSAlarms from '../sqs'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
@@ -48,7 +48,7 @@ test('SQS alarms are created', (t) => {
   function getAlarmsByType (): AlarmsByType {
     const alarmsByType = {}
     for (const alarmResource of Object.values(alarmResources)) {
-      const al = alarmResource.Properties
+      const al = alarmResource.Properties as AlarmProperties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al?.AlarmName)
       alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()

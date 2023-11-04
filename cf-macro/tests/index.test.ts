@@ -64,7 +64,7 @@ test('Macro adds dashboard and alarms if no function configuration is provided',
       }
     }
   }
-  const compiledTemplate = await (await handler(testEvent)).fragment
+  const compiledTemplate = (await handler(testEvent)).fragment
   t.same(compiledTemplate.Resources.Properties, template.Resources?.Properties)
   t.end()
 })
