@@ -2,14 +2,12 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
 import { cascade } from '../inputs/cascading-config'
-import { applyAlarmConfig } from '../inputs/function-config'
 import type {
-  AlarmActionsConfig, InputOutput,
+  AlarmActionsConfig,
   SlicWatchAlarmConfig,
   SlicWatchCascadedAlarmsConfig, SlicWatchMergedConfig
 } from './alarm-types'
 
-import type { FunctionAlarmProperties } from './lambda'
 import createLambdaAlarms from './lambda'
 import createApiGatewayAlarms from './api-gateway'
 import createStatesAlarms from './step-functions'
@@ -34,7 +32,6 @@ import { addResource } from '../cf-template'
  */
 export default function addAlarms (
   alarmProperties: SlicWatchCascadedAlarmsConfig<SlicWatchAlarmConfig>,
-  functionAlarmProperties: FunctionAlarmProperties<InputOutput>,
   alarmActionsConfig: AlarmActionsConfig,
   compiledTemplate: Template
 ) {
@@ -50,10 +47,9 @@ export default function addAlarms (
     Events: ruleConfig,
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
-    AppSync: appSyncConfig
+    AppSync: appSyncConfig,
+    enabled
   } = cascade(alarmProperties) as SlicWatchCascadedAlarmsConfig<SlicWatchMergedConfig>
-
-  const cascadedFunctionAlarmProperties = applyAlarmConfig(lambdaConfig, functionAlarmProperties)
 
   const funcsWithConfig: Array<{ config: SlicWatchAlarmConfig, alarmFunc: any }> = [
     { config: apiGwConfig, alarmFunc: createApiGatewayAlarms },
@@ -66,12 +62,12 @@ export default function addAlarms (
     { config: ruleConfig, alarmFunc: createRuleAlarms },
     { config: albConfig, alarmFunc: createAlbAlarms },
     { config: albTargetConfig, alarmFunc: createAlbTargetAlarms },
-    { config: appSyncConfig, alarmFunc: createAppSyncAlarms }
+    { config: appSyncConfig, alarmFunc: createAppSyncAlarms },
+    { config: lambdaConfig, alarmFunc: createLambdaAlarms }
   ]
   const resources = {}
 
-  if (alarmProperties.enabled) {
-    Object.assign(resources, createLambdaAlarms(cascadedFunctionAlarmProperties, alarmActionsConfig, compiledTemplate))
+  if (enabled) {
     for (const { config, alarmFunc } of funcsWithConfig) {
       Object.assign(resources, alarmFunc(config, alarmActionsConfig, compiledTemplate))
     }

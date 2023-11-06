@@ -23,11 +23,17 @@ export interface AlarmTemplate {
   Properties: AlarmProperties
 }
 
+/**
+ * Alarm configuration type used *before* all mandatory fields have been applied
+ */
 export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlarmProps> {
   ComparisonOperator?: string
   enabled?: boolean
 }
 
+/**
+ * Alarm configuration type used *after* all mandatory fields have been applied
+ */
 export interface SlicWatchMergedConfig extends AlarmProperties {
   enabled: boolean
 }

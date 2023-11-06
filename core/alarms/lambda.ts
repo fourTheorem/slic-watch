@@ -5,6 +5,7 @@ import { Fn } from 'cloudform'
 import { getEventSourceMappingFunctions, getResourcesByType } from '../cf-template'
 import type { AlarmActionsConfig, InputOutput, Value, SlicWatchMergedConfig, SlicWatchAlarmConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
+import { cascade } from '../inputs/cascading-config'
 
 export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
   Errors: T
@@ -14,18 +15,7 @@ export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends Slic
   IteratorAge: T
 }
 
-export interface FunctionAlarmProperties<T extends InputOutput> {
-  HelloLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  ThrottlerLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  DriveStreamLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  DriveQueueLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  DriveTableLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  StreamProcessorLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  HttpGetterLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  SubscriptionHandlerLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  EventsRuleLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-  AlbEventLambdaFunction?: SlicWatchLambdaAlarmsConfig<T>
-}
+export type FunctionAlarmProperties<T extends InputOutput> = Record<string, SlicWatchLambdaAlarmsConfig<T>>
 
 const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
 
@@ -38,91 +28,88 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  *
  * @returns Lambda-specific CloudFormation Alarm resources
  */
-export default function createLambdaAlarms (functionAlarmProperties: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template) {
+export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
+  const configPerFunctionResource: Record<string, SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>> = {}
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-    const config: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = functionAlarmProperties[funcLogicalId]
+    const resourceConfig = cascade(funcResource?.Metadata?.slicWatch?.alarms ?? {}) as SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>
+    configPerFunctionResource[funcLogicalId] = resourceConfig
+    const config: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = Object.assign(lambdaAlarmConfig, resourceConfig)
 
-    if (config === undefined) {
-      console.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
-    } else {
-      for (const metric of lambdaMetrics) {
-        if (config.enabled === false || config[metric].enabled === false) {
-          continue
-        }
-        if (metric === 'ThrottlesPc') {
-          const properties = config.ThrottlesPc
-          properties.Metrics = [
-            {
-              Id: 'throttles_pc',
-              Expression: '(throttles / ( throttles + invocations )) * 100',
-              Label: '% Throttles',
-              ReturnData: true
-            },
-            {
-              Id: 'throttles',
-              MetricStat: {
-                Metric: {
-                  Namespace: 'AWS/Lambda',
-                  MetricName: 'Throttles',
-                  Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
-                },
-                Period: properties.Period as Value<number>,
-                Stat: properties.Statistic as Value<string>
-              },
-              ReturnData: false
-            },
-            {
-              Id: 'invocations',
-              MetricStat: {
-                Metric: {
-                  Namespace: 'AWS/Lambda',
-                  MetricName: 'Invocations',
-                  Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
-                },
-                Period: properties.Period as Value<number>,
-                Stat: properties.Statistic as Value<string>
-              },
-              ReturnData: false
-            }
-          ]
-        }
-        if (metric === 'DurationPc') {
-          const properties = config.DurationPc
-          const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
-          const threshold: Value<number> = properties.Threshold as number
-          const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
-          properties.AlarmDescription = alarmDescription
-          properties.Threshold = (threshold * funcTimeout * 1000) / 100
-        }
-        if (metric === 'Errors') {
-          const properties = config.Errors
-          const alarmDescription = Fn.Sub(`Error count for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
-          properties.AlarmDescription = alarmDescription
-        }
-
-        if (metric === 'ThrottlesPc') {
-          const properties = config.ThrottlesPc
-          const alarmDescription = Fn.Sub(`Throttles % for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
-          properties.AlarmDescription = alarmDescription
-        }
-
-        if (metric === 'Invocations') {
-          const properties = config.Invocations
-          const alarmDescription = Fn.Sub(`Total invocations for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
-          properties.AlarmDescription = alarmDescription
-        }
-
-        Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
+    for (const metric of lambdaMetrics) {
+      if (config.enabled === false || config[metric].enabled === false) {
+        continue
       }
+      if (metric === 'ThrottlesPc') {
+        const properties = config.ThrottlesPc
+        properties.Metrics = [
+          {
+            Id: 'throttles_pc',
+            Expression: '(throttles / ( throttles + invocations )) * 100',
+            Label: '% Throttles',
+            ReturnData: true
+          },
+          {
+            Id: 'throttles',
+            MetricStat: {
+              Metric: {
+                Namespace: 'AWS/Lambda',
+                MetricName: 'Throttles',
+                Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
+              },
+              Period: properties.Period as Value<number>,
+              Stat: properties.Statistic as Value<string>
+            },
+            ReturnData: false
+          },
+          {
+            Id: 'invocations',
+            MetricStat: {
+              Metric: {
+                Namespace: 'AWS/Lambda',
+                MetricName: 'Invocations',
+                Dimensions: [{ Name: 'FunctionName', Value: Fn.Ref(funcLogicalId) }]
+              },
+              Period: properties.Period as Value<number>,
+              Stat: properties.Statistic as Value<string>
+            },
+            ReturnData: false
+          }
+        ]
+      }
+      if (metric === 'DurationPc') {
+        const properties = config.DurationPc
+        const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
+        const threshold: Value<number> = properties.Threshold as number
+        const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
+        properties.AlarmDescription = alarmDescription
+        properties.Threshold = (threshold * funcTimeout * 1000) / 100
+      }
+      if (metric === 'Errors') {
+        const properties = config.Errors
+        const alarmDescription = Fn.Sub(`Error count for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
+      }
+
+      if (metric === 'ThrottlesPc') {
+        const properties = config.ThrottlesPc
+        const alarmDescription = Fn.Sub(`Throttles % for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
+      }
+
+      if (metric === 'Invocations') {
+        const properties = config.Invocations
+        const alarmDescription = Fn.Sub(`Total invocations for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
+        properties.AlarmDescription = alarmDescription
+      }
+
+      Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
     }
     for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
-      const config = functionAlarmProperties[funcLogicalId]
-      if (config === undefined) {
-        console.warn(`${funcLogicalId} is not found in the template. Alarms will not be created for this function.`)
-      } else if (config.enabled !== false && config.IteratorAge.enabled !== false) {
+      const config = configPerFunctionResource[funcLogicalId]
+      if (config.enabled !== false && config.IteratorAge.enabled) {
         Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, alarmActionsConfig))
       }
     }

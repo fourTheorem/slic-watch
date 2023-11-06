@@ -1,10 +1,10 @@
 import _ from 'lodash'
+import { type Template } from 'cloudform-types'
 import pino from 'pino'
 
-import { addAlarms, addDashboard, getResourcesByType } from '../core/index'
+import { addAlarms, addDashboard, getResourcesByType } from 'slic-watch-core/index'
 import { setLogger } from 'slic-watch-core/logging'
 import { type SlicWatchConfig, resolveSlicWatchConfig } from 'slic-watch-core/inputs/general-config'
-import { type Template } from 'cloudform-types'
 
 const logger = pino({ name: 'macroHandler', level: process.env.DEBUG_LEVEL ?? 'debug' })
 
@@ -54,7 +54,7 @@ export async function handler (event: Event): Promise<MacroResponse> {
     addDashboard(config.dashboard, functionDashboardConfigs, transformedTemplate)
     outputFragment = transformedTemplate
   } catch (err) {
-    logger.error(err)
+    logger.error({ err })
     errorMessage = (err as Error).message
     status = 'fail'
   }

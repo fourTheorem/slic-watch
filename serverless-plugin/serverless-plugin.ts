@@ -2,7 +2,8 @@ import { merge } from 'lodash'
 import type Serverless from 'serverless'
 import ServerlessError from 'serverless/lib/serverless-error'
 import type Hooks from 'serverless-hooks-plugin'
-
+import { type Template } from 'cloudform-types'
+import type Resource from 'cloudform-types/types/resource'
 import { type ResourceType } from '../core/index'
 import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema } from '../core/index'
 import { resolveSlicWatchConfig, type ResolvedConfiguration, type SlicWatchConfig } from '../core/inputs/general-config'
@@ -56,22 +57,27 @@ class ServerlessPlugin {
     if (config.enabled) {
       const awsProvider = this.serverless.getProvider('aws')
 
-      const functionAlarmConfigs = {}
-      const functionDashboardConfigs = {}
-      for (const funcName of this.serverless.service.getAllFunctions()) {
-        const func = this.serverless.service.getFunction(funcName) as any // check why they don't return slicWatch
-        const functionResName = awsProvider.naming.getLambdaLogicalId(funcName)
-        const funcConfig = func.slicWatch ?? {}
-        functionAlarmConfigs[functionResName] = funcConfig.alarms ?? {}
-        functionDashboardConfigs[functionResName] = funcConfig.dashboard
-      }
-
-      const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate
+      const compiledTemplate = this.serverless.service.provider.compiledCloudFormationTemplate as Template
       const additionalResources = this.serverless.service.resources as ResourceType
 
+      // Each Lambda Function declared in serverless.yml may have a slicWatch configuration
+      // to set configuration overrides for the specific function. We transform those into
+      // CloudFormation Metadata on the generate AWS::Lambda::Function resource
+      for (const funcName of this.serverless.service.getAllFunctions()) {
+        const func = this.serverless.service.getFunction(funcName) as any
+        const funcConfig = func.slicWatch ?? {}
+        const functionLogicalId = awsProvider.naming.getLambdaLogicalId(funcName)
+
+        const templateResources = compiledTemplate.Resources as Record<string, Resource>
+        templateResources[functionLogicalId].Metadata = {
+          ...templateResources[functionLogicalId].Metadata ?? {},
+          slicWatch: funcConfig
+        }
+      }
+
       merge(compiledTemplate, additionalResources)
-      addDashboard(config.dashboard, functionDashboardConfigs, compiledTemplate)
-      addAlarms(config.alarms, functionAlarmConfigs, config.alarmActionsConfig, compiledTemplate)
+      addDashboard(config.dashboard, compiledTemplate)
+      addAlarms(config.alarms, config.alarmActionsConfig, compiledTemplate)
     }
   }
 }

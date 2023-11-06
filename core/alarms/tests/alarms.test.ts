@@ -7,11 +7,7 @@ import { getResourcesByType } from '../../cf-template'
 
 test('Alarms create all service alarms', (t) => {
   const compiledTemplate = createTestCloudFormationTemplate()
-  const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
-    funcAlarmPropertiess[funcLogicalId] = {}
-  }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
+  addAlarms(defaultConfig.alarms, testAlarmActionsConfig, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -26,11 +22,7 @@ test('Alarms create all service alarms', (t) => {
 
 test('Alarms create all ALB service alarms', (t) => {
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-  const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
-    funcAlarmPropertiess[funcLogicalId] = {}
-  }
-  addAlarms(defaultConfig.alarms, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
+  addAlarms(defaultConfig.alarms, testAlarmActionsConfig, compiledTemplate)
   const namespaces = new Set()
   for (const resource of Object.values(
     getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
@@ -51,11 +43,7 @@ test('Alarms are not created when disabled globally', (t) => {
     }
   )
   const compiledTemplate = createTestCloudFormationTemplate()
-  const funcAlarmPropertiess = {}
-  for (const funcLogicalId of Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))) {
-    funcAlarmPropertiess[funcLogicalId] = {}
-  }
-  addAlarms(config, funcAlarmPropertiess, testAlarmActionsConfig, compiledTemplate)
+  addAlarms(config, testAlarmActionsConfig, compiledTemplate)
 
   const alarmsCreated = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

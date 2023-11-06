@@ -27,7 +27,9 @@ const dynamoDbGsiMetrics = ['ReadThrottleEvents', 'WriteThrottleEvents']
  * @returns DynamoDB-specific CloudFormation Alarm resources
  */
 export default function createDynamoDbAlarms (
-  dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
+  dynamoDbAlarmsConfig: SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig>,
+  alarmActionsConfig: AlarmActionsConfig,
+  compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
