@@ -1,5 +1,7 @@
 import { test } from 'tap'
 
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+
 import createECSAlarms, { resolveEcsClusterNameAsCfn } from '../ecs'
 import defaultConfig from '../../inputs/default-config'
 import {
@@ -31,7 +33,7 @@ test('resolveEcsClusterNameAsCfn', (t) => {
 })
 
 test('ECS MemoryUtilization is created', (t) => {
-  const AlarmProperties = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -48,10 +50,9 @@ test('ECS MemoryUtilization is created', (t) => {
       }
     }
   )
-  const ecsAlarmProperties = AlarmProperties.ECS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources: ResourceType = createECSAlarms(ecsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const alarmResources: ResourceType = createECSAlarms(testConfig.ECS, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypes = {
     ECS_MemoryAlarm: 'MemoryUtilization',
@@ -60,13 +61,13 @@ test('ECS MemoryUtilization is created', (t) => {
 
   t.equal(Object.keys(alarmResources).length, Object.keys(expectedTypes).length)
   for (const alarmResource of Object.values(alarmResources)) {
-    const al = alarmResource.Properties
+    const al = alarmResource.Properties as AlarmProperties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypes[alarmType]
     t.equal(al?.MetricName, expectedMetric)
     t.ok(al?.Statistic)
-    t.equal(al?.Threshold, ecsAlarmProperties[expectedMetric].Threshold)
+    t.equal(al?.Threshold, testConfig.ECS[expectedMetric].Threshold)
     t.equal(al?.EvaluationPeriods, 2)
     t.equal(al?.TreatMissingData, 'breaching')
     t.equal(al?.ComparisonOperator, 'LessThanThreshold')
@@ -93,8 +94,37 @@ test('ECS MemoryUtilization is created', (t) => {
   t.end()
 })
 
+test('ECS resource configuration overrides take precedence', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template = createTestCloudFormationTemplate();
+
+  (template.Resources as ResourceType).ecsService.Metadata = {
+    slicWatch: {
+      alarms: {
+        Period: 900,
+        MemoryUtilization: {
+          Threshold: 51,
+          enabled: false
+        },
+        CPUUtilization: {
+          Threshold: 52
+        }
+      }
+    }
+  }
+
+  const alarmResources: ResourceType = createECSAlarms(testConfig.ECS, testAlarmActionsConfig, template)
+  t.same(Object.keys(alarmResources).length, 1)
+
+  const cpuAlarm = Object.values(alarmResources).filter(a => a?.Properties?.MetricName === 'CPUUtilization')[0]
+
+  t.equal(cpuAlarm?.Properties?.Threshold, 52)
+  t.equal(cpuAlarm?.Properties?.Period, 900)
+  t.end()
+})
+
 test('ECS alarms are not created when disabled globally', (t) => {
-  const AlarmProperties = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ECS: {
@@ -109,10 +139,10 @@ test('ECS alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const ecsAlarmProperties = AlarmProperties.ECS
+  const ecsAlarmConfig = testConfig.ECS
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources = createECSAlarms(ecsAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const alarmResources = createECSAlarms(ecsAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

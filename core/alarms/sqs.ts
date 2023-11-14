@@ -52,7 +52,7 @@ export default function createSQSAlarms (
       resources[resourceName] = resource
     }
 
-    const ageOfOldestMessageConfig = sqsAlarmsConfig.AgeOfOldestMessage
+    const ageOfOldestMessageConfig = mergedConfig.AgeOfOldestMessage
     if (ageOfOldestMessageConfig.enabled) {
       if (ageOfOldestMessageConfig.Threshold == null) {
         throw new Error('SQS AgeOfOldestMessage alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')

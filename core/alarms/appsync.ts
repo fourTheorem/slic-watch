@@ -32,8 +32,8 @@ export default function createAppSyncAlarms (
   for (const [appSyncLogicalId, appSyncResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {
       const config: SlicWatchMergedConfig = configuredResources.alarmConfigurations[appSyncLogicalId][metric]
-      if (config.enabled) {
-        const { enabled, ...rest } = config
+      const { enabled, ...rest } = config
+      if (enabled) {
         const graphQLName: string = appSyncResource.Properties?.Name
         const appSyncAlarmProperties: AlarmProperties = {
           AlarmName: `AppSync_${metric}Alarm_${graphQLName}`,

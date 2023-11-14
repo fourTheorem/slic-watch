@@ -35,7 +35,7 @@ function alarmNameToType (alarmName) {
   return components.join('_')
 }
 
-function createTestConfig (from, cascadingChanges): any {
+function createTestConfig (from, cascadingChanges = {}): any {
   return cascade(
     _.merge(
       {},

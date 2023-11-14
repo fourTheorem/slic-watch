@@ -1,8 +1,9 @@
 import { test } from 'tap'
 import _ from 'lodash'
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 
 import createDynamoDbAlarms from '../dynamodb'
-import { addResource, getResourcesByType } from '../../cf-template'
+import { type ResourceType, addResource, getResourcesByType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -13,7 +14,7 @@ import {
   defaultCfTemplate
 } from '../../tests/testing-utils'
 
-const AlarmProperties = createTestConfig(
+const testConfig = createTestConfig(
   defaultConfig.alarms, {
     Period: 120,
     EvaluationPeriods: 2,
@@ -34,13 +35,15 @@ const AlarmProperties = createTestConfig(
         Threshold: 200
       }
     }
-  })
-const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
+  }
+)
+
+const dynamoDbAlarmConfig = testConfig.DynamoDB
 
 ;[true, false].forEach(specifyTableName => {
   test(`DynamoDB alarms are created ${specifyTableName ? 'with' : 'without'} a table name property`, (t) => {
     const compiledTemplate = createTestCloudFormationTemplate()
-    const resources = createDynamoDbAlarms(dynamoDbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+    const resources = createDynamoDbAlarms(dynamoDbAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
     for (const resourceName in resources) {
       addResource(resourceName, resources[resourceName], compiledTemplate)
@@ -55,7 +58,7 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
     const alarmsByType = {}
     t.equal(Object.keys(alarmResources).length, 6)
     for (const alarmResource of Object.values(alarmResources)) {
-      const al = alarmResource.Properties
+      const al = alarmResource.Properties as AlarmProperties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al?.AlarmName)
       alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
@@ -76,7 +79,7 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
       for (const al of alarmsByType[type]) {
         t.equal(al.Statistic, 'Sum')
         const metric = type.split('_')[1]
-        t.equal(al.Threshold, dynamoDbAlarmProperties[metric].Threshold)
+        t.equal(al.Threshold, dynamoDbAlarmConfig[metric].Threshold)
         t.equal(al.EvaluationPeriods, 2)
         t.equal(al.TreatMissingData, 'breaching')
         t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -97,11 +100,55 @@ const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
   })
 })
 
+test('Table resource configuration overrides take precedence', (t) => {
+  const template = createTestCloudFormationTemplate();
+
+  (template.Resources as ResourceType).dataTable.Metadata = {
+    slicWatch: {
+      alarms: {
+        Period: 900,
+        ReadThrottleEvents: {
+          Threshold: 11
+        },
+        WriteThrottleEvents: {
+          Threshold: 12
+        },
+        UserErrors: {
+          Threshold: 13,
+          enabled: false
+        },
+        SystemErrors: {
+          Threshold: 14
+        }
+      }
+    }
+  }
+
+  const alarmResources = createDynamoDbAlarms(dynamoDbAlarmConfig, testAlarmActionsConfig, template)
+  t.same(Object.keys(alarmResources).length, 5) // 3 for the table, 2 for the GSI
+
+  const readThrottleAlarms = Object.values(alarmResources).filter(a => a?.Properties?.MetricName === 'ReadThrottleEvents')
+  const writeThrottleAlarms = Object.values(alarmResources).filter(a => a?.Properties?.MetricName === 'WriteThrottleEvents')
+  const systemErrorsAlarm = Object.values(alarmResources).filter(a => a?.Properties?.MetricName === 'SystemErrors')[0]
+
+  for (const alarm of readThrottleAlarms) {
+    t.equal(alarm?.Properties?.Threshold, 11)
+    t.equal(alarm?.Properties?.Period, 900)
+  }
+  for (const alarm of writeThrottleAlarms) {
+    t.equal(alarm?.Properties?.Threshold, 12)
+    t.equal(alarm?.Properties?.Period, 900)
+  }
+  t.equal(systemErrorsAlarm?.Properties?.Threshold, 14)
+  t.equal(systemErrorsAlarm?.Properties?.Period, 900)
+  t.end()
+})
+
 test('DynamoDB alarms are created without GSI', (t) => {
   const compiledTemplate = createTestCloudFormationTemplate()
   _.cloneDeep(defaultCfTemplate)
   delete compiledTemplate.Resources?.dataTable.Properties?.GlobalSecondaryIndexes
-  const resources = createDynamoDbAlarms(dynamoDbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const resources = createDynamoDbAlarms(dynamoDbAlarmConfig, testAlarmActionsConfig, compiledTemplate)
   for (const resourceName in resources) {
     addResource(resourceName, resources[resourceName], compiledTemplate)
   }
@@ -112,15 +159,15 @@ test('DynamoDB alarms are created without GSI', (t) => {
 })
 
 test('DynamoDB alarms are not created when disabled', (t) => {
-  const AlarmProperties = createTestConfig(defaultConfig.alarms, {
+  const testConfig = createTestConfig(defaultConfig.alarms, {
     DynamoDB: {
       enabled: false
     }
   })
-  const dynamoDbAlarmProperties = AlarmProperties.DynamoDB
+  const dynamoDbAlarmConfig = testConfig.DynamoDB
   const compiledTemplate = createTestCloudFormationTemplate()
 
-  const alarmResources = createDynamoDbAlarms(dynamoDbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const alarmResources = createDynamoDbAlarms(dynamoDbAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   t.same({}, alarmResources)
   t.end()

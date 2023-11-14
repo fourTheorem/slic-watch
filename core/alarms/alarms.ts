@@ -51,7 +51,7 @@ export default function addAlarms (
     enabled
   } = cascade(alarmProperties) as SlicWatchCascadedAlarmsConfig<SlicWatchMergedConfig>
 
-  const funcsWithConfig: Array<{ config: SlicWatchAlarmConfig, alarmFunc: any }> = [
+  const funcsWithConfig: Array<{ config: SlicWatchMergedConfig, alarmFunc: any }> = [
     { config: apiGwConfig, alarmFunc: createApiGatewayAlarms },
     { config: sfConfig, alarmFunc: createStatesAlarms },
     { config: dynamoDbConfig, alarmFunc: createDynamoDbAlarms },

@@ -28,6 +28,7 @@ export interface AlarmTemplate {
  */
 export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlarmProps> {
   ComparisonOperator?: string
+  EvaluationPeriods?: number
   enabled?: boolean
 }
 
@@ -46,7 +47,7 @@ export interface AlarmActionsConfig {
   alarmActions?: string[]
 }
 
-export interface SlicWatchCascadedAlarmsConfig<T extends InputOutput> extends AlarmProperties {
+export type SlicWatchCascadedAlarmsConfig<T extends InputOutput> = T & {
   enabled: boolean
   Lambda: SlicWatchLambdaAlarmsConfig<T>
   ApiGateway: SlicWatchApiGwAlarmsConfig<T>
