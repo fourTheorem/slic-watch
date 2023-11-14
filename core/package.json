@@ -36,7 +36,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "cloudwatch-dashboard-types": "^1.0.0-rc1",
+    "cloudwatch-dashboard-types": "^1.0.1-rc2",
     "ts-node": "^10.9.1"
   }
 }

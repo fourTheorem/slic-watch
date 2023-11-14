@@ -40,11 +40,6 @@ export interface SlicWatchMergedConfig extends AlarmProperties {
 
 export type InputOutput = SlicWatchAlarmConfig | SlicWatchMergedConfig
 
-export interface ReturnAlarm {
-  resourceName: string
-  resource: Resource
-}
-
 export interface AlarmActionsConfig {
   actionsEnabled?: boolean
   okActions?: string[]

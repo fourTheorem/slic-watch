@@ -15,8 +15,6 @@ export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends Slic
   IteratorAge: T
 }
 
-export type FunctionAlarmProperties<T extends InputOutput> = Record<string, SlicWatchLambdaAlarmsConfig<T>>
-
 const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
 
 /**
@@ -30,22 +28,24 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  *
  * TODO - Fix the lambdaAlarmConfig type
  */
-export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template) {
+export default function createLambdaAlarms (
+  lambdaAlarmConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
+) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
   const mergedConfigPerFunction: Record<string, SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>> = {}
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
     const resourceConfig = cascade(funcResource?.Metadata?.slicWatch?.alarms ?? {}) as SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>
-    const config: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = Object.assign(lambdaAlarmConfig, resourceConfig)
-    mergedConfigPerFunction[funcLogicalId] = config
+    const mergedConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = Object.assign(lambdaAlarmConfig, resourceConfig)
+    mergedConfigPerFunction[funcLogicalId] = mergedConfig
 
     for (const metric of lambdaMetrics) {
-      if (config.enabled === false || config[metric].enabled === false) {
+      if (mergedConfig.enabled === false || mergedConfig[metric].enabled === false) {
         continue
       }
       if (metric === 'ThrottlesPc') {
-        const properties = config.ThrottlesPc
+        const properties = mergedConfig.ThrottlesPc
         properties.Metrics = [
           {
             Id: 'throttles_pc',
@@ -82,7 +82,7 @@ export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAl
         ]
       }
       if (metric === 'DurationPc') {
-        const properties = config.DurationPc
+        const properties = mergedConfig.DurationPc
         const funcTimeout: number = funcResource.Properties?.Timeout ?? 3
         const threshold: Value<number> = properties.Threshold as number
         const alarmDescription = Fn.Sub(`Max duration for \${${funcLogicalId}} breaches ${properties.Threshold}% of timeout (${funcTimeout})`, {})
@@ -90,24 +90,24 @@ export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAl
         properties.Threshold = (threshold * funcTimeout * 1000) / 100
       }
       if (metric === 'Errors') {
-        const properties = config.Errors
+        const properties = mergedConfig.Errors
         const alarmDescription = Fn.Sub(`Error count for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
         properties.AlarmDescription = alarmDescription
       }
 
       if (metric === 'ThrottlesPc') {
-        const properties = config.ThrottlesPc
+        const properties = mergedConfig.ThrottlesPc
         const alarmDescription = Fn.Sub(`Throttles % for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
         properties.AlarmDescription = alarmDescription
       }
 
       if (metric === 'Invocations') {
-        const properties = config.Invocations
+        const properties = mergedConfig.Invocations
         const alarmDescription = Fn.Sub(`Total invocations for \${${funcLogicalId}} breaches ${properties.Threshold}`, {})
         properties.AlarmDescription = alarmDescription
       }
 
-      Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
+      Object.assign(resources, createLambdaCfAlarm(mergedConfig[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
     }
   }
   for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {

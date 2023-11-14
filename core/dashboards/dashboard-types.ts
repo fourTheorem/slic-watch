@@ -20,23 +20,6 @@ export interface WidgetWithSize extends Omit<Widget, 'width' | 'height'> {
   height: number
 }
 
-export interface MetricProperties {
-  metrics: any[][]
-  title: string
-  view: string
-  region: string
-  period?: number
-  yAxis?: YAxisPos
-}
-
-export interface CreateMetricWidget {
-  type: string
-  properties: MetricProperties
-  width: number
-  height: number
-  yAxis?: YAxisPos
-}
-
 export interface WidgetMetricProperties {
   enabled: boolean
   metricPeriod: number

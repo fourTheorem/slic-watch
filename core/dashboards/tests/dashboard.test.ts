@@ -6,6 +6,7 @@ import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from '../../tests/testing-utils'
 import { type ResourceType, getResourcesByType } from '../../cf-template'
+import { type Widgets } from '../dashboard-types'
 
 const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'ConcurrentExecutions', 'Throttles']
 
@@ -312,7 +313,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        dashConfig.widgets[service].enabled = false
+        (dashConfig.widgets as Widgets)[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((appSyncCfTemplate))
       addDashboard(dashConfig, compiledTemplate)
@@ -325,7 +326,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        dashConfig.widgets[service].enabled = false
+        (dashConfig.widgets as Widgets)[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((albCfTemplate))
       addDashboard(dashConfig, compiledTemplate)
@@ -414,7 +415,7 @@ test('A dashboard includes metrics for ALB', (t) => {
       const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
       const dashConfig = _.cloneDeep(defaultConfig.dashboard)
       for (const service of services) {
-        dashConfig.widgets[service].enabled = false
+        (dashConfig.widgets as Widgets)[service].enabled = false
       }
       const compiledTemplate = createTestCloudFormationTemplate((appSyncCfTemplate))
       addDashboard(dashConfig, compiledTemplate)
@@ -463,7 +464,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    dashConfig.widgets[service].enabled = false
+    (dashConfig.widgets as Widgets)[service].enabled = false
   }
   const compiledTemplate = createTestCloudFormationTemplate()
   addDashboard(dashConfig, compiledTemplate)
@@ -476,7 +477,7 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
-    dashConfig.widgets[service].enabled = false
+    (dashConfig.widgets as Widgets)[service].enabled = false
   }
   const compiledTemplate = createTestCloudFormationTemplate()
   addDashboard(dashConfig, compiledTemplate)

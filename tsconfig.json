@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "target": "ESNext",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "ts-node": {
     "swc": true,
