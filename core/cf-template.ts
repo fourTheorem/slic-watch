@@ -5,6 +5,7 @@ import { filterObject } from './filter-object'
 import { getLogger } from './logging'
 import { cascade } from './inputs/cascading-config'
 import { type SlicWatchMergedConfig } from './alarms/alarm-types'
+import { type SlicWatchDashboardConfig, type WidgetMetricProperties } from './dashboards/dashboard-types'
 
 const logger = getLogger()
 
@@ -44,6 +45,11 @@ export interface ResourceAlarmConfigurations<T extends SlicWatchMergedConfig> {
   alarmConfigurations: Record<string, T>
 }
 
+export interface ResourceDashboardConfigurations<T extends WidgetMetricProperties> {
+  resources: ResourceType
+  dashConfigurations: Record<string, T>
+}
+
 /**
  * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
  * the global alarm configuration for resources of that type
@@ -66,6 +72,32 @@ export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedCo
   return {
     resources,
     alarmConfigurations
+  }
+}
+
+/**
+ * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
+ * the global dashboard configuration for resources of that type
+ *
+ * @param type The CloudFormation resource type
+ * @param template The CloudFormation template
+ * @param config The global dashboard configuration for resources of this type
+ * @returns The resources along with the merged configuration for each resource by logical ID
+ */
+export function getResourceDashboardConfigurationsByType<T extends WidgetMetricProperties> (
+  type: string, template: Template, config: T
+): ResourceDashboardConfigurations<T> {
+  const dashConfigurations: Record<string, T> = {}
+  const resources = getResourcesByType(type, template)
+  for (const [logicalId, resource] of Object.entries(resources)) {
+    dashConfigurations[logicalId] = {
+      ...config,
+      ...cascade(resource?.Metadata?.slicWatch?.dashboard ?? {}) as SlicWatchDashboardConfig
+    }
+  }
+  return {
+    resources,
+    dashConfigurations
   }
 }
 

@@ -2,8 +2,7 @@ import type Template from 'cloudform-types/types/template'
 import { type Dashboard, type WidgetMetric, type Statistic, type YAxisPosition } from 'cloudwatch-dashboard-types'
 
 import { cascade } from '../inputs/cascading-config'
-import { getResourcesByType, getEventSourceMappingFunctions, addResource } from '../cf-template'
-import type { ResourceType } from '../cf-template'
+import { getEventSourceMappingFunctions, addResource, getResourceDashboardConfigurationsByType } from '../cf-template'
 import type {
   WidgetMetricProperties, MetricDefs, SlicWatchDashboardConfig, SlicWatchInputDashboardConfig,
   Widgets, WidgetWithSize
@@ -22,6 +21,10 @@ const MAX_WIDTH = 24
 const logger = getLogger()
 
 /**
+ * Adds a dashboard to the specified CloudFormation template based on the resources provided in the template.
+ *
+ * A CloudFormation template
+ *
  * @param {*} dashboardConfig The global plugin dashboard configuration
  * @param {*} compiledTemplate A CloudFormation template object
  */
@@ -44,39 +47,18 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
     }
   } = cascade(dashboardConfig) as SlicWatchDashboardConfig
 
-  /**
-   * Adds a dashboard to the specified CloudFormation template
-   * based on the resources provided in the template.
-   *
-   * A CloudFormation template
-   */
-  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
-  const stateMachineResources = getResourcesByType('AWS::StepFunctions::StateMachine', compiledTemplate)
-  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
-  const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
-  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
-  const queueResources = getResourcesByType('AWS::SQS::Queue', compiledTemplate)
-  const ecsServiceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
-  const topicResources = getResourcesByType('AWS::SNS::Topic', compiledTemplate)
-  const ruleResources = getResourcesByType('AWS::Events::Rule', compiledTemplate)
-  const loadBalancerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate)
-  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
-
-  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
-
-  const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
-  const apiWidgets = createApiWidgets(apiResources)
-  const stateMachineWidgets = createStateMachineWidgets(stateMachineResources)
-  const dynamoDbWidgets = createDynamoDbWidgets(tableResources)
-  const lambdaWidgets = createLambdaWidgets(lambdaResources, Object.keys(eventSourceMappingFunctions))
-  const streamWidgets = createStreamWidgets(streamResources)
-  const queueWidgets = createQueueWidgets(queueResources)
-  const ecsWidgets = createEcsWidgets(ecsServiceResources)
-  const topicWidgets = createTopicWidgets(topicResources)
-  const ruleWidgets = createRuleWidgets(ruleResources)
-  const loadBalancerWidgets = createLoadBalancerWidgets(loadBalancerResources)
-  const targetGroupWidgets = createTargetGroupWidgets(targetGroupResources, compiledTemplate)
-  const appSyncWidgets = createAppSyncWidgets(appSyncResources)
+  const apiWidgets = createApiWidgets()
+  const stateMachineWidgets = createStateMachineWidgets()
+  const dynamoDbWidgets = createDynamoDbWidgets()
+  const lambdaWidgets = createLambdaWidgets()
+  const streamWidgets = createStreamWidgets()
+  const queueWidgets = createQueueWidgets()
+  const ecsWidgets = createEcsWidgets()
+  const topicWidgets = createTopicWidgets()
+  const ruleWidgets = createRuleWidgets()
+  const loadBalancerWidgets = createLoadBalancerWidgets()
+  const targetGroupWidgets = createTargetGroupWidgets()
+  const appSyncWidgets = createAppSyncWidgets()
 
   const positionedWidgets = layOutWidgets([
     ...apiWidgets,
@@ -141,29 +123,23 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
   }
 
   /**
-   * Create a set of CloudWatch Dashboard widgets for the Lambda
-   * CloudFormation resources provided
+   * Create a set of CloudWatch Dashboard widgets for the Lambda Functions in the specified template
    *
-   * Object with CloudFormation Lambda Function resources by resource name
-   * eventSourceMappingFunctionResourceNames Names of Lambda function resources that are linked to EventSourceMappings
+   * @return * Object with CloudFormation Lambda Function resources by resource name
    */
-  function createLambdaWidgets (functionResources: ResourceType, eventSourceMappingFunctionResourceNames: string[]): WidgetWithSize[] {
-    const lambdaWidgets: any = []
-    const configPerFunctionResource: Record<string, SlicWatchDashboardConfig> = {}
-    for (const [logicalId, resource] of Object.entries(functionResources)) {
-      configPerFunctionResource[logicalId] = {
-        ...lambdaDashConfig,
-        ...cascade(resource?.Metadata?.slicWatch?.dashboard ?? {}) as SlicWatchDashboardConfig
-      }
-    }
+  function createLambdaWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Lambda::Function', compiledTemplate, lambdaDashConfig)
+    const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
 
-    if (Object.keys(functionResources).length > 0) {
+    const lambdaWidgets: any = []
+
+    if (Object.keys(configuredResources.resources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
         if (metric !== 'IteratorAge' as any) {
           for (const stat of metricConfig.Statistic) {
             const metricDefs: MetricDefs[] = []
-            for (const funcLogicalId of Object.keys(functionResources)) {
-              const funcConfig = configPerFunctionResource[funcLogicalId]
+            for (const funcLogicalId of Object.keys(configuredResources.resources)) {
+              const funcConfig = configuredResources.dashConfigurations[funcLogicalId]
               const metricConfig = funcConfig[metric]
               if (metricConfig.enabled !== false) {
                 metricDefs.push({
@@ -185,9 +161,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
             }
           }
         } else {
-          for (const funcLogicalId of eventSourceMappingFunctionResourceNames) {
+          for (const funcLogicalId of Object.keys(eventSourceMappingFunctions)) {
             // Add IteratorAge alarm if the Lambda function has an EventSourceMapping trigger
-            const funcConfig = configPerFunctionResource[funcLogicalId]
+            const funcConfig = configuredResources.dashConfigurations[funcLogicalId]
             const functionMetricConfig = funcConfig[metric]
             if (functionMetricConfig.enabled !== false) {
               const stats: string[] = []
@@ -232,12 +208,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of CloudFormation RestApi resources by resource name
    */
 
-  function createApiWidgets (apiResources: ResourceType): WidgetWithSize[] {
+  function createApiWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ApiGateway::RestApi', compiledTemplate, apiGwDashConfig)
     const apiWidgets: WidgetWithSize[] = []
-    for (const [resourceName, res] of Object.entries(apiResources)) {
-      const apiName: string = resolveRestApiNameForSub(res, resourceName) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
+    for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
+      const apiName: string = resolveRestApiNameForSub(res, logicalId) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(apiGwDashConfig))) {
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -269,11 +247,13 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object of Step Function State Machine resources by resource name
    */
-  function createStateMachineWidgets (smResources: ResourceType): WidgetWithSize[] {
+  function createStateMachineWidgets (): WidgetWithSize[] {
+    const stateMachineResources = getResourceDashboardConfigurationsByType('AWS::StepFunctions::StateMachine', compiledTemplate, sfDashConfig)
     const smWidgets: WidgetWithSize[] = []
-    for (const [logicalId] of Object.entries(smResources)) {
+    for (const [logicalId] of Object.entries(stateMachineResources.resources)) {
+      const mergedConfig = stateMachineResources.dashConfigurations[logicalId]
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(sfDashConfig))) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -304,11 +284,13 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object of DynamoDB table resources by resource name
    */
-  function createDynamoDbWidgets (tableResources: ResourceType): WidgetWithSize[] {
+  function createDynamoDbWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::DynamoDB::Table', compiledTemplate, dynamoDbDashConfig)
     const ddbWidgets: WidgetWithSize[] = []
-    for (const [logicalId, res] of Object.entries(tableResources)) {
+    for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(dynamoDbDashConfig))) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -361,7 +343,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object with CloudFormation Kinesis Data Stream resources by resource name
    */
-  function createStreamWidgets (streamResources: ResourceType): WidgetWithSize[] {
+  function createStreamWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Kinesis::Stream', compiledTemplate, kinesisDashConfig)
     const streamWidgets: WidgetWithSize[] = []
 
     const metricGroups = {
@@ -369,14 +352,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
       'Get/Put Success': ['PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
       'Provisioned Throughput': ['ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded']
     }
-    const metricConfigs = getConfiguredMetrics(kinesisDashConfig)
 
-    for (const [logicalId] of Object.entries(streamResources)) {
+    for (const [logicalId] of Object.entries(configuredResources.resources)) {
+      const streamConfig = configuredResources.dashConfigurations[logicalId]
       for (const [group, metrics] of Object.entries(metricGroups)) {
         const widgetMetrics: MetricDefs[] = []
         for (const metric of metrics) {
-          const metricConfig = metricConfigs[metric]
-          if (metricConfig.enabled) {
+          const metricConfig = streamConfig[metric]
+          if (metricConfig.enabled !== false) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/Kinesis',
@@ -403,7 +386,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Create a set of CloudWatch Dashboard widgets for the SQS resources provided
    * Object with CloudFormation SQS resources by resource name
    */
-  function createQueueWidgets (queueResources: ResourceType): WidgetWithSize[] {
+  function createQueueWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::SQS::Queue', compiledTemplate, sqsDashConfig)
     const queueWidgets: WidgetWithSize[] = []
 
     const metricGroups = {
@@ -411,14 +395,13 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
       'Oldest Message age': ['ApproximateAgeOfOldestMessage'],
       'Messages in queue': ['ApproximateNumberOfMessagesVisible']
     }
-    const metricConfigs = getConfiguredMetrics(sqsDashConfig)
-
-    for (const [logicalId] of Object.entries(queueResources)) {
+    for (const [logicalId] of Object.entries(configuredResources.resources)) {
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
       for (const [group, metrics] of Object.entries(metricGroups)) {
         const widgetMetrics: MetricDefs[] = []
         for (const metric of metrics) {
-          const metricConfig = metricConfigs[metric]
-          if (metricConfig.enabled) {
+          const metricConfig = mergedConfig[metric]
+          if (metricConfig.enabled !== false) {
             for (const stat of metricConfig.Statistic) {
               widgetMetrics.push({
                 namespace: 'AWS/SQS',
@@ -449,13 +432,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object of ECS Service resources by resource name
    */
-  function createEcsWidgets (ecsServiceResources: ResourceType): WidgetWithSize[] {
+  function createEcsWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ECS::Service', compiledTemplate, ecsDashConfig)
     const ecsWidgets: WidgetWithSize[] = []
-    for (const [logicalId, res] of Object.entries(ecsServiceResources)) {
+    for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties?.Cluster)
-
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ecsDashConfig))) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -484,14 +468,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
 
   /**
    * Create a set of CloudWatch Dashboard widgets for SNS services.
-   *
-   * Object of SNS Service resources by resource name
    */
-  function createTopicWidgets (topicResources: ResourceType): WidgetWithSize[] {
+  function createTopicWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::SNS::Topic', compiledTemplate, snsDashConfig)
     const topicWidgets: WidgetWithSize[] = []
-    for (const logicalId of Object.keys(topicResources)) {
+    for (const logicalId of Object.keys(configuredResources.resources)) {
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(snsDashConfig))) {
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -522,11 +506,13 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    *  Object of EventBridge Service resources by resource name
    */
-  function createRuleWidgets (ruleResources: ResourceType): WidgetWithSize[] {
+  function createRuleWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Events::Rule', compiledTemplate, ruleDashConfig)
     const ruleWidgets: WidgetWithSize[] = []
-    for (const [logicalId] of Object.entries(ruleResources)) {
+    for (const [logicalId] of Object.entries(configuredResources.resources)) {
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(ruleDashConfig))) {
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -542,7 +528,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
         const metricStatWidget = createMetricWidget(
           `EventBridge Rule \${${logicalId}}`,
           widgetMetrics,
-          ruleDashConfig
+          mergedConfig
         )
         ruleWidgets.push(metricStatWidget)
       }
@@ -552,17 +538,17 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
 
   /**
    * Create a set of CloudWatch Dashboard widgets for Application Load Balancer services.
-   *
-   * Object of Application Load Balancer Service resources by resource name
    */
-  function createLoadBalancerWidgets (loadBalancerResources: ResourceType): WidgetWithSize[] {
+  function createLoadBalancerWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, albDashConfig)
     const loadBalancerWidgets: WidgetWithSize[] = []
-    for (const [logicalId] of Object.entries(loadBalancerResources)) {
+    for (const [logicalId] of Object.entries(configuredResources.resources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
 
       const loadBalancerFullName = resolveLoadBalancerFullNameForSub(logicalId)
       const widgetMetrics: MetricDefs[] = []
-      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albDashConfig))) {
+      for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -580,7 +566,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
         const metricStatWidget = createMetricWidget(
           `ALB ${loadBalancerName}`,
           widgetMetrics,
-          albDashConfig
+          mergedConfig
         )
         loadBalancerWidgets.push(metricStatWidget)
       }
@@ -594,15 +580,18 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of Application Load Balancer Service Target Group resources by resource name
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
-  function createTargetGroupWidgets (targetGroupResources: ResourceType, compiledTemplate: Template): WidgetWithSize[] {
+  function createTargetGroupWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, albTargetDashConfig)
+
     const targetGroupWidgets: WidgetWithSize[] = []
-    for (const [tgLogicalId, targetGroupResource] of Object.entries(targetGroupResources)) {
+    for (const [tgLogicalId, targetGroupResource] of Object.entries(configuredResources.resources)) {
+      const mergedConfig = configuredResources.dashConfigurations[tgLogicalId]
       const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(tgLogicalId, compiledTemplate)
       for (const loadBalancerLogicalId of loadBalancerLogicalIds) {
         const targetGroupFullName = resolveTargetGroupFullNameForSub(tgLogicalId)
         const loadBalancerFullName = `\${${loadBalancerLogicalId}.LoadBalancerFullName}`
         const widgetMetrics: MetricDefs[] = []
-        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(albTargetDashConfig))) {
+        for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
           if (metricConfig.enabled &&
             (targetGroupResource.Properties?.TargetType === 'lambda' || !['LambdaUserError', 'LambdaInternalError'].includes(metric))
           ) {
@@ -623,7 +612,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
           const metricStatWidget = createMetricWidget(
             `Target Group \${${loadBalancerLogicalId}.LoadBalancerName}/\${${tgLogicalId}.TargetGroupName}`,
             widgetMetrics,
-            albTargetDashConfig
+            mergedConfig
           )
           targetGroupWidgets.push(metricStatWidget)
         }
@@ -637,42 +626,42 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object of AppSync Service resources by resource name
    */
-  function createAppSyncWidgets (appSyncResources: ResourceType): WidgetWithSize[] {
+  function createAppSyncWidgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType('AWS::AppSync::GraphQLApi', compiledTemplate, appSyncDashConfig)
+
     const appSyncWidgets: WidgetWithSize[] = []
     const metricGroups = {
       API: ['5XXError', '4XXError', 'Latency', 'Requests'],
       'Real-time Subscriptions': ['ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError']
     }
-    const metricConfigs = getConfiguredMetrics(appSyncDashConfig)
-    for (const res of Object.values(appSyncResources)) {
+    for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const appSyncResourceName: string = res.Properties?.Name
-      for (const [logicalId] of Object.entries(appSyncResources)) {
-        const graphQLAPIId = resolveGraphQLId(logicalId)
-        for (const [group, metrics] of Object.entries(metricGroups)) {
-          const widgetMetrics: MetricDefs[] = []
-          for (const metric of metrics) {
-            const metricConfig: WidgetMetricProperties | Widgets = metricConfigs[metric]
-            if (metricConfig.enabled) {
-              const stats: string[] = []
-              metricConfig?.Statistic?.forEach(stat => stats.push(stat))
-              for (const stat of stats) {
-                widgetMetrics.push({
-                  namespace: 'AWS/AppSync',
-                  metric,
-                  dimensions: { GraphQLAPIId: graphQLAPIId },
-                  stat: stat as Statistic,
-                  yAxis: metricConfig.yAxis as YAxisPosition
-                })
-              }
+      const mergedConfig = configuredResources.dashConfigurations[logicalId]
+      const graphQLAPIId = resolveGraphQLId(logicalId)
+      for (const [group, metrics] of Object.entries(metricGroups)) {
+        const widgetMetrics: MetricDefs[] = []
+        for (const metric of metrics) {
+          const metricConfig = mergedConfig[metric]
+          if (metricConfig.enabled !== false) {
+            const stats: string[] = []
+            metricConfig?.Statistic?.forEach(stat => stats.push(stat))
+            for (const stat of stats) {
+              widgetMetrics.push({
+                namespace: 'AWS/AppSync',
+                metric,
+                dimensions: { GraphQLAPIId: graphQLAPIId },
+                stat: stat as Statistic,
+                yAxis: metricConfig.yAxis as YAxisPosition
+              })
             }
           }
-          if (widgetMetrics.length > 0) {
-            appSyncWidgets.push(createMetricWidget(
-              `AppSync ${group} ${appSyncResourceName}`,
-              widgetMetrics,
-              sqsDashConfig
-            ))
-          }
+        }
+        if (widgetMetrics.length > 0) {
+          appSyncWidgets.push(createMetricWidget(
+            `AppSync ${group} ${appSyncResourceName}`,
+            widgetMetrics,
+            mergedConfig
+          ))
         }
       }
     }
