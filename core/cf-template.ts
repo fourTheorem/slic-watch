@@ -3,6 +3,8 @@ import type Template from 'cloudform-types/types/template'
 
 import { filterObject } from './filter-object'
 import { getLogger } from './logging'
+import { cascade } from './inputs/cascading-config'
+import { type SlicWatchMergedConfig } from './alarms/alarm-types'
 
 const logger = getLogger()
 
@@ -35,6 +37,36 @@ export function addResource (resourceName: string, resource: Resource, compiledT
 
 export function getResourcesByType (type: string, compiledTemplate: Template): ResourceType {
   return filterObject(compiledTemplate.Resources ?? {}, (resource: { Type: string }) => resource.Type === type)
+}
+
+export interface ResourceAlarmConfigurations<T extends SlicWatchMergedConfig> {
+  resources: ResourceType
+  alarmConfigurations: Record<string, T>
+}
+
+/**
+ * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
+ * the global alarm configuration for resources of that type
+ *
+ * @param type The CloudFormation resource type
+ * @param template The CloudFormation template
+ * @param config The global alarm configuration for resources of this type
+ * @returns The resources along with the merged configuration for each resource by logical ID
+ */
+export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedConfig> (
+  type: string, template: Template, config: M
+): ResourceAlarmConfigurations<M> {
+  const alarmConfigurations: Record<string, M> = {}
+  const resources = getResourcesByType(type, template)
+  for (const [funcLogicalId, resource] of Object.entries(resources)) {
+    const resourceConfig = cascade(resource?.Metadata?.slicWatch?.alarms ?? {}) as M
+    const mergedConfig: M = Object.assign(config, resourceConfig)
+    alarmConfigurations[funcLogicalId] = mergedConfig
+  }
+  return {
+    resources,
+    alarmConfigurations
+  }
 }
 
 export function getEventSourceMappingFunctions (compiledTemplate): ResourceType {

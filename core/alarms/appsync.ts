@@ -2,11 +2,11 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
-import { getResourcesByType } from '../cf-template'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
 
-export interface SlicWatchAppSyncAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchAppSyncAlarmsConfig<T extends InputOutput> = T & {
   '5XXError': T
   Latency: T
 }
@@ -27,11 +27,11 @@ export default function createAppSyncAlarms (
   appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources = {}
-  const appSyncResources = getResourcesByType('AWS::AppSync::GraphQLApi', compiledTemplate)
+  const configuredResources = getResourceAlarmConfigurationsByType('AWS::AppSync::GraphQLApi', compiledTemplate, appSyncAlarmsConfig)
 
-  for (const [appSyncLogicalId, appSyncResource] of Object.entries(appSyncResources)) {
+  for (const [appSyncLogicalId, appSyncResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {
-      const config: SlicWatchMergedConfig = appSyncAlarmsConfig[metric]
+      const config: SlicWatchMergedConfig = configuredResources.alarmConfigurations[appSyncLogicalId][metric]
       if (config.enabled) {
         const { enabled, ...rest } = config
         const graphQLName: string = appSyncResource.Properties?.Name

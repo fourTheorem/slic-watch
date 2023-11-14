@@ -1,10 +1,10 @@
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
 
-export interface SlicWatchSnsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchSnsAlarmsConfig<T extends InputOutput> = T & {
   'NumberOfNotificationsFilteredOut-InvalidAttributes': T
   NumberOfNotificationsFailed: T
 }

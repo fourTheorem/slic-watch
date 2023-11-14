@@ -2,11 +2,11 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
-import { getResourcesByType } from '../cf-template'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
 
-export interface SlicWatchEcsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchEcsAlarmsConfig<T extends InputOutput> = T & {
   MemoryUtilization: T
   CPUUtilization: T
 }
@@ -49,15 +49,15 @@ export default function createECSAlarms (
   ecsAlarmsConfig: SlicWatchEcsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const serviceResources = getResourcesByType('AWS::ECS::Service', compiledTemplate)
+  const configuredResources = getResourceAlarmConfigurationsByType('AWS::ECS::Service', compiledTemplate, ecsAlarmsConfig)
 
-  for (const [serviceLogicalId, serviceResource] of Object.entries(serviceResources)) {
+  for (const [serviceLogicalId, serviceResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {
       const cluster = serviceResource.Properties?.Cluster
       const clusterName = resolveEcsClusterNameAsCfn(cluster)
-      const config: SlicWatchMergedConfig = ecsAlarmsConfig[metric]
-      if (config.enabled) {
-        const { enabled, ...rest } = config
+      const config: SlicWatchMergedConfig = configuredResources.alarmConfigurations[serviceLogicalId][metric]
+      const { enabled, ...rest } = config
+      if (enabled) {
         const ecsAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`ECS_${metric.replaceAll('Utilization', 'Alarm')}_\${${serviceLogicalId}.Name}`, {}),
           AlarmDescription: Fn.Sub(`ECS ${metric} for \${${serviceLogicalId}.Name} breaches ${config.Threshold}`, {}),

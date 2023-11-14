@@ -2,11 +2,11 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, makeAlarmLogicalId } from './alarm-utils'
-import { getResourcesByType } from '../cf-template'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
 
-export interface SlicWatchDynamoDbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchDynamoDbAlarmsConfig<T extends InputOutput> = T & {
   ReadThrottleEvents: T
   WriteThrottleEvents: T
   UserErrors: T
@@ -32,13 +32,13 @@ export default function createDynamoDbAlarms (
   compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const tableResources = getResourcesByType('AWS::DynamoDB::Table', compiledTemplate)
+  const configuredResources = getResourceAlarmConfigurationsByType('AWS::DynamoDB::Table', compiledTemplate, dynamoDbAlarmsConfig)
 
-  for (const [tableLogicalId, tableResource] of Object.entries(tableResources)) {
+  for (const [tableLogicalId, tableResource] of Object.entries(configuredResources.resources)) {
     for (const metric of dynamoDbMetrics) {
-      const config: SlicWatchMergedConfig = dynamoDbAlarmsConfig[metric]
-      if (config.enabled) {
-        const { enabled, ...rest } = config
+      const config: SlicWatchMergedConfig = configuredResources.alarmConfigurations[tableLogicalId][metric]
+      const { enabled, ...rest } = config
+      if (enabled) {
         const dynamoDbAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`DDB_${metric}_Alarm_\${${tableLogicalId}}`, {}),
           AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for \${${tableLogicalId}} breaches ${config.Threshold}`, {}),

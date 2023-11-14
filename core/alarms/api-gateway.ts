@@ -3,11 +3,11 @@ import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
-import { getResourcesByType } from '../cf-template'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
 
-export interface SlicWatchApiGwAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchApiGwAlarmsConfig<T extends InputOutput> = T & {
   '5XXError': T
   '4XXError': T
   Latency: T
@@ -83,18 +83,18 @@ export default function createApiGatewayAlarms (
   apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const apiResources = getResourcesByType('AWS::ApiGateway::RestApi', compiledTemplate)
+  const configuredResources = getResourceAlarmConfigurationsByType('AWS::ApiGateway::RestApi', compiledTemplate, apiGwAlarmsConfig)
 
-  for (const [apiLogicalId, apiResource] of Object.entries(apiResources)) {
+  for (const [apiLogicalId, apiResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {
-      const config: SlicWatchMergedConfig = apiGwAlarmsConfig[metric]
-      if (config.enabled) {
-        const { enabled, ...rest } = config
+      const mergedConfig: SlicWatchMergedConfig = configuredResources.alarmConfigurations[apiLogicalId][metric]
+      if (mergedConfig.enabled) {
+        const { enabled, ...rest } = mergedConfig
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`ApiGW_${metric}_${apiNameForSub}`, {}),
-          AlarmDescription: Fn.Sub(`API Gateway ${metric} ${getStatisticName(config)} for ${apiNameForSub} breaches ${config.Threshold}`, {}),
+          AlarmDescription: Fn.Sub(`API Gateway ${metric} ${getStatisticName(mergedConfig)} for ${apiNameForSub} breaches ${mergedConfig.Threshold}`, {}),
           MetricName: metric,
           Namespace: 'AWS/ApiGateway',
           Dimensions: [{ Name: 'ApiName', Value: apiName }],

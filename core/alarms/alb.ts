@@ -2,10 +2,10 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms, getStatisticName } from './alarm-utils'
 
-export interface SlicWatchAlbAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchAlbAlarmsConfig<T extends InputOutput> = T & {
   HTTPCode_ELB_5XX_Count: T
   RejectedConnectionCount: T
 }

@@ -2,12 +2,11 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import { getEventSourceMappingFunctions, getResourcesByType } from '../cf-template'
-import type { AlarmActionsConfig, InputOutput, Value, SlicWatchMergedConfig, SlicWatchAlarmConfig } from './alarm-types'
+import { getEventSourceMappingFunctions, getResourceAlarmConfigurationsByType } from '../cf-template'
+import type { AlarmActionsConfig, InputOutput, Value, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
-import { cascade } from '../inputs/cascading-config'
 
-export interface SlicWatchLambdaAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchLambdaAlarmsConfig<T extends InputOutput> = T & {
   Errors: T
   ThrottlesPc: T
   DurationPc: T
@@ -25,23 +24,18 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  * @compiledTemplate  CloudFormation template object
  *
  * @returns Lambda-specific CloudFormation Alarm resources
- *
- * TODO - Fix the lambdaAlarmConfig type
  */
 export default function createLambdaAlarms (
   lambdaAlarmConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ) {
   const resources = {}
-  const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
-  const mergedConfigPerFunction: Record<string, SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>> = {}
-  for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
-    const resourceConfig = cascade(funcResource?.Metadata?.slicWatch?.alarms ?? {}) as SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>
-    const mergedConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = Object.assign(lambdaAlarmConfig, resourceConfig)
-    mergedConfigPerFunction[funcLogicalId] = mergedConfig
+  const configuredLambdaResources = getResourceAlarmConfigurationsByType('AWS::Lambda::Function', compiledTemplate, lambdaAlarmConfig)
+  for (const [funcLogicalId, funcResource] of Object.entries(configuredLambdaResources.resources)) {
+    const mergedConfig = configuredLambdaResources.alarmConfigurations[funcLogicalId]
 
     for (const metric of lambdaMetrics) {
-      if (mergedConfig.enabled === false || mergedConfig[metric].enabled === false) {
+      if (!mergedConfig.enabled || mergedConfig[metric].enabled === false) {
         continue
       }
       if (metric === 'ThrottlesPc') {
@@ -111,8 +105,8 @@ export default function createLambdaAlarms (
     }
   }
   for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
-    const config = mergedConfigPerFunction[funcLogicalId]
-    if (config.enabled !== false && config.IteratorAge.enabled) {
+    const config = configuredLambdaResources.alarmConfigurations[funcLogicalId]
+    if (config.enabled && config.IteratorAge.enabled) {
       Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, alarmActionsConfig))
     }
   }
