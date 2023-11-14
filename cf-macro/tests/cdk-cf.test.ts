@@ -1,5 +1,5 @@
 import { test } from 'tap'
-
+import type { Template } from 'cloudform-types'
 import { getResourcesByType } from 'slic-watch-core/cf-template'
 import { handler } from '../index'
 import cdkStack from './resources/cdk-ecs-cf.json'
@@ -9,11 +9,13 @@ import cdkStack from './resources/cdk-ecs-cf.json'
  */
 test('ECS CDK stack', async (t) => {
   const event = {
-    fragment: cdkStack
+    fragment: cdkStack as Template,
+    requestId: 'test'
   }
+
   const handlerResponse = await handler(event)
   t.equal(handlerResponse.status, 'success')
-  const compiledTemplate = handlerResponse.fragment
+  const compiledTemplate = handlerResponse.fragment as Template
 
   test('alarms are generated', (t) => {
     const alarms = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)

@@ -27,16 +27,18 @@ const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
  * @compiledTemplate  CloudFormation template object
  *
  * @returns Lambda-specific CloudFormation Alarm resources
+ *
+ * TODO - Fix the lambdaAlarmConfig type
  */
 export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template) {
   const resources = {}
   const lambdaResources = getResourcesByType('AWS::Lambda::Function', compiledTemplate)
 
-  const configPerFunctionResource: Record<string, SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>> = {}
+  const mergedConfigPerFunction: Record<string, SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>> = {}
   for (const [funcLogicalId, funcResource] of Object.entries(lambdaResources)) {
     const resourceConfig = cascade(funcResource?.Metadata?.slicWatch?.alarms ?? {}) as SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig>
-    configPerFunctionResource[funcLogicalId] = resourceConfig
     const config: SlicWatchLambdaAlarmsConfig<SlicWatchMergedConfig> = Object.assign(lambdaAlarmConfig, resourceConfig)
+    mergedConfigPerFunction[funcLogicalId] = config
 
     for (const metric of lambdaMetrics) {
       if (config.enabled === false || config[metric].enabled === false) {
@@ -107,11 +109,11 @@ export default function createLambdaAlarms (lambdaAlarmConfig: SlicWatchLambdaAl
 
       Object.assign(resources, createLambdaCfAlarm(config[metric], metric, funcLogicalId, compiledTemplate, alarmActionsConfig))
     }
-    for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
-      const config = configPerFunctionResource[funcLogicalId]
-      if (config.enabled !== false && config.IteratorAge.enabled) {
-        Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, alarmActionsConfig))
-      }
+  }
+  for (const funcLogicalId of Object.keys(getEventSourceMappingFunctions(compiledTemplate))) {
+    const config = mergedConfigPerFunction[funcLogicalId]
+    if (config.enabled !== false && config.IteratorAge.enabled) {
+      Object.assign(resources, createLambdaCfAlarm(config.IteratorAge, 'IteratorAge', funcLogicalId, compiledTemplate, alarmActionsConfig))
     }
   }
   return resources
