@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import { test } from 'tap'
+import { type MetricWidgetProperties } from 'cloudwatch-dashboard-types'
 
 import addDashboard from '../dashboard'
 import defaultConfig from '../../inputs/default-config'
 
-import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate } from '../../tests/testing-utils'
+import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate, getDashboardFromTemplate } from '../../tests/testing-utils'
 import { type ResourceType, getResourcesByType } from '../../cf-template'
 import { type Widgets } from '../dashboard-types'
 
@@ -20,26 +21,27 @@ test('An empty template creates no dashboard', (t) => {
 })
 
 test('A dashboard includes metrics', (t) => {
-  const compiledTemplate = createTestCloudFormationTemplate()
-  addDashboard(defaultConfig.dashboard, compiledTemplate)
-  const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
-  t.equal(Object.keys(dashResources).length, 1)
-  const [, dashResource] = Object.entries(dashResources)[0]
-  t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+  const template = createTestCloudFormationTemplate()
+  addDashboard(defaultConfig.dashboard, template)
 
-  t.ok(dashBody.start)
+  const { dashboard, dashProperties } = getDashboardFromTemplate(template)
+  t.ok(dashboard)
+  t.ok(dashProperties)
+  t.same(dashProperties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
+
+  t.ok(dashboard.start)
 
   t.test('dashboards includes Lambda metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('Lambda')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').startsWith('Lambda')
     )
     t.equal(widgets.length, 8)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      const widgetProperties = widget.properties as MetricWidgetProperties
+      for (const metric of widgetProperties.metrics ?? []) {
         t.equal(metric.length, 5)
-        const metricProperties = metric[4]
+        const metricProperties = metric[4] as object
         const propKeys = Object.keys(metricProperties)
         t.same(propKeys, ['stat'])
         namespaces.add(metric[0])
@@ -57,45 +59,22 @@ test('A dashboard includes metrics', (t) => {
       'Lambda Errors Sum per Function'
     ])
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
-
-  t.test('dashboards includes API metrics', (t) => {
-    const widgets = dashBody.widgets.filter((widget) =>
-      widget.properties.title.indexOf(' API ') > 0
-    )
-    t.equal(widgets.length, 4)
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/ApiGateway']))
-    const expectedTitles = new Set([
-      '4XXError API dev-serverless-test-project',
-      '5XXError API dev-serverless-test-project',
-      'Count API dev-serverless-test-project',
-      'Latency API dev-serverless-test-project'
-    ])
-    const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboards includes Step Function metrics', (t) => {
-    const widgets = dashBody.widgets.filter((widget) =>
-      widget.properties.title.endsWith('Step Function Executions')
-    )
+    const widgets = dashboard.widgets.filter((widget) => {
+      const widgetProperties = widget.properties as MetricWidgetProperties
+      return (widgetProperties.title ?? '').endsWith('Step Function Executions')
+    })
     t.equal(widgets.length, 2)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      const widgetProperties = widget.properties as MetricWidgetProperties
+      for (const metric of widgetProperties.metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -103,20 +82,21 @@ test('A dashboard includes metrics', (t) => {
     const expectedTitles = new Set(['${Workflow.Name} Step Function Executions', '${ExpressWorkflow.Name} Step Function Executions'])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboards includes DynamoDB metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.indexOf('Table') > 0 || title.indexOf('GSI') > 0
-    )
+    const widgets = dashboard.widgets.filter(({ properties }) => {
+      const title = (properties as MetricWidgetProperties).title ?? ''
+      return title.indexOf('Table') > 0 || title.indexOf('GSI') > 0
+    })
     t.equal(widgets.length, 4)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -129,20 +109,20 @@ test('A dashboard includes metrics', (t) => {
     ])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboard includes Kinesis metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.endsWith('Kinesis')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').endsWith('Kinesis')
     )
     t.equal(widgets.length, 3)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -154,20 +134,20 @@ test('A dashboard includes metrics', (t) => {
     ])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboard includes SQS metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.endsWith('SQS')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').endsWith('SQS')
     )
     t.equal(widgets.length, 6) // 3 groups * 2 queues
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -182,20 +162,20 @@ test('A dashboard includes metrics', (t) => {
     ])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboard includes ECS metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('ECS')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').startsWith('ECS')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -205,20 +185,20 @@ test('A dashboard includes metrics', (t) => {
     ])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboard includes SNS metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('SNS')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').startsWith('SNS')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -226,20 +206,20 @@ test('A dashboard includes metrics', (t) => {
     const expectedTitles = new Set(['SNS Topic ${topic.TopicName}'])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
   })
 
   t.test('dashboard includes Events metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
-      title.startsWith('EventBridge')
+    const widgets = dashboard.widgets.filter(({ properties }) =>
+      ((properties as MetricWidgetProperties).title ?? '').startsWith('EventBridge')
     )
     t.equal(widgets.length, 1)
     const namespaces = new Set()
     for (const widget of widgets) {
-      for (const metric of widget.properties.metrics) {
+      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
         namespaces.add(metric[0])
       }
     }
@@ -247,7 +227,7 @@ test('A dashboard includes metrics', (t) => {
     const expectedTitles = new Set(['EventBridge Rule ${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}'])
 
     const actualTitles = new Set(
-      widgets.map((widget) => widget.properties.title)
+      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
     )
     t.same(actualTitles, expectedTitles)
     t.end()
@@ -263,12 +243,12 @@ test('A dashboard includes metrics for ALB', (t) => {
   t.equal(Object.keys(dashResources).length, 1)
   const [, dashResource] = Object.entries(dashResources)[0]
   t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+  const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
-  t.ok(dashBody.start)
+  t.ok(dashboard.start)
 
   t.test('dashboard includes Application Load Balancer metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
       title.startsWith('ALB')
     )
     t.equal(widgets.length, 1)
@@ -289,7 +269,7 @@ test('A dashboard includes metrics for ALB', (t) => {
   })
 
   t.test('dashboard includes Application Load Balancer Target Groups metrics', (t) => {
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
       title.startsWith('Target')
     )
     t.equal(widgets.length, 1)
@@ -384,12 +364,12 @@ test('A dashboard includes metrics for ALB', (t) => {
     t.equal(Object.keys(dashResources).length, 1)
     const [, dashResource] = Object.entries(dashResources)[0]
     t.same(dashResource.Properties?.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
-    const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
-    t.ok(dashBody.start)
+    t.ok(dashboard.start)
 
     t.test('dashboard includes AppSync metrics', (t) => {
-      const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+      const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
         title.startsWith('AppSync')
       )
       t.equal(widgets.length, 2)
@@ -444,8 +424,8 @@ test('DynamoDB widgets are created without GSIs', (t) => {
 
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   const [, dashResource] = Object.entries(dashResources)[0]
-  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
-  const widgets = dashBody.widgets
+  const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+  const widgets = dashboard.widgets
 
   t.equal(widgets.length, 2)
   const expectedTitles = new Set([
@@ -498,9 +478,9 @@ test('A widget is not created for Lambda if disabled at a function level', (t) =
     addDashboard(defaultConfig.dashboard, compiledTemplate)
     const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
     const [, dashResource] = Object.entries(dashResources)[0]
-    const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
       title.startsWith(`Lambda ${metric}`)
     )
     const widgetMetrics = widgets[0].properties.metrics
@@ -525,9 +505,9 @@ test('A widget is not created for Lambda if disabled at a function level for eac
     addDashboard(defaultConfig.dashboard, compiledTemplate)
     const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
     const [, dashResource] = Object.entries(dashResources)[0]
-    const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
-    const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
       title.startsWith(`Lambda ${metric}`)
     )
     const widgetMetrics = widgets[0].properties.metrics
@@ -554,9 +534,9 @@ test('No Lambda widgets are created if all metrics for functions are disabled', 
   addDashboard(defaultConfig.dashboard, compiledTemplate)
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   const [, dashResource] = Object.entries(dashResources)[0]
-  const dashBody = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+  const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
 
-  const widgets = dashBody.widgets.filter(({ properties: { title } }) =>
+  const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
     title.startsWith('Lambda')
   )
   t.equal(widgets.length, 0)

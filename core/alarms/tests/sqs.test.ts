@@ -170,7 +170,7 @@ test('queue resource configuration overrides take precedence', (t) => {
       alarms: {
         Period: 900,
         AgeOfOldestMessage: {
-          Statistic: 'P99',
+          Statistic: 'p99',
           Threshold: 51,
           enabled: true // this one is disabled by default
         },
@@ -190,7 +190,7 @@ test('queue resource configuration overrides take precedence', (t) => {
   const inFlightMessagesFifoAlarm = Object.entries(alarmResources).filter(([key, value]) => key.includes('fifo') && value?.Properties?.MetricName === 'ApproximateNumberOfMessagesNotVisible')[0][1]
   const inFlightMessagesRegularAlarm = Object.entries(alarmResources).filter(([key, value]) => key.includes('regular') && value?.Properties?.MetricName === 'ApproximateNumberOfMessagesNotVisible')[0][1]
   t.equal(ageOfOldestMessageAlarm?.Properties?.Threshold, 51)
-  t.equal(ageOfOldestMessageAlarm?.Properties?.Statistic, 'P99')
+  t.equal(ageOfOldestMessageAlarm?.Properties?.Statistic, 'p99')
   t.equal(ageOfOldestMessageAlarm?.Properties?.Period, 900)
   t.equal(inFlightMessagesFifoAlarm?.Properties?.Period, 60)
   t.equal(inFlightMessagesFifoAlarm?.Properties?.Threshold, Math.floor(0.8 * 20000))

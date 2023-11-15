@@ -239,7 +239,7 @@ test('API Gateway alarms are created', (t) => {
   t.end()
 })
 
-test('API Gateway resource configuration overrides take precedence', (t) => {
+test('resource config overrides take precedence', (t) => {
   const testConfig = createTestConfig(defaultConfig.alarms)
   const template = createTestCloudFormationTemplate();
 

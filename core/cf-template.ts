@@ -10,7 +10,7 @@ import { merge } from 'lodash'
 
 const logger = getLogger()
 
-export type ResourceType = Record<string, Resource>
+export type ResourceType<T = Resource> = Record<string, T>
 
 /**
  * Take a CloudFormation reference to a Lambda Function name and attempt to resolve this function's

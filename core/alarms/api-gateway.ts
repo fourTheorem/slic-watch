@@ -83,13 +83,15 @@ export default function createApiGatewayAlarms (
   apiGwAlarmsConfig: SlicWatchApiGwAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const configuredResources = getResourceAlarmConfigurationsByType('AWS::ApiGateway::RestApi', compiledTemplate, apiGwAlarmsConfig)
+  const configuredResources = getResourceAlarmConfigurationsByType(
+    'AWS::ApiGateway::RestApi', compiledTemplate, apiGwAlarmsConfig
+  )
 
   for (const [apiLogicalId, apiResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {
       const mergedConfig: SlicWatchMergedConfig = configuredResources.alarmConfigurations[apiLogicalId][metric]
-      if (mergedConfig.enabled) {
-        const { enabled, ...rest } = mergedConfig
+      const { enabled, ...rest } = mergedConfig
+      if (enabled) {
         const apiName = resolveRestApiNameAsCfn(apiResource, apiLogicalId)
         const apiNameForSub = resolveRestApiNameForSub(apiResource, apiLogicalId)
         const apiAlarmProperties: AlarmProperties = {

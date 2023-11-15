@@ -92,6 +92,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
   /**
    * Create a metric for the specified metrics
    *
+   * TODO - allow Widget Metric Properties to specify x and y axes configuration
+   *
    * @param {string} title The metric title
    * @param {Array.<object>} metricDefs The metric definitions to render
    * @param {Object} config Cascaded widget/metric configuration
@@ -213,9 +215,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
     const apiWidgets: WidgetWithSize[] = []
     for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const apiName: string = resolveRestApiNameForSub(res, logicalId) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
-      const widgetMetrics: MetricDefs[] = []
       const mergedConfig = configuredResources.dashConfigurations[logicalId]
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
+        const widgetMetrics: MetricDefs[] = []
         if (metricConfig.enabled) {
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
@@ -224,7 +226,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               dimensions: {
                 ApiName: apiName
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }
@@ -232,7 +235,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
           const metricStatWidget = createMetricWidget(
             `${metric} API ${apiName}`,
             widgetMetrics,
-            apiGwDashConfig
+            metricConfig
           )
           apiWidgets.push(metricStatWidget)
         }
