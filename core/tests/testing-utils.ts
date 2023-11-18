@@ -29,7 +29,7 @@ export function assertCommonAlarmProperties (t, al: AlarmProperties) {
 
 /**
  * Derive an alarm 'type' by stripping the last component from the underscore-delimited name
- * @param {*} alarmName The alarm name as a string or {'Fn::Sub': ...} object
+ * @param alarmName The alarm name as a string or {'Fn::Sub': ...} object
  * @returns The inferred type
  */
 export function alarmNameToType (alarmName) {

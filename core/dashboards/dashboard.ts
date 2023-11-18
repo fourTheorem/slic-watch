@@ -148,7 +148,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                   namespace: 'AWS/Lambda',
                   metric,
                   dimensions: { FunctionName: `\${${funcLogicalId}}` },
-                  stat: stat as Statistic
+                  stat: stat as Statistic,
+                  yAxis: metricConfig.yAxis
                 })
               }
             }
@@ -176,7 +177,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                   namespace: 'AWS/Lambda',
                   metric: 'IteratorAge',
                   dimensions: { FunctionName: `\${${funcLogicalId}}` },
-                  stat: stat as Statistic
+                  stat: stat as Statistic,
+                  yAxis: metricConfig.yAxis
                 })),
                 metricConfig as Widgets
               )

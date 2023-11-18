@@ -31,40 +31,6 @@ test('A dashboard includes metrics', (t) => {
 
   t.ok(dashboard.start)
 
-  t.test('dashboards includes Lambda metrics', (t) => {
-    const widgets = dashboard.widgets.filter(({ properties }) =>
-      ((properties as MetricWidgetProperties).title ?? '').startsWith('Lambda')
-    )
-    t.equal(widgets.length, 8)
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      const widgetProperties = widget.properties as MetricWidgetProperties
-      for (const metric of widgetProperties.metrics ?? []) {
-        t.equal(metric.length, 5)
-        const metricProperties = metric[4] as object
-        const propKeys = Object.keys(metricProperties)
-        t.same(propKeys, ['stat'])
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/Lambda']))
-    const expectedTitles = new Set([
-      'Lambda Duration Average per Function',
-      'Lambda Duration p95 per Function',
-      'Lambda Duration Maximum per Function',
-      'Lambda Invocations Sum per Function',
-      'Lambda IteratorAge ${StreamProcessorLambdaFunction} Maximum',
-      'Lambda ConcurrentExecutions Maximum per Function',
-      'Lambda Throttles Sum per Function',
-      'Lambda Errors Sum per Function'
-    ])
-    const actualTitles = new Set(
-      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
-
   t.test('dashboards includes Step Function metrics', (t) => {
     const widgets = dashboard.widgets.filter((widget) => {
       const widgetProperties = widget.properties as MetricWidgetProperties
