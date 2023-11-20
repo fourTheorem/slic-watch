@@ -6,10 +6,8 @@ import addDashboard from '../dashboard'
 import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, defaultCfTemplate, albCfTemplate, appSyncCfTemplate, getDashboardFromTemplate } from '../../tests/testing-utils'
-import { type ResourceType, getResourcesByType } from '../../cf-template'
+import { getResourcesByType } from '../../cf-template'
 import { type Widgets } from '../dashboard-types'
-
-const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'ConcurrentExecutions', 'Throttles']
 
 test('An empty template creates no dashboard', (t) => {
   const compiledTemplate = createTestCloudFormationTemplate({ Resources: {} })
@@ -30,54 +28,6 @@ test('A dashboard includes metrics', (t) => {
   t.same(dashProperties.DashboardName, { 'Fn::Sub': '${AWS::StackName}-${AWS::Region}-Dashboard' })
 
   t.ok(dashboard.start)
-
-  t.test('dashboards includes Step Function metrics', (t) => {
-    const widgets = dashboard.widgets.filter((widget) => {
-      const widgetProperties = widget.properties as MetricWidgetProperties
-      return (widgetProperties.title ?? '').endsWith('Step Function Executions')
-    })
-    t.equal(widgets.length, 2)
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      const widgetProperties = widget.properties as MetricWidgetProperties
-      for (const metric of widgetProperties.metrics ?? []) {
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/States']))
-    const expectedTitles = new Set(['${Workflow.Name} Step Function Executions', '${ExpressWorkflow.Name} Step Function Executions'])
-
-    const actualTitles = new Set(
-      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
-
-  t.test('dashboard includes Kinesis metrics', (t) => {
-    const widgets = dashboard.widgets.filter(({ properties }) =>
-      ((properties as MetricWidgetProperties).title ?? '').endsWith('Kinesis')
-    )
-    t.equal(widgets.length, 3)
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/Kinesis']))
-    const expectedTitles = new Set([
-      'IteratorAge ${stream} Kinesis',
-      'Get/Put Success ${stream} Kinesis',
-      'Provisioned Throughput ${stream} Kinesis'
-    ])
-
-    const actualTitles = new Set(
-      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
 
   t.test('dashboard includes SQS metrics', (t) => {
     const widgets = dashboard.widgets.filter(({ properties }) =>
@@ -402,82 +352,5 @@ test('No dashboard is created if all metrics are disabled', (t) => {
   addDashboard(dashConfig, compiledTemplate)
   const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
   t.same(dashResources, {})
-  t.end()
-})
-
-test('A widget is not created for Lambda if disabled at a function level', (t) => {
-  for (const metric of lambdaMetrics) {
-    const compiledTemplate = createTestCloudFormationTemplate();
-    (compiledTemplate.Resources as ResourceType).HelloLambdaFunction.Metadata = {
-      slicWatch: {
-        dashboard: { enabled: false }
-      }
-    }
-
-    addDashboard(defaultConfig.dashboard, compiledTemplate)
-    const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
-    const [, dashResource] = Object.entries(dashResources)[0]
-    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
-
-    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
-      title.startsWith(`Lambda ${metric}`)
-    )
-    const widgetMetrics = widgets[0].properties.metrics
-    const functionNames = widgetMetrics.map(widgetMetric => widgetMetric[3])
-    t.ok(functionNames.length > 0)
-    t.equal(functionNames.indexOf('serverless-test-project-dev-hello'), -1, `${metric} is disabled`)
-  }
-  t.end()
-})
-
-test('A widget is not created for Lambda if disabled at a function level for each metric', (t) => {
-  for (const metric of lambdaMetrics) {
-    const compiledTemplate = createTestCloudFormationTemplate();
-    (compiledTemplate.Resources as ResourceType).HelloLambdaFunction.Metadata = {
-      slicWatch: {
-        dashboard: Object.fromEntries(lambdaMetrics.map((metric) => ([
-          metric, { enabled: false }
-        ])))
-      }
-    }
-
-    addDashboard(defaultConfig.dashboard, compiledTemplate)
-    const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
-    const [, dashResource] = Object.entries(dashResources)[0]
-    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
-
-    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
-      title.startsWith(`Lambda ${metric}`)
-    )
-    const widgetMetrics = widgets[0].properties.metrics
-    const functionNames = widgetMetrics.map(widgetMetric => widgetMetric[3])
-    t.ok(functionNames.length > 0)
-    t.equal(functionNames.indexOf('serverless-test-project-dev-hello'), -1, `${metric} is disabled`)
-  }
-  t.end()
-})
-
-test('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
-  const compiledTemplate = createTestCloudFormationTemplate()
-  const allFunctionLogicalIds = Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))
-  for (const funcLogicalId of allFunctionLogicalIds) {
-    (compiledTemplate.Resources as ResourceType)[funcLogicalId].Metadata = {
-      slicWatch: {
-        dashboard: Object.fromEntries(lambdaMetrics.map((metric) => ([
-          metric, { enabled: false }
-        ])))
-      }
-    }
-  }
-
-  addDashboard(defaultConfig.dashboard, compiledTemplate)
-  const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
-  const [, dashResource] = Object.entries(dashResources)[0]
-  const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
-
-  const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
-    title.startsWith('Lambda')
-  )
-  t.equal(widgets.length, 0)
   t.end()
 })

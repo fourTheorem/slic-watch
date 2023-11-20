@@ -7,7 +7,6 @@ import addDashboard from '../dashboard'
 import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, getDashboardFromTemplate, getDashboardWidgetsByTitle } from '../../tests/testing-utils'
-// import { type ResourceType } from '../../cf-template'
 
 test('dashboard contains configured DynamoDB resources', (t) => {
   t.test('dashboards includes DynamoDB metrics', (t) => {

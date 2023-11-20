@@ -7,9 +7,11 @@ import addDashboard from '../dashboard'
 import defaultConfig from '../../inputs/default-config'
 
 import { createTestCloudFormationTemplate, getDashboardFromTemplate, getDashboardWidgetsByTitle } from '../../tests/testing-utils'
-import { type ResourceType } from '../../cf-template'
+import { getResourcesByType, type ResourceType } from '../../cf-template'
 
 test('dashboard contains configured Lambda Function resources', (t) => {
+  const lambdaMetrics = ['Errors', 'Duration', 'IteratorAge', 'Invocations', 'ConcurrentExecutions', 'Throttles']
+
   t.test('dashboards includes Lambda metrics', (t) => {
     const template = createTestCloudFormationTemplate()
     addDashboard(defaultConfig.dashboard, template)
@@ -185,5 +187,83 @@ test('dashboard contains configured Lambda Function resources', (t) => {
 
     t.end()
   })
+
+  test('A widget is not created for Lambda if disabled at a function level', (t) => {
+    for (const metric of lambdaMetrics) {
+      const compiledTemplate = createTestCloudFormationTemplate();
+      (compiledTemplate.Resources as ResourceType).HelloLambdaFunction.Metadata = {
+        slicWatch: {
+          dashboard: { enabled: false }
+        }
+      }
+
+      addDashboard(defaultConfig.dashboard, compiledTemplate)
+      const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
+      const [, dashResource] = Object.entries(dashResources)[0]
+      const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+
+      const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
+        title.startsWith(`Lambda ${metric}`)
+      )
+      const widgetMetrics = widgets[0].properties.metrics
+      const functionNames = widgetMetrics.map(widgetMetric => widgetMetric[3])
+      t.ok(functionNames.length > 0)
+      t.equal(functionNames.indexOf('serverless-test-project-dev-hello'), -1, `${metric} is disabled`)
+    }
+    t.end()
+  })
+
+  test('No Lambda widgets are created if all metrics for functions are disabled', (t) => {
+    const compiledTemplate = createTestCloudFormationTemplate()
+    const allFunctionLogicalIds = Object.keys(getResourcesByType('AWS::Lambda::Function', compiledTemplate))
+    for (const funcLogicalId of allFunctionLogicalIds) {
+      (compiledTemplate.Resources as ResourceType)[funcLogicalId].Metadata = {
+        slicWatch: {
+          dashboard: Object.fromEntries(lambdaMetrics.map((metric) => ([
+            metric, { enabled: false }
+          ])))
+        }
+      }
+    }
+
+    addDashboard(defaultConfig.dashboard, compiledTemplate)
+    const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
+    const [, dashResource] = Object.entries(dashResources)[0]
+    const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+
+    const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
+      title.startsWith('Lambda')
+    )
+    t.equal(widgets.length, 0)
+    t.end()
+  })
+
+  test('A widget is not created for Lambda if disabled at a function level for each metric', (t) => {
+    for (const metric of lambdaMetrics) {
+      const compiledTemplate = createTestCloudFormationTemplate();
+      (compiledTemplate.Resources as ResourceType).HelloLambdaFunction.Metadata = {
+        slicWatch: {
+          dashboard: Object.fromEntries(lambdaMetrics.map((metric) => ([
+            metric, { enabled: false }
+          ])))
+        }
+      }
+
+      addDashboard(defaultConfig.dashboard, compiledTemplate)
+      const dashResources = getResourcesByType('AWS::CloudWatch::Dashboard', compiledTemplate)
+      const [, dashResource] = Object.entries(dashResources)[0]
+      const dashboard = JSON.parse(dashResource.Properties?.DashboardBody['Fn::Sub'])
+
+      const widgets = dashboard.widgets.filter(({ properties: { title } }) =>
+        title.startsWith(`Lambda ${metric}`)
+      )
+      const widgetMetrics = widgets[0].properties.metrics
+      const functionNames = widgetMetrics.map(widgetMetric => widgetMetric[3])
+      t.ok(functionNames.length > 0)
+      t.equal(functionNames.indexOf('serverless-test-project-dev-hello'), -1, `${metric} is disabled`)
+    }
+    t.end()
+  })
+
   t.end()
 })

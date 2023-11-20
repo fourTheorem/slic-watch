@@ -267,7 +267,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               dimensions: {
                 StateMachineArn: `\${${logicalId}}`
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }
@@ -276,7 +277,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
         const metricStatWidget = createMetricWidget(
           `\${${logicalId}.Name} Step Function Executions`,
           widgetMetrics,
-          sfDashConfig
+          mergedConfig
         )
         smWidgets.push(metricStatWidget)
       }
