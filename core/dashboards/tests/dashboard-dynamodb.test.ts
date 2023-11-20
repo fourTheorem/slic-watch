@@ -102,6 +102,8 @@ test('dashboard contains configured DynamoDB resources', (t) => {
       const props: MetricWidgetProperties = widget.properties as MetricWidgetProperties
       t.equal(props.period, 900)
       t.equal(props.view, 'timeSeries')
+      t.equal(widget.width, 8)
+      t.equal(widget.height, 12)
     }
     t.end()
   })
@@ -138,7 +140,7 @@ test('dashboard contains configured DynamoDB resources', (t) => {
 
     const [
       readThrottlesWidget, readThrottlesGsiWidget, writeThrottlesWidget, writeThrottlesGsiWidget,
-      throttledPutRecordWidget, throttledPutRecordGsiWidget,
+      throttledPutRecordWidget, throttledPutRecordGsiWidget
     ] = widgets
     t.ok(writeThrottlesWidget)
     t.ok(writeThrottlesGsiWidget)

@@ -5,7 +5,7 @@ import { filterObject } from './filter-object'
 import { getLogger } from './logging'
 import { cascade } from './inputs/cascading-config'
 import { type SlicWatchMergedConfig } from './alarms/alarm-types'
-import { type SlicWatchDashboardConfig, type WidgetMetricProperties } from './dashboards/dashboard-types'
+import { type WidgetMetricProperties } from './dashboards/dashboard-types'
 import { merge } from 'lodash'
 
 const logger = getLogger()
@@ -89,7 +89,7 @@ export function getResourceDashboardConfigurationsByType<T extends WidgetMetricP
   const dashConfigurations: Record<string, T> = {}
   const resources = getResourcesByType(type, template)
   for (const [logicalId, resource] of Object.entries(resources)) {
-    dashConfigurations[logicalId] = merge({}, config, cascade(resource?.Metadata?.slicWatch?.dashboard ?? {}) as SlicWatchDashboardConfig)
+    dashConfigurations[logicalId] = cascade(merge({}, config, cascade(resource?.Metadata?.slicWatch?.dashboard ?? {}))) as T
   }
   return {
     resources,

@@ -312,7 +312,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
             const metricStatWidget = createMetricWidget(
               `${metric} Table $\{${logicalId}}`,
               widgetMetrics,
-              dynamoDbDashConfig
+              metricConfig
             )
             ddbWidgets.push(metricStatWidget)
           }
@@ -335,7 +335,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               const metricStatWidget = createMetricWidget(
                 `${metric} GSI ${gsiName} in \${${logicalId}}`,
                 gsiWidgetMetrics,
-                dynamoDbDashConfig
+                metricConfig
               )
               ddbWidgets.push(metricStatWidget)
             }
@@ -373,7 +373,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                 namespace: 'AWS/Kinesis',
                 metric,
                 dimensions: { StreamName: `\${${logicalId}}` },
-                stat
+                stat,
+                yAxis: metricConfig.yAxis
               })
             }
           }
@@ -382,7 +383,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
           streamWidgets.push(createMetricWidget(
             `${group} $\{${logicalId}} Kinesis`,
             widgetMetrics,
-            kinesisDashConfig
+            streamConfig
           ))
         }
       }
