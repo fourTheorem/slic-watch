@@ -148,7 +148,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                   namespace: 'AWS/Lambda',
                   metric,
                   dimensions: { FunctionName: `\${${funcLogicalId}}` },
-                  stat: stat as Statistic,
+                  stat,
                   yAxis: metricConfig.yAxis
                 })
               }
@@ -294,9 +294,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
     const ddbWidgets: WidgetWithSize[] = []
     for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const mergedConfig = configuredResources.dashConfigurations[logicalId]
-      const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
         if (metricConfig.enabled) {
+          const widgetMetrics: MetricDefs[] = []
           for (const stat of metricConfig.Statistic) {
             widgetMetrics.push({
               namespace: 'AWS/DynamoDB',
@@ -304,7 +304,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               dimensions: {
                 TableName: `\${${logicalId}}`
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
           if (widgetMetrics.length > 0) {
@@ -316,22 +317,24 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
             ddbWidgets.push(metricStatWidget)
           }
           for (const gsi of res.Properties?.GlobalSecondaryIndexes ?? []) {
+            const gsiWidgetMetrics: MetricDefs[] = []
             const gsiName: string = gsi.IndexName
             for (const stat of metricConfig.Statistic) {
-              widgetMetrics.push({
+              gsiWidgetMetrics.push({
                 namespace: 'AWS/DynamoDB',
                 metric,
                 dimensions: {
                   TableName: `\${${logicalId}}`,
                   GlobalSecondaryIndex: gsiName
                 },
-                stat
+                stat,
+                yAxis: metricConfig.yAxis
               })
             }
-            if (widgetMetrics.length > 0) {
+            if (gsiWidgetMetrics.length > 0) {
               const metricStatWidget = createMetricWidget(
                 `${metric} GSI ${gsiName} in \${${logicalId}}`,
-                widgetMetrics,
+                gsiWidgetMetrics,
                 dynamoDbDashConfig
               )
               ddbWidgets.push(metricStatWidget)
