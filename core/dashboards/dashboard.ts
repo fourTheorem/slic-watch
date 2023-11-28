@@ -481,7 +481,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Create a set of CloudWatch Dashboard widgets for SNS services.
    */
   function createTopicWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::SNS::Topic', compiledTemplate, snsDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(
+      'AWS::SNS::Topic', compiledTemplate, snsDashConfig
+    )
     const topicWidgets: WidgetWithSize[] = []
     for (const logicalId of Object.keys(configuredResources.resources)) {
       const widgetMetrics: MetricDefs[] = []
@@ -495,7 +497,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               dimensions: {
                 TopicName: `\${${logicalId}.TopicName}`
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }
