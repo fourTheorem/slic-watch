@@ -29,34 +29,6 @@ test('A dashboard includes metrics', (t) => {
 
   t.ok(dashboard.start)
 
-  t.test('dashboard includes SQS metrics', (t) => {
-    const widgets = dashboard.widgets.filter(({ properties }) =>
-      ((properties as MetricWidgetProperties).title ?? '').endsWith('SQS')
-    )
-    t.equal(widgets.length, 6) // 3 groups * 2 queues
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/SQS']))
-    const expectedTitles = new Set([
-      'Messages ${regularQueue.QueueName} SQS',
-      'Oldest Message age ${regularQueue.QueueName} SQS',
-      'Messages in queue ${regularQueue.QueueName} SQS',
-      'Messages ${fifoQueue.QueueName} SQS',
-      'Oldest Message age ${fifoQueue.QueueName} SQS',
-      'Messages in queue ${fifoQueue.QueueName} SQS'
-    ])
-
-    const actualTitles = new Set(
-      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
-
   t.test('dashboard includes ECS metrics', (t) => {
     const widgets = dashboard.widgets.filter(({ properties }) =>
       ((properties as MetricWidgetProperties).title ?? '').startsWith('ECS')

@@ -419,6 +419,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                 dimensions: {
                   QueueName: `\${${logicalId}.QueueName}`
                 },
+                yAxis: metricConfig.yAxis,
                 stat
               })
             }
