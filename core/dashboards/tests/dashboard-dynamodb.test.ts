@@ -1,6 +1,7 @@
 import { merge } from 'lodash'
 import { test } from 'tap'
 import { type MetricWidgetProperties } from 'cloudwatch-dashboard-types'
+import { type DynamoDB } from 'cloudform'
 
 import { type ResourceType } from '../../cf-template'
 import addDashboard from '../dashboard'
@@ -48,6 +49,29 @@ test('dashboard contains configured DynamoDB resources', (t) => {
       t.equal(props.view, 'timeSeries')
     }
 
+    t.end()
+  })
+
+  t.test('dashboards includes DynamoDB metrics without GSIs', (t) => {
+    const template = createTestCloudFormationTemplate()
+    delete ((template.Resources as ResourceType).dataTable as DynamoDB.Table).Properties.GlobalSecondaryIndexes
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const widgets = getDashboardWidgetsByTitle(dashboard,
+      /ReadThrottleEvents Table /,
+      /ReadThrottleEvents GSI GSI1 in /,
+      /WriteThrottleEvents Table /,
+      /WriteThrottleEvents GSI GSI1 in /
+    )
+
+    const [
+      readThrottlesWidget, readThrottlesGsiWidget, writeThrottlesWidget, writeThrottlesGsiWidget
+    ] = widgets
+    t.ok(readThrottlesWidget)
+    t.notOk(readThrottlesGsiWidget)
+    t.ok(writeThrottlesWidget)
+    t.notOk(writeThrottlesGsiWidget)
     t.end()
   })
 

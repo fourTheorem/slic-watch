@@ -573,7 +573,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               dimensions: {
                 LoadBalancer: loadBalancerFullName
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }
@@ -619,7 +620,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                   LoadBalancer: loadBalancerFullName,
                   TargetGroup: targetGroupFullName
                 },
-                stat
+                stat,
+                yAxis: metricConfig.yAxis
               })
             }
           }
