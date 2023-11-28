@@ -533,7 +533,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               namespace: 'AWS/Events',
               metric,
               dimensions: { RuleName: `\${${logicalId}}` },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }

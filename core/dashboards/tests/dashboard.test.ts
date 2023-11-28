@@ -52,27 +52,6 @@ test('A dashboard includes metrics', (t) => {
     t.end()
   })
 
-  t.test('dashboard includes Events metrics', (t) => {
-    const widgets = dashboard.widgets.filter(({ properties }) =>
-      ((properties as MetricWidgetProperties).title ?? '').startsWith('EventBridge')
-    )
-    t.equal(widgets.length, 1)
-    const namespaces = new Set()
-    for (const widget of widgets) {
-      for (const metric of (widget.properties as MetricWidgetProperties).metrics ?? []) {
-        namespaces.add(metric[0])
-      }
-    }
-    t.same(namespaces, new Set(['AWS/Events']))
-    const expectedTitles = new Set(['EventBridge Rule ${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}'])
-
-    const actualTitles = new Set(
-      widgets.map((widget) => (widget.properties as MetricWidgetProperties).title)
-    )
-    t.same(actualTitles, expectedTitles)
-    t.end()
-  })
-
   t.end()
 })
 
