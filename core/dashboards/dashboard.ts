@@ -460,7 +460,8 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                 ServiceName: `\${${logicalId}.Name}`,
                 ClusterName: clusterName
               },
-              stat
+              stat,
+              yAxis: metricConfig.yAxis
             })
           }
         }
