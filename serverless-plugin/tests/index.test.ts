@@ -2,44 +2,17 @@ import { test } from 'tap'
 import _ from 'lodash'
 import ServerlessError from 'serverless/lib/serverless-error'
 
-import pino from 'pino'
-
 import ServerlessPlugin from '../serverless-plugin'
 import { getLogger } from 'slic-watch-core/logging'
+import { createMockServerless, dummyLogger, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
+import { type ResourceType } from 'slic-watch-core'
 
 interface TestData {
   schema?
   functionSchema?
 }
 
-interface SlsYaml {
-  custom?
-  functions?
-}
-
-// Serverless Framework provides plugins with a logger to use, so we simulate that with this:
-const logger = Object.assign({}, pino())
-const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
-for (const extra of extras) {
-  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-  delete logger[extra]
-}
-const pluginUtils = { log: logger }
-
-const slsYaml: SlsYaml = {
-  custom: {
-    slicWatch: {
-      topicArn: 'test-topic',
-      enabled: true
-    }
-  },
-  functions: {
-    hello: {
-    }
-  }
-}
-
-const testCfTemplate = {
+const mockServerless = createMockServerless({
   Resources: {
     HelloLambdaFunction: {
       Type: 'AWS::Lambda::Function',
@@ -48,30 +21,7 @@ const testCfTemplate = {
       }
     }
   }
-}
-
-const mockServerless = {
-  cli: {
-    log: () => { '' }
-  },
-  providers: { aws: {} },
-  getProvider: () => ({
-    naming: {
-      getLambdaLogicalId: (funcName: string) => {
-        return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
-      }
-    }
-  }),
-  service: {
-    ...slsYaml,
-    provider: {
-      name: 'aws',
-      compiledCloudFormationTemplate: testCfTemplate
-    },
-    getAllFunctions: () => Object.keys(slsYaml.functions),
-    getFunction: (funcRef) => slsYaml.functions[funcRef]
-  }
-}
+})
 
 function compileServerlessFunctionsToCloudformation (functions: Record<string, any>, provider: () => {
   naming: { getLambdaLogicalId: (funcName: string) => string }
@@ -94,7 +44,7 @@ test('index', t => {
   t.test('plugin uses v3 logger', t => {
     // Since v3, Serverless Framework provides a logger that we must use to log output
     const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
-    t.same(getLogger(), logger)
+    t.same(getLogger(), dummyLogger)
     t.ok(plugin)
     t.end()
   })
@@ -221,34 +171,21 @@ test('index', t => {
   })
 
   t.test('should create only the dashboard when a lambda is not referenced in the serverless functions config', t => {
-    const mockServerless = {
-      getProvider: () => {
-      },
-      service: {
-        getAllFunctions: () => [],
-        provider: {
-          name: 'aws',
-          compiledCloudFormationTemplate: {
-            Resources: {
-              HelloTestLambda: {
-                Type: 'AWS::Lambda::Function',
-                MemorySize: 256,
-                Runtime: 'nodejs12',
-                Timeout: 60
-              }
-            }
-          }
-        },
-        custom: {
-          slicWatch: {
-            enabled: true
+    const mockServerless = createMockServerless({
+      Resources: {
+        HelloTestLambda: {
+          Type: 'AWS::Lambda::Function',
+          Properties: {
+            MemorySize: 256,
+            Runtime: 'nodejs12',
+            Timeout: 60
           }
         }
       }
-    }
+    })
     const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     plugin.createSlicWatchResources()
-    t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources), ['HelloTestLambda', 'slicWatchDashboard'])
+    t.same(Object.keys(mockServerless.service.provider.compiledCloudFormationTemplate.Resources as ResourceType), ['HelloTestLambda', 'slicWatchDashboard'])
     t.end()
   })
 

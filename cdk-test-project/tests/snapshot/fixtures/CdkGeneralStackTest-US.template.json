@@ -1,0 +1,971 @@
+{
+ "Transform": "SlicWatch-v3",
+ "Metadata": {
+  "slicWatch": {
+   "enabled": true,
+   "topicArn": "arn:aws:xxxxxx:mytopic",
+   "alarms": {
+    "Lambda": {
+     "Invocations": {
+      "enabled": true,
+      "Threshold": 10
+     }
+    },
+    "SQS": {
+     "AgeOfOldestMessage": {
+      "Statistic": "Maximum",
+      "enabled": true,
+      "Threshold": 60
+     },
+     "InFlightMessagesPc": {
+      "Statistic": "Maximum",
+      "Threshold": 1
+     }
+    }
+   },
+   "alarmActionsConfig": {
+    "alarmActions": [
+     {
+      "Ref": "MyTopic86869434"
+     }
+    ]
+   }
+  }
+ },
+ "Resources": {
+  "MyTopic86869434": {
+   "Type": "AWS::SNS::Topic",
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/MyTopic/Resource"
+   }
+  },
+  "HelloHandlerServiceRole11EF7C63": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/HelloHandler/ServiceRole/Resource"
+   }
+  },
+  "HelloHandler2E4FBA4D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "HelloHandlerServiceRole11EF7C63",
+      "Arn"
+     ]
+    },
+    "Handler": "hello.handler",
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "HelloHandlerServiceRole11EF7C63"
+   ],
+   "Metadata": {
+    "slicWatch": {
+     "alarms": {
+      "Lambda": {
+       "Invocations": {
+        "Threshold": 4
+       }
+      }
+     }
+    }
+   }
+  },
+  "PingHandlerServiceRole46086423": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/PingHandler/ServiceRole/Resource"
+   }
+  },
+  "PingHandler50068074": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "PingHandlerServiceRole46086423",
+      "Arn"
+     ]
+    },
+    "Handler": "hello.handler",
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "PingHandlerServiceRole46086423"
+   ],
+   "Metadata": {
+    "slicWatch": {
+     "dashboard": {
+      "enabled": false
+     }
+    }
+   }
+  },
+  "ThrottlerHandlerServiceRoleA0481DAF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/ThrottlerHandler/ServiceRole/Resource"
+   }
+  },
+  "ThrottlerHandler750A7C89": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "ThrottlerHandlerServiceRoleA0481DAF",
+      "Arn"
+     ]
+    },
+    "Handler": "hello.handler",
+    "ReservedConcurrentExecutions": 0,
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "ThrottlerHandlerServiceRoleA0481DAF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/ThrottlerHandler/Resource",
+    "aws:asset:path": "asset.03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DriveStreamHandlerServiceRoleD2BAFDD4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveStreamHandler/ServiceRole/Resource"
+   }
+  },
+  "DriveStreamHandler62F1767B": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "DriveStreamHandlerServiceRoleD2BAFDD4",
+      "Arn"
+     ]
+    },
+    "Handler": "stream-test-handler.handleDrive",
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "DriveStreamHandlerServiceRoleD2BAFDD4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveStreamHandler/Resource",
+    "aws:asset:path": "asset.03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DriveQueueHandlerServiceRoleD796850A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveQueueHandler/ServiceRole/Resource"
+   }
+  },
+  "DriveQueueHandler9F657A00": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "DriveQueueHandlerServiceRoleD796850A",
+      "Arn"
+     ]
+    },
+    "Handler": "hello.handler",
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "DriveQueueHandlerServiceRoleD796850A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveQueueHandler/Resource",
+    "aws:asset:path": "asset.03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DriveTableHandlerServiceRoleDDA3FBE1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveTableHandler/ServiceRole/Resource"
+   }
+  },
+  "DriveTableHandler119966B0": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
+     },
+     "S3Key": "03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "DriveTableHandlerServiceRoleDDA3FBE1",
+      "Arn"
+     ]
+    },
+    "Handler": "hello.handler",
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "DriveTableHandlerServiceRoleDDA3FBE1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DriveTableHandler/Resource",
+    "aws:asset:path": "asset.03015a4df782c6ac9c6d09c548490f98a81c69c44e4262ca4c99d29652f52640",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "myapi162F20B8": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "myapi"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Resource"
+   }
+  },
+  "myapiCloudWatchRoleEB425128": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/CloudWatchRole/Resource"
+   }
+  },
+  "myapiAccountC3A4750C": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "myapiCloudWatchRoleEB425128",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "myapi162F20B8"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Account"
+   }
+  },
+  "myapiDeploymentB7EF8EB7fea2aa51ab5416f81a0b318c3a85d817": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "myapi162F20B8"
+    },
+    "Description": "Automatically created by the RestApi construct"
+   },
+   "DependsOn": [
+    "myapiproxyANYDD7FCE64",
+    "myapiproxyB6DF4575",
+    "myapiANY111D56B7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Deployment/Resource"
+   }
+  },
+  "myapiDeploymentStageprod329F21FF": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "myapi162F20B8"
+    },
+    "DeploymentId": {
+     "Ref": "myapiDeploymentB7EF8EB7fea2aa51ab5416f81a0b318c3a85d817"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "myapiAccountC3A4750C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/DeploymentStage.prod/Resource"
+   }
+  },
+  "myapiproxyB6DF4575": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "myapi162F20B8",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "{proxy+}",
+    "RestApiId": {
+     "Ref": "myapi162F20B8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/{proxy+}/Resource"
+   }
+  },
+  "myapiproxyANYApiPermissionCdkGeneralStackTestUSmyapi9E6CC024ANYproxy61FC0812": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HelloHandler2E4FBA4D",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "myapi162F20B8"
+       },
+       "/",
+       {
+        "Ref": "myapiDeploymentStageprod329F21FF"
+       },
+       "/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/{proxy+}/ANY/ApiPermission.CdkGeneralStackTestUSmyapi9E6CC024.ANY..{proxy+}"
+   }
+  },
+  "myapiproxyANYApiPermissionTestCdkGeneralStackTestUSmyapi9E6CC024ANYproxy352B4E19": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HelloHandler2E4FBA4D",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "myapi162F20B8"
+       },
+       "/test-invoke-stage/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/{proxy+}/ANY/ApiPermission.Test.CdkGeneralStackTestUSmyapi9E6CC024.ANY..{proxy+}"
+   }
+  },
+  "myapiproxyANYDD7FCE64": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "ANY",
+    "ResourceId": {
+     "Ref": "myapiproxyB6DF4575"
+    },
+    "RestApiId": {
+     "Ref": "myapi162F20B8"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "HelloHandler2E4FBA4D",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/{proxy+}/ANY/Resource"
+   }
+  },
+  "myapiANYApiPermissionCdkGeneralStackTestUSmyapi9E6CC024ANY52E5EFEE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HelloHandler2E4FBA4D",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "myapi162F20B8"
+       },
+       "/",
+       {
+        "Ref": "myapiDeploymentStageprod329F21FF"
+       },
+       "/*/"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/ANY/ApiPermission.CdkGeneralStackTestUSmyapi9E6CC024.ANY.."
+   }
+  },
+  "myapiANYApiPermissionTestCdkGeneralStackTestUSmyapi9E6CC024ANY1136CBF8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HelloHandler2E4FBA4D",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "myapi162F20B8"
+       },
+       "/test-invoke-stage/*/"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/ANY/ApiPermission.Test.CdkGeneralStackTestUSmyapi9E6CC024.ANY.."
+   }
+  },
+  "myapiANY111D56B7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "ANY",
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "myapi162F20B8",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "myapi162F20B8"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "HelloHandler2E4FBA4D",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/myapi/Default/ANY/Resource"
+   }
+  },
+  "TableCD117FA1": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/Table/Resource"
+   }
+  },
+  "ruleF2C1DCDC": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "EventPattern": {
+     "source": [
+      "aws.ec2"
+     ]
+    },
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "HelloHandler2E4FBA4D",
+        "Arn"
+       ]
+      },
+      "DeadLetterConfig": {
+       "Arn": {
+        "Fn::GetAtt": [
+         "DeadLetterQueue9F481546",
+         "Arn"
+        ]
+       }
+      },
+      "Id": "Target0",
+      "RetryPolicy": {
+       "MaximumEventAgeInSeconds": 7200,
+       "MaximumRetryAttempts": 2
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/rule/Resource"
+   }
+  },
+  "ruleAllowEventRuleCdkGeneralStackTestUSHelloHandlerC75B8B54C6DD839C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HelloHandler2E4FBA4D",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "ruleF2C1DCDC",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/rule/AllowEventRuleCdkGeneralStackTestUSHelloHandlerC75B8B54"
+   }
+  },
+  "DeadLetterQueue9F481546": {
+   "Type": "AWS::SQS::Queue",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DeadLetterQueue/Resource"
+   }
+  },
+  "DeadLetterQueuePolicyB1FB890C": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Fn::GetAtt": [
+           "ruleF2C1DCDC",
+           "Arn"
+          ]
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "DeadLetterQueue9F481546",
+         "Arn"
+        ]
+       },
+       "Sid": "AllowEventRuleCdkGeneralStackTestUSruleB0D09E87"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "DeadLetterQueue9F481546"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/DeadLetterQueue/Policy/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Q30/DIBDH/5a9M9SZmL12Gp801rr3hdKzshaoPdhsGv53D5izCeE+9z24Xxu+feC3K3HGtWy6da9qPn84ITtG0mFGg3ze20FJ9vhpEgTWC103gs/P3kinrImhJZcwaoVIXmBKaD5XtocYiDYwvD8IRHDIi2jI5zsvO3A7gcDEoFrh4CwmPr+kQhWgKwaVEvxjIaX1xrEnGHo7aSAkdeHRFG2qmoG+Wj9KSEXK0f5Mf8olceZXcF+2iVKmwJrJCG0b2ste1HmOBIHBierQfip/Gc+n8b5Jevfgk5Yh3aXtlZyuYnZDuHbG0jpit8q08dmbd4N3y/YCM7YBfsSb092W09msjqjUeqRNKA28yvYXs0P/r9UBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkGeneralStackTest-US/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "myapiEndpoint8EB17201": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "myapi162F20B8"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "myapiDeploymentStageprod329F21FF"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
