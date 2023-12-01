@@ -30,20 +30,21 @@ The following is a checklist of steps that must be followed to add support for a
  a. Once you have added the new resource to `serverless-test-project`, compile the project to generate the CloudFormation JSON by running `serverless package`
  b. Copy `serverless-test-project/.serverless/cloudformation-template-update-stack.json` to [serverless-plugin/tests/resources/cloudformation-template-stack.json](serverless-plugin/tests/resources/cloudformation-template-stack.json`).
  c. Manually edit `serverless-plugin/tests/resources/cloudformation-template-stack.json` to remove any `AWS::CloudWatch::Dashboard` and `AWS::CloudWatch::Alarm` resources. This is important since we need the unit tests to generate these resources, so they cannot exist in the source template
-4. Add alarms:
+4. Snapshot tests are used to detect breaking or problematic changes in generated templates. They are automatically run with `npm test` but can be run in isolation with `npm run test:snapshots`. Snapshots can be regenerated (if you really are sure that they should be updated!) with `npm run test:snapshots:generate`
+5. Add alarms:
  a. Create a new `alarms-<service>.js` module in [serverless-plugin](./serverless-plugin/). One of the existing `alarms-<service>.js` modules may be used as a template.
  b. Update [serverless-plugin/alarms.js](./serverless-plugin/alarms.js) to wire in the new `alarms-<service>` module.
  c. Create a unit test for the new alarm module and update [alarms.test.js](./serverless-plugin/tests/alarms.test.js) to add coverage for the new resource. This will use the CloudFormation template you updated above.
-5. Add dashboard widgets:
+6. Add dashboard widgets:
  a. Add support for the new dashboard widgets in [serverless-plugin/dashboard.js](./serverless-plugin/dashboard.js)
  b. Update [dashboard.test.js](./serverless-plugin/tests/dashboard.test.js) to add coverage for the new resource
-6. Update SLIC Watch configuration support:
+7. Update SLIC Watch configuration support:
  a. Add default values for your resource's alarm and dashboard configuration in [default-config.js](./serverless-plugin/default-config.js).
  b. Update the JSON schema for SLIC Watch configuration ([config-schema.js](./serverless-plugin/config-schema.js)). Here, you can define the supported alarm metrics and widgets.
-7. Manually (or using automation) integration test the new feature
+8. Manually (or using automation) integration test the new feature
  a. The method will vary based on the resource type, but the idea is to trigger alarms and generate metrics to validate that both alarms and dashboards are working as expected. You can use the resource you added to `serverless-test-project` for this.
  b. For example integration tests, see the Python-based notebooks in [testing](./testing).
-8. Update the README.md:
+9. Update the README.md:
  a. Include the updated default configuration
  b. Add the new resource type to the list of features
  c. Update the dashboard screenshots to include your new widget with metrics shown (using Dark Mode in the CloudWatch Console!)

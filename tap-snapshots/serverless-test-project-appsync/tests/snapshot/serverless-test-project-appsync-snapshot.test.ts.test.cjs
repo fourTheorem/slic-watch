@@ -6,548 +6,923 @@
  */
 'use strict'
 exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-appsync-snapshot.test.ts > TAP > serverless-test-project-appsync snapshot > serverless-test-project-appsync template 1`] = `
-Object {
-  "AwesomeappsyncGraphQlApi": Object {
-    "Properties": Object {
-      "AdditionalAuthenticationProviders": Array [],
-      "AuthenticationType": "AMAZON_COGNITO_USER_POOLS",
-      "Name": "awesome-appsync",
-      "UserPoolConfig": Object {
-        "AwsRegion": "eu-west-1",
-        "DefaultAction": "ALLOW",
-        "UserPoolId": Object {
-          "Ref": "CognitoUserPool",
-        },
-      },
-      "XrayEnabled": false,
-    },
-    "Type": "AWS::AppSync::GraphQLApi",
-  },
-  "AwesomeappsyncGraphQlDsbooksTable": Object {
-    "Properties": Object {
-      "ApiId": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlApi",
-          "ApiId",
-        ],
-      },
-      "DynamoDBConfig": Object {
-        "AwsRegion": "eu-west-1",
-        "TableName": Object {
-          "Ref": "BooksTable",
-        },
-        "UseCallerCredentials": false,
-        "Versioned": false,
-      },
-      "Name": "booksTable",
-      "ServiceRoleArn": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlDsbooksTableRole",
-          "Arn",
-        ],
-      },
-      "Type": "AMAZON_DYNAMODB",
-    },
-    "Type": "AWS::AppSync::DataSource",
-  },
-  "AwesomeappsyncGraphQlDsbooksTableRole": Object {
-    "Properties": Object {
-      "AssumeRolePolicyDocument": Object {
-        "Statement": Array [
-          Object {
-            "Action": Array [
-              "sts:AssumeRole",
-            ],
-            "Effect": "Allow",
-            "Principal": Object {
-              "Service": Array [
-                "appsync.amazonaws.com",
-              ],
-            },
-          },
-        ],
-        "Version": "2012-10-17",
-      },
-      "Policies": Array [
-        Object {
-          "PolicyDocument": Object {
-            "Statement": Array [
-              Object {
-                "Action": Array [
-                  "dynamodb:DeleteItem",
-                  "dynamodb:GetItem",
-                  "dynamodb:PutItem",
-                  "dynamodb:Query",
-                  "dynamodb:Scan",
-                  "dynamodb:UpdateItem",
-                  "dynamodb:BatchGetItem",
-                  "dynamodb:BatchWriteItem",
-                  "dynamodb:ConditionCheckItem",
-                ],
-                "Effect": "Allow",
-                "Resource": Array [
-                  Object {
-                    "Fn::Join": Array [
-                      ":",
-                      Array [
-                        "arn",
-                        "aws",
-                        "dynamodb",
-                        "eu-west-1",
-                        Object {
-                          "Ref": "AWS::AccountId",
-                        },
-                        Object {
-                          "Fn::Join": Array [
-                            "/",
-                            Array [
-                              "table",
-                              Object {
-                                "Ref": "BooksTable",
-                              },
-                            ],
-                          ],
-                        },
-                      ],
-                    ],
-                  },
-                  Object {
-                    "Fn::Join": Array [
-                      "/",
-                      Array [
-                        Object {
-                          "Fn::Join": Array [
-                            ":",
-                            Array [
-                              "arn",
-                              "aws",
-                              "dynamodb",
-                              "eu-west-1",
-                              Object {
-                                "Ref": "AWS::AccountId",
-                              },
-                              Object {
-                                "Fn::Join": Array [
-                                  "/",
-                                  Array [
-                                    "table",
-                                    Object {
-                                      "Ref": "BooksTable",
-                                    },
-                                  ],
-                                ],
-                              },
-                            ],
-                          ],
-                        },
-                        "*",
-                      ],
-                    ],
-                  },
-                ],
-              },
-            ],
-            "Version": "2012-10-17",
-          },
-          "PolicyName": "GraphQlDsbooksTablePolicy",
-        },
-      ],
-    },
-    "Type": "AWS::IAM::Role",
-  },
-  "AwesomeappsyncGraphQlResolverMutationcreateBook": Object {
-    "DependsOn": "AwesomeappsyncGraphQlSchema",
-    "Properties": Object {
-      "ApiId": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlApi",
-          "ApiId",
-        ],
-      },
-      "DataSourceName": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlDsbooksTable",
-          "Name",
-        ],
-      },
-      "FieldName": "createBook",
-      "Kind": "UNIT",
-      "RequestMappingTemplate": String(
-        {
-            "version" : "2018-05-29",
-            "operation" : "PutItem",
-            "key": {
-                "bookId" : $util.dynamodb.toDynamoDBJson($util.autoId())
-            },
-            "attributeValues" : {
-                "title" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.title),
-                "description" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.description),
-                "imageUrl" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.imageUrl),
-                "author" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.author),
-                "price" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.price),
-                "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
-                "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
             }
+          ]
         }
-      ),
-      "ResponseMappingTemplate": "$util.toJson($context.result)",
-      "TypeName": "Mutation",
+      }
     },
-    "Type": "AWS::AppSync::Resolver",
-  },
-  "AwesomeappsyncGraphQlResolverQuerygetBookById": Object {
-    "DependsOn": "AwesomeappsyncGraphQlSchema",
-    "Properties": Object {
-      "ApiId": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlApi",
-          "ApiId",
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "bucket": {
+      "Type": "AWS::S3::Bucket"
+    },
+    "BooksTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "bookId",
+            "KeyType": "HASH"
+          }
         ],
-      },
-      "DataSourceName": Object {
-        "Fn::GetAtt": Array [
-          "AwesomeappsyncGraphQlDsbooksTable",
-          "Name",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "bookId",
+            "AttributeType": "S"
+          }
         ],
-      },
-      "FieldName": "getBookById",
-      "Kind": "UNIT",
-      "RequestMappingTemplate": String(
-        #if ($context.info.selectionSetList.size() == 1 && $context.info.selectionSetList[0] == "id")
-          #set ($result = { "id": "$context.source.otherUserId" })
-        
-          #return($result)
-        #end
-        
-        {
-          "version" : "2018-05-29",
-          "operation" : "GetItem",
-          "key" : {
-            "bookId" : $util.dynamodb.toDynamoDBJson($context.arguments.bookId)
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "books-table"
+          }
+        ]
+      }
+    },
+    "CognitoUserPool": {
+      "Type": "AWS::Cognito::UserPool",
+      "Properties": {
+        "AutoVerifiedAttributes": [
+          "email"
+        ],
+        "Policies": {
+          "PasswordPolicy": {
+            "MinimumLength": 8,
+            "RequireLowercase": false,
+            "RequireNumbers": false,
+            "RequireUppercase": false,
+            "RequireSymbols": false
+          }
+        },
+        "UsernameAttributes": [
+          "email"
+        ],
+        "Schema": [
+          {
+            "AttributeDataType": "String",
+            "Name": "name",
+            "Required": false,
+            "Mutable": true
+          }
+        ],
+        "UserPoolName": "BookStoreUserPool"
+      }
+    },
+    "CognitoUserPoolClient": {
+      "Type": "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "UserPoolId": {
+          "Ref": "CognitoUserPool"
+        },
+        "ClientName": "web",
+        "ExplicitAuthFlows": [
+          "ALLOW_USER_SRP_AUTH",
+          "ALLOW_USER_PASSWORD_AUTH",
+          "ALLOW_REFRESH_TOKEN_AUTH"
+        ],
+        "PreventUserExistenceErrors": "ENABLED"
+      }
+    },
+    "CognitoAdminGroup": {
+      "Type": "AWS::Cognito::UserPoolGroup",
+      "Properties": {
+        "UserPoolId": {
+          "Ref": "CognitoUserPool"
+        },
+        "GroupName": "Admin",
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "CognitoAdminIAMrole",
+            "Arn"
+          ]
+        },
+        "Description": "Admin users belong to this group"
+      }
+    },
+    "CognitoAdminIAMrole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": [
+                  "cognito-identity.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRoleWithWebIdentity"
+              ]
+            }
+          ]
+        },
+        "Description": "This is the IAM role that admin group users name",
+        "Policies": [
+          {
+            "PolicyName": "bookstore-admin-group-policy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:*"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "BooksTable",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "RoleName": "bookstore-admin-role"
+      }
+    },
+    "CognitoCustomerGroup": {
+      "Type": "AWS::Cognito::UserPoolGroup",
+      "Properties": {
+        "UserPoolId": {
+          "Ref": "CognitoUserPool"
+        },
+        "GroupName": "Customer",
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "CognitoUserIAMrole",
+            "Arn"
+          ]
+        },
+        "Description": "Customer belongs to this group"
+      }
+    },
+    "CognitoUserIAMrole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": [
+                  "cognito-identity.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRoleWithWebIdentity"
+              ]
+            }
+          ]
+        },
+        "Description": "This is the IAM role that admin group users name",
+        "Policies": [
+          {
+            "PolicyName": "book-store-customer-group-policy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:BatchGetItem"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "BooksTable",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "RoleName": "bookstore-customer-role"
+      }
+    },
+    "AwesomeappsyncGraphQlApi": {
+      "Type": "AWS::AppSync::GraphQLApi",
+      "Properties": {
+        "Name": "awesome-appsync",
+        "AuthenticationType": "AMAZON_COGNITO_USER_POOLS",
+        "AdditionalAuthenticationProviders": [],
+        "UserPoolConfig": {
+          "AwsRegion": "eu-west-1",
+          "UserPoolId": {
+            "Ref": "CognitoUserPool"
+          },
+          "DefaultAction": "ALLOW"
+        },
+        "XrayEnabled": false
+      }
+    },
+    "AwesomeappsyncGraphQlSchema": {
+      "Type": "AWS::AppSync::GraphQLSchema",
+      "Properties": {
+        "Definition": "schema {\\n  query: Query\\n  mutation: Mutation\\n  subscription: Subscription\\n}\\n\\ntype Subscription {\\n  onCreateBook: Book @aws_subscribe(mutations: [\\"createBook\\"])\\n}\\n\\ntype Query {\\n  getBookById(bookId: ID!): Book!\\n}\\n\\ntype Book {\\n  bookId: ID!\\n  title: String!\\n  description: String\\n  imageUrl: AWSURL\\n  author: String!\\n  price: Float!\\n  createdAt: AWSDateTime!\\n  updatedAt: AWSDateTime!\\n}\\n\\ntype Mutation {\\n  createBook(newBook: BookInput): Book! @aws_auth(cognito_groups: [\\"Admin\\"])\\n}\\n\\ninput BookInput {\\n  title: String!\\n  description: String\\n  imageUrl: AWSURL\\n  author: String!\\n  price: Float!\\n}",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlApi",
+            "ApiId"
+          ]
+        }
+      }
+    },
+    "AwesomeappsyncGraphQlDsbooksTableRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "appsync.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "GraphQlDsbooksTablePolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "dynamodb:DeleteItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:BatchGetItem",
+                    "dynamodb:BatchWriteItem",
+                    "dynamodb:ConditionCheckItem"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        ":",
+                        [
+                          "arn",
+                          "aws",
+                          "dynamodb",
+                          "eu-west-1",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          {
+                            "Fn::Join": [
+                              "/",
+                              [
+                                "table",
+                                {
+                                  "Ref": "BooksTable"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "/",
+                        [
+                          {
+                            "Fn::Join": [
+                              ":",
+                              [
+                                "arn",
+                                "aws",
+                                "dynamodb",
+                                "eu-west-1",
+                                {
+                                  "Ref": "AWS::AccountId"
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "/",
+                                    [
+                                      "table",
+                                      {
+                                        "Ref": "BooksTable"
+                                      }
+                                    ]
+                                  ]
+                                }
+                              ]
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "AwesomeappsyncGraphQlDsbooksTable": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlApi",
+            "ApiId"
+          ]
+        },
+        "Name": "booksTable",
+        "Type": "AMAZON_DYNAMODB",
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlDsbooksTableRole",
+            "Arn"
+          ]
+        },
+        "DynamoDBConfig": {
+          "AwsRegion": "eu-west-1",
+          "TableName": {
+            "Ref": "BooksTable"
+          },
+          "UseCallerCredentials": false,
+          "Versioned": false
+        }
+      }
+    },
+    "AwesomeappsyncGraphQlResolverQuerygetBookById": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": "AwesomeappsyncGraphQlSchema",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Query",
+        "FieldName": "getBookById",
+        "RequestMappingTemplate": "#if ($context.info.selectionSetList.size() == 1 && $context.info.selectionSetList[0] == \\"id\\")\\n  #set ($result = { \\"id\\": \\"$context.source.otherUserId\\" })\\n\\n  #return($result)\\n#end\\n\\n{\\n  \\"version\\" : \\"2018-05-29\\",\\n  \\"operation\\" : \\"GetItem\\",\\n  \\"key\\" : {\\n    \\"bookId\\" : $util.dynamodb.toDynamoDBJson($context.arguments.bookId)\\n  }\\n}",
+        "ResponseMappingTemplate": "$util.toJson($context.result)",
+        "Kind": "UNIT",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlDsbooksTable",
+            "Name"
+          ]
+        }
+      }
+    },
+    "AwesomeappsyncGraphQlResolverMutationcreateBook": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": "AwesomeappsyncGraphQlSchema",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Mutation",
+        "FieldName": "createBook",
+        "RequestMappingTemplate": "{\\n    \\"version\\" : \\"2018-05-29\\",\\n    \\"operation\\" : \\"PutItem\\",\\n    \\"key\\": {\\n        \\"bookId\\" : $util.dynamodb.toDynamoDBJson($util.autoId())\\n    },\\n    \\"attributeValues\\" : {\\n        \\"title\\" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.title),\\n        \\"description\\" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.description),\\n        \\"imageUrl\\" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.imageUrl),\\n        \\"author\\" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.author),\\n        \\"price\\" : $util.dynamodb.toDynamoDBJson($context.arguments.newBook.price),\\n        \\"createdAt\\": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),\\n        \\"updatedAt\\": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())\\n    }\\n}",
+        "ResponseMappingTemplate": "$util.toJson($context.result)",
+        "Kind": "UNIT",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "AwesomeappsyncGraphQlDsbooksTable",
+            "Name"
+          ]
+        }
+      }
+    },
+    "slicWatchDashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Sub": {
+            "start": "-PT3H",
+            "widgets": [
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${BooksTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "ReadThrottleEvents Table \${BooksTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${BooksTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "WriteThrottleEvents",
+                      "TableName",
+                      "\${BooksTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "WriteThrottleEvents Table \${BooksTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/AppSync",
+                      "5XXError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "4XXError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "Latency",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Average",
+                        "yAxis": "right"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "Requests",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Maximum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "AppSync API awesome-appsync",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/AppSync",
+                      "ConnectServerError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "DisconnectServerError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "SubscribeServerError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "UnsubscribeServerError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/AppSync",
+                      "PublishDataMessageServerError",
+                      "GraphQLAPIId",
+                      "\${AwesomeappsyncGraphQlApi.ApiId}",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "AppSync Real-time Subscriptions awesome-appsync",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 6
+              }
+            ]
           }
         }
-      ),
-      "ResponseMappingTemplate": "$util.toJson($context.result)",
-      "TypeName": "Query",
+      }
     },
-    "Type": "AWS::AppSync::Resolver",
+    "slicWatchTableReadThrottleEventsAlarmBooksTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_ReadThrottleEvents_Alarm_\${BooksTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${BooksTable} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "ReadThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "BooksTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchTableWriteThrottleEventsAlarmBooksTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_WriteThrottleEvents_Alarm_\${BooksTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${BooksTable} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "WriteThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "BooksTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchTableUserErrorsAlarmBooksTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_UserErrors_Alarm_\${BooksTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${BooksTable} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "UserErrors",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "BooksTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchTableSystemErrorsAlarmBooksTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_SystemErrors_Alarm_\${BooksTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${BooksTable} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "SystemErrors",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "BooksTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchAppSync5XXErrorAlarmawesomeappsync": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": "AppSync_5XXErrorAlarm_awesome-appsync",
+        "AlarmDescription": "AppSync 5XXError Sum for awesome-appsync breaches 0",
+        "MetricName": "5XXError",
+        "Namespace": "AWS/AppSync",
+        "Dimensions": [
+          {
+            "Name": "GraphQLAPIId",
+            "Value": {
+              "Fn::GetAtt": [
+                "AwesomeappsyncGraphQlApi",
+                "ApiId"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchAppSyncLatencyAlarmawesomeappsync": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "OKActions": [],
+        "AlarmName": "AppSync_LatencyAlarm_awesome-appsync",
+        "AlarmDescription": "AppSync Latency Average for awesome-appsync breaches 0",
+        "MetricName": "Latency",
+        "Namespace": "AWS/AppSync",
+        "Dimensions": [
+          {
+            "Name": "GraphQLAPIId",
+            "Value": {
+              "Fn::GetAtt": [
+                "AwesomeappsyncGraphQlApi",
+                "ApiId"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 0
+      }
+    }
   },
-  "AwesomeappsyncGraphQlSchema": Object {
-    "Properties": Object {
-      "ApiId": Object {
-        "Fn::GetAtt": Array [
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-serverless-test-project-appsync-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "AwesomeappsyncGraphQlApiId": {
+      "Value": {
+        "Fn::GetAtt": [
           "AwesomeappsyncGraphQlApi",
-          "ApiId",
-        ],
+          "ApiId"
+        ]
       },
-      "Definition": String(
-        schema {
-          query: Query
-          mutation: Mutation
-          subscription: Subscription
+      "Export": {
+        "Name": {
+          "Fn::Sub": "\${AWS::StackName}-AwesomeappsyncGraphQlApiId"
         }
-        
-        type Subscription {
-          onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
+      }
+    },
+    "AwesomeappsyncGraphQlApiUrl": {
+      "Value": {
+        "Fn::GetAtt": [
+          "AwesomeappsyncGraphQlApi",
+          "GraphQLUrl"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "\${AWS::StackName}-AwesomeappsyncGraphQlApiUrl"
         }
-        
-        type Query {
-          getBookById(bookId: ID!): Book!
-        }
-        
-        type Book {
-          bookId: ID!
-          title: String!
-          description: String
-          imageUrl: AWSURL
-          author: String!
-          price: Float!
-          createdAt: AWSDateTime!
-          updatedAt: AWSDateTime!
-        }
-        
-        type Mutation {
-          createBook(newBook: BookInput): Book! @aws_auth(cognito_groups: ["Admin"])
-        }
-        
-        input BookInput {
-          title: String!
-          description: String
-          imageUrl: AWSURL
-          author: String!
-          price: Float!
-        }
-      ),
-    },
-    "Type": "AWS::AppSync::GraphQLSchema",
-  },
-  "BooksTable": Object {
-    "Properties": Object {
-      "AttributeDefinitions": Array [
-        Object {
-          "AttributeName": "bookId",
-          "AttributeType": "S",
-        },
-      ],
-      "BillingMode": "PAY_PER_REQUEST",
-      "KeySchema": Array [
-        Object {
-          "AttributeName": "bookId",
-          "KeyType": "HASH",
-        },
-      ],
-      "Tags": Array [
-        Object {
-          "Key": "Name",
-          "Value": "books-table",
-        },
-      ],
-    },
-    "Type": "AWS::DynamoDB::Table",
-  },
-  "bucket": Object {
-    "Type": "AWS::S3::Bucket",
-  },
-  "CognitoAdminGroup": Object {
-    "Properties": Object {
-      "Description": "Admin users belong to this group",
-      "GroupName": "Admin",
-      "RoleArn": Object {
-        "Fn::GetAtt": Array [
-          "CognitoAdminIAMrole",
-          "Arn",
-        ],
-      },
-      "UserPoolId": Object {
-        "Ref": "CognitoUserPool",
-      },
-    },
-    "Type": "AWS::Cognito::UserPoolGroup",
-  },
-  "CognitoAdminIAMrole": Object {
-    "Properties": Object {
-      "AssumeRolePolicyDocument": Object {
-        "Statement": Array [
-          Object {
-            "Action": Array [
-              "sts:AssumeRoleWithWebIdentity",
-            ],
-            "Effect": "Allow",
-            "Principal": Object {
-              "Federated": Array [
-                "cognito-identity.amazonaws.com",
-              ],
-            },
-          },
-        ],
-        "Version": "2012-10-17",
-      },
-      "Description": "This is the IAM role that admin group users name",
-      "Policies": Array [
-        Object {
-          "PolicyDocument": Object {
-            "Statement": Array [
-              Object {
-                "Action": Array [
-                  "dynamodb:*",
-                ],
-                "Effect": "Allow",
-                "Resource": Array [
-                  Object {
-                    "Fn::GetAtt": Array [
-                      "BooksTable",
-                      "Arn",
-                    ],
-                  },
-                ],
-              },
-            ],
-            "Version": "2012-10-17",
-          },
-          "PolicyName": "bookstore-admin-group-policy",
-        },
-      ],
-      "RoleName": "bookstore-admin-role",
-    },
-    "Type": "AWS::IAM::Role",
-  },
-  "CognitoCustomerGroup": Object {
-    "Properties": Object {
-      "Description": "Customer belongs to this group",
-      "GroupName": "Customer",
-      "RoleArn": Object {
-        "Fn::GetAtt": Array [
-          "CognitoUserIAMrole",
-          "Arn",
-        ],
-      },
-      "UserPoolId": Object {
-        "Ref": "CognitoUserPool",
-      },
-    },
-    "Type": "AWS::Cognito::UserPoolGroup",
-  },
-  "CognitoUserIAMrole": Object {
-    "Properties": Object {
-      "AssumeRolePolicyDocument": Object {
-        "Statement": Array [
-          Object {
-            "Action": Array [
-              "sts:AssumeRoleWithWebIdentity",
-            ],
-            "Effect": "Allow",
-            "Principal": Object {
-              "Federated": Array [
-                "cognito-identity.amazonaws.com",
-              ],
-            },
-          },
-        ],
-        "Version": "2012-10-17",
-      },
-      "Description": "This is the IAM role that admin group users name",
-      "Policies": Array [
-        Object {
-          "PolicyDocument": Object {
-            "Statement": Array [
-              Object {
-                "Action": Array [
-                  "dynamodb:GetItem",
-                  "dynamodb:Query",
-                  "dynamodb:BatchGetItem",
-                ],
-                "Effect": "Allow",
-                "Resource": Array [
-                  Object {
-                    "Fn::GetAtt": Array [
-                      "BooksTable",
-                      "Arn",
-                    ],
-                  },
-                ],
-              },
-            ],
-            "Version": "2012-10-17",
-          },
-          "PolicyName": "book-store-customer-group-policy",
-        },
-      ],
-      "RoleName": "bookstore-customer-role",
-    },
-    "Type": "AWS::IAM::Role",
-  },
-  "CognitoUserPool": Object {
-    "Properties": Object {
-      "AutoVerifiedAttributes": Array [
-        "email",
-      ],
-      "Policies": Object {
-        "PasswordPolicy": Object {
-          "MinimumLength": 8,
-          "RequireLowercase": false,
-          "RequireNumbers": false,
-          "RequireSymbols": false,
-          "RequireUppercase": false,
-        },
-      },
-      "Schema": Array [
-        Object {
-          "AttributeDataType": "String",
-          "Mutable": true,
-          "Name": "name",
-          "Required": false,
-        },
-      ],
-      "UsernameAttributes": Array [
-        "email",
-      ],
-      "UserPoolName": "BookStoreUserPool",
-    },
-    "Type": "AWS::Cognito::UserPool",
-  },
-  "CognitoUserPoolClient": Object {
-    "Properties": Object {
-      "ClientName": "web",
-      "ExplicitAuthFlows": Array [
-        "ALLOW_USER_SRP_AUTH",
-        "ALLOW_USER_PASSWORD_AUTH",
-        "ALLOW_REFRESH_TOKEN_AUTH",
-      ],
-      "PreventUserExistenceErrors": "ENABLED",
-      "UserPoolId": Object {
-        "Ref": "CognitoUserPool",
-      },
-    },
-    "Type": "AWS::Cognito::UserPoolClient",
-  },
-  "ServerlessDeploymentBucket": Object {
-    "Properties": Object {
-      "BucketEncryption": Object {
-        "ServerSideEncryptionConfiguration": Array [
-          Object {
-            "ServerSideEncryptionByDefault": Object {
-              "SSEAlgorithm": "AES256",
-            },
-          },
-        ],
-      },
-    },
-    "Type": "AWS::S3::Bucket",
-  },
-  "ServerlessDeploymentBucketPolicy": Object {
-    "Properties": Object {
-      "Bucket": Object {
-        "Ref": "ServerlessDeploymentBucket",
-      },
-      "PolicyDocument": Object {
-        "Statement": Array [
-          Object {
-            "Action": "s3:*",
-            "Condition": Object {
-              "Bool": Object {
-                "aws:SecureTransport": false,
-              },
-            },
-            "Effect": "Deny",
-            "Principal": "*",
-            "Resource": Array [
-              Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::",
-                    Object {
-                      "Ref": "ServerlessDeploymentBucket",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-              Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:",
-                    Object {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::",
-                    Object {
-                      "Ref": "ServerlessDeploymentBucket",
-                    },
-                  ],
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    },
-    "Type": "AWS::S3::BucketPolicy",
-  },
+      }
+    }
+  }
 }
 `

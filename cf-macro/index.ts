@@ -6,7 +6,8 @@ import { setLogger } from 'slic-watch-core/logging'
 import { type SlicWatchConfig, resolveSlicWatchConfig } from 'slic-watch-core/inputs/general-config'
 import { type Template } from 'cloudform-types'
 
-const logger = pino({ name: 'macroHandler' })
+const logger = pino({ name: 'macroHandler', level: process.env.DEBUG_LEVEL ?? 'DEBUG' })
+
 setLogger(logger)
 
 interface Event {
@@ -29,7 +30,7 @@ export async function handler (event: Event): Promise<MacroResponse> {
   let status = 'success'
   let errorMessage: string | undefined
 
-  logger.info({ event })
+  logger.debug({ event })
   const transformedTemplate = event.fragment
   let outputFragment: Template | undefined
   try {
@@ -58,7 +59,7 @@ export async function handler (event: Event): Promise<MacroResponse> {
     status = 'fail'
   }
 
-  logger.info({ outputFragment: transformedTemplate })
+  logger.debug({ outputFragment: transformedTemplate })
 
   return {
     status,

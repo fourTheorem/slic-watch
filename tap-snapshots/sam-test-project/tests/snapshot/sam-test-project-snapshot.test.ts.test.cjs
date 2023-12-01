@@ -6,4135 +6,5153 @@
  */
 'use strict'
 exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP > sam-test-project snapshot > fragment 1`] = `
-Object {
+{
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "sam-test-project",
-  "Metadata": Object {
-    "slicWatch": Object {
-      "alarmActionsConfig": Object {
-        "actionsEnabled": true,
-        "alarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "okActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-      },
-      "alarms": Object {
-        "Lambda": Object {
-          "Invocations": Object {
-            "enabled": true,
-            "Threshold": 10,
-          },
-        },
-        "SQS": Object {
-          "AgeOfOldestMessage": Object {
-            "enabled": true,
-            "Statistic": "Maximum",
-            "Threshold": 60,
-          },
-          "InFlightMessagesPc": Object {
-            "Statistic": "Maximum",
-            "Threshold": 1,
-          },
-        },
-      },
+  "Metadata": {
+    "slicWatch": {
       "enabled": true,
-    },
+      "alarmActionsConfig": {
+        "alarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "okActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "actionsEnabled": true
+      },
+      "alarms": {
+        "Lambda": {
+          "Invocations": {
+            "enabled": true,
+            "Threshold": 10
+          }
+        },
+        "SQS": {
+          "AgeOfOldestMessage": {
+            "Statistic": "Maximum",
+            "enabled": true,
+            "Threshold": 60
+          },
+          "InFlightMessagesPc": {
+            "Statistic": "Maximum",
+            "Threshold": 1
+          }
+        }
+      }
+    }
   },
-  "Resources": Object {
-    "dataTable": Object {
-      "DeletionPolicy": "Delete",
-      "Metadata": Object {
-        "SamResourceId": "dataTable",
+  "Resources": {
+    "MonitoringTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "SS-Alarm-Topic3"
       },
-      "Properties": Object {
-        "AttributeDefinitions": Array [
-          Object {
-            "AttributeName": "pk",
-            "AttributeType": "S",
-          },
-          Object {
-            "AttributeName": "sk",
-            "AttributeType": "S",
-          },
-          Object {
-            "AttributeName": "gsi1pk",
-            "AttributeType": "S",
-          },
-          Object {
-            "AttributeName": "gsi1sk",
-            "AttributeType": "S",
-          },
-          Object {
-            "AttributeName": "timestamp",
-            "AttributeType": "N",
-          },
-        ],
-        "GlobalSecondaryIndexes": Array [
-          Object {
-            "IndexName": "GSI1",
-            "KeySchema": Array [
-              Object {
-                "AttributeName": "gsi1pk",
-                "KeyType": "HASH",
-              },
-              Object {
-                "AttributeName": "gsi1sk",
-                "KeyType": "RANGE",
-              },
-            ],
-            "Projection": Object {
-              "NonKeyAttributes": Array [
-                "address",
-              ],
-              "ProjectionType": "INCLUDE",
-            },
-            "ProvisionedThroughput": Object {
-              "ReadCapacityUnits": 1,
-              "WriteCapacityUnits": 1,
-            },
-          },
-        ],
-        "KeySchema": Array [
-          Object {
-            "AttributeName": "pk",
-            "KeyType": "HASH",
-          },
-          Object {
-            "AttributeName": "sk",
-            "KeyType": "RANGE",
-          },
-        ],
-        "LocalSecondaryIndexes": Array [
-          Object {
-            "IndexName": "LSI1",
-            "KeySchema": Array [
-              Object {
-                "AttributeName": "pk",
-                "KeyType": "HASH",
-              },
-              Object {
-                "AttributeName": "timestamp",
-                "KeyType": "RANGE",
-              },
-            ],
-            "Projection": Object {
-              "NonKeyAttributes": Array [
-                "name",
-              ],
-              "ProjectionType": "INCLUDE",
-            },
-          },
-        ],
-        "ProvisionedThroughput": Object {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1,
-        },
-      },
-      "Type": "AWS::DynamoDB::Table",
+      "Metadata": {
+        "SamResourceId": "MonitoringTopic"
+      }
     },
-    "driveQueue": Object {
-      "Metadata": Object {
-        "SamResourceId": "driveQueue",
+    "stream": {
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+        "ShardCount": 1
       },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "basic-handler.hello",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "driveQueueRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "stream"
+      }
     },
-    "driveQueueRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
+    "regularQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Metadata": {
+        "SamResourceId": "regularQueue"
+      }
     },
-    "driveStream": Object {
-      "Metadata": Object {
-        "SamResourceId": "driveStream",
+    "fifoQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "FifoQueue": true
       },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "stream-test-handler.handleDrive",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "driveStreamRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "fifoQueue"
+      }
     },
-    "driveStreamRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
+    "vpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16"
       },
-      "Type": "AWS::IAM::Role",
+      "Metadata": {
+        "SamResourceId": "vpc"
+      }
     },
-    "driveTable": Object {
-      "Metadata": Object {
-        "SamResourceId": "driveTable",
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
+    "subnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
         },
-        "Handler": "basic-handler.hello",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "driveTableRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
+        "CidrBlock": "10.0.16.0/20",
+        "VpcId": {
+          "Ref": "vpc"
+        }
       },
-      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "subnet"
+      }
     },
-    "driveTableRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "ecsCluster": Object {
-      "Metadata": Object {
-        "SamResourceId": "ecsCluster",
-      },
+    "ecsCluster": {
       "Type": "AWS::ECS::Cluster",
+      "Metadata": {
+        "SamResourceId": "ecsCluster"
+      }
     },
-    "ecsService": Object {
-      "Metadata": Object {
-        "SamResourceId": "ecsService",
-      },
-      "Properties": Object {
-        "Cluster": Object {
-          "Ref": "ecsCluster",
+    "ecsService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "ecsCluster"
         },
         "DesiredCount": 0,
         "LaunchType": "FARGATE",
-        "NetworkConfiguration": Object {
-          "AwsvpcConfiguration": Object {
+        "TaskDefinition": {
+          "Ref": "taskDef"
+        },
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
             "AssignPublicIp": "ENABLED",
-            "SecurityGroups": Array [],
-            "Subnets": Array [
-              Object {
-                "Ref": "subnet",
-              },
-            ],
-          },
-        },
-        "TaskDefinition": Object {
-          "Ref": "taskDef",
-        },
-      },
-      "Type": "AWS::ECS::Service",
-    },
-    "eventsRule": Object {
-      "Metadata": Object {
-        "SamResourceId": "eventsRule",
-        "slicWatch": Object {
-          "alarms": Object {
-            "Lambda": Object {
-              "enabled": false,
-            },
-          },
-        },
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "rule-handler.handleRule",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "eventsRuleRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "eventsRuleRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "eventsRuleTrigger": Object {
-      "Properties": Object {
-        "EventPattern": Object {
-          "detail-type": Array [
-            "Invoke Lambda Function",
-          ],
-        },
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
-                "eventsRule",
-                "Arn",
-              ],
-            },
-            "Id": "eventsRuleTriggerLambdaTarget",
-            "RetryPolicy": Object {
-              "MaximumEventAgeInSeconds": 60,
-              "MaximumRetryAttempts": 0,
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "eventsRuleTriggerPermission": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Ref": "eventsRule",
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
-            "eventsRuleTrigger",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "fifoQueue": Object {
-      "Metadata": Object {
-        "SamResourceId": "fifoQueue",
-      },
-      "Properties": Object {
-        "FifoQueue": true,
-      },
-      "Type": "AWS::SQS::Queue",
-    },
-    "hello": Object {
-      "Metadata": Object {
-        "SamResourceId": "hello",
-        "slicWatch": Object {
-          "alarms": Object {
-            "Lambda": Object {
-              "Invocations": Object {
-                "Threshold": 2,
-              },
-            },
-          },
-        },
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "basic-handler.hello",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "helloRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "helloRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "httpGetter": Object {
-      "Metadata": Object {
-        "SamResourceId": "httpGetter",
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "apigw-handler.handleGet",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "httpGetterRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-        "Timeout": 30,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "httpGetterHttpApiEventPermission": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Ref": "httpGetter",
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Sub": Array [
-            "arn:\${AWS::Partition}:execute-api:\${AWS::Region}:\${AWS::AccountId}:\${__ApiId__}/\${__Stage__}/GETitem",
-            Object {
-              "__ApiId__": Object {
-                "Ref": "ServerlessHttpApi",
-              },
-              "__Stage__": "*",
-            },
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "httpGetterRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "MonitoringTopic": Object {
-      "Metadata": Object {
-        "SamResourceId": "MonitoringTopic",
-      },
-      "Properties": Object {
-        "TopicName": "SS-Alarm-Topic3",
-      },
-      "Type": "AWS::SNS::Topic",
-    },
-    "ping": Object {
-      "Metadata": Object {
-        "SamResourceId": "ping",
-        "slicWatch": Object {
-          "dashboard": Object {
-            "enabled": false,
-          },
-        },
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "basic-handler.hello",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "pingRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "pingRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "regularQueue": Object {
-      "Metadata": Object {
-        "SamResourceId": "regularQueue",
-      },
-      "Type": "AWS::SQS::Queue",
-    },
-    "ServerlessHttpApi": Object {
-      "Properties": Object {
-        "Body": Object {
-          "info": Object {
-            "title": Object {
-              "Ref": "AWS::StackName",
-            },
-            "version": "1.0",
-          },
-          "openapi": "3.0.1",
-          "paths": Object {
-            "item": Object {
-              "get": Object {
-                "responses": Object {},
-                "x-amazon-apigateway-integration": Object {
-                  "httpMethod": "POST",
-                  "payloadFormatVersion": "2.0",
-                  "type": "aws_proxy",
-                  "uri": Object {
-                    "Fn::Sub": "arn:\${AWS::Partition}:apigateway:\${AWS::Region}:lambda:path/2015-03-31/functions/\${httpGetter.Arn}/invocations",
-                  },
-                },
-              },
-            },
-          },
-          "tags": Array [
-            Object {
-              "name": "httpapi:createdBy",
-              "x-amazon-apigateway-tag-value": "SAM",
-            },
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Api",
-    },
-    "ServerlessHttpApiApiGatewayDefaultStage": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "ServerlessHttpApi",
-        },
-        "AutoDeploy": true,
-        "StageName": "$default",
-        "Tags": Object {
-          "httpapi:createdBy": "SAM",
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Stage",
-    },
-    "slicWatchDashboard": Object {
-      "Properties": Object {
-        "DashboardBody": Object {
-          "Fn::Sub": "{\\"start\\":\\"-PT3H\\",\\"widgets\\":[{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/States\\",\\"ExecutionsFailed\\",\\"StateMachineArn\\",\\"\${TestStateMachine}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/States\\",\\"ExecutionThrottled\\",\\"StateMachineArn\\",\\"\${TestStateMachine}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/States\\",\\"ExecutionsTimedOut\\",\\"StateMachineArn\\",\\"\${TestStateMachine}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"\${TestStateMachine.Name} Step Function Executions\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":0},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"ReadThrottleEvents Table \${dataTable}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":0},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",\\"GlobalSecondaryIndex\\",\\"GSI1\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"ReadThrottleEvents GSI GSI1 in \${dataTable}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":0},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",\\"GlobalSecondaryIndex\\",\\"GSI1\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"WriteThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"WriteThrottleEvents Table \${dataTable}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":6},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"ReadThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",\\"GlobalSecondaryIndex\\",\\"GSI1\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"WriteThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/DynamoDB\\",\\"WriteThrottleEvents\\",\\"TableName\\",\\"\${dataTable}\\",\\"GlobalSecondaryIndex\\",\\"GSI1\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"WriteThrottleEvents GSI GSI1 in \${dataTable}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":6},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Errors\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Lambda Errors Sum per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":6},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Throttles\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Lambda Throttles Sum per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":12},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Average\\"}]],\\"title\\":\\"Lambda Duration Average per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":12},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"p95\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"p95\\"}]],\\"title\\":\\"Lambda Duration p95 per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":12},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"Duration\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Lambda Duration Maximum per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":18},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Lambda\\",\\"Invocations\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Lambda Invocations Sum per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":18},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${hello}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${throttler}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${driveStream}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${driveQueue}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${driveTable}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${httpGetter}\\",{\\"stat\\":\\"Maximum\\"}],[\\"AWS/Lambda\\",\\"ConcurrentExecutions\\",\\"FunctionName\\",\\"\${eventsRule}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Lambda ConcurrentExecutions Maximum per Function\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":18},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Lambda\\",\\"IteratorAge\\",\\"FunctionName\\",\\"\${streamProcessor}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Lambda IteratorAge \${streamProcessor} Maximum\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":24},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Kinesis\\",\\"GetRecords.IteratorAgeMilliseconds\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"IteratorAge \${stream} Kinesis\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":24},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Kinesis\\",\\"PutRecord.Success\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Kinesis\\",\\"PutRecords.Success\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/Kinesis\\",\\"GetRecords.Success\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Average\\"}]],\\"title\\":\\"Get/Put Success \${stream} Kinesis\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":24},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Kinesis\\",\\"ReadProvisionedThroughputExceeded\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Kinesis\\",\\"WriteProvisionedThroughputExceeded\\",\\"StreamName\\",\\"\${stream}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Provisioned Throughput \${stream} Kinesis\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":30},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"NumberOfMessagesSent\\",\\"QueueName\\",\\"\${regularQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/SQS\\",\\"NumberOfMessagesReceived\\",\\"QueueName\\",\\"\${regularQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/SQS\\",\\"NumberOfMessagesDeleted\\",\\"QueueName\\",\\"\${regularQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Messages \${regularQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":30},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"ApproximateAgeOfOldestMessage\\",\\"QueueName\\",\\"\${regularQueue.QueueName}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Oldest Message age \${regularQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":30},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"ApproximateNumberOfMessagesVisible\\",\\"QueueName\\",\\"\${regularQueue.QueueName}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Messages in queue \${regularQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":36},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"NumberOfMessagesSent\\",\\"QueueName\\",\\"\${fifoQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/SQS\\",\\"NumberOfMessagesReceived\\",\\"QueueName\\",\\"\${fifoQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/SQS\\",\\"NumberOfMessagesDeleted\\",\\"QueueName\\",\\"\${fifoQueue.QueueName}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"Messages \${fifoQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":36},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"ApproximateAgeOfOldestMessage\\",\\"QueueName\\",\\"\${fifoQueue.QueueName}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Oldest Message age \${fifoQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":36},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SQS\\",\\"ApproximateNumberOfMessagesVisible\\",\\"QueueName\\",\\"\${fifoQueue.QueueName}\\",{\\"stat\\":\\"Maximum\\"}]],\\"title\\":\\"Messages in queue \${fifoQueue.QueueName} SQS\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":42},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/ECS\\",\\"MemoryUtilization\\",\\"ServiceName\\",\\"\${ecsService.Name}\\",\\"ClusterName\\",\\"\${ecsCluster}\\",{\\"stat\\":\\"Average\\"}],[\\"AWS/ECS\\",\\"CPUUtilization\\",\\"ServiceName\\",\\"\${ecsService.Name}\\",\\"ClusterName\\",\\"\${ecsCluster}\\",{\\"stat\\":\\"Average\\"}]],\\"title\\":\\"ECS Service \${ecsService.Name}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":8,\\"y\\":42},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/SNS\\",\\"NumberOfNotificationsFilteredOut-InvalidAttributes\\",\\"TopicName\\",\\"\${MonitoringTopic.TopicName}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/SNS\\",\\"NumberOfNotificationsFailed\\",\\"TopicName\\",\\"\${MonitoringTopic.TopicName}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"SNS Topic \${MonitoringTopic.TopicName}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":16,\\"y\\":42},{\\"type\\":\\"metric\\",\\"properties\\":{\\"metrics\\":[[\\"AWS/Events\\",\\"FailedInvocations\\",\\"RuleName\\",\\"\${eventsRuleTrigger}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Events\\",\\"ThrottledRules\\",\\"RuleName\\",\\"\${eventsRuleTrigger}\\",{\\"stat\\":\\"Sum\\"}],[\\"AWS/Events\\",\\"Invocations\\",\\"RuleName\\",\\"\${eventsRuleTrigger}\\",{\\"stat\\":\\"Sum\\"}]],\\"title\\":\\"EventBridge Rule \${eventsRuleTrigger}\\",\\"view\\":\\"timeSeries\\",\\"region\\":\\"\${AWS::Region}\\",\\"period\\":300},\\"width\\":8,\\"height\\":6,\\"x\\":0,\\"y\\":48}]}",
-        },
-        "DashboardName": Object {
-          "Fn::Sub": "\${AWS::StackName}-\${AWS::Region}-Dashboard",
-        },
-      },
-      "Type": "AWS::CloudWatch::Dashboard",
-    },
-    "slicWatchECSCPUAlarmecsService": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "ECS CPUUtilization for \${ecsService.Name} breaches 90",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "ECS_CPUAlarm_\${ecsService.Name}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "ServiceName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "ecsService",
-                "Name",
-              ],
-            },
-          },
-          Object {
-            "Name": "ClusterName",
-            "Value": Object {
-              "Ref": "ecsCluster",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "CPUUtilization",
-        "Namespace": "AWS/ECS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 90,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchECSMemoryAlarmecsService": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "ECS MemoryUtilization for \${ecsService.Name} breaches 90",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "ECS_MemoryAlarm_\${ecsService.Name}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "ServiceName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "ecsService",
-                "Name",
-              ],
-            },
-          },
-          Object {
-            "Name": "ClusterName",
-            "Value": Object {
-              "Ref": "ecsCluster",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "MemoryUtilization",
-        "Namespace": "AWS/ECS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 90,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchEventsFailedInvocationsAlarmEventsRuleTrigger": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "EventBridge FailedInvocations for \${eventsRuleTrigger} breaches 1",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Events_FailedInvocations_Alarm_\${eventsRuleTrigger}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "RuleName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "eventsRuleTrigger",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "FailedInvocations",
-        "Namespace": "AWS/Events",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchEventsThrottledRulesAlarmEventsRuleTrigger": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "EventBridge ThrottledRules for \${eventsRuleTrigger} breaches 1",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Events_ThrottledRules_Alarm_\${eventsRuleTrigger}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "RuleName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "eventsRuleTrigger",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ThrottledRules",
-        "Namespace": "AWS/Events",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchGSIReadThrottleEventsAlarmdataTableGSI1": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable}GSI1 breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_ReadThrottleEvents_Alarm_\${dataTable}GSI1",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-          Object {
-            "Name": "GlobalSecondaryIndex",
-            "Value": "GSI1",
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ReadThrottleEvents",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchGSIWriteThrottleEventsAlarmdataTableGSI1": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable}GSI1 breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_WriteThrottleEvents_Alarm_\${dataTable}GSI1",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-          Object {
-            "Name": "GlobalSecondaryIndex",
-            "Value": "GSI1",
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "WriteThrottleEvents",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamGetRecordsSuccessAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Average GetRecords.Success for \${stream} breaches 1 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamGetRecordsSuccess_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "GetRecords.Success",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamIteratorAgeAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Maximum GetRecords.IteratorAgeMilliseconds for \${stream} breaches 10000 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamIteratorAge_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "GetRecords.IteratorAgeMilliseconds",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 10000,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamPutRecordsSuccessAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Average PutRecords.Success for \${stream} breaches 1 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamPutRecordsSuccess_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "PutRecords.Success",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamPutRecordSuccessAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Average PutRecord.Success for \${stream} breaches 1 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamPutRecordSuccess_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "LessThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "PutRecord.Success",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Average",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamReadThroughputAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Sum ReadProvisionedThroughputExceeded for \${stream} breaches 0 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamReadThroughput_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ReadProvisionedThroughputExceeded",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchKinesisStreamWriteThroughputAlarmStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis Sum WriteProvisionedThroughputExceeded for \${stream} breaches 0 milliseconds",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Kinesis_StreamWriteThroughput_\${stream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StreamName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "stream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "WriteProvisionedThroughputExceeded",
-        "Namespace": "AWS/Kinesis",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmdriveQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${driveQueue} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${driveQueue}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveQueue",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmdriveStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${driveStream} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${driveStream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveStream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmdriveTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${driveTable} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${driveTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmhello": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${hello} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${hello}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "hello",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmhttpGetter": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${httpGetter} breaches 95% of timeout (30)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${httpGetter}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "httpGetter",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 28500,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmping": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${ping} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${ping}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "ping",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmstreamProcessor": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${streamProcessor} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${streamProcessor}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "streamProcessor",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaDurationAlarmthrottler": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Max duration for \${throttler} breaches 95% of timeout (3)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Duration_\${throttler}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "throttler",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 2850,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmdriveQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${driveQueue} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${driveQueue}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveQueue",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmdriveStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${driveStream} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${driveStream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveStream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmdriveTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${driveTable} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${driveTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmhello": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${hello} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${hello}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "hello",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmhttpGetter": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${httpGetter} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${httpGetter}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "httpGetter",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmping": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${ping} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${ping}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "ping",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmstreamProcessor": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${streamProcessor} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${streamProcessor}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "streamProcessor",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaErrorsAlarmthrottler": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Error count for \${throttler} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Errors_\${throttler}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "throttler",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmdriveQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${driveQueue} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${driveQueue}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveQueue",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmdriveStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${driveStream} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${driveStream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveStream",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmdriveTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${driveTable} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${driveTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "driveTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmhello": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${hello} breaches 2",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${hello}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "hello",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 2,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmhttpGetter": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${httpGetter} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${httpGetter}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "httpGetter",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmping": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${ping} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${ping}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "ping",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmstreamProcessor": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${streamProcessor} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${streamProcessor}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "streamProcessor",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaInvocationsAlarmthrottler": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Total invocations for \${throttler} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Invocations_\${throttler}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "throttler",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Invocations",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaIteratorAgeAlarmstreamProcessor": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "IteratorAge for \${streamProcessor} breaches 10000",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_IteratorAge_\${streamProcessor}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "FunctionName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "streamProcessor",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "IteratorAge",
-        "Metrics": undefined,
-        "Namespace": "AWS/Lambda",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 10000,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmdriveQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${driveQueue} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${driveQueue}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveQueue",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveQueue",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmdriveStream": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${driveStream} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${driveStream}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveStream",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveStream",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmdriveTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${driveTable} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${driveTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveTable",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "driveTable",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmhello": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${hello} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${hello}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "hello",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "hello",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmhttpGetter": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${httpGetter} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${httpGetter}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "httpGetter",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "httpGetter",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmping": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${ping} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${ping}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "ping",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "ping",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmstreamProcessor": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${streamProcessor} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${streamProcessor}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "streamProcessor",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "streamProcessor",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchLambdaThrottlesAlarmthrottler": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Throttles % for \${throttler} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "Lambda_Throttles_\${throttler}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Id": "throttles_pc",
-            "Label": "% Throttles",
-            "ReturnData": true,
-          },
-          Object {
-            "Id": "throttles",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "throttler",
-                    },
-                  },
-                ],
-                "MetricName": "Throttles",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          Object {
-            "Id": "invocations",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
-                    "Name": "FunctionName",
-                    "Value": IntrinsicFunction {
-                      "name": "Ref",
-                      "payload": "throttler",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSNSNumberOfNotificationsFailedAlarmMonitoringTopic": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SNS NumberOfNotificationsFailed for \${MonitoringTopic.TopicName} breaches 1",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SNS_NumberOfNotificationsFailed_Alarm_\${MonitoringTopic.TopicName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TopicName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "MonitoringTopic",
-                "TopicName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "NumberOfNotificationsFailed",
-        "Namespace": "AWS/SNS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarmMonitoringTopic": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SNS NumberOfNotificationsFilteredOutInvalidAttributes for \${MonitoringTopic.TopicName} breaches 1",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SNS_NumberOfNotificationsFilteredOutInvalidAttributes_Alarm_\${MonitoringTopic.TopicName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TopicName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "MonitoringTopic",
-                "TopicName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "NumberOfNotificationsFilteredOut-InvalidAttributes",
-        "Namespace": "AWS/SNS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSQSInFlightMsgsAlarmfifoQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 200 (1% of the hard limit of 20000)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS_ApproximateNumberOfMessagesNotVisible_\${fifoQueue.QueueName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "QueueName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "fifoQueue",
-                "QueueName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ApproximateNumberOfMessagesNotVisible",
-        "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 200,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSQSInFlightMsgsAlarmregularQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS in-flight messages for \${regularQueue.QueueName} breaches 1200 (1% of the hard limit of 120000)",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS_ApproximateNumberOfMessagesNotVisible_\${regularQueue.QueueName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "QueueName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "regularQueue",
-                "QueueName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ApproximateNumberOfMessagesNotVisible",
-        "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 1200,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSQSOldestMsgAgeAlarmfifoQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS age of oldest message in the queue \${fifoQueue.QueueName} breaches 60",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS_ApproximateAgeOfOldestMessage_\${fifoQueue.QueueName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "QueueName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "fifoQueue",
-                "QueueName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ApproximateAgeOfOldestMessage",
-        "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 60,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchSQSOldestMsgAgeAlarmregularQueue": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS age of oldest message in the queue \${regularQueue.QueueName} breaches 60",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "SQS_ApproximateAgeOfOldestMessage_\${regularQueue.QueueName}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "QueueName",
-            "Value": IntrinsicFunction {
-              "name": "Fn::GetAtt",
-              "payload": Array [
-                "regularQueue",
-                "QueueName",
-              ],
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ApproximateAgeOfOldestMessage",
-        "Namespace": "AWS/SQS",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 60,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchStatesExecutionsFailedAlarmTestStateMachine": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions ExecutionsFailed Sum for \${TestStateMachine.Name}  breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions_ExecutionsFailedAlarm_\${TestStateMachine.Name}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StateMachineArn",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "TestStateMachine",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ExecutionsFailed",
-        "Namespace": "AWS/States",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchStatesExecutionsTimedOutAlarmTestStateMachine": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions ExecutionsTimedOut Sum for \${TestStateMachine.Name}  breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions_ExecutionsTimedOutAlarm_\${TestStateMachine.Name}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StateMachineArn",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "TestStateMachine",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ExecutionsTimedOut",
-        "Namespace": "AWS/States",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchStatesExecutionThrottledAlarmTestStateMachine": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions ExecutionThrottled Sum for \${TestStateMachine.Name}  breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "StepFunctions_ExecutionThrottledAlarm_\${TestStateMachine.Name}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "StateMachineArn",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "TestStateMachine",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ExecutionThrottled",
-        "Namespace": "AWS/States",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchTableReadThrottleEventsAlarmdataTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_ReadThrottleEvents_Alarm_\${dataTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "ReadThrottleEvents",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchTableSystemErrorsAlarmdataTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_SystemErrors_Alarm_\${dataTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "SystemErrors",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchTableUserErrorsAlarmdataTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable} breaches 0",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_UserErrors_Alarm_\${dataTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "UserErrors",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "slicWatchTableWriteThrottleEventsAlarmdataTable": Object {
-      "Properties": Object {
-        "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "AlarmDescription": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DynamoDB Sum for \${dataTable} breaches 10",
-            Object {},
-          ],
-        },
-        "AlarmName": IntrinsicFunction {
-          "name": "Fn::Sub",
-          "payload": Array [
-            "DDB_WriteThrottleEvents_Alarm_\${dataTable}",
-            Object {},
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": Array [
-          Object {
-            "Name": "TableName",
-            "Value": IntrinsicFunction {
-              "name": "Ref",
-              "payload": "dataTable",
-            },
-          },
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "WriteThrottleEvents",
-        "Namespace": "AWS/DynamoDB",
-        "OKActions": Array [
-          Object {
-            "Ref": "MonitoringTopic",
-          },
-        ],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 10,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
-    "stream": Object {
-      "Metadata": Object {
-        "SamResourceId": "stream",
-      },
-      "Properties": Object {
-        "ShardCount": 1,
-      },
-      "Type": "AWS::Kinesis::Stream",
-    },
-    "streamProcessor": Object {
-      "Metadata": Object {
-        "SamResourceId": "streamProcessor",
-      },
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
-        },
-        "Handler": "basic-handler.hello",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "streamProcessorRole",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "streamProcessorRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "streamProcessorStream": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
-            "stream",
-            "Arn",
-          ],
-        },
-        "FunctionName": Object {
-          "Ref": "streamProcessor",
-        },
-        "MaximumRetryAttempts": 0,
-        "StartingPosition": "LATEST",
-      },
-      "Type": "AWS::Lambda::EventSourceMapping",
-    },
-    "subnet": Object {
-      "Metadata": Object {
-        "SamResourceId": "subnet",
-      },
-      "Properties": Object {
-        "AvailabilityZone": Object {
-          "Fn::Select": Array [
-            0,
-            Object {
-              "Fn::GetAZs": Object {
-                "Ref": "AWS::Region",
-              },
-            },
-          ],
-        },
-        "CidrBlock": "10.0.16.0/20",
-        "VpcId": Object {
-          "Ref": "vpc",
-        },
-      },
-      "Type": "AWS::EC2::Subnet",
-    },
-    "taskDef": Object {
-      "Metadata": Object {
-        "SamResourceId": "taskDef",
-      },
-      "Properties": Object {
-        "ContainerDefinitions": Array [
-          Object {
-            "Command": Array [
-              "/bin/sh -c \\"while true; do echo Hello; sleep 10; done\\"",
-            ],
-            "Cpu": 256,
-            "EntryPoint": Array [
-              "sh",
-              "-c",
-            ],
-            "Essential": true,
-            "Image": "busybox",
-            "Memory": 512,
-            "Name": "busybox",
-          },
+            "SecurityGroups": [],
+            "Subnets": [
+              {
+                "Ref": "subnet"
+              }
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "SamResourceId": "ecsService"
+      }
+    },
+    "taskDef": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "RequiresCompatibilities": [
+          "FARGATE"
         ],
         "Cpu": 256,
         "Memory": 512,
-        "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": Array [
-          "FARGATE",
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "TestStateMachine": Object {
-      "Metadata": Object {
-        "SamResourceId": "TestStateMachine",
-      },
-      "Properties": Object {
-        "DefinitionS3Location": Object {
-          "Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "Key": "sam-test-project/754f906d12f592f99c5651c04a6a0a51",
-        },
-        "DefinitionSubstitutions": Object {
-          "AnotherHelloArn": Object {
-            "Fn::GetAtt": Array [
-              "hello",
-              "Arn",
+        "ContainerDefinitions": [
+          {
+            "Name": "busybox",
+            "Image": "busybox",
+            "Cpu": 256,
+            "EntryPoint": [
+              "sh",
+              "-c"
             ],
-          },
-          "HelloArn": Object {
-            "Fn::GetAtt": Array [
-              "hello",
-              "Arn",
+            "Memory": 512,
+            "Command": [
+              "/bin/sh -c \\"while true; do echo Hello; sleep 10; done\\""
             ],
-          },
-        },
-        "RoleArn": Object {
-          "Fn::GetAtt": Array [
-            "TestStateMachineRole",
-            "Arn",
-          ],
-        },
-        "Tags": Array [
-          Object {
-            "Key": "stateMachine:createdBy",
-            "Value": "SAM",
-          },
+            "Essential": true
+          }
         ],
+        "NetworkMode": "awsvpc"
       },
-      "Type": "AWS::StepFunctions::StateMachine",
+      "Metadata": {
+        "SamResourceId": "taskDef"
+      }
     },
-    "TestStateMachineRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "states.amazonaws.com",
-                ],
+    "dataTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "sk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "gsi1pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "gsi1sk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "timestamp",
+            "AttributeType": "N"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "sk",
+            "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "GSI1",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
+            "KeySchema": [
+              {
+                "AttributeName": "gsi1pk",
+                "KeyType": "HASH"
               },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [],
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
-                    "lambda:InvokeFunction",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Sub": Array [
-                      "arn:\${AWS::Partition}:lambda:\${AWS::Region}:\${AWS::AccountId}:function:\${functionName}*",
-                      Object {
-                        "functionName": Object {
-                          "Ref": "hello",
-                        },
-                      },
-                    ],
-                  },
-                },
+              {
+                "AttributeName": "gsi1sk",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "address"
               ],
-            },
-            "PolicyName": "TestStateMachineRolePolicy0",
-          },
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
-                    "lambda:InvokeFunction",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Sub": Array [
-                      "arn:\${AWS::Partition}:lambda:\${AWS::Region}:\${AWS::AccountId}:function:\${functionName}*",
-                      Object {
-                        "functionName": Object {
-                          "Ref": "hello",
-                        },
-                      },
-                    ],
-                  },
-                },
+              "ProjectionType": "INCLUDE"
+            }
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "LSI1",
+            "KeySchema": [
+              {
+                "AttributeName": "pk",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "name"
               ],
-            },
-            "PolicyName": "TestStateMachineRolePolicy1",
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "stateMachine:createdBy",
-            "Value": "SAM",
-          },
-        ],
+              "ProjectionType": "INCLUDE"
+            }
+          }
+        ]
       },
-      "Type": "AWS::IAM::Role",
+      "Metadata": {
+        "SamResourceId": "dataTable"
+      }
     },
-    "throttler": Object {
-      "Metadata": Object {
-        "SamResourceId": "throttler",
+    "hello": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "hello",
+        "slicWatch": {
+          "alarms": {
+            "Lambda": {
+              "Invocations": {
+                "Threshold": 2
+              }
+            }
+          }
+        }
       },
-      "Properties": Object {
-        "Code": Object {
+      "Properties": {
+        "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
         },
         "Handler": "basic-handler.hello",
-        "ReservedConcurrentExecutions": 0,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "throttlerRole",
-            "Arn",
-          ],
+        "Role": {
+          "Fn::GetAtt": [
+            "helloRole",
+            "Arn"
+          ]
         },
         "Runtime": "nodejs18.x",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
-      },
-      "Type": "AWS::Lambda::Function",
+            "Value": "SAM"
+          }
+        ]
+      }
     },
-    "throttlerRole": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "sts:AssumeRole",
+    "helloRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "Service": Array [
-                  "lambda.amazonaws.com",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
         },
-        "ManagedPolicyArns": Array [
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "lambda:createdBy",
-            "Value": "SAM",
-          },
-        ],
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "ping": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "ping",
+        "slicWatch": {
+          "dashboard": {
+            "enabled": false
+          }
+        }
       },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "pingRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "pingRole": {
       "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
     },
-    "vpc": Object {
-      "Metadata": Object {
-        "SamResourceId": "vpc",
+    "throttler": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "throttler"
       },
-      "Properties": Object {
-        "CidrBlock": "10.0.0.0/16",
-      },
-      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "throttlerRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ],
+        "ReservedConcurrentExecutions": 0
+      }
     },
-  },
+    "throttlerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveStream": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveStream"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "stream-test-handler.handleDrive",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveStreamRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveStreamRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveQueue": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveQueue"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveQueueRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveQueueRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveTable": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveTable"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveTableRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveTableRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessor": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "streamProcessor"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "streamProcessorRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessorRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessorStream": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "stream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "streamProcessor"
+        },
+        "MaximumRetryAttempts": 0,
+        "StartingPosition": "LATEST"
+      }
+    },
+    "httpGetter": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "httpGetter"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "apigw-handler.handleGet",
+        "Role": {
+          "Fn::GetAtt": [
+            "httpGetterRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 30,
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "httpGetterRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "httpGetterHttpApiEventPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "httpGetter"
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": [
+            "arn:\${AWS::Partition}:execute-api:\${AWS::Region}:\${AWS::AccountId}:\${__ApiId__}/\${__Stage__}/GETitem",
+            {
+              "__ApiId__": {
+                "Ref": "ServerlessHttpApi"
+              },
+              "__Stage__": "*"
+            }
+          ]
+        }
+      }
+    },
+    "eventsRule": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "eventsRule",
+        "slicWatch": {
+          "alarms": {
+            "Lambda": {
+              "enabled": false
+            }
+          }
+        }
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "rule-handler.handleRule",
+        "Role": {
+          "Fn::GetAtt": [
+            "eventsRuleRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "eventsRuleRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "eventsRuleTrigger": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "detail-type": [
+            "Invoke Lambda Function"
+          ]
+        },
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "eventsRule",
+                "Arn"
+              ]
+            },
+            "Id": "eventsRuleTriggerLambdaTarget",
+            "RetryPolicy": {
+              "MaximumRetryAttempts": 0,
+              "MaximumEventAgeInSeconds": 60
+            }
+          }
+        ]
+      }
+    },
+    "eventsRuleTriggerPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "eventsRule"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "eventsRuleTrigger",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "TestStateMachine": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Metadata": {
+        "SamResourceId": "TestStateMachine"
+      },
+      "Properties": {
+        "DefinitionS3Location": {
+          "Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "Key": "sam-test-project/754f906d12f592f99c5651c04a6a0a51"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "TestStateMachineRole",
+            "Arn"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "stateMachine:createdBy",
+            "Value": "SAM"
+          }
+        ],
+        "DefinitionSubstitutions": {
+          "HelloArn": {
+            "Fn::GetAtt": [
+              "hello",
+              "Arn"
+            ]
+          },
+          "AnotherHelloArn": {
+            "Fn::GetAtt": [
+              "hello",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "TestStateMachineRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "states.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [],
+        "Policies": [
+          {
+            "PolicyName": "TestStateMachineRolePolicy0",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:\${AWS::Partition}:lambda:\${AWS::Region}:\${AWS::AccountId}:function:\${functionName}*",
+                      {
+                        "functionName": {
+                          "Ref": "hello"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "TestStateMachineRolePolicy1",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:\${AWS::Partition}:lambda:\${AWS::Region}:\${AWS::AccountId}:function:\${functionName}*",
+                      {
+                        "functionName": {
+                          "Ref": "hello"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "stateMachine:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "ServerlessHttpApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Body": {
+          "info": {
+            "version": "1.0",
+            "title": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          "paths": {
+            "item": {
+              "get": {
+                "x-amazon-apigateway-integration": {
+                  "httpMethod": "POST",
+                  "type": "aws_proxy",
+                  "uri": {
+                    "Fn::Sub": "arn:\${AWS::Partition}:apigateway:\${AWS::Region}:lambda:path/2015-03-31/functions/\${httpGetter.Arn}/invocations"
+                  },
+                  "payloadFormatVersion": "2.0"
+                },
+                "responses": {}
+              }
+            }
+          },
+          "openapi": "3.0.1",
+          "tags": [
+            {
+              "name": "httpapi:createdBy",
+              "x-amazon-apigateway-tag-value": "SAM"
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessHttpApiApiGatewayDefaultStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "ServerlessHttpApi"
+        },
+        "StageName": "$default",
+        "Tags": {
+          "httpapi:createdBy": "SAM"
+        },
+        "AutoDeploy": true
+      }
+    },
+    "slicWatchLambdaErrorsAlarmhello": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${hello}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${hello} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "hello"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmhello": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${hello}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${hello} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "hello"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "hello"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmhello": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${hello}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${hello} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "hello"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmhello": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${hello}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${hello} breaches 2",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "hello"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2
+      }
+    },
+    "slicWatchLambdaIteratorAgeAlarmstreamProcessor": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_IteratorAge_\${streamProcessor}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "IteratorAge for \${streamProcessor} breaches 10000",
+            {}
+          ]
+        },
+        "MetricName": "IteratorAge",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "streamProcessor"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10000
+      }
+    },
+    "slicWatchLambdaErrorsAlarmping": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${ping}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${ping} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ping"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmping": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${ping}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${ping} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ping"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ping"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmping": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${ping}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${ping} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ping"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmping": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${ping}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${ping} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ping"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmthrottler": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${throttler}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${throttler} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "throttler"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmthrottler": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${throttler}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${throttler} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "throttler"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "throttler"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmthrottler": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${throttler}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${throttler} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "throttler"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmthrottler": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${throttler}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${throttler} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "throttler"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmdriveStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${driveStream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${driveStream} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveStream"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmdriveStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${driveStream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${driveStream} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveStream"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveStream"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmdriveStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${driveStream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${driveStream} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveStream"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmdriveStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${driveStream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${driveStream} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveStream"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmdriveQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${driveQueue}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${driveQueue} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveQueue"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmdriveQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${driveQueue}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${driveQueue} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveQueue"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveQueue"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmdriveQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${driveQueue}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${driveQueue} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveQueue"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmdriveQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${driveQueue}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${driveQueue} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveQueue"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmdriveTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${driveTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${driveTable} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveTable"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmdriveTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${driveTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${driveTable} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveTable"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "driveTable"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmdriveTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${driveTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${driveTable} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveTable"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmdriveTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${driveTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${driveTable} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "driveTable"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmstreamProcessor": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${streamProcessor}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${streamProcessor} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "streamProcessor"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmstreamProcessor": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${streamProcessor}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${streamProcessor} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "streamProcessor"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "streamProcessor"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmstreamProcessor": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${streamProcessor}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${streamProcessor} breaches 95% of timeout (3)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "streamProcessor"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 2850
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmstreamProcessor": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${streamProcessor}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${streamProcessor} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "streamProcessor"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchLambdaErrorsAlarmhttpGetter": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${httpGetter}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${httpGetter} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "httpGetter"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaThrottlesAlarmhttpGetter": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${httpGetter}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${httpGetter} breaches 0",
+            {}
+          ]
+        },
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "httpGetter"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "httpGetter"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0
+      }
+    },
+    "slicWatchLambdaDurationAlarmhttpGetter": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${httpGetter}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${httpGetter} breaches 95% of timeout (30)",
+            {}
+          ]
+        },
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "httpGetter"
+            }
+          }
+        ],
+        "Statistic": "Maximum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 28500
+      }
+    },
+    "slicWatchLambdaInvocationsAlarmhttpGetter": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${httpGetter}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${httpGetter} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "httpGetter"
+            }
+          }
+        ],
+        "Statistic": "Sum",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 10
+      }
+    },
+    "slicWatchStatesExecutionThrottledAlarmTestStateMachine": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "ExecutionThrottled",
+        "Namespace": "AWS/States",
+        "Dimensions": [
+          {
+            "Name": "StateMachineArn",
+            "Value": {
+              "Ref": "TestStateMachine"
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "StepFunctions_ExecutionThrottledAlarm_\${TestStateMachine.Name}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "StepFunctions ExecutionThrottled Sum for \${TestStateMachine.Name}  breaches 0",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchStatesExecutionsFailedAlarmTestStateMachine": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "ExecutionsFailed",
+        "Namespace": "AWS/States",
+        "Dimensions": [
+          {
+            "Name": "StateMachineArn",
+            "Value": {
+              "Ref": "TestStateMachine"
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "StepFunctions_ExecutionsFailedAlarm_\${TestStateMachine.Name}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "StepFunctions ExecutionsFailed Sum for \${TestStateMachine.Name}  breaches 0",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchStatesExecutionsTimedOutAlarmTestStateMachine": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "ExecutionsTimedOut",
+        "Namespace": "AWS/States",
+        "Dimensions": [
+          {
+            "Name": "StateMachineArn",
+            "Value": {
+              "Ref": "TestStateMachine"
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "StepFunctions_ExecutionsTimedOutAlarm_\${TestStateMachine.Name}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "StepFunctions ExecutionsTimedOut Sum for \${TestStateMachine.Name}  breaches 0",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchTableReadThrottleEventsAlarmdataTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_ReadThrottleEvents_Alarm_\${dataTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "ReadThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchTableWriteThrottleEventsAlarmdataTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_WriteThrottleEvents_Alarm_\${dataTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable} breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "WriteThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchTableUserErrorsAlarmdataTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_UserErrors_Alarm_\${dataTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "UserErrors",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchTableSystemErrorsAlarmdataTable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_SystemErrors_Alarm_\${dataTable}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable} breaches 0",
+            {}
+          ]
+        },
+        "MetricName": "SystemErrors",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchGSIReadThrottleEventsAlarmdataTableGSI1": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_ReadThrottleEvents_Alarm_\${dataTable}GSI1",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable}GSI1 breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "ReadThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          },
+          {
+            "Name": "GlobalSecondaryIndex",
+            "Value": "GSI1"
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchGSIWriteThrottleEventsAlarmdataTableGSI1": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "DDB_WriteThrottleEvents_Alarm_\${dataTable}GSI1",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "DynamoDB Sum for \${dataTable}GSI1 breaches 10",
+            {}
+          ]
+        },
+        "MetricName": "WriteThrottleEvents",
+        "Namespace": "AWS/DynamoDB",
+        "Dimensions": [
+          {
+            "Name": "TableName",
+            "Value": {
+              "Ref": "dataTable"
+            }
+          },
+          {
+            "Name": "GlobalSecondaryIndex",
+            "Value": "GSI1"
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 10
+      }
+    },
+    "slicWatchKinesisStreamIteratorAgeAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamIteratorAge_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Maximum GetRecords.IteratorAgeMilliseconds for \${stream} breaches 10000 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "GetRecords.IteratorAgeMilliseconds",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Maximum",
+        "Threshold": 10000
+      }
+    },
+    "slicWatchKinesisStreamReadThroughputAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamReadThroughput_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Sum ReadProvisionedThroughputExceeded for \${stream} breaches 0 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "ReadProvisionedThroughputExceeded",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchKinesisStreamWriteThroughputAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamWriteThroughput_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Sum WriteProvisionedThroughputExceeded for \${stream} breaches 0 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "WriteProvisionedThroughputExceeded",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 0
+      }
+    },
+    "slicWatchKinesisStreamPutRecordSuccessAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamPutRecordSuccess_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Average PutRecord.Success for \${stream} breaches 1 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "PutRecord.Success",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "LessThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 1
+      }
+    },
+    "slicWatchKinesisStreamPutRecordsSuccessAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamPutRecordsSuccess_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Average PutRecords.Success for \${stream} breaches 1 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "PutRecords.Success",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "LessThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 1
+      }
+    },
+    "slicWatchKinesisStreamGetRecordsSuccessAlarmStream": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Kinesis_StreamGetRecordsSuccess_\${stream}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Kinesis Average GetRecords.Success for \${stream} breaches 1 milliseconds",
+            {}
+          ]
+        },
+        "MetricName": "GetRecords.Success",
+        "Namespace": "AWS/Kinesis",
+        "Dimensions": [
+          {
+            "Name": "StreamName",
+            "Value": {
+              "Ref": "stream"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "LessThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 1
+      }
+    },
+    "slicWatchSQSInFlightMsgsAlarmregularQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateNumberOfMessagesNotVisible_\${regularQueue.QueueName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS in-flight messages for \${regularQueue.QueueName} breaches 1200 (1% of the hard limit of 120000)",
+            {}
+          ]
+        },
+        "MetricName": "ApproximateNumberOfMessagesNotVisible",
+        "Namespace": "AWS/SQS",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "regularQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Maximum",
+        "Threshold": 1200
+      }
+    },
+    "slicWatchSQSOldestMsgAgeAlarmregularQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${regularQueue.QueueName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${regularQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "regularQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Maximum",
+        "Threshold": 60
+      }
+    },
+    "slicWatchSQSInFlightMsgsAlarmfifoQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateNumberOfMessagesNotVisible_\${fifoQueue.QueueName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 200 (1% of the hard limit of 20000)",
+            {}
+          ]
+        },
+        "MetricName": "ApproximateNumberOfMessagesNotVisible",
+        "Namespace": "AWS/SQS",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "fifoQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Maximum",
+        "Threshold": 200
+      }
+    },
+    "slicWatchSQSOldestMsgAgeAlarmfifoQueue": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${fifoQueue.QueueName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${fifoQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "fifoQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Maximum",
+        "Threshold": 60
+      }
+    },
+    "slicWatchECSMemoryAlarmecsService": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "ECS_MemoryAlarm_\${ecsService.Name}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "ECS MemoryUtilization for \${ecsService.Name} breaches 90",
+            {}
+          ]
+        },
+        "MetricName": "MemoryUtilization",
+        "Namespace": "AWS/ECS",
+        "Dimensions": [
+          {
+            "Name": "ServiceName",
+            "Value": {
+              "Fn::GetAtt": [
+                "ecsService",
+                "Name"
+              ]
+            }
+          },
+          {
+            "Name": "ClusterName",
+            "Value": {
+              "Ref": "ecsCluster"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 90
+      }
+    },
+    "slicWatchECSCPUAlarmecsService": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "ECS_CPUAlarm_\${ecsService.Name}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "ECS CPUUtilization for \${ecsService.Name} breaches 90",
+            {}
+          ]
+        },
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/ECS",
+        "Dimensions": [
+          {
+            "Name": "ServiceName",
+            "Value": {
+              "Fn::GetAtt": [
+                "ecsService",
+                "Name"
+              ]
+            }
+          },
+          {
+            "Name": "ClusterName",
+            "Value": {
+              "Ref": "ecsCluster"
+            }
+          }
+        ],
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Average",
+        "Threshold": 90
+      }
+    },
+    "slicWatchSNSNumberOfNotificationsFilteredOutInvalidAttributesAlarmMonitoringTopic": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "NumberOfNotificationsFilteredOut-InvalidAttributes",
+        "Namespace": "AWS/SNS",
+        "Dimensions": [
+          {
+            "Name": "TopicName",
+            "Value": {
+              "Fn::GetAtt": [
+                "MonitoringTopic",
+                "TopicName"
+              ]
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SNS_NumberOfNotificationsFilteredOutInvalidAttributes_Alarm_\${MonitoringTopic.TopicName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SNS NumberOfNotificationsFilteredOutInvalidAttributes for \${MonitoringTopic.TopicName} breaches 1",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 1
+      }
+    },
+    "slicWatchSNSNumberOfNotificationsFailedAlarmMonitoringTopic": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "NumberOfNotificationsFailed",
+        "Namespace": "AWS/SNS",
+        "Dimensions": [
+          {
+            "Name": "TopicName",
+            "Value": {
+              "Fn::GetAtt": [
+                "MonitoringTopic",
+                "TopicName"
+              ]
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "SNS_NumberOfNotificationsFailed_Alarm_\${MonitoringTopic.TopicName}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SNS NumberOfNotificationsFailed for \${MonitoringTopic.TopicName} breaches 1",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 1
+      }
+    },
+    "slicWatchEventsFailedInvocationsAlarmEventsRuleTrigger": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "FailedInvocations",
+        "Namespace": "AWS/Events",
+        "Dimensions": [
+          {
+            "Name": "RuleName",
+            "Value": {
+              "Ref": "eventsRuleTrigger"
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Events_FailedInvocations_Alarm_\${eventsRuleTrigger}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "EventBridge FailedInvocations for \${eventsRuleTrigger} breaches 1",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 1
+      }
+    },
+    "slicWatchEventsThrottledRulesAlarmEventsRuleTrigger": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "MetricName": "ThrottledRules",
+        "Namespace": "AWS/Events",
+        "Dimensions": [
+          {
+            "Name": "RuleName",
+            "Value": {
+              "Ref": "eventsRuleTrigger"
+            }
+          }
+        ],
+        "AlarmName": {
+          "Fn::Sub": [
+            "Events_ThrottledRules_Alarm_\${eventsRuleTrigger}",
+            {}
+          ]
+        },
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "EventBridge ThrottledRules for \${eventsRuleTrigger} breaches 1",
+            {}
+          ]
+        },
+        "Period": 60,
+        "EvaluationPeriods": 1,
+        "TreatMissingData": "notBreaching",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Statistic": "Sum",
+        "Threshold": 1
+      }
+    },
+    "slicWatchDashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Sub": {
+            "start": "-PT3H",
+            "widgets": [
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/States",
+                      "ExecutionsFailed",
+                      "StateMachineArn",
+                      "\${TestStateMachine}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/States",
+                      "ExecutionThrottled",
+                      "StateMachineArn",
+                      "\${TestStateMachine}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/States",
+                      "ExecutionsTimedOut",
+                      "StateMachineArn",
+                      "\${TestStateMachine}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "\${TestStateMachine.Name} Step Function Executions",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "ReadThrottleEvents Table \${dataTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      "GlobalSecondaryIndex",
+                      "GSI1",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "ReadThrottleEvents GSI GSI1 in \${dataTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 0
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      "GlobalSecondaryIndex",
+                      "GSI1",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "WriteThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "WriteThrottleEvents Table \${dataTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "ReadThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      "GlobalSecondaryIndex",
+                      "GSI1",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "WriteThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/DynamoDB",
+                      "WriteThrottleEvents",
+                      "TableName",
+                      "\${dataTable}",
+                      "GlobalSecondaryIndex",
+                      "GSI1",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "WriteThrottleEvents GSI GSI1 in \${dataTable}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Errors",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Errors Sum per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Throttles",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Throttles Sum per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Average"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Duration Average per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "p95"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "p95"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Duration p95 per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Duration",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Duration Maximum per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "Invocations",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda Invocations Sum per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${hello}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${throttler}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${driveStream}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${driveQueue}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${driveTable}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${httpGetter}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ],
+                    [
+                      "AWS/Lambda",
+                      "ConcurrentExecutions",
+                      "FunctionName",
+                      "\${eventsRule}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda ConcurrentExecutions Maximum per Function",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Lambda",
+                      "IteratorAge",
+                      "FunctionName",
+                      "\${streamProcessor}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Lambda IteratorAge \${streamProcessor} Maximum",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Kinesis",
+                      "GetRecords.IteratorAgeMilliseconds",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "IteratorAge \${stream} Kinesis",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Kinesis",
+                      "PutRecord.Success",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Kinesis",
+                      "PutRecords.Success",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/Kinesis",
+                      "GetRecords.Success",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Average"
+                      }
+                    ]
+                  ],
+                  "title": "Get/Put Success \${stream} Kinesis",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Kinesis",
+                      "ReadProvisionedThroughputExceeded",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Kinesis",
+                      "WriteProvisionedThroughputExceeded",
+                      "StreamName",
+                      "\${stream}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Provisioned Throughput \${stream} Kinesis",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesSent",
+                      "QueueName",
+                      "\${regularQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesReceived",
+                      "QueueName",
+                      "\${regularQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesDeleted",
+                      "QueueName",
+                      "\${regularQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Messages \${regularQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "ApproximateAgeOfOldestMessage",
+                      "QueueName",
+                      "\${regularQueue.QueueName}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Oldest Message age \${regularQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "ApproximateNumberOfMessagesVisible",
+                      "QueueName",
+                      "\${regularQueue.QueueName}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Messages in queue \${regularQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 36
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesSent",
+                      "QueueName",
+                      "\${fifoQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesReceived",
+                      "QueueName",
+                      "\${fifoQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/SQS",
+                      "NumberOfMessagesDeleted",
+                      "QueueName",
+                      "\${fifoQueue.QueueName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "Messages \${fifoQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 36
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "ApproximateAgeOfOldestMessage",
+                      "QueueName",
+                      "\${fifoQueue.QueueName}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Oldest Message age \${fifoQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 36
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SQS",
+                      "ApproximateNumberOfMessagesVisible",
+                      "QueueName",
+                      "\${fifoQueue.QueueName}",
+                      {
+                        "stat": "Maximum"
+                      }
+                    ]
+                  ],
+                  "title": "Messages in queue \${fifoQueue.QueueName} SQS",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 42
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/ECS",
+                      "MemoryUtilization",
+                      "ServiceName",
+                      "\${ecsService.Name}",
+                      "ClusterName",
+                      "\${ecsCluster}",
+                      {
+                        "stat": "Average"
+                      }
+                    ],
+                    [
+                      "AWS/ECS",
+                      "CPUUtilization",
+                      "ServiceName",
+                      "\${ecsService.Name}",
+                      "ClusterName",
+                      "\${ecsCluster}",
+                      {
+                        "stat": "Average"
+                      }
+                    ]
+                  ],
+                  "title": "ECS Service \${ecsService.Name}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 42
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/SNS",
+                      "NumberOfNotificationsFilteredOut-InvalidAttributes",
+                      "TopicName",
+                      "\${MonitoringTopic.TopicName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/SNS",
+                      "NumberOfNotificationsFailed",
+                      "TopicName",
+                      "\${MonitoringTopic.TopicName}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "SNS Topic \${MonitoringTopic.TopicName}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 42
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/Events",
+                      "FailedInvocations",
+                      "RuleName",
+                      "\${eventsRuleTrigger}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Events",
+                      "ThrottledRules",
+                      "RuleName",
+                      "\${eventsRuleTrigger}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ],
+                    [
+                      "AWS/Events",
+                      "Invocations",
+                      "RuleName",
+                      "\${eventsRuleTrigger}",
+                      {
+                        "stat": "Sum"
+                      }
+                    ]
+                  ],
+                  "title": "EventBridge Rule \${eventsRuleTrigger}",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 48
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
 }
 `

@@ -4,16 +4,14 @@ Description: >-
 
 Transform:
   - AWS::Serverless-2016-10-31
-  - SlicWatch-v3
 
 Metadata:
   slicWatch:
     enabled: true
-    alarmActionsConfig: {
-      alarmActions: [!Ref MonitoringTopic],
-      okActions: [!Ref MonitoringTopic],
+    alarmActionsConfig:
+      alarmActions: [!Ref MonitoringTopic]
+      okActions: [!Ref MonitoringTopic]
       actionsEnabled: true
-    }
     alarms:
       Lambda:
         Invocations:

@@ -2,6 +2,8 @@ import { test } from 'tap'
 import type { Template } from 'cloudform'
 import { handler } from 'cf-macro-slic-watch/index'
 
+import { setUpSnapshotDefaults } from 'test-utils/snapshot-utils'
+
 import generalEuStack from './fixtures/CdkGeneralStackTest-Europe.template.json'
 import generalUsStack from './fixtures/CdkGeneralStackTest-US.template.json'
 import ecsStack from './fixtures/CdkECSStackTest-Europe.template.json'
@@ -13,8 +15,8 @@ const stacks = {
   ecsStack,
   stepFunctionStack
 }
-
 test('cdk-test-project snapshot', async (t) => {
+  setUpSnapshotDefaults(t)
   for (const [name, stack] of Object.entries(stacks)) {
     const response = await handler({ fragment: stack as Template, requestId: 'snapshot-test' })
     t.notOk(response.errorMessage)
