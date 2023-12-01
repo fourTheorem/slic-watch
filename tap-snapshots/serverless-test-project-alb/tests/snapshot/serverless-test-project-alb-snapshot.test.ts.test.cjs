@@ -767,6 +767,156 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       },
       "Type": "AWS::CloudWatch::Dashboard"
     },
+    "slicWatchLambdaDurationAlarmAlbEventLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${AlbEventLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${AlbEventLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "AlbEventLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmAlbEventLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${AlbEventLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${AlbEventLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "AlbEventLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmAlbEventLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${AlbEventLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${AlbEventLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "AlbEventLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "AlbEventLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
     "slicWatchLoadBalancerHTTPCodeELB5XXCountAlarmAlb": {
       "Properties": {
         "ActionsEnabled": true,

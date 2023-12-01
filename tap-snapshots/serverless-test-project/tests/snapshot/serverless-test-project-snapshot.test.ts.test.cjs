@@ -1706,15 +1706,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "AWS/Lambda",
                       "Errors",
                       "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Errors",
-                      "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
                         "stat": "Sum"
@@ -1803,15 +1794,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "Throttles",
                       "FunctionName",
                       "\${HelloLambdaFunction}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Throttles",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
                       {
                         "stat": "Sum"
                       }
@@ -1916,15 +1898,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "AWS/Lambda",
                       "Duration",
                       "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
                         "stat": "Average"
@@ -2013,15 +1986,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "Duration",
                       "FunctionName",
                       "\${HelloLambdaFunction}",
-                      {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
                       {
                         "stat": "p95"
                       }
@@ -2126,15 +2090,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "AWS/Lambda",
                       "Duration",
                       "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Maximum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
                         "stat": "Maximum"
@@ -2231,15 +2186,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "AWS/Lambda",
                       "Invocations",
                       "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Invocations",
-                      "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
                         "stat": "Sum"
@@ -2328,15 +2274,6 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ConcurrentExecutions",
                       "FunctionName",
                       "\${HelloLambdaFunction}",
-                      {
-                        "stat": "Maximum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "ConcurrentExecutions",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
                       {
                         "stat": "Maximum"
                       }
@@ -3327,6 +3264,120 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::CloudWatch::Alarm"
     },
+    "slicWatchLambdaDurationAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveQueueLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveStreamLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveTableLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
     "slicWatchLambdaDurationAlarmHelloLambdaFunction": {
       "Properties": {
         "ActionsEnabled": true,
@@ -3365,6 +3416,310 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::CloudWatch::Alarm"
     },
+    "slicWatchLambdaDurationAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${HttpGetterLambdaFunction} breaches 95% of timeout (30)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 28500,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${PingLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${StreamProcessorLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${SubscriptionHandlerLambdaFunction} breaches 95% of timeout (30)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 28500,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${ThrottlerLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveQueueLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveStreamLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveTableLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
     "slicWatchLambdaErrorsAlarmHelloLambdaFunction": {
       "Properties": {
         "ActionsEnabled": true,
@@ -3398,6 +3753,456 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "OKActions": [],
         "Period": 60,
         "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${HttpGetterLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${PingLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${StreamProcessorLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${SubscriptionHandlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${ThrottlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaIteratorAgeAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "IteratorAge for \${StreamProcessorLambdaFunction} breaches 10000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_IteratorAge_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "IteratorAge",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 10000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveQueueLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveQueueLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveQueueLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveStreamLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveStreamLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveStreamLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveTableLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveTableLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveTableLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -3461,6 +4266,376 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                     "Name": "FunctionName",
                     "Value": {
                       "Ref": "HelloLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${HttpGetterLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "HttpGetterLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "HttpGetterLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${PingLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "PingLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "PingLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${StreamProcessorLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "StreamProcessorLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "StreamProcessorLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${SubscriptionHandlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "SubscriptionHandlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "SubscriptionHandlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${ThrottlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ThrottlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ThrottlerLambdaFunction"
                     }
                   }
                 ]

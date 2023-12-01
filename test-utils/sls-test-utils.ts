@@ -28,7 +28,7 @@ export const slsYaml: SlsYaml = {
   }
 }
 
-export function createMockServerless (compiledTemplate: Template) {
+export function createMockServerless (compiledTemplate: Template, slsConfig = slsYaml) {
   return {
     cli: {
       log: () => { '' }
@@ -52,8 +52,8 @@ export function createMockServerless (compiledTemplate: Template) {
           topicArn: 'test-topic'
         }
       },
-      getAllFunctions: () => Object.keys(slsYaml.functions),
-      getFunction: (funcRef) => slsYaml.functions[funcRef]
+      getAllFunctions: () => Object.keys(slsConfig.functions ?? {}),
+      getFunction: (funcRef) => slsConfig.functions[funcRef]
     }
   }
 }
