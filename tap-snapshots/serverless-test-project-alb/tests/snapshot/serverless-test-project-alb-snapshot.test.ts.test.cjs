@@ -9,9 +9,424 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "The AWS CloudFormation template for this Serverless application",
+  "Outputs": {
+    "AlbEventLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Export": {
+        "Name": "sls-serverless-test-project-alb-dev-AlbEventLambdaFunctionQualifiedArn"
+      },
+      "Value": {
+        "Ref": "AlbEventLambdaVersion0XznAenLykwY99KhRhuWhGA2GO8nTdlRqGtjPoaDgg"
+      }
+    },
+    "ServerlessDeploymentBucketName": {
+      "Export": {
+        "Name": "sls-serverless-test-project-alb-dev-ServerlessDeploymentBucketName"
+      },
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      }
+    }
+  },
   "Resources": {
+    "alb": {
+      "Properties": {
+        "Name": "awesome-loadBalancer",
+        "SecurityGroups": [
+          {
+            "Ref": "albSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "subnetA"
+          },
+          {
+            "Ref": "subnetB"
+          }
+        ],
+        "Type": "application"
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    },
+    "AlbEventAlbListenerRule1": {
+      "Properties": {
+        "Actions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "AlbEventAlbTargetGrouphttpListener"
+            }
+          }
+        ],
+        "Conditions": [
+          {
+            "Field": "path-pattern",
+            "Values": [
+              "/handleALB"
+            ]
+          },
+          {
+            "Field": "http-request-method",
+            "HttpRequestMethodConfig": {
+              "Values": [
+                "POST"
+              ]
+            }
+          }
+        ],
+        "ListenerArn": {
+          "Ref": "httpListener"
+        },
+        "Priority": 1
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule"
+    },
+    "AlbEventAlbTargetGrouphttpListener": {
+      "DependsOn": [
+        "AlbEventLambdaPermissionRegisterTarget"
+      ],
+      "Properties": {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 35,
+        "HealthCheckPath": "/",
+        "HealthCheckTimeoutSeconds": 30,
+        "HealthyThresholdCount": 5,
+        "Matcher": {
+          "HttpCode": "200"
+        },
+        "Name": "1d5fdfd5099ec257209ef7b7c5ee8cb4",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "serverless-test-project-alb-albEvent-httpListener-dev"
+          }
+        ],
+        "TargetGroupAttributes": [
+          {
+            "Key": "lambda.multi_value_headers.enabled",
+            "Value": false
+          }
+        ],
+        "Targets": [
+          {
+            "Id": {
+              "Fn::GetAtt": [
+                "AlbEventLambdaFunction",
+                "Arn"
+              ]
+            }
+          }
+        ],
+        "TargetType": "lambda",
+        "UnhealthyThresholdCount": 5
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup"
+    },
+    "AlbEventLambdaFunction": {
+      "DependsOn": [
+        "AlbEventLogGroup"
+      ],
+      "Metadata": {
+        "slicWatch": {}
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-test-project-alb/dev/1701242684385-2023-11-29T07:24:44.385Z/serverless-test-project-alb.zip"
+        },
+        "FunctionName": "serverless-test-project-alb-dev-albEvent",
+        "Handler": "alb-handler.handleALB",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 6
+      },
+      "Type": "AWS::Lambda::Function"
+    },
+    "AlbEventLambdaPermissionAlb": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AlbEventLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "elasticloadbalancing.amazonaws.com",
+        "SourceArn": {
+          "Ref": "AlbEventAlbTargetGrouphttpListener"
+        }
+      },
+      "Type": "AWS::Lambda::Permission"
+    },
+    "AlbEventLambdaPermissionRegisterTarget": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AlbEventLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "elasticloadbalancing.amazonaws.com"
+      },
+      "Type": "AWS::Lambda::Permission"
+    },
+    "AlbEventLambdaVersion0XznAenLykwY99KhRhuWhGA2GO8nTdlRqGtjPoaDgg": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "CodeSha256": "iF0ZcJ5dWZd/RnBzvEqO7WAQlHbLsco8p4dUx4U7AL8=",
+        "FunctionName": {
+          "Ref": "AlbEventLambdaFunction"
+        }
+      },
+      "Type": "AWS::Lambda::Version"
+    },
+    "AlbEventLogGroup": {
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-test-project-alb-dev-albEvent"
+      },
+      "Type": "AWS::Logs::LogGroup"
+    },
+    "albSecurityGroup": {
+      "Properties": {
+        "GroupDescription": "Allow http to client host",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::SecurityGroup"
+    },
+    "bucket": {
+      "Type": "AWS::S3::Bucket"
+    },
+    "httpListener": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "Type": "redirect",
+            "RedirectConfig": {
+              "Protocol": "HTTP",
+              "Port": 400,
+              "Host": "#{host}",
+              "Path": "/#{path}",
+              "Query": "#{query}",
+              "StatusCode": "HTTP_301"
+            }
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "alb"
+        },
+        "Port": 80,
+        "Protocol": "HTTP"
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener"
+    },
+    "IamRoleLambdaExecution": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "serverless-test-project-alb",
+                  "dev",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup",
+                    "logs:TagResource"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:\${AWS::Partition}:logs:\${AWS::Region}:\${AWS::AccountId}:log-group:/aws/lambda/serverless-test-project-alb-dev*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:\${AWS::Partition}:logs:\${AWS::Region}:\${AWS::AccountId}:log-group:/aws/lambda/serverless-test-project-alb-dev*:*:*"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "serverless-test-project-alb",
+              "dev",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      },
+      "Type": "AWS::IAM::Role"
+    },
+    "internetGateway": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ]
+      },
+      "Type": "AWS::EC2::InternetGateway"
+    },
+    "routeTableA": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ],
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::RouteTable"
+    },
+    "routeTableAInternetRoute": {
+      "DependsOn": [
+        "vpcGatewayAttachment"
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "internetGateway"
+        },
+        "RouteTableId": {
+          "Ref": "routeTableA"
+        }
+      },
+      "Type": "AWS::EC2::Route"
+    },
+    "routeTableAssociationSubnetA": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "routeTableA"
+        },
+        "SubnetId": {
+          "Ref": "subnetA"
+        }
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation"
+    },
+    "routeTableAssociationSubnetB": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "routeTableB"
+        },
+        "SubnetId": {
+          "Ref": "subnetB"
+        }
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation"
+    },
+    "routeTableB": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ],
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::RouteTable"
+    },
+    "routeTableBInternetRoute": {
+      "DependsOn": [
+        "vpcGatewayAttachment"
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "internetGateway"
+        },
+        "RouteTableId": {
+          "Ref": "routeTableB"
+        }
+      },
+      "Type": "AWS::EC2::Route"
+    },
     "ServerlessDeploymentBucket": {
-      "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -22,10 +437,10 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             }
           ]
         }
-      }
+      },
+      "Type": "AWS::S3::Bucket"
     },
     "ServerlessDeploymentBucketPolicy": {
-      "Type": "AWS::S3::BucketPolicy",
       "Properties": {
         "Bucket": {
           "Ref": "ServerlessDeploymentBucket"
@@ -77,477 +492,10 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             }
           ]
         }
-      }
-    },
-    "AlbEventLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": "/aws/lambda/serverless-test-project-alb-dev-albEvent"
-      }
-    },
-    "IamRoleLambdaExecution": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "lambda.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        },
-        "Policies": [
-          {
-            "PolicyName": {
-              "Fn::Join": [
-                "-",
-                [
-                  "serverless-test-project-alb",
-                  "dev",
-                  "lambda"
-                ]
-              ]
-            },
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:CreateLogStream",
-                    "logs:CreateLogGroup",
-                    "logs:TagResource"
-                  ],
-                  "Resource": [
-                    {
-                      "Fn::Sub": "arn:\${AWS::Partition}:logs:\${AWS::Region}:\${AWS::AccountId}:log-group:/aws/lambda/serverless-test-project-alb-dev*:*"
-                    }
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:PutLogEvents"
-                  ],
-                  "Resource": [
-                    {
-                      "Fn::Sub": "arn:\${AWS::Partition}:logs:\${AWS::Region}:\${AWS::AccountId}:log-group:/aws/lambda/serverless-test-project-alb-dev*:*:*"
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ],
-        "Path": "/",
-        "RoleName": {
-          "Fn::Join": [
-            "-",
-            [
-              "serverless-test-project-alb",
-              "dev",
-              {
-                "Ref": "AWS::Region"
-              },
-              "lambdaRole"
-            ]
-          ]
-        }
-      }
-    },
-    "AlbEventLambdaFunction": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "ServerlessDeploymentBucket"
-          },
-          "S3Key": "serverless/serverless-test-project-alb/dev/1701242684385-2023-11-29T07:24:44.385Z/serverless-test-project-alb.zip"
-        },
-        "Handler": "alb-handler.handleALB",
-        "Runtime": "nodejs18.x",
-        "FunctionName": "serverless-test-project-alb-dev-albEvent",
-        "MemorySize": 1024,
-        "Timeout": 6,
-        "Role": {
-          "Fn::GetAtt": [
-            "IamRoleLambdaExecution",
-            "Arn"
-          ]
-        }
       },
-      "DependsOn": [
-        "AlbEventLogGroup"
-      ],
-      "Metadata": {
-        "slicWatch": {}
-      }
-    },
-    "AlbEventLambdaVersion0XznAenLykwY99KhRhuWhGA2GO8nTdlRqGtjPoaDgg": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AlbEventLambdaFunction"
-        },
-        "CodeSha256": "iF0ZcJ5dWZd/RnBzvEqO7WAQlHbLsco8p4dUx4U7AL8="
-      }
-    },
-    "AlbEventAlbTargetGrouphttpListener": {
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-      "Properties": {
-        "TargetType": "lambda",
-        "Targets": [
-          {
-            "Id": {
-              "Fn::GetAtt": [
-                "AlbEventLambdaFunction",
-                "Arn"
-              ]
-            }
-          }
-        ],
-        "Name": "1d5fdfd5099ec257209ef7b7c5ee8cb4",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "serverless-test-project-alb-albEvent-httpListener-dev"
-          }
-        ],
-        "TargetGroupAttributes": [
-          {
-            "Key": "lambda.multi_value_headers.enabled",
-            "Value": false
-          }
-        ],
-        "HealthCheckEnabled": true,
-        "HealthCheckPath": "/",
-        "HealthCheckIntervalSeconds": 35,
-        "HealthCheckTimeoutSeconds": 30,
-        "HealthyThresholdCount": 5,
-        "UnhealthyThresholdCount": 5,
-        "Matcher": {
-          "HttpCode": "200"
-        }
-      },
-      "DependsOn": [
-        "AlbEventLambdaPermissionRegisterTarget"
-      ]
-    },
-    "AlbEventAlbListenerRule1": {
-      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
-      "Properties": {
-        "Actions": [
-          {
-            "Type": "forward",
-            "TargetGroupArn": {
-              "Ref": "AlbEventAlbTargetGrouphttpListener"
-            }
-          }
-        ],
-        "Conditions": [
-          {
-            "Field": "path-pattern",
-            "Values": [
-              "/handleALB"
-            ]
-          },
-          {
-            "Field": "http-request-method",
-            "HttpRequestMethodConfig": {
-              "Values": [
-                "POST"
-              ]
-            }
-          }
-        ],
-        "ListenerArn": {
-          "Ref": "httpListener"
-        },
-        "Priority": 1
-      }
-    },
-    "AlbEventLambdaPermissionAlb": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "AlbEventLambdaFunction",
-            "Arn"
-          ]
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "elasticloadbalancing.amazonaws.com",
-        "SourceArn": {
-          "Ref": "AlbEventAlbTargetGrouphttpListener"
-        }
-      }
-    },
-    "AlbEventLambdaPermissionRegisterTarget": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "AlbEventLambdaFunction",
-            "Arn"
-          ]
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "elasticloadbalancing.amazonaws.com"
-      }
-    },
-    "bucket": {
-      "Type": "AWS::S3::Bucket"
-    },
-    "vpcALB": {
-      "Type": "AWS::EC2::VPC",
-      "Properties": {
-        "CidrBlock": "10.0.0.0/20",
-        "EnableDnsSupport": true,
-        "EnableDnsHostnames": true,
-        "InstanceTenancy": "default",
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "internetGateway": {
-      "Type": "AWS::EC2::InternetGateway",
-      "Properties": {
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "vpcGatewayAttachment": {
-      "Type": "AWS::EC2::VPCGatewayAttachment",
-      "Properties": {
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "InternetGatewayId": {
-          "Ref": "internetGateway"
-        }
-      }
-    },
-    "subnetA": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "AvailabilityZone": "eu-west-1a",
-        "CidrBlock": "10.0.5.0/24",
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "subnetB": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "AvailabilityZone": "eu-west-1b",
-        "CidrBlock": "10.0.6.0/24",
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "routeTableA": {
-      "Type": "AWS::EC2::RouteTable",
-      "Properties": {
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "routeTableB": {
-      "Type": "AWS::EC2::RouteTable",
-      "Properties": {
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "Tags": [
-          {
-            "Key": "ProjectName",
-            "Value": "serverless-test-project-alb"
-          },
-          {
-            "Key": "Stage",
-            "Value": "dev"
-          }
-        ]
-      }
-    },
-    "routeTableAssociationSubnetA": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "subnetA"
-        },
-        "RouteTableId": {
-          "Ref": "routeTableA"
-        }
-      }
-    },
-    "routeTableAssociationSubnetB": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "subnetB"
-        },
-        "RouteTableId": {
-          "Ref": "routeTableB"
-        }
-      }
-    },
-    "routeTableAInternetRoute": {
-      "Type": "AWS::EC2::Route",
-      "DependsOn": [
-        "vpcGatewayAttachment"
-      ],
-      "Properties": {
-        "RouteTableId": {
-          "Ref": "routeTableA"
-        },
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": {
-          "Ref": "internetGateway"
-        }
-      }
-    },
-    "routeTableBInternetRoute": {
-      "Type": "AWS::EC2::Route",
-      "DependsOn": [
-        "vpcGatewayAttachment"
-      ],
-      "Properties": {
-        "RouteTableId": {
-          "Ref": "routeTableB"
-        },
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": {
-          "Ref": "internetGateway"
-        }
-      }
-    },
-    "alb": {
-      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-      "Properties": {
-        "Name": "awesome-loadBalancer",
-        "Type": "application",
-        "Subnets": [
-          {
-            "Ref": "subnetA"
-          },
-          {
-            "Ref": "subnetB"
-          }
-        ],
-        "SecurityGroups": [
-          {
-            "Ref": "albSecurityGroup"
-          }
-        ]
-      }
-    },
-    "httpListener": {
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
-      "Properties": {
-        "LoadBalancerArn": {
-          "Ref": "alb"
-        },
-        "Port": 80,
-        "Protocol": "HTTP",
-        "DefaultActions": [
-          {
-            "Type": "redirect",
-            "RedirectConfig": {
-              "Protocol": "HTTP",
-              "Port": 400,
-              "Host": "#{host}",
-              "Path": "/#{path}",
-              "Query": "#{query}",
-              "StatusCode": "HTTP_301"
-            }
-          }
-        ]
-      }
-    },
-    "albSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "Allow http to client host",
-        "VpcId": {
-          "Ref": "vpcALB"
-        },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": 80,
-            "ToPort": 80,
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": 443,
-            "ToPort": 443,
-            "CidrIp": "0.0.0.0/0"
-          }
-        ]
-      }
+      "Type": "AWS::S3::BucketPolicy"
     },
     "slicWatchDashboard": {
-      "Type": "AWS::CloudWatch::Dashboard",
       "Properties": {
         "DashboardBody": {
           "Fn::Sub": {
@@ -816,163 +764,89 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             ]
           }
         }
-      }
+      },
+      "Type": "AWS::CloudWatch::Dashboard"
     },
     "slicWatchLoadBalancerHTTPCodeELB5XXCountAlarmAlb": {
-      "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
           "test-topic"
         ],
-        "OKActions": [],
+        "AlarmDescription": "LoadBalancer HTTPCodeELB5XXCount Sum for alb  breaches 0",
+        "AlarmName": "LoadBalancer_HTTPCodeELB5XXCountAlarm_alb",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "LoadBalancer",
+            "Value": {
+              "Fn::GetAtt": [
+                "alb",
+                "LoadBalancerFullName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
         "MetricName": "HTTPCode_ELB_5XX_Count",
         "Namespace": "AWS/ApplicationELB",
-        "Dimensions": [
-          {
-            "Name": "LoadBalancer",
-            "Value": {
-              "Fn::GetAtt": [
-                "alb",
-                "LoadBalancerFullName"
-              ]
-            }
-          }
-        ],
-        "AlarmName": "LoadBalancer_HTTPCodeELB5XXCountAlarm_alb",
-        "AlarmDescription": "LoadBalancer HTTPCodeELB5XXCount Sum for alb  breaches 0",
-        "Period": 60,
-        "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Statistic": "Sum",
-        "Threshold": 0
-      }
-    },
-    "slicWatchLoadBalancerRejectedConnectionCountAlarmAlb": {
-      "Type": "AWS::CloudWatch::Alarm",
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          "test-topic"
-        ],
         "OKActions": [],
-        "MetricName": "RejectedConnectionCount",
-        "Namespace": "AWS/ApplicationELB",
-        "Dimensions": [
-          {
-            "Name": "LoadBalancer",
-            "Value": {
-              "Fn::GetAtt": [
-                "alb",
-                "LoadBalancerFullName"
-              ]
-            }
-          }
-        ],
-        "AlarmName": "LoadBalancer_RejectedConnectionCountAlarm_alb",
-        "AlarmDescription": "LoadBalancer RejectedConnectionCount Sum for alb  breaches 0",
         "Period": 60,
-        "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
         "Statistic": "Sum",
-        "Threshold": 0
-      }
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
     },
     "slicWatchLoadBalancerHTTPCodeTarget5XXCountAlarmAlbEventAlbTargetGrouphttpListener": {
-      "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
           "test-topic"
         ],
-        "OKActions": [],
-        "AlarmName": "LoadBalancer_HTTPCodeTarget5XXCountAlarm_AlbEventAlbTargetGrouphttpListener",
         "AlarmDescription": "LoadBalancer HTTPCode_Target_5XX_Count Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
+        "AlarmName": "LoadBalancer_HTTPCodeTarget5XXCountAlarm_AlbEventAlbTargetGrouphttpListener",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "TargetGroup",
+            "Value": {
+              "Fn::GetAtt": [
+                "AlbEventAlbTargetGrouphttpListener",
+                "TargetGroupFullName"
+              ]
+            }
+          },
+          {
+            "Name": "LoadBalancer",
+            "Value": {
+              "Fn::GetAtt": [
+                "alb",
+                "LoadBalancerFullName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
         "MetricName": "HTTPCode_Target_5XX_Count",
-        "Statistic": "Sum",
         "Namespace": "AWS/ApplicationELB",
-        "Dimensions": [
-          {
-            "Name": "TargetGroup",
-            "Value": {
-              "Fn::GetAtt": [
-                "AlbEventAlbTargetGrouphttpListener",
-                "TargetGroupFullName"
-              ]
-            }
-          },
-          {
-            "Name": "LoadBalancer",
-            "Value": {
-              "Fn::GetAtt": [
-                "alb",
-                "LoadBalancerFullName"
-              ]
-            }
-          }
-        ],
-        "Period": 60,
-        "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Threshold": 0
-      }
-    },
-    "slicWatchLoadBalancerUnHealthyHostCountAlarmAlbEventAlbTargetGrouphttpListener": {
-      "Type": "AWS::CloudWatch::Alarm",
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          "test-topic"
-        ],
         "OKActions": [],
-        "AlarmName": "LoadBalancer_UnHealthyHostCountAlarm_AlbEventAlbTargetGrouphttpListener",
-        "AlarmDescription": "LoadBalancer UnHealthyHostCount Average for AlbEventAlbTargetGrouphttpListener breaches 0",
-        "MetricName": "UnHealthyHostCount",
-        "Statistic": "Average",
-        "Namespace": "AWS/ApplicationELB",
-        "Dimensions": [
-          {
-            "Name": "TargetGroup",
-            "Value": {
-              "Fn::GetAtt": [
-                "AlbEventAlbTargetGrouphttpListener",
-                "TargetGroupFullName"
-              ]
-            }
-          },
-          {
-            "Name": "LoadBalancer",
-            "Value": {
-              "Fn::GetAtt": [
-                "alb",
-                "LoadBalancerFullName"
-              ]
-            }
-          }
-        ],
         "Period": 60,
-        "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Threshold": 0
-      }
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
     },
     "slicWatchLoadBalancerLambdaInternalErrorAlarmAlbEventAlbTargetGrouphttpListener": {
-      "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
           "test-topic"
         ],
-        "OKActions": [],
-        "AlarmName": "LoadBalancer_LambdaInternalErrorAlarm_AlbEventAlbTargetGrouphttpListener",
         "AlarmDescription": "LoadBalancer LambdaInternalError Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
-        "MetricName": "LambdaInternalError",
-        "Statistic": "Sum",
-        "Namespace": "AWS/ApplicationELB",
+        "AlarmName": "LoadBalancer_LambdaInternalErrorAlarm_AlbEventAlbTargetGrouphttpListener",
+        "ComparisonOperator": "GreaterThanThreshold",
         "Dimensions": [
           {
             "Name": "TargetGroup",
@@ -993,26 +867,26 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             }
           }
         ],
-        "Period": 60,
         "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Threshold": 0
-      }
+        "MetricName": "LambdaInternalError",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
     },
     "slicWatchLoadBalancerLambdaUserErrorAlarmAlbEventAlbTargetGrouphttpListener": {
-      "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
           "test-topic"
         ],
-        "OKActions": [],
-        "AlarmName": "LoadBalancer_LambdaUserErrorAlarm_AlbEventAlbTargetGrouphttpListener",
         "AlarmDescription": "LoadBalancer LambdaUserError Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
-        "MetricName": "LambdaUserError",
-        "Statistic": "Sum",
-        "Namespace": "AWS/ApplicationELB",
+        "AlarmName": "LoadBalancer_LambdaUserErrorAlarm_AlbEventAlbTargetGrouphttpListener",
+        "ComparisonOperator": "GreaterThanThreshold",
         "Dimensions": [
           {
             "Name": "TargetGroup",
@@ -1033,31 +907,157 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             }
           }
         ],
-        "Period": 60,
         "EvaluationPeriods": 1,
-        "TreatMissingData": "notBreaching",
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Threshold": 0
-      }
-    }
-  },
-  "Outputs": {
-    "ServerlessDeploymentBucketName": {
-      "Value": {
-        "Ref": "ServerlessDeploymentBucket"
+        "MetricName": "LambdaUserError",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
       },
-      "Export": {
-        "Name": "sls-serverless-test-project-alb-dev-ServerlessDeploymentBucketName"
-      }
+      "Type": "AWS::CloudWatch::Alarm"
     },
-    "AlbEventLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "AlbEventLambdaVersion0XznAenLykwY99KhRhuWhGA2GO8nTdlRqGtjPoaDgg"
+    "slicWatchLoadBalancerRejectedConnectionCountAlarmAlb": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": "LoadBalancer RejectedConnectionCount Sum for alb  breaches 0",
+        "AlarmName": "LoadBalancer_RejectedConnectionCountAlarm_alb",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "LoadBalancer",
+            "Value": {
+              "Fn::GetAtt": [
+                "alb",
+                "LoadBalancerFullName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "RejectedConnectionCount",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
       },
-      "Export": {
-        "Name": "sls-serverless-test-project-alb-dev-AlbEventLambdaFunctionQualifiedArn"
-      }
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLoadBalancerUnHealthyHostCountAlarmAlbEventAlbTargetGrouphttpListener": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": "LoadBalancer UnHealthyHostCount Average for AlbEventAlbTargetGrouphttpListener breaches 0",
+        "AlarmName": "LoadBalancer_UnHealthyHostCountAlarm_AlbEventAlbTargetGrouphttpListener",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "TargetGroup",
+            "Value": {
+              "Fn::GetAtt": [
+                "AlbEventAlbTargetGrouphttpListener",
+                "TargetGroupFullName"
+              ]
+            }
+          },
+          {
+            "Name": "LoadBalancer",
+            "Value": {
+              "Fn::GetAtt": [
+                "alb",
+                "LoadBalancerFullName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "UnHealthyHostCount",
+        "Namespace": "AWS/ApplicationELB",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Average",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "subnetA": {
+      "Properties": {
+        "AvailabilityZone": "eu-west-1a",
+        "CidrBlock": "10.0.5.0/24",
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ],
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::Subnet"
+    },
+    "subnetB": {
+      "Properties": {
+        "AvailabilityZone": "eu-west-1b",
+        "CidrBlock": "10.0.6.0/24",
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ],
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::Subnet"
+    },
+    "vpcALB": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/20",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "ProjectName",
+            "Value": "serverless-test-project-alb"
+          },
+          {
+            "Key": "Stage",
+            "Value": "dev"
+          }
+        ]
+      },
+      "Type": "AWS::EC2::VPC"
+    },
+    "vpcGatewayAttachment": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "internetGateway"
+        },
+        "VpcId": {
+          "Ref": "vpcALB"
+        }
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment"
     }
   }
 }

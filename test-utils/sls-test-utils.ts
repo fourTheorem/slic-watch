@@ -5,7 +5,7 @@ import pino from 'pino'
 const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
 const pinoLogger = pino()
 export const dummyLogger = Object.fromEntries(
-  Object.entries(pinoLogger).filter(([key]) => !extras.includes(key))
+  Object.entries(pinoLogger).filter(([key]) => !extras.includes(key as string))
 )
 
 export const pluginUtils = { log: dummyLogger }

@@ -6,7 +6,7 @@ import { setLogger } from 'slic-watch-core/logging'
 import { type SlicWatchConfig, resolveSlicWatchConfig } from 'slic-watch-core/inputs/general-config'
 import { type Template } from 'cloudform-types'
 
-const logger = pino({ name: 'macroHandler', level: process.env.DEBUG_LEVEL ?? 'DEBUG' })
+const logger = pino({ name: 'macroHandler', level: process.env.DEBUG_LEVEL ?? 'debug' })
 
 setLogger(logger)
 

@@ -11,7 +11,23 @@ import { type Test } from 'tap'
  * @returns The formatted snapshot
  */
 export function formatSnapshot (template: Template): string {
-  return JSON.stringify(template, null, '  ')
+  return JSON.stringify(sortObject(template), null, '  ')
+}
+
+/**
+ * Create a copy of the object with every nested property sorted alphabetically for easier comparison
+ */
+export function sortObject (obj: object): object {
+  const sortedObj: Record<string, any> = {}
+  for (const [key, value] of Object.entries(obj).toSorted(([a], [b]) => (a as string).localeCompare(b as string))) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const obj = value as any
+      sortedObj[key] = sortObject(typeof obj.toJSON === 'function' ? obj.toJSON() : obj)
+    } else {
+      sortedObj[key] = value
+    }
+  }
+  return sortedObj as object
 }
 
 /**
@@ -27,7 +43,7 @@ export function cleanSnapshot (snapshot: string): string {
     ([key, value]) => {
       const resource = value
       if (resource.Type === 'AWS::CloudWatch::Dashboard') {
-        const dashBody = (resource.Properties as DashboardProperties).DashboardBody
+        const dashBody = (resource.Properties as DashboardProperties).DashboardBody as any
         const subValue = dashBody['Fn::Sub']
         const parsedValue = JSON.parse(subValue)
         return [key, {
