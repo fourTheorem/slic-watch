@@ -3,6 +3,7 @@ import type { Template } from 'cloudform'
 import type { DashboardProperties } from 'cloudform-types/types/cloudWatch/dashboard'
 import { type ResourceType } from 'slic-watch-core/cf-template'
 import { type Test } from 'tap'
+
 /**
  * node-tap snapshots are usually persisted in tcompare format. We replace this with JSON
  * so we can clean them and deal with JSON-within-JSON cases.
