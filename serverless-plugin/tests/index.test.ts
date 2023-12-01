@@ -5,7 +5,6 @@ import ServerlessError from 'serverless/lib/serverless-error'
 import ServerlessPlugin from '../serverless-plugin'
 import { getLogger } from 'slic-watch-core/logging'
 import { createMockServerless, dummyLogger, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
-import { type ResourceType } from 'slic-watch-core'
 
 interface TestData {
   schema?
