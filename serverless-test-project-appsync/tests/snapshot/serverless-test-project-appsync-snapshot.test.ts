@@ -11,7 +11,7 @@ const logger = {}
 
 const pluginUtils = { log: logger }
 
-test('serverless-test-project-appsync snapshot', (t) => {
+test('the plugin adds SLIC Watch dashboards and alarms to a serverless-generated CloudFormation template with AppSync resources', (t) => {
   setUpSnapshotDefaults(t)
   const mockServerless = createMockServerless(inputTemplate as unknown as Template)
   const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)

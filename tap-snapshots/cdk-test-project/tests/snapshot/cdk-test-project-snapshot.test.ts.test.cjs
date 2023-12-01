@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > cdk-test-project snapshot > ecsStack fragment 1`] = `
+exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > the Macro adds SLIC Watch dashboards and alarms to synthesized CDK project > ecsStack > ecsStack fragment 1`] = `
 {
   "Transform": "SlicWatch-v3",
   "Metadata": {
@@ -1274,7 +1274,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
 }
 `
 
-exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > cdk-test-project snapshot > generalEuStack fragment 1`] = `
+exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > the Macro adds SLIC Watch dashboards and alarms to synthesized CDK project > generalEuStack > generalEuStack fragment 1`] = `
 {
   "Transform": "SlicWatch-v3",
   "Metadata": {
@@ -4772,7 +4772,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
 }
 `
 
-exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > cdk-test-project snapshot > generalUsStack fragment 1`] = `
+exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > the Macro adds SLIC Watch dashboards and alarms to synthesized CDK project > generalUsStack > generalUsStack fragment 1`] = `
 {
   "Transform": "SlicWatch-v3",
   "Metadata": {
@@ -8270,7 +8270,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
 }
 `
 
-exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > cdk-test-project snapshot > stepFunctionStack fragment 1`] = `
+exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP > the Macro adds SLIC Watch dashboards and alarms to synthesized CDK project > stepFunctionStack > stepFunctionStack fragment 1`] = `
 {
   "Transform": "SlicWatch-v3",
   "Metadata": {

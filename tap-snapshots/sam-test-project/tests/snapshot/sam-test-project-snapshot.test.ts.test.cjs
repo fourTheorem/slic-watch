@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP > sam-test-project snapshot > fragment 1`] = `
+exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP > the Macro adds SLIC Watch dashboards and alarms to a transformed SAM template > fragment 1`] = `
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "sam-test-project",

@@ -5,7 +5,7 @@ import { handler } from 'cf-macro-slic-watch/index'
 import inputTemplate from './fixtures/sam-test-project-transformed-template.json'
 import { setUpSnapshotDefaults } from 'test-utils/snapshot-utils'
 
-test('sam-test-project snapshot', async (t) => {
+test('the Macro adds SLIC Watch dashboards and alarms to a transformed SAM template', async (t) => {
   setUpSnapshotDefaults(t)
   const response = await handler({ fragment: inputTemplate as Template, requestId: 'snapshot-test' })
   t.notOk(response.errorMessage)

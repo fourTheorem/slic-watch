@@ -9,20 +9,18 @@ import generalUsStack from './fixtures/CdkGeneralStackTest-US.template.json'
 import ecsStack from './fixtures/CdkECSStackTest-Europe.template.json'
 import stepFunctionStack from './fixtures/CdkSFNStackTest-Europe.template.json'
 
-const stacks = {
-  generalEuStack,
-  generalUsStack,
-  ecsStack,
-  stepFunctionStack
-}
-test('cdk-test-project snapshot', async (t) => {
+const stacks = { generalEuStack, generalUsStack, ecsStack, stepFunctionStack }
+
+test('the Macro adds SLIC Watch dashboards and alarms to synthesized CDK project', async (t) => {
   setUpSnapshotDefaults(t)
   for (const [name, stack] of Object.entries(stacks)) {
-    const response = await handler({ fragment: stack as Template, requestId: 'snapshot-test' })
-    t.notOk(response.errorMessage)
-    t.equal(response.status, 'success')
-    t.equal(response.requestId, 'snapshot-test')
-    t.matchSnapshot(response.fragment, `${name} fragment`)
+    await t.test(name, async (t) => {
+      const response = await handler({ fragment: stack as Template, requestId: 'snapshot-test' })
+      t.notOk(response.errorMessage)
+      t.equal(response.status, 'success')
+      t.equal(response.requestId, 'snapshot-test')
+      t.matchSnapshot(response.fragment, `${name} fragment`)
+    })
   }
   t.end()
 })

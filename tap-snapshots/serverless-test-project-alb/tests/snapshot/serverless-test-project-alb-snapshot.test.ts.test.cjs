@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-snapshot.test.ts > TAP > serverless-test-project-alb snapshot > serverless-test-project-alb template 1`] = `
+exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-snapshot.test.ts > TAP > the plugin adds SLIC Watch dashboards and alarms to a serverless-generated CloudFormation template with ALB resources > serverless-test-project-alb template 1`] = `
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "The AWS CloudFormation template for this Serverless application",

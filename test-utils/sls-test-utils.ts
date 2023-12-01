@@ -2,12 +2,12 @@ import { type Template } from 'cloudform'
 import pino from 'pino'
 
 // Serverless Framework provides plugins with a logger to use, so we simulate that with this:
-export const dummyLogger = Object.assign({}, pino())
 const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
-for (const extra of extras) {
-  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-  delete dummyLogger[extra]
-}
+const pinoLogger = pino()
+export const dummyLogger = Object.fromEntries(
+  Object.entries(pinoLogger).filter(([key]) => !extras.includes(key))
+)
+
 export const pluginUtils = { log: dummyLogger }
 
 export interface SlsYaml {
