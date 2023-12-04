@@ -16,14 +16,17 @@
     "serverless-test-project",
     "serverless-test-project-alb",
     "serverless-test-project-appsync",
-    "sam-test-project"
+    "sam-test-project",
+    "test-utils"
   ],
   "scripts": {
     "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev",
     "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "tap --include='**/tests/**/*.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
+    "test:packages": "DEBUG_LEVEL=info tap --include='**/tests/**/*.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
+    "test:snapshots": "DEBUG_LEVEL=info tap --include='**/tests/**/*snapshot.test.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
+    "test:snapshots:generate": "TAP_SNAPSHOT=1 npm run test:snapshots",
     "test:report": "tap report html",
     "test": "npm run lint && npm run test:packages",
     "prepare": "test ! -d '.git' || is-ci || husky install",

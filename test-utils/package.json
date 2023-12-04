@@ -1,0 +1,15 @@
+{
+    "name": "test-utils",
+    "description": "Common test utilities",
+    "version": "3.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fourTheorem/slic-watch.git",
+        "directory": "test-utils"
+    },
+    "license": "Apache",
+    "dependencies": {},
+    "scripts": {
+        "test": "echo"
+    }
+}

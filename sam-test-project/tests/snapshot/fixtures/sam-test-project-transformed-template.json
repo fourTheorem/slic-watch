@@ -1,0 +1,1029 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "sam-test-project",
+  "Metadata": {
+    "slicWatch": {
+      "enabled": true,
+      "alarmActionsConfig": {
+        "alarmActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "okActions": [
+          {
+            "Ref": "MonitoringTopic"
+          }
+        ],
+        "actionsEnabled": true
+      },
+      "alarms": {
+        "Lambda": {
+          "Invocations": {
+            "enabled": true,
+            "Threshold": 10
+          }
+        },
+        "SQS": {
+          "AgeOfOldestMessage": {
+            "Statistic": "Maximum",
+            "enabled": true,
+            "Threshold": 60
+          },
+          "InFlightMessagesPc": {
+            "Statistic": "Maximum",
+            "Threshold": 1
+          }
+        }
+      }
+    }
+  },
+  "Resources": {
+    "MonitoringTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "SS-Alarm-Topic3"
+      },
+      "Metadata": {
+        "SamResourceId": "MonitoringTopic"
+      }
+    },
+    "stream": {
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+        "ShardCount": 1
+      },
+      "Metadata": {
+        "SamResourceId": "stream"
+      }
+    },
+    "regularQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Metadata": {
+        "SamResourceId": "regularQueue"
+      }
+    },
+    "fifoQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "FifoQueue": true
+      },
+      "Metadata": {
+        "SamResourceId": "fifoQueue"
+      }
+    },
+    "vpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16"
+      },
+      "Metadata": {
+        "SamResourceId": "vpc"
+      }
+    },
+    "subnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
+        },
+        "CidrBlock": "10.0.16.0/20",
+        "VpcId": {
+          "Ref": "vpc"
+        }
+      },
+      "Metadata": {
+        "SamResourceId": "subnet"
+      }
+    },
+    "ecsCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Metadata": {
+        "SamResourceId": "ecsCluster"
+      }
+    },
+    "ecsService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "ecsCluster"
+        },
+        "DesiredCount": 0,
+        "LaunchType": "FARGATE",
+        "TaskDefinition": {
+          "Ref": "taskDef"
+        },
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [],
+            "Subnets": [
+              {
+                "Ref": "subnet"
+              }
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "SamResourceId": "ecsService"
+      }
+    },
+    "taskDef": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "Cpu": 256,
+        "Memory": 512,
+        "ContainerDefinitions": [
+          {
+            "Name": "busybox",
+            "Image": "busybox",
+            "Cpu": 256,
+            "EntryPoint": [
+              "sh",
+              "-c"
+            ],
+            "Memory": 512,
+            "Command": [
+              "/bin/sh -c \"while true; do echo Hello; sleep 10; done\""
+            ],
+            "Essential": true
+          }
+        ],
+        "NetworkMode": "awsvpc"
+      },
+      "Metadata": {
+        "SamResourceId": "taskDef"
+      }
+    },
+    "dataTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "sk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "gsi1pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "gsi1sk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "timestamp",
+            "AttributeType": "N"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "sk",
+            "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "GSI1",
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
+            "KeySchema": [
+              {
+                "AttributeName": "gsi1pk",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "gsi1sk",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "address"
+              ],
+              "ProjectionType": "INCLUDE"
+            }
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "LSI1",
+            "KeySchema": [
+              {
+                "AttributeName": "pk",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "NonKeyAttributes": [
+                "name"
+              ],
+              "ProjectionType": "INCLUDE"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "SamResourceId": "dataTable"
+      }
+    },
+    "hello": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "hello",
+        "slicWatch": {
+          "alarms": {
+            "Lambda": {
+              "Invocations": {
+                "Threshold": 2
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "helloRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "helloRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "ping": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "ping",
+        "slicWatch": {
+          "dashboard": {
+            "enabled": false
+          }
+        }
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "pingRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "pingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "throttler": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "throttler"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "throttlerRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ],
+        "ReservedConcurrentExecutions": 0
+      }
+    },
+    "throttlerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveStream": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveStream"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "stream-test-handler.handleDrive",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveStreamRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveStreamRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveQueue": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveQueue"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveQueueRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveQueueRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveTable": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "driveTable"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "driveTableRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "driveTableRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessor": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "streamProcessor"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "basic-handler.hello",
+        "Role": {
+          "Fn::GetAtt": [
+            "streamProcessorRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessorRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "streamProcessorStream": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "stream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "streamProcessor"
+        },
+        "MaximumRetryAttempts": 0,
+        "StartingPosition": "LATEST"
+      }
+    },
+    "httpGetter": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "httpGetter"
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "apigw-handler.handleGet",
+        "Role": {
+          "Fn::GetAtt": [
+            "httpGetterRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 30,
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "httpGetterRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "httpGetterHttpApiEventPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "httpGetter"
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": [
+            "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GETitem",
+            {
+              "__ApiId__": {
+                "Ref": "ServerlessHttpApi"
+              },
+              "__Stage__": "*"
+            }
+          ]
+        }
+      }
+    },
+    "eventsRule": {
+      "Type": "AWS::Lambda::Function",
+      "Metadata": {
+        "SamResourceId": "eventsRule",
+        "slicWatch": {
+          "alarms": {
+            "Lambda": {
+              "enabled": false
+            }
+          }
+        }
+      },
+      "Properties": {
+        "Code": {
+          "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+        },
+        "Handler": "rule-handler.handleRule",
+        "Role": {
+          "Fn::GetAtt": [
+            "eventsRuleRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "eventsRuleRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Tags": [
+          {
+            "Key": "lambda:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "eventsRuleTrigger": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "detail-type": [
+            "Invoke Lambda Function"
+          ]
+        },
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "eventsRule",
+                "Arn"
+              ]
+            },
+            "Id": "eventsRuleTriggerLambdaTarget",
+            "RetryPolicy": {
+              "MaximumRetryAttempts": 0,
+              "MaximumEventAgeInSeconds": 60
+            }
+          }
+        ]
+      }
+    },
+    "eventsRuleTriggerPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "eventsRule"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "eventsRuleTrigger",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "TestStateMachine": {
+      "Type": "AWS::StepFunctions::StateMachine",
+      "Metadata": {
+        "SamResourceId": "TestStateMachine"
+      },
+      "Properties": {
+        "DefinitionS3Location": {
+          "Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
+          "Key": "sam-test-project/754f906d12f592f99c5651c04a6a0a51"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "TestStateMachineRole",
+            "Arn"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "stateMachine:createdBy",
+            "Value": "SAM"
+          }
+        ],
+        "DefinitionSubstitutions": {
+          "HelloArn": {
+            "Fn::GetAtt": [
+              "hello",
+              "Arn"
+            ]
+          },
+          "AnotherHelloArn": {
+            "Fn::GetAtt": [
+              "hello",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "TestStateMachineRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "states.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [],
+        "Policies": [
+          {
+            "PolicyName": "TestStateMachineRolePolicy0",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${functionName}*",
+                      {
+                        "functionName": {
+                          "Ref": "hello"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "TestStateMachineRolePolicy1",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${functionName}*",
+                      {
+                        "functionName": {
+                          "Ref": "hello"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "stateMachine:createdBy",
+            "Value": "SAM"
+          }
+        ]
+      }
+    },
+    "ServerlessHttpApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Body": {
+          "info": {
+            "version": "1.0",
+            "title": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          "paths": {
+            "item": {
+              "get": {
+                "x-amazon-apigateway-integration": {
+                  "httpMethod": "POST",
+                  "type": "aws_proxy",
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpGetter.Arn}/invocations"
+                  },
+                  "payloadFormatVersion": "2.0"
+                },
+                "responses": {}
+              }
+            }
+          },
+          "openapi": "3.0.1",
+          "tags": [
+            {
+              "name": "httpapi:createdBy",
+              "x-amazon-apigateway-tag-value": "SAM"
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessHttpApiApiGatewayDefaultStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "ServerlessHttpApi"
+        },
+        "StageName": "$default",
+        "Tags": {
+          "httpapi:createdBy": "SAM"
+        },
+        "AutoDeploy": true
+      }
+    }
+  }
+}

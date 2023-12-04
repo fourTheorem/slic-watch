@@ -1,6 +1,7 @@
 {
   "esm": true,
   "compilerOptions": {
+    "allowJs": true,
     "module": "commonjs",
     "strict": true,
     "noImplicitAny": false,
@@ -29,6 +30,12 @@
   "include": [
     "core",
     "serverless-plugin",
-    "cf-macro"
+    "cf-macro",
+    "serverless-test-project/tests",
+    "serverless-test-project-alb/tests",
+    "serverless-test-project-appsync/tests",
+    "sam-test-project/tests",
+    "cdk-test-project",
+    "test-utils"
   ]
 }
