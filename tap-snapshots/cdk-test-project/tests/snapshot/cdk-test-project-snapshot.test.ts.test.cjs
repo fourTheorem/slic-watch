@@ -70,7 +70,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "aws:cdk:path": "CdkECSStackTest-Europe/CDKMetadata/Default"
       },
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Ry27CMBD8Fu7GbTlUXCmlCAm1UYK4IsfZpgvBjux1EIry73WepLSqFGlnx+PsembG58/8cSIudiqT0zTDmJcRCXlinjqUIO0hF0RglOWLPM9QCkKttlokLyITSkLyJkwqCCIwBUpgkAlLKDOviBsFqrSY8fLv24YtP3/2Yx1aAtVpejw63/nJQGujXV5LRm3FQPqZEUhnkK6D5H9ilRqw9he9US2/z2V9tg+WLHCxXyJysQJq9AMKtSPYiTiDG3/jFtZqic3yg7gGq01Ql3dBa2/lRVxZYLCoXR1+vFF1CjAI2k26bkE+s68zKKpfbnnZhbIT9vQKn6iwH3nPaEUCva8j7i7Qxo4OZs6n0OTRwYqhOPMy1O17mxpo702zYIsqlunU77TV6eB7j6uq7j4c5Y5YCFY7047sccWUToAf7UPxNOf+m02OFnFqnCI8Aw/b+g3+NWTOyAIAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/31RTU8CMRD9LdxLRQ7GKyISEqMbIF7JbHdcR0q76UwhZrP/3ewHy4rG07x589r5eFN9f6cnIzjx2GT7saVUlxsBs1dw4l2JhncFiGBwrGdFYcmAkHfPHrIHsOAMZk8QchDcYDiSQYUWWMhYD1naKMjlx6ku/34d1Pz9Zz7UEQu6TnPGg/oWQo6yDD4WtWSQVgrNVJcbNDGQfPWS/4lFHpD5F71yLf9WmLr2lsxVElNLZhNTh9Loe7T2UXALqcULf+FmzN5QM3wvrsFildThBWQJgif4UkmgY33V/uOVq13AXtBO0mUzETAfB3RSb8667EzZAu8f8Z0cnVteM94JkMMw4K4Mbc7RQRtZWj86WCmCgy7Xvt23iYm3ZJoBW1Qp63PW5bPP+7ufcVXV2WuUIopaI/sY2pZnXCnnM9SffHOcTvTtRE9Gn0w0DtEJHVCv2/gNbRFl8sgCAAA="
       },
       "Type": "AWS::CDK::Metadata"
     },
@@ -917,7 +917,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ClusterName",
                       "\${EcsDefaultClusterMnL3mNNYN926A5246}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -928,7 +929,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ClusterName",
                       "\${EcsDefaultClusterMnL3mNNYN926A5246}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -952,7 +954,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "LoadBalancer",
                       "\${MyWebServerLB3B5FD3AB.LoadBalancerFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -961,7 +964,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "LoadBalancer",
                       "\${MyWebServerLB3B5FD3AB.LoadBalancerFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -987,7 +991,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TargetGroup",
                       "\${MyWebServerLBPublicListenerECSGroup5AB9F1C3.TargetGroupFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -998,7 +1003,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TargetGroup",
                       "\${MyWebServerLBPublicListenerECSGroup5AB9F1C3.TargetGroupFullName}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1345,7 +1351,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "aws:cdk:path": "CdkGeneralStackTest-Europe/CDKMetadata/Default"
       },
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Q30/DIBDH/5a9M9SZmL12Gp801rr3hdKzshaoPdhsGv53D5izCeE+9z24Xxu+feC3K3HGtWy6da9qPn84ITtG0mFGg3ze20FJ9vhpEgTWC103gs/P3kinrImhJZcwaoVIXmBKaD5XtocYiDYwvD8IRHDIi2jI5zsvO3A7gcDEoFrh4CwmPr+kQhWgKwaVEvxjIaX1xrEnGHo7aSAkdeHRFG2qmoG+Wj9KSEXK0f5Mf8olceZXcF+2iVKmwJrJCG0b2ste1HmOBIHBierQfip/Gc+n8b5Jevfgk5Yh3aXtlZyuYnZDuHbG0jpit8q08dmbd4N3y/YCM7YBfsSb092W09msjqjUeqRNKA28yvYXs0P/r9UBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02QTU/DMAyGf8vumSmbhLhuIE4gRrf75KamZGuTUjsbVZT/jpKOsUvex68jfy3g8QGKGZ55ruvjvDUVhK2gPio88z6wZQg71xutnj5thqha7KoaIbx4q8U4m1K3vKGhM8zG2agMdhBK11JKJI2Kl3tkJmFYJVG8hLXXR5I1MinsTYNCZxwhvOZGJbGsepML/ONKa+etqGfqWzd2ZCW5N9FWsMldJyiJnR805Sabwf2Mf86l8MRvJF+uTtZEUdWjxc7VFYQdVtMeGaKiE1lhCKW/rOfzet8M4cOTz94E+d241ujxak5hjNfJVD5HmtbYJn1799J7uR0vKutqggPfnRYF3BdQzA5szHzwVkxHUE76CyBn/pPVAQAA"
       },
       "Type": "AWS::CDK::Metadata"
     },
@@ -1592,10 +1598,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
       "Metadata": {
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "Invocations": {
-                "Threshold": 4
-              }
+            "Invocations": {
+              "Threshold": 4
             }
           }
         }
@@ -2260,7 +2264,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2280,20 +2285,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "4XXError",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2313,20 +2310,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
+                      "Latency",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2335,16 +2324,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2364,47 +2345,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "Count",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2428,7 +2374,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TableName",
                       "\${TableCD117FA1}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2448,20 +2395,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${TableCD117FA1}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${TableCD117FA1}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2485,7 +2424,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2494,7 +2434,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2503,7 +2444,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2512,7 +2454,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2521,7 +2464,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2545,7 +2489,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2554,7 +2499,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2563,7 +2509,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2572,7 +2519,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2581,7 +2529,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2605,7 +2554,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2614,7 +2564,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2623,7 +2574,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2632,7 +2584,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2641,7 +2594,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2665,7 +2619,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2674,7 +2629,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2683,7 +2639,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2692,7 +2649,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2701,7 +2659,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2725,7 +2684,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2734,7 +2694,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2743,7 +2704,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2752,7 +2714,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2761,7 +2724,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2785,7 +2749,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2794,7 +2759,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2803,7 +2769,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2812,7 +2779,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2821,7 +2789,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2845,7 +2814,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2854,7 +2824,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2863,7 +2834,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2872,7 +2844,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2881,7 +2854,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2905,7 +2879,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2914,7 +2889,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2923,7 +2899,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2947,7 +2924,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2971,7 +2949,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2995,7 +2974,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -3004,7 +2984,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -3028,7 +3009,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -3037,7 +3019,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -3046,7 +3029,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -4843,7 +4827,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "aws:cdk:path": "CdkGeneralStackTest-US/CDKMetadata/Default"
       },
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Q30/DIBDH/5a9M9SZmL12Gp801rr3hdKzshaoPdhsGv53D5izCeE+9z24Xxu+feC3K3HGtWy6da9qPn84ITtG0mFGg3ze20FJ9vhpEgTWC103gs/P3kinrImhJZcwaoVIXmBKaD5XtocYiDYwvD8IRHDIi2jI5zsvO3A7gcDEoFrh4CwmPr+kQhWgKwaVEvxjIaX1xrEnGHo7aSAkdeHRFG2qmoG+Wj9KSEXK0f5Mf8olceZXcF+2iVKmwJrJCG0b2ste1HmOBIHBierQfip/Gc+n8b5Jevfgk5Yh3aXtlZyuYnZDuHbG0jpit8q08dmbd4N3y/YCM7YBfsSb092W09msjqjUeqRNKA28yvYXs0P/r9UBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02QTU/DMAyGf8vumSmbhLhuIE4gRrf75KamZGuTUjsbVZT/jpKOsUvex68jfy3g8QGKGZ55ruvjvDUVhK2gPio88z6wZQg71xutnj5thqha7KoaIbx4q8U4m1K3vKGhM8zG2agMdhBK11JKJI2Kl3tkJmFYJVG8hLXXR5I1MinsTYNCZxwhvOZGJbGsepML/ONKa+etqGfqWzd2ZCW5N9FWsMldJyiJnR805Sabwf2Mf86l8MRvJF+uTtZEUdWjxc7VFYQdVtMeGaKiE1lhCKW/rOfzet8M4cOTz94E+d241ujxak5hjNfJVD5HmtbYJn1799J7uR0vKutqggPfnRYF3BdQzA5szHzwVkxHUE76CyBn/pPVAQAA"
       },
       "Type": "AWS::CDK::Metadata"
     },
@@ -5090,10 +5074,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
       "Metadata": {
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "Invocations": {
-                "Threshold": 4
-              }
+            "Invocations": {
+              "Threshold": 4
             }
           }
         }
@@ -5758,7 +5740,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5778,20 +5761,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "4XXError",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5811,20 +5786,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
+                      "Latency",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -5833,16 +5800,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5862,47 +5821,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "myapi",
-                      {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "Count",
                       "ApiName",
                       "myapi",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5926,7 +5850,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TableName",
                       "\${TableCD117FA1}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5946,20 +5871,12 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${TableCD117FA1}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${TableCD117FA1}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -5983,7 +5900,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -5992,7 +5910,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6001,7 +5920,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6010,7 +5930,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6019,7 +5940,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6043,7 +5965,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6052,7 +5975,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6061,7 +5985,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6070,7 +5995,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6079,7 +6005,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6103,7 +6030,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6112,7 +6040,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6121,7 +6050,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6130,7 +6060,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6139,7 +6070,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6163,7 +6095,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6172,7 +6105,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6181,7 +6115,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6190,7 +6125,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6199,7 +6135,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6223,7 +6160,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6232,7 +6170,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6241,7 +6180,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6250,7 +6190,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6259,7 +6200,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6283,7 +6225,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6292,7 +6235,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6301,7 +6245,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6310,7 +6255,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6319,7 +6265,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6343,7 +6290,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6352,7 +6300,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${ThrottlerHandler750A7C89}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6361,7 +6310,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveStreamHandler62F1767B}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6370,7 +6320,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveQueueHandler9F657A00}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6379,7 +6330,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${DriveTableHandler119966B0}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6403,7 +6355,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6412,7 +6365,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6421,7 +6375,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6445,7 +6400,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6469,7 +6425,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6493,7 +6450,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6502,7 +6460,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -6526,7 +6485,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6535,7 +6495,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -6544,7 +6505,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${ruleF2C1DCDC}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8312,7 +8274,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "aws:cdk:path": "CdkSFNStackTest-Europe/CDKMetadata/Default"
       },
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/11P0UoDQQz8lr7nolaQvtpCoaAgp+Djke6lbbp7u6XZq8iy/+7etoIIgZnJhEwyx8UT3s/oSxvT28bJFtN7JGOhtLqkXjF9hJMYWO18JRkcDdueMK1Hb6IEP1m/PIPQgKkNjqd2xbfgxHxP8soy6GNHqhwVnycoGpejsRyXpAwa+bS77dMuklrFl5q58Zdg/w1g+iSJsCZxsDoEMQzlgcivZA7i6xV/dc7QsobxXOZqeDH34vf12puRwYee8ah3l4cFlprPjirSnEcfZWBsr/gDsE52pTwBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/11OTWvCQBD9Ld4n01RBeq2CUGihJEKPYdyMOibZFWeilGX/e8lqofT0voZ5b44vSyxndNPCtV3Ryw5jbeQ6oJs2Ub1i3IazOFjvfSYJehp2LWHcjN6ZBD9FvzyB0ICxCj1PdsbP0Iv7nuSdJdBFQ6psiq8TgC5wNbqObUXKoMbn/eOfNkbaKb7nzjd/Dd2/A4xfJAYbkh7WxyCOoTYy/iB3FJ9X/NUpQcUaxotjyOW10UH8Ia99BAl8aBlP+nSdl/hcYjk7qUhxGb3JwFjd8QcjaneZPAEAAA=="
       },
       "Type": "AWS::CDK::Metadata"
     },
@@ -8323,10 +8285,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
       "Metadata": {
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "Invocations": {
-                "Threshold": 4
-              }
+            "Invocations": {
+              "Threshold": 4
             }
           }
         }
@@ -8405,7 +8365,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${StateMachine2E01A3A5}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -8414,7 +8375,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${StateMachine2E01A3A5}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -8423,7 +8385,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${StateMachine2E01A3A5}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8447,7 +8410,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8471,7 +8435,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8495,7 +8460,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8519,7 +8485,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8543,7 +8510,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8567,7 +8535,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8591,7 +8560,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${HelloHandler2E4FBA4D}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -8615,7 +8585,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -8624,7 +8595,8 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MyTopic86869434.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],

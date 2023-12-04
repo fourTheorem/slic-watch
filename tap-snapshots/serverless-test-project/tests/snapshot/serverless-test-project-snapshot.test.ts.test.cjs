@@ -1289,7 +1289,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1309,20 +1310,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "4XXError",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1342,20 +1335,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
+                      "Latency",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1364,16 +1349,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1393,47 +1370,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "Count",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1457,7 +1399,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1466,7 +1409,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1475,7 +1419,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1499,7 +1444,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1508,7 +1454,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1517,7 +1464,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1541,7 +1489,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1564,19 +1513,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ReadThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1596,31 +1537,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1640,42 +1562,14 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "WriteThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1699,7 +1593,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1708,7 +1603,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1717,7 +1613,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1726,7 +1623,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1735,7 +1633,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1744,7 +1643,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1753,7 +1653,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1762,7 +1663,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1771,7 +1673,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1795,7 +1698,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1804,7 +1708,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1813,7 +1718,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1822,7 +1728,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1831,7 +1738,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1840,7 +1748,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1849,7 +1758,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1858,7 +1768,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1867,7 +1778,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1891,7 +1803,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1900,7 +1813,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1909,7 +1823,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1918,7 +1833,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1927,7 +1843,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1936,7 +1853,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1945,7 +1863,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1954,7 +1873,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1963,7 +1883,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1987,7 +1908,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1996,7 +1918,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2005,7 +1928,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2014,7 +1938,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2023,7 +1948,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2032,7 +1958,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2041,7 +1968,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2050,7 +1978,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2059,7 +1988,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2083,7 +2013,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2092,7 +2023,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2101,7 +2033,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2110,7 +2043,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2119,7 +2053,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2128,7 +2063,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2137,7 +2073,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2146,7 +2083,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2155,7 +2093,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2179,7 +2118,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2188,7 +2128,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2197,7 +2138,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2206,7 +2148,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2215,7 +2158,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2224,7 +2168,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2233,7 +2178,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2242,7 +2188,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2251,7 +2198,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2275,7 +2223,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2284,7 +2233,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2293,7 +2243,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2302,7 +2253,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2311,7 +2263,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2320,7 +2273,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2329,7 +2283,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2338,7 +2293,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2347,7 +2303,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2371,7 +2328,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2395,7 +2353,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2419,7 +2378,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2428,7 +2388,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2437,7 +2398,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2461,7 +2423,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2470,7 +2433,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2494,7 +2458,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2503,7 +2468,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2512,7 +2478,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2536,7 +2503,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2560,7 +2528,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2584,7 +2553,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2593,7 +2563,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2602,7 +2573,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2626,7 +2598,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2650,7 +2623,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2676,7 +2650,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2687,7 +2662,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2711,7 +2687,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TopicName",
                       "\${topic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2720,7 +2697,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TopicName",
                       "\${topic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2744,7 +2722,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2753,7 +2732,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2762,7 +2742,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -3378,6 +3359,44 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::CloudWatch::Alarm"
     },
+    "slicWatchLambdaDurationAlarmEventsRuleLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${EventsRuleLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${EventsRuleLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "EventsRuleLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
     "slicWatchLambdaDurationAlarmHelloLambdaFunction": {
       "Properties": {
         "ActionsEnabled": true,
@@ -3706,6 +3725,44 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Name": "FunctionName",
             "Value": {
               "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmEventsRuleLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${EventsRuleLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${EventsRuleLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "EventsRuleLambdaFunction"
             }
           }
         ],
@@ -4192,6 +4249,80 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                     "Name": "FunctionName",
                     "Value": {
                       "Ref": "DriveTableLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmEventsRuleLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "test-topic"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${EventsRuleLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${EventsRuleLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "EventsRuleLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "EventsRuleLambdaFunction"
                     }
                   }
                 ]

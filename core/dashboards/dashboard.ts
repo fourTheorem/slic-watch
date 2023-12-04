@@ -4,8 +4,7 @@ import { type Dashboard, type WidgetMetric, type Statistic, type YAxisPosition }
 import { cascade } from '../inputs/cascading-config'
 import { getEventSourceMappingFunctions, addResource, getResourceDashboardConfigurationsByType } from '../cf-template'
 import type {
-  WidgetMetricProperties, MetricDefs, SlicWatchDashboardConfig, SlicWatchInputDashboardConfig,
-  Widgets, WidgetWithSize
+  WidgetMetricProperties, MetricDefs, SlicWatchDashboardConfig, SlicWatchInputDashboardConfig, WidgetWithSize
 } from './dashboard-types'
 
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
@@ -15,6 +14,7 @@ import {
   resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub
 } from './dashboard-utils'
 import { getLogger } from '../logging'
+import { ConfigType } from '../inputs/config-types'
 
 const MAX_WIDTH = 24
 
@@ -130,7 +130,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * @return * Object with CloudFormation Lambda Function resources by resource name
    */
   function createLambdaWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Lambda::Function', compiledTemplate, lambdaDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.Lambda, compiledTemplate, lambdaDashConfig)
     const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
 
     const lambdaWidgets: any = []
@@ -142,14 +142,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
             const metricDefs: MetricDefs[] = []
             for (const funcLogicalId of Object.keys(configuredResources.resources)) {
               const funcConfig = configuredResources.dashConfigurations[funcLogicalId]
-              const metricConfig = funcConfig[metric]
-              if (metricConfig.enabled !== false) {
+              const functionMetricConfig = funcConfig[metric]
+              if (functionMetricConfig.enabled !== false) {
                 metricDefs.push({
                   namespace: 'AWS/Lambda',
                   metric,
                   dimensions: { FunctionName: `\${${funcLogicalId}}` },
                   stat,
-                  yAxis: metricConfig.yAxis
+                  yAxis: functionMetricConfig.yAxis
                 })
               }
             }
@@ -158,7 +158,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
               const metricStatWidget = createMetricWidget(
                 `Lambda ${metric} ${stat} per Function`,
                 metricDefs,
-                metricConfig as Widgets
+                metricConfig
               )
               lambdaWidgets.push(metricStatWidget)
             }
@@ -178,9 +178,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                   metric: 'IteratorAge',
                   dimensions: { FunctionName: `\${${funcLogicalId}}` },
                   stat: stat as Statistic,
-                  yAxis: metricConfig.yAxis
+                  yAxis: functionMetricConfig.yAxis
                 })),
-                metricConfig as Widgets
+                functionMetricConfig
               )
               lambdaWidgets.push(iteratorAgeWidget)
             }
@@ -213,7 +213,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    */
 
   function createApiWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ApiGateway::RestApi', compiledTemplate, apiGwDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.ApiGateway, compiledTemplate, apiGwDashConfig)
     const apiWidgets: WidgetWithSize[] = []
     for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const apiName: string = resolveRestApiNameForSub(res, logicalId) // e.g., ${AWS::Stack} (Ref), ${OtherResource.Name} (GetAtt)
@@ -253,9 +253,9 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of Step Function State Machine resources by resource name
    */
   function createStateMachineWidgets (): WidgetWithSize[] {
-    const stateMachineResources = getResourceDashboardConfigurationsByType('AWS::StepFunctions::StateMachine', compiledTemplate, sfDashConfig)
+    const stateMachineResources = getResourceDashboardConfigurationsByType(ConfigType.States, compiledTemplate, sfDashConfig)
     const smWidgets: WidgetWithSize[] = []
-    for (const [logicalId] of Object.entries(stateMachineResources.resources)) {
+    for (const logicalId of Object.keys(stateMachineResources.resources)) {
       const mergedConfig = stateMachineResources.dashConfigurations[logicalId]
       const widgetMetrics: MetricDefs[] = []
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(mergedConfig))) {
@@ -291,7 +291,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of DynamoDB table resources by resource name
    */
   function createDynamoDbWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::DynamoDB::Table', compiledTemplate, dynamoDbDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.DynamoDB, compiledTemplate, dynamoDbDashConfig)
     const ddbWidgets: WidgetWithSize[] = []
     for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const mergedConfig = configuredResources.dashConfigurations[logicalId]
@@ -353,7 +353,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object with CloudFormation Kinesis Data Stream resources by resource name
    */
   function createStreamWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Kinesis::Stream', compiledTemplate, kinesisDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.Kinesis, compiledTemplate, kinesisDashConfig)
     const streamWidgets: WidgetWithSize[] = []
 
     const metricGroups = {
@@ -397,7 +397,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object with CloudFormation SQS resources by resource name
    */
   function createQueueWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::SQS::Queue', compiledTemplate, sqsDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.SQS, compiledTemplate, sqsDashConfig)
     const queueWidgets: WidgetWithSize[] = []
 
     const metricGroups = {
@@ -444,7 +444,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of ECS Service resources by resource name
    */
   function createEcsWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ECS::Service', compiledTemplate, ecsDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.ECS, compiledTemplate, ecsDashConfig)
     const ecsWidgets: WidgetWithSize[] = []
     for (const [logicalId, res] of Object.entries(configuredResources.resources)) {
       const clusterName = resolveEcsClusterNameForSub(res.Properties?.Cluster)
@@ -483,7 +483,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    */
   function createTopicWidgets (): WidgetWithSize[] {
     const configuredResources = getResourceDashboardConfigurationsByType(
-      'AWS::SNS::Topic', compiledTemplate, snsDashConfig
+      ConfigType.SNS, compiledTemplate, snsDashConfig
     )
     const topicWidgets: WidgetWithSize[] = []
     for (const logicalId of Object.keys(configuredResources.resources)) {
@@ -522,7 +522,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *  Object of EventBridge Service resources by resource name
    */
   function createRuleWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::Events::Rule', compiledTemplate, ruleDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.Events, compiledTemplate, ruleDashConfig)
     const ruleWidgets: WidgetWithSize[] = []
     for (const [logicalId] of Object.entries(configuredResources.resources)) {
       const widgetMetrics: MetricDefs[] = []
@@ -556,7 +556,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Create a set of CloudWatch Dashboard widgets for Application Load Balancer services.
    */
   function createLoadBalancerWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ElasticLoadBalancingV2::LoadBalancer', compiledTemplate, albDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.ApplicationELB, compiledTemplate, albDashConfig)
     const loadBalancerWidgets: WidgetWithSize[] = []
     for (const [logicalId] of Object.entries(configuredResources.resources)) {
       const loadBalancerName = `\${${logicalId}.LoadBalancerName}`
@@ -598,7 +598,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * The full CloudFormation template instance used to look up associated listener and ALB resources
    */
   function createTargetGroupWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, albTargetDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.ApplicationELBTarget, compiledTemplate, albTargetDashConfig)
 
     const targetGroupWidgets: WidgetWithSize[] = []
     for (const [tgLogicalId, targetGroupResource] of Object.entries(configuredResources.resources)) {
@@ -645,7 +645,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    * Object of AppSync Service resources by resource name
    */
   function createAppSyncWidgets (): WidgetWithSize[] {
-    const configuredResources = getResourceDashboardConfigurationsByType('AWS::AppSync::GraphQLApi', compiledTemplate, appSyncDashConfig)
+    const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.AppSync, compiledTemplate, appSyncDashConfig)
 
     const appSyncWidgets: WidgetWithSize[] = []
     const metricGroups = {

@@ -3,6 +3,7 @@ import { Fn } from 'cloudform'
 
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchEventsAlarmsConfig<T extends InputOutput> = T & {
   FailedInvocations: T
@@ -43,7 +44,7 @@ export default function createRuleAlarms (
   eventsAlarmsConfig: SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
-    'AWS::Events::Rule',
+    ConfigType.Events,
     'Events',
     executionMetrics,
     eventsAlarmsConfig,

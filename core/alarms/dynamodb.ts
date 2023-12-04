@@ -5,6 +5,7 @@ import { Fn } from 'cloudform'
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, makeAlarmLogicalId } from './alarm-utils'
 import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchDynamoDbAlarmsConfig<T extends InputOutput> = T & {
   ReadThrottleEvents: T
@@ -32,7 +33,7 @@ export default function createDynamoDbAlarms (
   compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const configuredResources = getResourceAlarmConfigurationsByType('AWS::DynamoDB::Table', compiledTemplate, dynamoDbAlarmsConfig)
+  const configuredResources = getResourceAlarmConfigurationsByType(ConfigType.DynamoDB, compiledTemplate, dynamoDbAlarmsConfig)
 
   for (const [tableLogicalId, tableResource] of Object.entries(configuredResources.resources)) {
     for (const metric of dynamoDbMetrics) {

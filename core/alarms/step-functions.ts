@@ -3,6 +3,7 @@ import { Fn } from 'cloudform'
 
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchSfAlarmsConfig<T extends InputOutput> = T & {
   ExecutionThrottled: T
@@ -43,7 +44,7 @@ export default function createStatesAlarms (
   sfAlarmProperties: SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
-    'AWS::StepFunctions::StateMachine',
+    ConfigType.States,
     'States',
     executionMetrics,
     sfAlarmProperties,

@@ -6,6 +6,7 @@ import { Fn } from 'cloudform'
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchApiGwAlarmsConfig<T extends InputOutput> = T & {
   '5XXError': T
@@ -84,7 +85,7 @@ export default function createApiGatewayAlarms (
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
   const configuredResources = getResourceAlarmConfigurationsByType(
-    'AWS::ApiGateway::RestApi', compiledTemplate, apiGwAlarmsConfig
+    ConfigType.ApiGateway, compiledTemplate, apiGwAlarmsConfig
   )
 
   for (const [apiLogicalId, apiResource] of Object.entries(configuredResources.resources)) {

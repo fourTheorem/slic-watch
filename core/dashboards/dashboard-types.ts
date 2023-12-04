@@ -1,4 +1,5 @@
 import type { Widget } from 'cloudwatch-dashboard-types'
+import { type ConfigType } from '../inputs/config-types'
 
 export type YAxisPos = 'left' | 'right'
 
@@ -30,18 +31,18 @@ export interface WidgetMetricProperties {
 }
 
 export interface Widgets extends WidgetMetricProperties {
-  Lambda: LambdaDashboardProperties
-  ApiGateway: ApiGwDashboardProperties
-  States: SfDashboardProperties
-  DynamoDB: DynamoDbDashboardProperties
-  Kinesis: KinesisDashboardProperties
-  SQS: SqsDashboardProperties
-  ECS: EcsDashboardProperties
-  SNS: SnsDashboardProperties
-  Events: RuleDashboardProperties
-  ApplicationELB: AlbDashboardProperties
-  ApplicationELBTarget: AlbTargetDashboardProperties
-  AppSync: AppSyncDashboardProperties
+  [ConfigType.Lambda]: LambdaDashboardProperties
+  [ConfigType.ApiGateway]: ApiGwDashboardProperties
+  [ConfigType.States]: SfDashboardProperties
+  [ConfigType.DynamoDB]: DynamoDbDashboardProperties
+  [ConfigType.Kinesis]: KinesisDashboardProperties
+  [ConfigType.SQS]: SqsDashboardProperties
+  [ConfigType.ECS]: EcsDashboardProperties
+  [ConfigType.SNS]: SnsDashboardProperties
+  [ConfigType.Events]: RuleDashboardProperties
+  [ConfigType.ApplicationELB]: AlbDashboardProperties
+  [ConfigType.ApplicationELBTarget]: AlbTargetDashboardProperties
+  [ConfigType.AppSync]: AppSyncDashboardProperties
 }
 
 type NestedPartial<T> = {

@@ -5,6 +5,7 @@ import { Fn } from 'cloudform'
 import { getEventSourceMappingFunctions, getResourceAlarmConfigurationsByType } from '../cf-template'
 import type { AlarmActionsConfig, InputOutput, Value, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchLambdaAlarmsConfig<T extends InputOutput> = T & {
   Errors: T
@@ -30,7 +31,7 @@ export default function createLambdaAlarms (
 ) {
   const resources = {}
 
-  const configuredLambdaResources = getResourceAlarmConfigurationsByType('AWS::Lambda::Function', compiledTemplate, lambdaAlarmConfig)
+  const configuredLambdaResources = getResourceAlarmConfigurationsByType(ConfigType.Lambda, compiledTemplate, lambdaAlarmConfig)
   for (const [funcLogicalId, funcResource] of Object.entries(configuredLambdaResources.resources)) {
     const mergedConfig = configuredLambdaResources.alarmConfigurations[funcLogicalId]
 

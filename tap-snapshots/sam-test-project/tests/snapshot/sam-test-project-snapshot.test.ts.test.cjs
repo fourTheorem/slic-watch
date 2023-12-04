@@ -145,7 +145,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -201,7 +201,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "stream-test-handler.handleDrive",
         "Role": {
@@ -257,7 +257,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -344,16 +344,14 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
         "SamResourceId": "eventsRule",
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "enabled": false
-            }
+            "enabled": false
           }
         }
       },
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "rule-handler.handleRule",
         "Role": {
@@ -457,10 +455,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
         "SamResourceId": "hello",
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "Invocations": {
-                "Threshold": 2
-              }
+            "Invocations": {
+              "Threshold": 2
             }
           }
         }
@@ -468,7 +464,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -524,7 +520,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "apigw-handler.handleGet",
         "Role": {
@@ -616,7 +612,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -735,7 +731,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${TestStateMachine}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -744,7 +741,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${TestStateMachine}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -753,7 +751,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StateMachineArn",
                       "\${TestStateMachine}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -777,7 +776,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -800,19 +800,11 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "ReadThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -832,31 +824,12 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -876,42 +849,14 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "WriteThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -935,7 +880,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -944,7 +890,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -953,7 +900,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -962,7 +910,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -971,7 +920,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -980,7 +930,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -989,7 +940,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -998,7 +950,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1022,7 +975,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1031,7 +985,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1040,7 +995,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1049,7 +1005,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1058,7 +1015,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1067,7 +1025,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1076,7 +1035,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1085,7 +1045,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1109,7 +1070,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1118,7 +1080,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1127,7 +1090,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1136,7 +1100,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1145,7 +1110,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1154,7 +1120,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1163,7 +1130,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1172,7 +1140,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1196,7 +1165,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1205,7 +1175,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1214,7 +1185,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1223,7 +1195,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1232,7 +1205,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1241,7 +1215,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1250,7 +1225,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1259,7 +1235,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1283,7 +1260,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1292,7 +1270,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1301,7 +1280,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1310,7 +1290,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1319,7 +1300,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1328,7 +1310,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1337,7 +1320,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1346,7 +1330,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1370,7 +1355,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1379,7 +1365,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1388,7 +1375,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1397,7 +1385,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1406,7 +1395,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1415,7 +1405,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1424,7 +1415,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1433,7 +1425,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1457,7 +1450,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${hello}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1466,7 +1460,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${throttler}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1475,7 +1470,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveStream}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1484,7 +1480,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveQueue}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1493,7 +1490,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${driveTable}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1502,7 +1500,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1511,7 +1510,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${httpGetter}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1520,7 +1520,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${eventsRule}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1544,7 +1545,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "FunctionName",
                       "\${streamProcessor}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1568,7 +1570,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1592,7 +1595,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1601,7 +1605,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1610,7 +1615,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1634,7 +1640,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1643,7 +1650,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1667,7 +1675,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1676,7 +1685,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1685,7 +1695,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1709,7 +1720,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1733,7 +1745,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1757,7 +1770,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1766,7 +1780,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1775,7 +1790,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1799,7 +1815,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1823,7 +1840,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1849,7 +1867,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1860,7 +1879,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1884,7 +1904,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MonitoringTopic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1893,7 +1914,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "TopicName",
                       "\${MonitoringTopic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1917,7 +1939,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${eventsRuleTrigger}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1926,7 +1949,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${eventsRuleTrigger}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1935,7 +1959,8 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "RuleName",
                       "\${eventsRuleTrigger}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -4855,7 +4880,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -5094,7 +5119,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/810e2a73503f0ee11a4a06f488e12d55"
         },
         "Handler": "basic-handler.hello",
         "ReservedConcurrentExecutions": 0,

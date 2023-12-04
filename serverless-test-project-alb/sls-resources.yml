@@ -99,7 +99,7 @@ Resources:
        - Type: redirect
          RedirectConfig:
            Protocol: HTTP
-           Port: 400
+           Port: '400'
            Host: "#{host}"
            Path: "/#{path}"
            Query: "#{query}"

@@ -6,6 +6,7 @@ import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatc
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import type { ResourceType } from '../cf-template'
 import { getResourceAlarmConfigurationsByType, getResourcesByType } from '../cf-template'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> = T & {
   HTTPCode_Target_5XX_Count: T
@@ -128,7 +129,7 @@ function createAlbTargetCfAlarm (
 export default function createAlbTargetAlarms (
   albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
-  const resourceConfigs = getResourceAlarmConfigurationsByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate, albTargetAlarmsConfig)
+  const resourceConfigs = getResourceAlarmConfigurationsByType(ConfigType.ApplicationELBTarget, compiledTemplate, albTargetAlarmsConfig)
   const resources: CloudFormationResources = {}
   for (const [targetGroupLogicalId, targetGroupResource] of Object.entries(resourceConfigs.resources)) {
     const mergedConfig = resourceConfigs.alarmConfigurations[targetGroupLogicalId]

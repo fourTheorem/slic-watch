@@ -51,10 +51,8 @@ export class CdkSFNStack extends cdk.Stack {
     cfnFuncHello.cfnOptions.metadata = {
       slicWatch: {
         alarms: {
-          Lambda: {
-            Invocations: {
-              Threshold: 4
-            }
+          Invocations: {
+            Threshold: 4
           }
         }
       }

@@ -20,9 +20,9 @@ export function formatSnapshot (template: Template): string {
  */
 export function sortObject (obj: object): object {
   const sortedObj: Record<string, any> = {}
-  for (const [key, value] of Object.entries(obj).toSorted(([a], [b]) => (a as string).localeCompare(b as string))) {
+  for (const [key, value] of Object.entries(obj).sort(([a], [b]) => (a).localeCompare(b))) {
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      const obj = value as any
+      const obj = value
       sortedObj[key] = sortObject(typeof obj.toJSON === 'function' ? obj.toJSON() : obj)
     } else {
       sortedObj[key] = value

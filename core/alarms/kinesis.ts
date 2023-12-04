@@ -6,6 +6,7 @@ import { pascal } from 'case'
 import { getResourceAlarmConfigurationsByType } from '../cf-template'
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchKinesisAlarmsConfig<T extends InputOutput> = T & {
   'GetRecords.IteratorAgeMilliseconds': T
@@ -39,7 +40,7 @@ export default function createKinesisAlarms (
   kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const configuredResources = getResourceAlarmConfigurationsByType('AWS::Kinesis::Stream', compiledTemplate, kinesisAlarmsConfig)
+  const configuredResources = getResourceAlarmConfigurationsByType(ConfigType.Kinesis, compiledTemplate, kinesisAlarmsConfig)
 
   for (const [streamLogicalId] of Object.entries(configuredResources.resources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {

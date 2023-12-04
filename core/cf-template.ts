@@ -1,3 +1,5 @@
+
+import { merge } from 'lodash'
 import type Resource from 'cloudform-types/types/resource'
 import type Template from 'cloudform-types/types/template'
 
@@ -6,7 +8,8 @@ import { getLogger } from './logging'
 import { cascade } from './inputs/cascading-config'
 import { type SlicWatchMergedConfig } from './alarms/alarm-types'
 import { type WidgetMetricProperties } from './dashboards/dashboard-types'
-import { merge } from 'lodash'
+import { defaultConfig } from './inputs/default-config'
+import { type ConfigType, cfTypeByConfigType } from './inputs/config-types'
 
 const logger = getLogger()
 
@@ -55,18 +58,23 @@ export interface ResourceDashboardConfigurations<T extends WidgetMetricPropertie
  * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
  * the global alarm configuration for resources of that type
  *
- * @param type The CloudFormation resource type
+ * @param type The resource type
  * @param template The CloudFormation template
  * @param config The global alarm configuration for resources of this type
  * @returns The resources along with the merged configuration for each resource by logical ID
  */
 export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedConfig> (
-  type: string, template: Template, config: M
+  type: ConfigType, template: Template, config: M
 ): ResourceAlarmConfigurations<M> {
   const alarmConfigurations: Record<string, M> = {}
-  const resources = getResourcesByType(type, template)
+  const resources = getResourcesByType(cfTypeByConfigType[type], template)
   for (const [funcLogicalId, resource] of Object.entries(resources)) {
-    alarmConfigurations[funcLogicalId] = merge({}, config, cascade(resource?.Metadata?.slicWatch?.alarms ?? {}) as M)
+    const resourceConfig = resource?.Metadata?.slicWatch?.alarms // Resource-specific overrides
+    const defaultResourceConfig = defaultConfig.alarms?.[type] // Default configuration for the type's alarms
+    // Cascade the default resource's configuration into the resource-specific overrides
+    const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}
+    // Lastly, cascade the full SLIC Watch config for any properties not yet set in the widget's config
+    alarmConfigurations[funcLogicalId] = cascade(merge({}, config, cascadedResourceConfig)) as M
   }
   return {
     resources,
@@ -78,18 +86,23 @@ export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedCo
  * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
  * the global dashboard configuration for resources of that type
  *
- * @param type The CloudFormation resource type
+ * @param type The resource type
  * @param template The CloudFormation template
  * @param config The global dashboard configuration for resources of this type
  * @returns The resources along with the merged configuration for each resource by logical ID
  */
 export function getResourceDashboardConfigurationsByType<T extends WidgetMetricProperties> (
-  type: string, template: Template, config: T
+  type: ConfigType, template: Template, config: T
 ): ResourceDashboardConfigurations<T> {
   const dashConfigurations: Record<string, T> = {}
-  const resources = getResourcesByType(type, template)
+  const resources = getResourcesByType(cfTypeByConfigType[type], template)
   for (const [logicalId, resource] of Object.entries(resources)) {
-    dashConfigurations[logicalId] = cascade(merge({}, config, cascade(resource?.Metadata?.slicWatch?.dashboard ?? {}))) as T
+    const resourceConfig = resource?.Metadata?.slicWatch?.dashboard // Resource-specific overrides
+    const defaultResourceConfig = defaultConfig.dashboard?.widgets?.[type] // Default configuration for the widget
+    // Cascade the default resource's configuration into the resource-specific overrides
+    const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}
+    // Lastly, cascade the full SLIC Watch config for any properties not yet set in the widget's config
+    dashConfigurations[logicalId] = cascade(merge({}, config, cascadedResourceConfig)) as T
   }
   return {
     resources,

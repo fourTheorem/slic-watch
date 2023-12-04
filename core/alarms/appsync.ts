@@ -5,6 +5,7 @@ import { Fn } from 'cloudform'
 import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import { ConfigType } from '../inputs/config-types'
 
 export type SlicWatchAppSyncAlarmsConfig<T extends InputOutput> = T & {
   '5XXError': T
@@ -27,7 +28,7 @@ export default function createAppSyncAlarms (
   appSyncAlarmsConfig: SlicWatchAppSyncAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources = {}
-  const configuredResources = getResourceAlarmConfigurationsByType('AWS::AppSync::GraphQLApi', compiledTemplate, appSyncAlarmsConfig)
+  const configuredResources = getResourceAlarmConfigurationsByType(ConfigType.AppSync, compiledTemplate, appSyncAlarmsConfig)
 
   for (const [appSyncLogicalId, appSyncResource] of Object.entries(configuredResources.resources)) {
     for (const metric of executionMetrics) {

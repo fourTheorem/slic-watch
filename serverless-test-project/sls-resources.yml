@@ -28,7 +28,7 @@ Resources:
         - AttributeName: gsi1sk
           AttributeType: S
         - AttributeName: timestamp
-          AttributeType: N
+          AttributeType: 'N'
       KeySchema:
         - AttributeName: pk
           KeyType: HASH
@@ -121,8 +121,8 @@ Resources:
     Properties:
       RequiresCompatibilities:
         - FARGATE
-      Cpu: 256
-      Memory: 512
+      Cpu: '256'
+      Memory: '512'
       ContainerDefinitions: 
         - Name: "busybox"
           Image: "busybox"

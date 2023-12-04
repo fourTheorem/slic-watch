@@ -4,6 +4,7 @@ import { pascal } from 'case'
 
 import type { AlarmActionsConfig, AlarmTemplate, CloudFormationResources, OptionalAlarmProps, SlicWatchMergedConfig } from './alarm-types'
 import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import { type ConfigType } from '../inputs/config-types'
 
 /*
  * RegEx to filter out invalid CloudFormation Logical ID characters
@@ -23,9 +24,9 @@ const LOGICAL_ID_FILTER_REGEX = /[^a-z0-9]/gi
 type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchMergedConfig) => Omit<AlarmProperties, OptionalAlarmProps>
 
 /**
- * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specfic resources type
+ * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specific resources type
  *
- * @param type The resource CloudFormation type, e.g., `AWS::Lambda::Function`
+ * @param type The resource config type
  * @param service A human readable name for the service, e.g., 'Lambda'
  * @param metrics A list of metric names to use in the alarms
  * @param config The alarm configuration for this specific resource type
@@ -36,7 +37,7 @@ type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: s
  * @returns An object containing the alarm resources in CloudFormation syntax by logical ID
  */
 export function createCfAlarms (
-  type: string, service: string, metrics: string[], config: SlicWatchMergedConfig, alarmActionsConfig: AlarmActionsConfig,
+  type: ConfigType, service: string, metrics: string[], config: SlicWatchMergedConfig, alarmActionsConfig: AlarmActionsConfig,
   compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
@@ -62,7 +63,7 @@ export function createCfAlarms (
 }
 
 /**
- * Create a CloudFormation Alarm resourc
+ * Create a CloudFormation Alarm resource
  *
  * @param alarmProperties The alarm configuration for this specific resource type
  * @param alarmActionsConfig Alarm actions

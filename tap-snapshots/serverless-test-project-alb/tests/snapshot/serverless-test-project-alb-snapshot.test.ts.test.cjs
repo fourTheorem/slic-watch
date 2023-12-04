@@ -511,7 +511,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -535,7 +536,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -559,7 +561,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -583,7 +586,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -607,7 +611,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -631,7 +636,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -655,7 +661,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "FunctionName",
                       "\${AlbEventLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -679,7 +686,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "LoadBalancer",
                       "\${alb.LoadBalancerFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -688,7 +696,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "LoadBalancer",
                       "\${alb.LoadBalancerFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -714,7 +723,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "TargetGroup",
                       "\${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -725,7 +735,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "TargetGroup",
                       "\${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -736,7 +747,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "TargetGroup",
                       "\${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -747,7 +759,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "TargetGroup",
                       "\${AlbEventAlbTargetGrouphttpListener.TargetGroupFullName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],

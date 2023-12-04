@@ -598,7 +598,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "TableName",
                       "\${BooksTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -618,20 +619,12 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${BooksTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${BooksTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
