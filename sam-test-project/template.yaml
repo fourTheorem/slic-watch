@@ -2,6 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: sam-test-project
 Transform:
   - AWS::Serverless-2016-10-31
+  - SlicWatch-v3
 Metadata:
   slicWatch:
     enabled: true
