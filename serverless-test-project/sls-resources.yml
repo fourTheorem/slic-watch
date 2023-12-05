@@ -59,6 +59,16 @@ Resources:
             NonKeyAttributes:
               - name
             ProjectionType: INCLUDE
+    Metadata:
+      slicWatch:
+        alarms:
+          UserErrors:
+            Threshold: 20
+        dashboard:
+          ReadThrottleEvents:
+            yAxis: right
+          WriteThrottleEvents:
+            yAxis: right
 
   regularQueue:
     Type: "AWS::SQS::Queue"

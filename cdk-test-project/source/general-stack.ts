@@ -128,5 +128,23 @@ export class CdkTestGeneralStack extends cdk.Stack {
       maxEventAge: cdk.Duration.hours(2), // Optional: set the maxEventAge retry policy
       retryAttempts: 2 // Optional: set the max number of retry attempts
     }))
+    const cfnDlq = dlq.node.defaultChild as CfnResource
+    cfnDlq.cfnOptions.metadata = {
+      slicWatch: {
+        alarms: {
+          InFlightMessagesPc: {
+            Threshold: 95
+          }
+        },
+        dashboard: {
+          ApproximateAgeOfOldestMessage: {
+            yAxis: 'right'
+          },
+          NumberOfMessagesReceived: {
+            enabled: false
+          }
+        }
+      }
+    }
   }
 }

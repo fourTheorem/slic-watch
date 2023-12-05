@@ -36,7 +36,7 @@ Supported tools include:
     - [AppSync](#appsync)
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
-    - [Function-level configuration](#function-level-configuration)
+    - [Resource-level configuration](#resource-level-configuration)
       - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
       - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
       - [CDK function-level configuration](#cdk-function-level-configuration)
@@ -337,10 +337,10 @@ Configuration is entirely optional - SLIC Watch provides defaults that work out 
 
 You can customize the configuration:
 - at the top level, for all resources in each service, and/or
-- at the level of individual functions.
+- at the level of individual resources
 
 ### Top-level configuration
-SLIC Watch configuration can be specified:
+Top-level SLIC Watch configuration can be specified for all resources of each type:
 - For *Serverless Framework applications*, in the `custom` → `slicWatch` section of `serverless.yml`:
 ```yaml
 custom:
@@ -385,11 +385,53 @@ Example projects are also provided for reference:
 - [serverless-test-project](./serverless-test-project)
 - [sam-test-project](./sam-test-project)
 
-### Function-level configuration
+### Resource-level configuration
 
-For each function, add the `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource. 
+Alarms and dashboards for each resource can be customised using CloudFormation metadata. This configuration will take precedence over the top-level configuration.
+
+```yaml
+Resources:
+  regularQueue:
+    Type: AWS::SQS::Queue
+    Metadata:
+      slicWatch:
+        alarms:
+          InFlightMessagesPc:
+            Threshold: 95
+        dashboard:
+          ApproximateAgeOfOldestMessage:
+            yAxis: right
+          NumberOfMessagesReceived:
+            enabled: false
+```
+
+This can be done for any CloudFormation, AWS and SAM resource. It can also be done for CDK with the following syntax.
+
+```typescript
+const dlq = new sqs.Queue(this, 'DeadLetterQueue')
+const cfnDlq = dlq.node.defaultChild as CfnResource
+cfnDlq.cfnOptions.metadata = {
+  slicWatch: {
+    alarms: {
+      InFlightMessagesPc: {
+        Threshold: 95
+      }
+    },
+    dashboard: {
+      ApproximateAgeOfOldestMessage: {
+        yAxis: 'right'
+      },
+      NumberOfMessagesReceived: {
+        enabled: false
+      }
+    }
+  }
+}
+```
 
 #### Serverless Framework function-level configuration
+Function-level configuration works a bit differently for Serverless Framework functions. Here, the `slicWatch` configuration parameter is set directly on the function: For each function, add the `slicWatch` property to configure specific overrides for alarms and dashboards relating to the AWS Lambda Function resource. 
+
 ```yaml
 functions:
   hello:
@@ -447,6 +489,7 @@ Resources:
           Lambda:
             enabled: false
 ```
+
 #### CDK function-level configuration
 ```typescript
 const hello: lambda.Function;

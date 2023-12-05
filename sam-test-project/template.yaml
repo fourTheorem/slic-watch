@@ -131,6 +131,17 @@ Resources:
       ShardCount: 1
   regularQueue:
     Type: AWS::SQS::Queue
+    Metadata:
+      slicWatch:
+        alarms:
+          InFlightMessagesPc:
+            Threshold: 95
+        dashboard:
+          ApproximateAgeOfOldestMessage:
+            yAxis: right
+          NumberOfMessagesReceived:
+            enabled: false
+
   fifoQueue:
     Type: AWS::SQS::Queue
     Properties:

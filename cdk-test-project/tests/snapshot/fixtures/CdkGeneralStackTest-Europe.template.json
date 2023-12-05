@@ -853,7 +853,21 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "CdkGeneralStackTest-Europe/DeadLetterQueue/Resource"
+    "slicWatch": {
+     "alarms": {
+      "InFlightMessagesPc": {
+       "Threshold": 95
+      }
+     },
+     "dashboard": {
+      "ApproximateAgeOfOldestMessage": {
+       "yAxis": "right"
+      },
+      "NumberOfMessagesReceived": {
+       "enabled": false
+      }
+     }
+    }
    }
   },
   "DeadLetterQueuePolicyB1FB890C": {

@@ -1358,7 +1358,21 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
     "DeadLetterQueue9F481546": {
       "DeletionPolicy": "Delete",
       "Metadata": {
-        "aws:cdk:path": "CdkGeneralStackTest-Europe/DeadLetterQueue/Resource"
+        "slicWatch": {
+          "alarms": {
+            "InFlightMessagesPc": {
+              "Threshold": 95
+            }
+          },
+          "dashboard": {
+            "ApproximateAgeOfOldestMessage": {
+              "yAxis": "right"
+            },
+            "NumberOfMessagesReceived": {
+              "enabled": false
+            }
+          }
+        }
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete"
@@ -2885,16 +2899,6 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                     ],
                     [
                       "AWS/SQS",
-                      "NumberOfMessagesReceived",
-                      "QueueName",
-                      "\${DeadLetterQueue9F481546.QueueName}",
-                      {
-                        "stat": "Sum",
-                        "yAxis": "left"
-                      }
-                    ],
-                    [
-                      "AWS/SQS",
                       "NumberOfMessagesDeleted",
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
@@ -2925,7 +2929,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
                         "stat": "Maximum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -4402,7 +4406,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${DeadLetterQueue9F481546.QueueName} breaches 1200 (1% of the hard limit of 120000)",
+            "SQS in-flight messages for \${DeadLetterQueue9F481546.QueueName} breaches 114000 (95% of the hard limit of 120000)",
             {}
           ]
         },
@@ -4430,7 +4434,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "OKActions": [],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 1200,
+        "Threshold": 114000,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -4834,7 +4838,21 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
     "DeadLetterQueue9F481546": {
       "DeletionPolicy": "Delete",
       "Metadata": {
-        "aws:cdk:path": "CdkGeneralStackTest-US/DeadLetterQueue/Resource"
+        "slicWatch": {
+          "alarms": {
+            "InFlightMessagesPc": {
+              "Threshold": 95
+            }
+          },
+          "dashboard": {
+            "ApproximateAgeOfOldestMessage": {
+              "yAxis": "right"
+            },
+            "NumberOfMessagesReceived": {
+              "enabled": false
+            }
+          }
+        }
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete"
@@ -6361,16 +6379,6 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                     ],
                     [
                       "AWS/SQS",
-                      "NumberOfMessagesReceived",
-                      "QueueName",
-                      "\${DeadLetterQueue9F481546.QueueName}",
-                      {
-                        "stat": "Sum",
-                        "yAxis": "left"
-                      }
-                    ],
-                    [
-                      "AWS/SQS",
                       "NumberOfMessagesDeleted",
                       "QueueName",
                       "\${DeadLetterQueue9F481546.QueueName}",
@@ -6401,7 +6409,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
                       "\${DeadLetterQueue9F481546.QueueName}",
                       {
                         "stat": "Maximum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -7878,7 +7886,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${DeadLetterQueue9F481546.QueueName} breaches 1200 (1% of the hard limit of 120000)",
+            "SQS in-flight messages for \${DeadLetterQueue9F481546.QueueName} breaches 114000 (95% of the hard limit of 120000)",
             {}
           ]
         },
@@ -7906,7 +7914,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
         "OKActions": [],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 1200,
+        "Threshold": 114000,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"

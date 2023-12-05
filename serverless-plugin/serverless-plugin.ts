@@ -63,11 +63,12 @@ class ServerlessPlugin {
       // Each Lambda Function declared in serverless.yml may have a slicWatch configuration
       // to set configuration overrides for the specific function. We transform those into
       // CloudFormation Metadata on the generate AWS::Lambda::Function resource
-      for (const funcName of this.serverless.service.getAllFunctions()) {
+      const allFunctions = this.serverless.service.getAllFunctions() as string[]
+      this.serverless.cli.log(`Setting SLIC Watch configuration for ${allFunctions}`)
+      for (const funcName of allFunctions) {
         const func = this.serverless.service.getFunction(funcName) as any
         const funcConfig = func.slicWatch ?? {}
         const functionLogicalId = awsProvider.naming.getLambdaLogicalId(funcName)
-
         const templateResources = compiledTemplate.Resources as Record<string, Resource>
         templateResources[functionLogicalId].Metadata = {
           ...templateResources[functionLogicalId].Metadata ?? {},

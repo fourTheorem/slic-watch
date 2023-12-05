@@ -16,7 +16,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveQueueLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY"
+        "Ref": "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI"
       }
     },
     "DriveStreamLambdaFunctionQualifiedArn": {
@@ -25,7 +25,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveStreamLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI"
+        "Ref": "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk"
       }
     },
     "DriveTableLambdaFunctionQualifiedArn": {
@@ -34,7 +34,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveTableLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME"
+        "Ref": "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc"
       }
     },
     "EventsRuleLambdaFunctionQualifiedArn": {
@@ -43,7 +43,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-EventsRuleLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ"
+        "Ref": "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA"
       }
     },
     "ExpressWorkflowArn": {
@@ -61,7 +61,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-HelloLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4"
+        "Ref": "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk"
       }
     },
     "HttpGetterLambdaFunctionQualifiedArn": {
@@ -70,7 +70,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-HttpGetterLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8"
+        "Ref": "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws"
       }
     },
     "PingLambdaFunctionQualifiedArn": {
@@ -79,7 +79,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-PingLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ"
+        "Ref": "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns"
       }
     },
     "ServerlessDeploymentBucketName": {
@@ -122,7 +122,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-StreamProcessorLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI"
+        "Ref": "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4"
       }
     },
     "SubscriptionHandlerLambdaFunctionQualifiedArn": {
@@ -131,7 +131,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-SubscriptionHandlerLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A"
+        "Ref": "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ"
       }
     },
     "ThrottlerLambdaFunctionQualifiedArn": {
@@ -140,7 +140,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-ThrottlerLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps"
+        "Ref": "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4"
       }
     },
     "WorkflowArn": {
@@ -154,7 +154,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
     }
   },
   "Resources": {
-    "ApiGatewayDeployment1701242215363": {
+    "ApiGatewayDeployment1701792785979": {
       "DependsOn": [
         "ApiGatewayMethodItemGet",
         "ApiGatewayMethodSubscriptionPost"
@@ -311,6 +311,23 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
     },
     "dataTable": {
       "DeletionPolicy": "Delete",
+      "Metadata": {
+        "slicWatch": {
+          "alarms": {
+            "UserErrors": {
+              "Threshold": 20
+            }
+          },
+          "dashboard": {
+            "ReadThrottleEvents": {
+              "yAxis": "right"
+            },
+            "WriteThrottleEvents": {
+              "yAxis": "right"
+            }
+          }
+        }
+      },
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -410,7 +427,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-driveQueue",
         "Handler": "queue-test-handler.handleDrive",
@@ -426,10 +443,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY": {
+    "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveQueueLambdaFunction"
         }
@@ -454,7 +471,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Environment": {
           "Variables": {
@@ -477,10 +494,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI": {
+    "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveStreamLambdaFunction"
         }
@@ -505,7 +522,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-driveTable",
         "Handler": "table-test-hander.handleDrive",
@@ -521,10 +538,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME": {
+    "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveTableLambdaFunction"
         }
@@ -626,7 +643,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-eventsRule",
         "Handler": "rule-handler.handleRule",
@@ -642,10 +659,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ": {
+    "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "EventsRuleLambdaFunction"
         }
@@ -807,7 +824,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-hello",
         "Handler": "basic-handler.hello",
@@ -823,10 +840,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4": {
+    "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         }
@@ -851,7 +868,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-httpGetter",
         "Handler": "apigw-handler.handleGet",
@@ -904,10 +921,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Permission"
     },
-    "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8": {
+    "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "HttpGetterLambdaFunction"
         }
@@ -1031,7 +1048,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-ping",
         "Handler": "basic-handler.hello",
@@ -1047,10 +1064,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ": {
+    "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "PingLambdaFunction"
         }
@@ -1490,7 +1507,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "\${dataTable}",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1517,7 +1534,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "GSI1",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1542,7 +1559,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "\${dataTable}",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1569,7 +1586,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "GSI1",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -5259,7 +5276,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "DynamoDB Sum for \${dataTable} breaches 0",
+            "DynamoDB Sum for \${dataTable} breaches 20",
             {}
           ]
         },
@@ -5284,7 +5301,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "OKActions": [],
         "Period": 60,
         "Statistic": "Sum",
-        "Threshold": 0,
+        "Threshold": 20,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -5372,7 +5389,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-streamProcessor",
         "Handler": "stream-handler.handle",
@@ -5388,10 +5405,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI": {
+    "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "StreamProcessorLambdaFunction"
         }
@@ -5426,7 +5443,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-subscriptionHandler",
         "Handler": "apigw-handler.handleSubscription",
@@ -5479,10 +5496,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Permission"
     },
-    "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A": {
+    "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "SubscriptionHandlerLambdaFunction"
         }
@@ -5525,8 +5542,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Essential": true
           }
         ],
-        "Cpu": 256,
-        "Memory": 512,
+        "Cpu": "256",
+        "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE"
@@ -5546,7 +5563,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-throttler",
         "Handler": "basic-handler.hello",
@@ -5563,10 +5580,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps": {
+    "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "ThrottlerLambdaFunction"
         }
