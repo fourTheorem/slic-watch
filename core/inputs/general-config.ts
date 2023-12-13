@@ -29,8 +29,8 @@ export class ConfigError extends Error {
 
 /**
  * Validates and transforms the user-provided top-level configuration for SLIC Watch.
- * The configuration is validated accoring to the config schema. Defaults are applied
- * where not provided by the user. Finally, the alarm actions are addded.
+ * The configuration is validated according to the config schema. Defaults are applied
+ * where not provided by the user. Finally, the alarm actions are added.
  *
  * @param slicWatchConfig The user-provided configuration
  * @returns Resolved configuration

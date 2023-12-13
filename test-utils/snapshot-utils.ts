@@ -22,8 +22,7 @@ export function sortObject (obj: object): object {
   const sortedObj: Record<string, any> = {}
   for (const [key, value] of Object.entries(obj).sort(([a], [b]) => (a).localeCompare(b))) {
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      const obj = value
-      sortedObj[key] = sortObject(typeof obj.toJSON === 'function' ? obj.toJSON() : obj)
+      sortedObj[key] = sortObject(typeof value.toJSON === 'function' ? value.toJSON() : value)
     } else {
       sortedObj[key] = value
     }

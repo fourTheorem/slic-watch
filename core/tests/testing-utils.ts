@@ -72,10 +72,7 @@ export function getDashboardWidgetsByTitle (dashboard: Dashboard, ...patterns: R
   return patterns.map((pattern) => {
     const widgets = dashboard.widgets.filter((widget) => {
       const props = widget.properties as MetricWidgetProperties
-      if (typeof props?.title === 'string') {
-        return pattern.test(props.title)
-      }
-      return false
+      return typeof props?.title === 'string' && pattern.test(props.title)
     })
     if (widgets.length > 1) {
       throw new Error(`Multiple widgets found matching ${pattern}`)
