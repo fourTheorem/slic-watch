@@ -46,12 +46,7 @@ export function createMockServerless (compiledTemplate: Template, slsConfig = sl
         name: 'aws',
         compiledCloudFormationTemplate: compiledTemplate
       },
-      custom: {
-        slicWatch: {
-          enabled: true,
-          topicArn: 'test-topic'
-        }
-      },
+      custom: slsConfig.custom,
       getAllFunctions: () => Object.keys(slsConfig.functions ?? {}),
       getFunction: (funcRef) => slsConfig.functions[funcRef]
     }

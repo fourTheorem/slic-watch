@@ -1,10 +1,14 @@
 import { test } from 'tap'
 import _ from 'lodash'
 import ServerlessError from 'serverless/lib/serverless-error'
+import type Template from 'cloudform-types/types/template'
 
 import ServerlessPlugin from '../serverless-plugin'
 import { getLogger } from 'slic-watch-core/logging'
-import { createMockServerless, dummyLogger, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
+import { type SlsYaml, createMockServerless, dummyLogger, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
+import { type ResourceType } from 'slic-watch-core'
+import { getDashboardFromTemplate, getDashboardWidgetsByTitle } from 'slic-watch-core/tests/testing-utils'
+import { type MetricWidgetProperties } from 'cloudwatch-dashboard-types'
 
 interface TestData {
   schema?
@@ -45,6 +49,134 @@ test('index', t => {
   t.test('createSlicWatchResources adds dashboard and alarms', t => {
     const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
     plugin.createSlicWatchResources()
+    t.end()
+  })
+
+  t.test('function-level overrides in serverless `functions` block take precedence', t => {
+    const compiledTemplate: Template = {
+      Resources: {
+        HelloLambdaFunction: {
+          Type: 'AWS::Lambda::Function',
+          Properties: {
+            FunctionName: 'serverless-test-project-dev-hello'
+          }
+        }
+      }
+    }
+    const slsConfig: SlsYaml = {
+      custom: {
+        slicWatch: {
+          alarms: {
+            Lambda: {
+              Invocations: {
+                enabled: true,
+                Threshold: 10
+              }
+            }
+          },
+          dashboard: {
+            widgets: {
+              Lambda: {
+                Invocations: {
+                  yAxis: 'left'
+                }
+              }
+            }
+          }
+        }
+      },
+      functions: {
+        hello: {
+          slicWatch: {
+            enabled: true
+          }
+        }
+      }
+    }
+
+    t.test('Plugin succeeds without function-level overrides', t => {
+      const sls = createMockServerless(compiledTemplate, slsConfig)
+      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      plugin.createSlicWatchResources()
+      const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
+      t.equal(invocationAlarmProperties?.Threshold, 10)
+
+      const { dashboard } = getDashboardFromTemplate(compiledTemplate)
+      const widgets = getDashboardWidgetsByTitle(dashboard, /Lambda Invocations/)
+      t.equal(widgets.length, 1)
+      t.match((widgets[0].properties as MetricWidgetProperties).metrics, [
+        ['AWS/Lambda', 'Invocations', 'FunctionName', '${HelloLambdaFunction}', { stat: 'Sum', yAxis: 'left' }]
+      ])
+
+      t.end()
+    })
+
+    t.test('Plugin succeeds with function-level overrides', t => {
+      const modifiedSlsConfig = _.cloneDeep(slsConfig)
+      Object.assign(modifiedSlsConfig.functions.hello.slicWatch, {
+        alarms: {
+          Invocations: {
+            Threshold: 3,
+            enabled: true
+          }
+        },
+        dashboard: {
+          Invocations: {
+            yAxis: 'right'
+          }
+        }
+      })
+
+      const sls = createMockServerless(compiledTemplate, modifiedSlsConfig)
+      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      plugin.createSlicWatchResources()
+      const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
+      t.equal(invocationAlarmProperties?.Threshold, 3)
+
+      const { dashboard } = getDashboardFromTemplate(compiledTemplate)
+      const widgets = getDashboardWidgetsByTitle(dashboard, /Lambda Invocations/)
+      t.equal(widgets.length, 1)
+      t.match((widgets[0].properties as MetricWidgetProperties).metrics, [
+        ['AWS/Lambda', 'Invocations', 'FunctionName', '${HelloLambdaFunction}', { stat: 'Sum', yAxis: 'right' }]
+      ])
+      t.end()
+    })
+
+    t.test('Plugin succeeds with legacy function-level overrides', t => {
+      const modifiedSlsConfig = _.cloneDeep(slsConfig)
+      Object.assign(modifiedSlsConfig.functions.hello.slicWatch, {
+        alarms: {
+          Lambda: { // This extra property is the 'legacy' configuration bit
+            Invocations: {
+              Threshold: 4,
+              enabled: true
+            }
+          }
+        },
+        dashboard: {
+          Lambda: { // This extra property is the 'legacy' configuration bit
+            Invocations: {
+              yAxis: 'right'
+            }
+          }
+        }
+      })
+
+      const sls = createMockServerless(compiledTemplate, modifiedSlsConfig)
+      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      plugin.createSlicWatchResources()
+      const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
+      t.equal(invocationAlarmProperties?.Threshold, 4)
+
+      const { dashboard } = getDashboardFromTemplate(compiledTemplate)
+      const widgets = getDashboardWidgetsByTitle(dashboard, /Lambda Invocations/)
+      t.equal(widgets.length, 1)
+      t.match((widgets[0].properties as MetricWidgetProperties).metrics, [
+        ['AWS/Lambda', 'Invocations', 'FunctionName', '${HelloLambdaFunction}', { stat: 'Sum', yAxis: 'right' }]
+      ])
+      t.end()
+    })
+
     t.end()
   })
 

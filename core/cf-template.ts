@@ -9,7 +9,7 @@ import { cascade } from './inputs/cascading-config'
 import { type SlicWatchMergedConfig } from './alarms/alarm-types'
 import { type WidgetMetricProperties } from './dashboards/dashboard-types'
 import { defaultConfig } from './inputs/default-config'
-import { type ConfigType, cfTypeByConfigType } from './inputs/config-types'
+import { ConfigType, cfTypeByConfigType } from './inputs/config-types'
 
 const logger = getLogger()
 
@@ -69,7 +69,13 @@ export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedCo
   const alarmConfigurations: Record<string, M> = {}
   const resources = getResourcesByType(cfTypeByConfigType[type], template)
   for (const [funcLogicalId, resource] of Object.entries(resources)) {
-    const resourceConfig = resource?.Metadata?.slicWatch?.alarms // Resource-specific overrides
+    let legacyFallbackResourceConfig
+    if (type === ConfigType.Lambda) {
+      // Older versions only allowed function resource overrides and required the `Lambda` property within the config object
+      // If this is still present in configuration, we take it from here
+      legacyFallbackResourceConfig = resource?.Metadata?.slicWatch?.alarms?.Lambda
+    }
+    const resourceConfig = legacyFallbackResourceConfig ?? resource?.Metadata?.slicWatch?.alarms // Resource-specific overrides
     const defaultResourceConfig = defaultConfig.alarms?.[type] // Default configuration for the type's alarms
     // Cascade the default resource's configuration into the resource-specific overrides
     const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}
@@ -97,7 +103,13 @@ export function getResourceDashboardConfigurationsByType<T extends WidgetMetricP
   const dashConfigurations: Record<string, T> = {}
   const resources = getResourcesByType(cfTypeByConfigType[type], template)
   for (const [logicalId, resource] of Object.entries(resources)) {
-    const resourceConfig = resource?.Metadata?.slicWatch?.dashboard // Resource-specific overrides
+    let legacyFallbackResourceConfig
+    if (type === ConfigType.Lambda) {
+      // Older versions only allowed function resource overrides and required the `Lambda` property within the config object
+      // If this is still present in configuration, we take it from here
+      legacyFallbackResourceConfig = resource?.Metadata?.slicWatch?.dashboard?.Lambda
+    }
+    const resourceConfig = legacyFallbackResourceConfig ?? resource?.Metadata?.slicWatch?.dashboard // Resource-specific overrides
     const defaultResourceConfig = defaultConfig.dashboard?.widgets?.[type] // Default configuration for the widget
     // Cascade the default resource's configuration into the resource-specific overrides
     const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}

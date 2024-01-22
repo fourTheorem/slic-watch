@@ -42,8 +42,8 @@ class ServerlessPlugin {
   }
 
   /**
-     * Modify the CloudFormation template before the package is finalized
-     */
+   * Modify the CloudFormation template before the package is finalized
+   */
   createSlicWatchResources () {
     const slicWatchConfig: SlicWatchConfig = this.serverless.service.custom?.slicWatch ?? {}
 
@@ -65,6 +65,7 @@ class ServerlessPlugin {
       // CloudFormation Metadata on the generate AWS::Lambda::Function resource
       const allFunctions = this.serverless.service.getAllFunctions() as string[]
       this.serverless.cli.log(`Setting SLIC Watch configuration for ${allFunctions}`)
+
       for (const funcName of allFunctions) {
         const func = this.serverless.service.getFunction(funcName) as any
         const funcConfig = func.slicWatch ?? {}

@@ -18,9 +18,9 @@ export type SlicWatchLambdaAlarmsConfig<T extends InputOutput> = T & {
 const lambdaMetrics = ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations']
 
 /**
- * Add all required Lambda alarms to the provided CloudFormation templatebased on the Lambda resources found within
+ * Add all required Lambda alarms to the provided CloudFormation template based on the Lambda resources found within
  *
- * @param functionAlarmPropertiess The cascaded Lambda alarm configuration with function-specific overrides by function logical ID
+ * @param lambdaAlarmConfig Lambda-specific alarm configuration
  * @param alarmActionsConfig Notification configuration for alarm status change events
  * @compiledTemplate  CloudFormation template object
  *

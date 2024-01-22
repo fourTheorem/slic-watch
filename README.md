@@ -440,10 +440,9 @@ functions:
       dashboard:
         enabled: false    # No Lambda widgets will be created for this function
       alarms:
-        Lambda:
-          Invocations:
-            Threshold: 2  # The invocation threshold is specific to
-                          # this function's expected invocation count
+        Invocations:
+          Threshold: 2  # The invocation threshold is specific to
+                        # this function's expected invocation count
 ```
 
 To disable all alarms for any given function, use:
@@ -454,8 +453,7 @@ functions:
     handler: basic-handler.hello
     slicWatch:
       alarms:
-        Lambda:
-          enabled: false
+        enabled: false
 ```
 
 #### SAM/CloudFormation function-level configuration
@@ -468,9 +466,8 @@ Resources:
     Metadata:
       slicWatch:
         alarms:
-          Lambda:
-            Invocations:
-              Threshold: 3
+          Invocations:
+            Threshold: 3
         dashboard:
           enabled: true
 ```
@@ -486,8 +483,7 @@ Resources:
     Metadata:
       slicWatch:
         alarms:
-          Lambda:
-            enabled: false
+          enabled: false
 ```
 
 #### CDK function-level configuration
@@ -497,10 +493,8 @@ const cfnFuncHello = hello.node.defaultChild as CfnResource;
 cfnFuncHello.cfnOptions.metadata = {
   slicWatch: {
     alarms: {
-      Lambda: {
-        Invocations: {
-          Threshold: 2
-        }
+      Invocations: {
+        Threshold: 2
       }
     }
   }
