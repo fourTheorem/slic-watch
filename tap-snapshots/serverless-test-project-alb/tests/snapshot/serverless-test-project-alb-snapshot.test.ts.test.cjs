@@ -784,7 +784,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -822,7 +822,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -856,11 +856,49 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       },
       "Type": "AWS::CloudWatch::Alarm"
     },
+    "slicWatchLambdaInvocationsAlarmAlbEventLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${AlbEventLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${AlbEventLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "AlbEventLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
     "slicWatchLambdaThrottlesAlarmAlbEventLambdaFunction": {
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -934,7 +972,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer HTTPCodeELB5XXCount Sum for alb  breaches 0",
         "AlarmName": "LoadBalancer_HTTPCodeELB5XXCountAlarm_alb",
@@ -965,7 +1003,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer HTTPCode_Target_5XX_Count Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
         "AlarmName": "LoadBalancer_HTTPCodeTarget5XXCountAlarm_AlbEventAlbTargetGrouphttpListener",
@@ -1005,7 +1043,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer LambdaInternalError Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
         "AlarmName": "LoadBalancer_LambdaInternalErrorAlarm_AlbEventAlbTargetGrouphttpListener",
@@ -1045,7 +1083,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer LambdaUserError Sum for AlbEventAlbTargetGrouphttpListener breaches 0",
         "AlarmName": "LoadBalancer_LambdaUserErrorAlarm_AlbEventAlbTargetGrouphttpListener",
@@ -1085,7 +1123,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer RejectedConnectionCount Sum for alb  breaches 0",
         "AlarmName": "LoadBalancer_RejectedConnectionCountAlarm_alb",
@@ -1116,7 +1154,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "LoadBalancer UnHealthyHostCount Average for AlbEventAlbTargetGrouphttpListener breaches 0",
         "AlarmName": "LoadBalancer_UnHealthyHostCountAlarm_AlbEventAlbTargetGrouphttpListener",

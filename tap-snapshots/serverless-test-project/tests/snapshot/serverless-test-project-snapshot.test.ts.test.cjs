@@ -1186,7 +1186,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1210,7 +1210,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "4XXError",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 0.05,
@@ -1222,7 +1224,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1246,7 +1248,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "5XXError",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 0,
@@ -1258,7 +1262,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1283,7 +1287,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "ExtendedStatistic": "p99",
         "MetricName": "Latency",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Threshold": 5000,
         "TreatMissingData": "notBreaching"
@@ -2784,7 +2790,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2819,7 +2825,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "CPUUtilization",
         "Namespace": "AWS/ECS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 90,
@@ -2831,7 +2839,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2866,7 +2874,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "MemoryUtilization",
         "Namespace": "AWS/ECS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 90,
@@ -2878,7 +2888,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2904,7 +2914,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "FailedInvocations",
         "Namespace": "AWS/Events",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -2916,7 +2928,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2942,7 +2954,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ThrottledRules",
         "Namespace": "AWS/Events",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -2954,7 +2968,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2984,7 +2998,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -2996,7 +3012,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3026,7 +3042,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -3038,7 +3056,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3064,7 +3082,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "GetRecords.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3076,7 +3096,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3102,7 +3122,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "GetRecords.IteratorAgeMilliseconds",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 10000,
@@ -3114,7 +3136,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3140,7 +3162,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "PutRecords.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3152,7 +3176,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3178,7 +3202,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "PutRecord.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3190,7 +3216,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3216,7 +3242,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadProvisionedThroughputExceeded",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3228,7 +3256,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3254,7 +3282,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteProvisionedThroughputExceeded",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3266,7 +3296,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3292,7 +3322,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3304,7 +3336,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3330,7 +3362,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3342,7 +3376,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3368,45 +3402,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
-        "Period": 60,
-        "Statistic": "Maximum",
-        "Threshold": 5700,
-        "TreatMissingData": "notBreaching"
-      },
-      "Type": "AWS::CloudWatch::Alarm"
-    },
-    "slicWatchLambdaDurationAlarmEventsRuleLambdaFunction": {
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          "test-topic"
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
         ],
-        "AlarmDescription": {
-          "Fn::Sub": [
-            "Max duration for \${EventsRuleLambdaFunction} breaches 95% of timeout (6)",
-            {}
-          ]
-        },
-        "AlarmName": {
-          "Fn::Sub": [
-            "Lambda_Duration_\${EventsRuleLambdaFunction}",
-            {}
-          ]
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": [
-          {
-            "Name": "FunctionName",
-            "Value": {
-              "Ref": "EventsRuleLambdaFunction"
-            }
-          }
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Duration",
-        "Namespace": "AWS/Lambda",
-        "OKActions": [],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3418,7 +3416,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3444,7 +3442,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3456,7 +3456,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3482,7 +3482,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 28500,
@@ -3494,7 +3496,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3520,7 +3522,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3532,7 +3536,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3558,7 +3562,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3570,7 +3576,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3596,7 +3602,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 28500,
@@ -3608,7 +3616,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3634,7 +3642,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
@@ -3646,7 +3656,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3672,7 +3682,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3684,7 +3696,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3710,7 +3722,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3722,7 +3736,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3748,45 +3762,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
-        "Period": 60,
-        "Statistic": "Sum",
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching"
-      },
-      "Type": "AWS::CloudWatch::Alarm"
-    },
-    "slicWatchLambdaErrorsAlarmEventsRuleLambdaFunction": {
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          "test-topic"
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
         ],
-        "AlarmDescription": {
-          "Fn::Sub": [
-            "Error count for \${EventsRuleLambdaFunction} breaches 0",
-            {}
-          ]
-        },
-        "AlarmName": {
-          "Fn::Sub": [
-            "Lambda_Errors_\${EventsRuleLambdaFunction}",
-            {}
-          ]
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": [
-          {
-            "Name": "FunctionName",
-            "Value": {
-              "Ref": "EventsRuleLambdaFunction"
-            }
-          }
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "Errors",
-        "Namespace": "AWS/Lambda",
-        "OKActions": [],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3798,7 +3776,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3824,7 +3802,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3836,7 +3816,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3862,7 +3842,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3874,7 +3856,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3900,7 +3882,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3912,7 +3896,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3938,7 +3922,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3950,7 +3936,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3976,7 +3962,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3988,7 +3976,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4014,10 +4002,372 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveQueueLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveStreamLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveTableLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmHelloLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${HelloLambdaFunction} breaches 2",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${HelloLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HelloLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 2,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${HttpGetterLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${PingLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${StreamProcessorLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${SubscriptionHandlerLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${ThrottlerLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -4026,7 +4376,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4052,7 +4402,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "IteratorAge",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 10000,
@@ -4064,7 +4416,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4128,7 +4480,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4138,7 +4492,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4202,7 +4556,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4212,7 +4568,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4276,81 +4632,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching"
-      },
-      "Type": "AWS::CloudWatch::Alarm"
-    },
-    "slicWatchLambdaThrottlesAlarmEventsRuleLambdaFunction": {
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          "test-topic"
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
         ],
-        "AlarmDescription": {
-          "Fn::Sub": [
-            "Throttles % for \${EventsRuleLambdaFunction} breaches 0",
-            {}
-          ]
-        },
-        "AlarmName": {
-          "Fn::Sub": [
-            "Lambda_Throttles_\${EventsRuleLambdaFunction}",
-            {}
-          ]
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": [
-          {
-            "Id": "throttles_pc",
-            "Expression": "(throttles / ( throttles + invocations )) * 100",
-            "Label": "% Throttles",
-            "ReturnData": true
-          },
-          {
-            "Id": "throttles",
-            "MetricStat": {
-              "Metric": {
-                "Namespace": "AWS/Lambda",
-                "MetricName": "Throttles",
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "EventsRuleLambdaFunction"
-                    }
-                  }
-                ]
-              },
-              "Period": 60,
-              "Stat": "Sum"
-            },
-            "ReturnData": false
-          },
-          {
-            "Id": "invocations",
-            "MetricStat": {
-              "Metric": {
-                "Namespace": "AWS/Lambda",
-                "MetricName": "Invocations",
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "EventsRuleLambdaFunction"
-                    }
-                  }
-                ]
-              },
-              "Period": 60,
-              "Stat": "Sum"
-            },
-            "ReturnData": false
-          }
-        ],
-        "OKActions": [],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4360,7 +4644,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4424,7 +4708,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4434,7 +4720,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4498,7 +4784,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4508,7 +4796,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4572,7 +4860,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4582,7 +4872,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4646,7 +4936,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4656,7 +4948,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4720,7 +5012,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4730,7 +5024,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4794,7 +5088,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -4804,7 +5100,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4833,7 +5129,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "NumberOfNotificationsFailed",
         "Namespace": "AWS/SNS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -4845,7 +5143,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4874,7 +5172,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "NumberOfNotificationsFilteredOut-InvalidAttributes",
         "Namespace": "AWS/SNS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -4886,11 +5186,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 16000 (80% of the hard limit of 20000)",
+            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 200 (1% of the hard limit of 20000)",
             {}
           ]
         },
@@ -4915,10 +5215,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ApproximateNumberOfMessagesNotVisible",
         "Namespace": "AWS/SQS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 16000,
+        "Threshold": 200,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -4927,11 +5229,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${regularQueue.QueueName} breaches 96000 (80% of the hard limit of 120000)",
+            "SQS in-flight messages for \${regularQueue.QueueName} breaches 1200 (1% of the hard limit of 120000)",
             {}
           ]
         },
@@ -4956,10 +5258,98 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ApproximateNumberOfMessagesNotVisible",
         "Namespace": "AWS/SQS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 96000,
+        "Threshold": 1200,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchSQSOldestMsgAgeAlarmfifoQueue": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${fifoQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${fifoQueue.QueueName}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "fifoQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 60,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchSQSOldestMsgAgeAlarmregularQueue": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${regularQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${regularQueue.QueueName}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "regularQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 60,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -4968,7 +5358,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4994,7 +5384,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsFailed",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5006,7 +5398,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5032,7 +5424,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsFailed",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5044,7 +5438,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5070,7 +5464,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsTimedOut",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5082,7 +5478,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5108,7 +5504,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsTimedOut",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5120,7 +5518,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5146,7 +5544,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionThrottled",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5158,7 +5558,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5184,7 +5584,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionThrottled",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5196,7 +5598,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5222,7 +5624,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -5234,7 +5638,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5260,7 +5664,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "SystemErrors",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -5272,7 +5678,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5298,7 +5704,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "UserErrors",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 20,
@@ -5310,7 +5718,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -5336,7 +5744,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
