@@ -16,7 +16,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveQueueLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY"
+        "Ref": "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI"
       }
     },
     "DriveStreamLambdaFunctionQualifiedArn": {
@@ -25,7 +25,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveStreamLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI"
+        "Ref": "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk"
       }
     },
     "DriveTableLambdaFunctionQualifiedArn": {
@@ -34,7 +34,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-DriveTableLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME"
+        "Ref": "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc"
       }
     },
     "EventsRuleLambdaFunctionQualifiedArn": {
@@ -43,7 +43,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-EventsRuleLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ"
+        "Ref": "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA"
       }
     },
     "ExpressWorkflowArn": {
@@ -61,7 +61,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-HelloLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4"
+        "Ref": "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk"
       }
     },
     "HttpGetterLambdaFunctionQualifiedArn": {
@@ -70,7 +70,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-HttpGetterLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8"
+        "Ref": "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws"
       }
     },
     "PingLambdaFunctionQualifiedArn": {
@@ -79,7 +79,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-PingLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ"
+        "Ref": "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns"
       }
     },
     "ServerlessDeploymentBucketName": {
@@ -122,7 +122,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-StreamProcessorLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI"
+        "Ref": "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4"
       }
     },
     "SubscriptionHandlerLambdaFunctionQualifiedArn": {
@@ -131,7 +131,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-SubscriptionHandlerLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A"
+        "Ref": "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ"
       }
     },
     "ThrottlerLambdaFunctionQualifiedArn": {
@@ -140,7 +140,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "Name": "sls-serverless-test-project-dev-ThrottlerLambdaFunctionQualifiedArn"
       },
       "Value": {
-        "Ref": "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps"
+        "Ref": "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4"
       }
     },
     "WorkflowArn": {
@@ -154,7 +154,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
     }
   },
   "Resources": {
-    "ApiGatewayDeployment1701242215363": {
+    "ApiGatewayDeployment1701792785979": {
       "DependsOn": [
         "ApiGatewayMethodItemGet",
         "ApiGatewayMethodSubscriptionPost"
@@ -311,6 +311,23 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
     },
     "dataTable": {
       "DeletionPolicy": "Delete",
+      "Metadata": {
+        "slicWatch": {
+          "alarms": {
+            "UserErrors": {
+              "Threshold": 20
+            }
+          },
+          "dashboard": {
+            "ReadThrottleEvents": {
+              "yAxis": "right"
+            },
+            "WriteThrottleEvents": {
+              "yAxis": "right"
+            }
+          }
+        }
+      },
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -410,7 +427,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-driveQueue",
         "Handler": "queue-test-handler.handleDrive",
@@ -426,10 +443,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY": {
+    "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveQueueLambdaFunction"
         }
@@ -454,7 +471,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Environment": {
           "Variables": {
@@ -477,10 +494,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI": {
+    "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveStreamLambdaFunction"
         }
@@ -505,7 +522,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-driveTable",
         "Handler": "table-test-hander.handleDrive",
@@ -521,10 +538,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME": {
+    "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "DriveTableLambdaFunction"
         }
@@ -626,7 +643,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-eventsRule",
         "Handler": "rule-handler.handleRule",
@@ -642,10 +659,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ": {
+    "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "EventsRuleLambdaFunction"
         }
@@ -807,7 +824,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-hello",
         "Handler": "basic-handler.hello",
@@ -823,10 +840,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4": {
+    "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         }
@@ -851,7 +868,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-httpGetter",
         "Handler": "apigw-handler.handleGet",
@@ -904,10 +921,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Permission"
     },
-    "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8": {
+    "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "HttpGetterLambdaFunction"
         }
@@ -1031,7 +1048,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-ping",
         "Handler": "basic-handler.hello",
@@ -1047,10 +1064,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ": {
+    "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "PingLambdaFunction"
         }
@@ -1169,7 +1186,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1193,7 +1210,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "4XXError",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 0.05,
@@ -1205,7 +1224,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1229,7 +1248,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "5XXError",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 0,
@@ -1241,7 +1262,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -1266,7 +1287,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "ExtendedStatistic": "p99",
         "MetricName": "Latency",
         "Namespace": "AWS/ApiGateway",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Threshold": 5000,
         "TreatMissingData": "notBreaching"
@@ -1289,7 +1312,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1309,20 +1333,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "4XXError",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1342,20 +1358,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
+                      "Latency",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1364,16 +1372,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1393,47 +1393,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/ApiGateway",
-                      "5XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "4XXError",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
-                      "Latency",
-                      "ApiName",
-                      "dev-serverless-test-project",
-                      {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/ApiGateway",
                       "Count",
                       "ApiName",
                       "dev-serverless-test-project",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1457,7 +1422,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1466,7 +1432,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1475,7 +1442,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${Workflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1499,7 +1467,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1508,7 +1477,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1517,7 +1487,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StateMachineArn",
                       "\${ExpressWorkflow}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1541,7 +1512,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1564,19 +1536,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ReadThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1596,31 +1560,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1640,42 +1585,14 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      "GlobalSecondaryIndex",
-                      "GSI1",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
-                      "WriteThrottleEvents",
-                      "TableName",
-                      "\${dataTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
                       "GlobalSecondaryIndex",
                       "GSI1",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "right"
                       }
                     ]
                   ],
@@ -1699,16 +1616,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Errors",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1717,7 +1626,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1726,7 +1636,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1735,7 +1646,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1744,7 +1656,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1753,7 +1666,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1762,7 +1676,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1771,7 +1686,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1780,7 +1696,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1804,16 +1721,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Throttles",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1822,7 +1731,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1831,7 +1741,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1840,7 +1751,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1849,7 +1761,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1858,7 +1771,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1867,7 +1781,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1876,7 +1791,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1885,7 +1801,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -1909,16 +1826,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Average"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1927,7 +1836,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1936,7 +1846,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1945,7 +1856,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1954,7 +1866,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1963,7 +1876,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1972,7 +1886,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1981,7 +1896,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -1990,7 +1906,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2014,16 +1931,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "p95"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2032,7 +1941,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2041,7 +1951,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2050,7 +1961,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2059,7 +1971,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2068,7 +1981,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2077,7 +1991,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2086,7 +2001,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2095,7 +2011,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "p95"
+                        "stat": "p95",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2119,16 +2036,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Maximum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Duration",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2137,7 +2046,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2146,7 +2056,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2155,7 +2066,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2164,7 +2076,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2173,7 +2086,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2182,7 +2096,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2191,7 +2106,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2200,7 +2116,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2224,16 +2141,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "Invocations",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2242,7 +2151,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2251,7 +2161,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2260,7 +2171,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2269,7 +2181,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2278,7 +2191,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2287,7 +2201,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2296,7 +2211,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2305,7 +2221,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2329,16 +2246,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HelloLambdaFunction}",
                       {
-                        "stat": "Maximum"
-                      }
-                    ],
-                    [
-                      "AWS/Lambda",
-                      "ConcurrentExecutions",
-                      "FunctionName",
-                      "\${PingLambdaFunction}",
-                      {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2347,7 +2256,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${ThrottlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2356,7 +2266,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveStreamLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2365,7 +2276,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveQueueLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2374,7 +2286,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${DriveTableLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2383,7 +2296,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2392,7 +2306,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${HttpGetterLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2401,7 +2316,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${SubscriptionHandlerLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2410,7 +2326,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${EventsRuleLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2434,7 +2351,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "FunctionName",
                       "\${StreamProcessorLambdaFunction}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2458,7 +2376,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2482,7 +2401,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2491,7 +2411,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2500,7 +2421,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2524,7 +2446,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2533,7 +2456,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "StreamName",
                       "\${stream}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2557,7 +2481,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2566,7 +2491,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2575,7 +2501,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2599,7 +2526,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2623,7 +2551,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${regularQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2647,7 +2576,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2656,7 +2586,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2665,7 +2596,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2689,7 +2621,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2713,7 +2646,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "QueueName",
                       "\${fifoQueue.QueueName}",
                       {
-                        "stat": "Maximum"
+                        "stat": "Maximum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2739,7 +2673,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2750,7 +2685,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ClusterName",
                       "\${ecsCluster}",
                       {
-                        "stat": "Average"
+                        "stat": "Average",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2774,7 +2710,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TopicName",
                       "\${topic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2783,7 +2720,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "TopicName",
                       "\${topic.TopicName}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2807,7 +2745,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2816,7 +2755,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ],
                     [
@@ -2825,7 +2765,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "RuleName",
                       "\${ServerlesstestprojectdeveventsRulerule1EventBridgeRule}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -2849,7 +2790,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2884,7 +2825,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "CPUUtilization",
         "Namespace": "AWS/ECS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 90,
@@ -2896,7 +2839,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2931,7 +2874,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "MemoryUtilization",
         "Namespace": "AWS/ECS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 90,
@@ -2943,7 +2888,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -2969,7 +2914,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "FailedInvocations",
         "Namespace": "AWS/Events",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -2981,7 +2928,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3007,7 +2954,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ThrottledRules",
         "Namespace": "AWS/Events",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -3019,7 +2968,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3049,7 +2998,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -3061,7 +3012,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3091,7 +3042,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -3103,7 +3056,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3129,7 +3082,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "GetRecords.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3141,7 +3096,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3167,7 +3122,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "GetRecords.IteratorAgeMilliseconds",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 10000,
@@ -3179,7 +3136,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3205,7 +3162,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "PutRecords.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3217,7 +3176,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3243,7 +3202,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "PutRecord.Success",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Average",
         "Threshold": 1,
@@ -3255,7 +3216,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3281,7 +3242,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadProvisionedThroughputExceeded",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3293,7 +3256,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3319,10 +3282,132 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteProvisionedThroughputExceeded",
         "Namespace": "AWS/Kinesis",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveQueueLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveStreamLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${DriveTableLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -3331,7 +3416,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3357,10 +3442,332 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Duration",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
         "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${HttpGetterLambdaFunction} breaches 95% of timeout (30)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 28500,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${PingLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${StreamProcessorLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${SubscriptionHandlerLambdaFunction} breaches 95% of timeout (30)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 28500,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaDurationAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Max duration for \${ThrottlerLambdaFunction} breaches 95% of timeout (6)",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Duration_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 5700,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveQueueLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveStreamLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${DriveTableLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -3369,7 +3776,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3395,9 +3802,839 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${HttpGetterLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${PingLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${StreamProcessorLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${SubscriptionHandlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaErrorsAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Error count for \${ThrottlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Errors_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveQueueLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveQueueLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveStreamLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveStreamLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${DriveTableLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "DriveTableLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmHelloLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${HelloLambdaFunction} breaches 2",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${HelloLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HelloLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 2,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${HttpGetterLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "HttpGetterLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${PingLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "PingLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${StreamProcessorLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${SubscriptionHandlerLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "SubscriptionHandlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaInvocationsAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Total invocations for \${ThrottlerLambdaFunction} breaches 10",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Invocations_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "ThrottlerLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaIteratorAgeAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "IteratorAge for \${StreamProcessorLambdaFunction} breaches 10000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_IteratorAge_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "StreamProcessorLambdaFunction"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "IteratorAge",
+        "Namespace": "AWS/Lambda",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 10000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveQueueLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveQueueLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveQueueLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveQueueLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveQueueLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveStreamLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveStreamLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveStreamLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveStreamLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveStreamLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmDriveTableLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${DriveTableLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${DriveTableLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveTableLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "DriveTableLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -3407,7 +4644,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3471,7 +4708,389 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "ReturnData": false
           }
         ],
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmHttpGetterLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${HttpGetterLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${HttpGetterLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "HttpGetterLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "HttpGetterLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmPingLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${PingLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${PingLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "PingLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "PingLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmStreamProcessorLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${StreamProcessorLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${StreamProcessorLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "StreamProcessorLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "StreamProcessorLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmSubscriptionHandlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${SubscriptionHandlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${SubscriptionHandlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "SubscriptionHandlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "SubscriptionHandlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchLambdaThrottlesAlarmThrottlerLambdaFunction": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "Throttles % for \${ThrottlerLambdaFunction} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "Lambda_Throttles_\${ThrottlerLambdaFunction}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "throttles_pc",
+            "Expression": "(throttles / ( throttles + invocations )) * 100",
+            "Label": "% Throttles",
+            "ReturnData": true
+          },
+          {
+            "Id": "throttles",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Throttles",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ThrottlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "invocations",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/Lambda",
+                "MetricName": "Invocations",
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "ThrottlerLambdaFunction"
+                    }
+                  }
+                ]
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          }
+        ],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Threshold": 0,
         "TreatMissingData": "notBreaching"
       },
@@ -3481,7 +5100,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3510,7 +5129,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "NumberOfNotificationsFailed",
         "Namespace": "AWS/SNS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -3522,7 +5143,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3551,7 +5172,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "NumberOfNotificationsFilteredOut-InvalidAttributes",
         "Namespace": "AWS/SNS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 1,
@@ -3563,11 +5186,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 16000 (80% of the hard limit of 20000)",
+            "SQS in-flight messages for \${fifoQueue.QueueName} breaches 200 (1% of the hard limit of 20000)",
             {}
           ]
         },
@@ -3592,10 +5215,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ApproximateNumberOfMessagesNotVisible",
         "Namespace": "AWS/SQS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 16000,
+        "Threshold": 200,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -3604,11 +5229,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "SQS in-flight messages for \${regularQueue.QueueName} breaches 96000 (80% of the hard limit of 120000)",
+            "SQS in-flight messages for \${regularQueue.QueueName} breaches 1200 (1% of the hard limit of 120000)",
             {}
           ]
         },
@@ -3633,10 +5258,98 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ApproximateNumberOfMessagesNotVisible",
         "Namespace": "AWS/SQS",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Maximum",
-        "Threshold": 96000,
+        "Threshold": 1200,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchSQSOldestMsgAgeAlarmfifoQueue": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${fifoQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${fifoQueue.QueueName}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "fifoQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 60,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchSQSOldestMsgAgeAlarmregularQueue": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "SQS age of oldest message in the queue \${regularQueue.QueueName} breaches 60",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "SQS_ApproximateAgeOfOldestMessage_\${regularQueue.QueueName}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "regularQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateAgeOfOldestMessage",
+        "Namespace": "AWS/SQS",
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 60,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -3645,7 +5358,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3671,7 +5384,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsFailed",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3683,7 +5398,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3709,7 +5424,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsFailed",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3721,7 +5438,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3747,7 +5464,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsTimedOut",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3759,7 +5478,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3785,7 +5504,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionsTimedOut",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3797,7 +5518,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3823,7 +5544,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionThrottled",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3835,7 +5558,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3861,7 +5584,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ExecutionThrottled",
         "Namespace": "AWS/States",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3873,7 +5598,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3899,7 +5624,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "ReadThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -3911,7 +5638,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -3937,7 +5664,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "SystemErrors",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 0,
@@ -3949,11 +5678,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
-            "DynamoDB Sum for \${dataTable} breaches 0",
+            "DynamoDB Sum for \${dataTable} breaches 20",
             {}
           ]
         },
@@ -3975,10 +5704,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "UserErrors",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
-        "Threshold": 0,
+        "Threshold": 20,
         "TreatMissingData": "notBreaching"
       },
       "Type": "AWS::CloudWatch::Alarm"
@@ -3987,7 +5718,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -4013,7 +5744,9 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
         "EvaluationPeriods": 1,
         "MetricName": "WriteThrottleEvents",
         "Namespace": "AWS/DynamoDB",
-        "OKActions": [],
+        "OKActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
         "Period": 60,
         "Statistic": "Sum",
         "Threshold": 10,
@@ -4066,7 +5799,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-streamProcessor",
         "Handler": "stream-handler.handle",
@@ -4082,10 +5815,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI": {
+    "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "StreamProcessorLambdaFunction"
         }
@@ -4120,7 +5853,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-subscriptionHandler",
         "Handler": "apigw-handler.handleSubscription",
@@ -4173,10 +5906,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Permission"
     },
-    "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A": {
+    "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "SubscriptionHandlerLambdaFunction"
         }
@@ -4219,8 +5952,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Essential": true
           }
         ],
-        "Cpu": 256,
-        "Memory": 512,
+        "Cpu": "256",
+        "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE"
@@ -4240,7 +5973,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "FunctionName": "serverless-test-project-dev-throttler",
         "Handler": "basic-handler.hello",
@@ -4257,10 +5990,10 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       },
       "Type": "AWS::Lambda::Function"
     },
-    "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps": {
+    "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4": {
       "DeletionPolicy": "Retain",
       "Properties": {
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0=",
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM=",
         "FunctionName": {
           "Ref": "ThrottlerLambdaFunction"
         }

@@ -60,6 +60,21 @@
     "regularQueue": {
       "Type": "AWS::SQS::Queue",
       "Metadata": {
+        "slicWatch": {
+          "alarms": {
+            "InFlightMessagesPc": {
+              "Threshold": 95
+            }
+          },
+          "dashboard": {
+            "ApproximateAgeOfOldestMessage": {
+              "yAxis": "right"
+            },
+            "NumberOfMessagesReceived": {
+              "enabled": false
+            }
+          }
+        },
         "SamResourceId": "regularQueue"
       }
     },
@@ -263,10 +278,8 @@
         "SamResourceId": "hello",
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "Invocations": {
-                "Threshold": 2
-              }
+            "Invocations": {
+              "Threshold": 2
             }
           }
         }
@@ -274,7 +287,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -335,7 +348,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -391,7 +404,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -448,7 +461,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "stream-test-handler.handleDrive",
         "Role": {
@@ -504,7 +517,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -560,7 +573,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -616,7 +629,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "basic-handler.hello",
         "Role": {
@@ -689,7 +702,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "apigw-handler.handleGet",
         "Role": {
@@ -765,16 +778,14 @@
         "SamResourceId": "eventsRule",
         "slicWatch": {
           "alarms": {
-            "Lambda": {
-              "enabled": false
-            }
+            "enabled": false
           }
         }
       },
       "Properties": {
         "Code": {
           "S3Bucket": "aws-sam-cli-managed-default-samclisourcebucket-167xnalzxxva4",
-          "S3Key": "sam-test-project/841a60f2d379216bd90fa34e033d0596"
+          "S3Key": "sam-test-project/41c0564f2b084a83461942c11a0c2e07"
         },
         "Handler": "rule-handler.handleRule",
         "Role": {

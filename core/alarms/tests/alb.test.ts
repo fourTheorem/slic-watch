@@ -1,7 +1,8 @@
 import { test } from 'tap'
 
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+
 import createAlbAlarms from '../alb'
-import type { SlicWatchAlbAlarmsConfig } from '../alb'
 import defaultConfig from '../../inputs/default-config'
 import {
   assertCommonAlarmProperties,
@@ -12,10 +13,9 @@ import {
   testAlarmActionsConfig
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
-import type { SlicWatchMergedConfig } from '../alarm-types'
 
 test('ALB alarms are created', (t) => {
-  const AlarmPropertiesELB = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -33,11 +33,8 @@ test('ALB alarms are created', (t) => {
     }
 
   )
-  function createAlarmResources (elbAlarmProperties: SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig>) {
-    const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-    return createAlbAlarms(elbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
-  }
-  const albAlarmResources: ResourceType = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
+  const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
+  const albAlarmResources: ResourceType = createAlbAlarms(testConfig.ApplicationELB, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypesELB = {
     LoadBalancer_HTTPCodeELB5XXCountAlarm: 'HTTPCode_ELB_5XX_Count',
@@ -46,13 +43,13 @@ test('ALB alarms are created', (t) => {
 
   t.equal(Object.keys(albAlarmResources).length, Object.keys(expectedTypesELB).length)
   for (const alarmResource of Object.values(albAlarmResources)) {
-    const al = alarmResource.Properties
+    const al = alarmResource.Properties as AlarmProperties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypesELB[alarmType]
     t.equal(al?.MetricName, expectedMetric)
     t.ok(al?.Statistic)
-    t.equal(al?.Threshold, AlarmPropertiesELB.ApplicationELB[expectedMetric].Threshold)
+    t.equal(al?.Threshold, testConfig.ApplicationELB[expectedMetric].Threshold)
     t.equal(al?.EvaluationPeriods, 2)
     t.equal(al?.TreatMissingData, 'breaching')
     t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -75,8 +72,36 @@ test('ALB alarms are created', (t) => {
   t.end()
 })
 
+test('ALB resource configuration overrides take precedence', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template = createTestCloudFormationTemplate(albCfTemplate);
+  (template.Resources as ResourceType).alb.Metadata = {
+    slicWatch: {
+      alarms: {
+        Period: 900,
+        HTTPCode_ELB_5XX_Count: {
+          Threshold: 51,
+          enabled: false
+        },
+        RejectedConnectionCount: {
+          Threshold: 52
+        }
+      }
+    }
+  }
+
+  const albAlarmResources: ResourceType = createAlbAlarms(testConfig.ApplicationELB, testAlarmActionsConfig, template)
+
+  t.same(Object.keys(albAlarmResources).length, 1)
+
+  const rejectedConnectionAlarm = Object.values(albAlarmResources).filter(a => a?.Properties?.MetricName === 'RejectedConnectionCount')[0]
+
+  t.equal(rejectedConnectionAlarm?.Properties?.Threshold, 52)
+  t.end()
+})
+
 test('ALB alarms are not created when disabled globally', (t) => {
-  const AlarmPropertiesELB = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ApplicationELB: {
@@ -96,7 +121,7 @@ test('ALB alarms are not created when disabled globally', (t) => {
     const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
     return createAlbAlarms(elbAlarmProperties, testAlarmActionsConfig, compiledTemplate)
   }
-  const albAlarmResources = createAlarmResources(AlarmPropertiesELB.ApplicationELB)
+  const albAlarmResources = createAlarmResources(testConfig.ApplicationELB)
 
   t.same({}, albAlarmResources)
   t.end()

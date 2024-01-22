@@ -3,12 +3,8 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import { pascal } from 'case'
 
 import type { AlarmActionsConfig, AlarmTemplate, CloudFormationResources, OptionalAlarmProps, SlicWatchMergedConfig } from './alarm-types'
-import { getResourcesByType } from '../cf-template'
-import type { SlicWatchAlbAlarmsConfig } from './alb'
-import type { SlicWatchDynamoDbAlarmsConfig } from './dynamodb'
-import type { SlicWatchEventsAlarmsConfig } from './eventbridge'
-import type { SlicWatchSnsAlarmsConfig } from './sns'
-import type { SlicWatchSfAlarmsConfig } from './step-functions'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import { type ConfigType } from '../inputs/config-types'
 
 /*
  * RegEx to filter out invalid CloudFormation Logical ID characters
@@ -27,12 +23,10 @@ const LOGICAL_ID_FILTER_REGEX = /[^a-z0-9]/gi
  */
 type SpecificAlarmPropertiesGeneratorFunction = (metric: string, resourceName: string, config: SlicWatchMergedConfig) => Omit<AlarmProperties, OptionalAlarmProps>
 
-type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchDynamoDbAlarmsConfig<SlicWatchMergedConfig> | SlicWatchEventsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig> | SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>
-
 /**
- * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specfic resources type
+ * Create CloudFormation 'AWS::CloudWatch::Alarm' resources based on metrics for a specific resources type
  *
- * @param type The resource CloudFormation type, e.g., `AWS::Lambda::Function`
+ * @param type The resource config type
  * @param service A human readable name for the service, e.g., 'Lambda'
  * @param metrics A list of metric names to use in the alarms
  * @param config The alarm configuration for this specific resource type
@@ -43,17 +37,18 @@ type CommonAlarmsConfigs = SlicWatchAlbAlarmsConfig<SlicWatchMergedConfig> | Sli
  * @returns An object containing the alarm resources in CloudFormation syntax by logical ID
  */
 export function createCfAlarms (
-  type: string, service: string, metrics: string[], config: CommonAlarmsConfigs, alarmActionsConfig: AlarmActionsConfig,
+  type: ConfigType, service: string, metrics: string[], config: SlicWatchMergedConfig, alarmActionsConfig: AlarmActionsConfig,
   compiledTemplate: Template, genSpecificAlarmProps: SpecificAlarmPropertiesGeneratorFunction
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const resourcesOfType = getResourcesByType(type, compiledTemplate)
+  const resourceConfigs = getResourceAlarmConfigurationsByType(type, compiledTemplate, config)
 
-  for (const resourceLogicalId of Object.keys(resourcesOfType)) {
+  for (const resourceLogicalId of Object.keys(resourceConfigs.resources)) {
     for (const metric of metrics) {
-      const { enabled, ...rest } = config[metric]
-      if (enabled !== false) {
-        const alarm = genSpecificAlarmProps(metric, resourceLogicalId, rest)
+      const mergedConfig = resourceConfigs.alarmConfigurations[resourceLogicalId][metric] as SlicWatchMergedConfig
+      const { enabled, ...rest } = mergedConfig
+      if (enabled) {
+        const alarm = genSpecificAlarmProps(metric, resourceLogicalId, mergedConfig)
         const alarmLogicalId = makeAlarmLogicalId(service, pascal(resourceLogicalId), metric)
         const resource = createAlarm({
           MetricName: metric,
@@ -66,8 +61,9 @@ export function createCfAlarms (
   }
   return resources
 }
+
 /**
- * Create a CloudFormation Alarm resourc
+ * Create a CloudFormation Alarm resource
  *
  * @param alarmProperties The alarm configuration for this specific resource type
  * @param alarmActionsConfig Alarm actions

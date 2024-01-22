@@ -1,10 +1,11 @@
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
-export interface SlicWatchSnsAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchSnsAlarmsConfig<T extends InputOutput> = T & {
   'NumberOfNotificationsFilteredOut-InvalidAttributes': T
   NumberOfNotificationsFailed: T
 }
@@ -41,7 +42,7 @@ export default function createSnsAlarms (
   snsAlarmsConfig: SlicWatchSnsAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
-    'AWS::SNS::Topic',
+    ConfigType.SNS,
     'SNS',
     executionMetrics,
     snsAlarmsConfig,

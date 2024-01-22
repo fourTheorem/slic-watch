@@ -23,21 +23,23 @@ export interface AlarmTemplate {
   Properties: AlarmProperties
 }
 
+/**
+ * Alarm configuration type used *before* all mandatory fields have been applied
+ */
 export interface SlicWatchAlarmConfig extends Omit<AlarmProperties, OptionalAlarmProps> {
   ComparisonOperator?: string
+  EvaluationPeriods?: number
   enabled?: boolean
 }
 
+/**
+ * Alarm configuration type used *after* all mandatory fields have been applied
+ */
 export interface SlicWatchMergedConfig extends AlarmProperties {
   enabled: boolean
 }
 
 export type InputOutput = SlicWatchAlarmConfig | SlicWatchMergedConfig
-
-export interface ReturnAlarm {
-  resourceName: string
-  resource: Resource
-}
 
 export interface AlarmActionsConfig {
   actionsEnabled?: boolean
@@ -45,7 +47,7 @@ export interface AlarmActionsConfig {
   alarmActions?: string[]
 }
 
-export interface SlicWatchCascadedAlarmsConfig<T extends InputOutput> extends AlarmProperties {
+export type SlicWatchCascadedAlarmsConfig<T extends InputOutput> = T & {
   enabled: boolean
   Lambda: SlicWatchLambdaAlarmsConfig<T>
   ApiGateway: SlicWatchApiGwAlarmsConfig<T>

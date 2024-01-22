@@ -233,7 +233,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs18.x",
@@ -269,7 +269,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs18.x",
@@ -301,7 +301,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "basic-handler.hello",
         "Runtime": "nodejs18.x",
@@ -330,7 +330,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "stream-test-handler.handleDrive",
         "Runtime": "nodejs18.x",
@@ -365,7 +365,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "queue-test-handler.handleDrive",
         "Runtime": "nodejs18.x",
@@ -393,7 +393,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "table-test-hander.handleDrive",
         "Runtime": "nodejs18.x",
@@ -421,7 +421,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "stream-handler.handle",
         "Runtime": "nodejs18.x",
@@ -449,7 +449,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "apigw-handler.handleGet",
         "Runtime": "nodejs18.x",
@@ -477,7 +477,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "apigw-handler.handleSubscription",
         "Runtime": "nodejs18.x",
@@ -505,7 +505,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-test-project/dev/1701242216679-2023-11-29T07:16:56.679Z/serverless-test-project.zip"
+          "S3Key": "serverless/serverless-test-project/dev/1701792788693-2023-12-05T16:13:08.693Z/serverless-test-project.zip"
         },
         "Handler": "rule-handler.handleRule",
         "Runtime": "nodejs18.x",
@@ -532,104 +532,104 @@
         }
       }
     },
-    "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4": {
+    "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ": {
+    "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "PingLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps": {
+    "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ThrottlerLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI": {
+    "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DriveStreamLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY": {
+    "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DriveQueueLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME": {
+    "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DriveTableLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI": {
+    "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "StreamProcessorLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8": {
+    "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HttpGetterLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A": {
+    "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SubscriptionHandlerLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
-    "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ": {
+    "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "EventsRuleLambdaFunction"
         },
-        "CodeSha256": "8+6CAXAhHnCOtQPN1A6d4fRjjFV13css2+2nirSNse0="
+        "CodeSha256": "x4BBRU8H8eI5d76pgM61FHBjsk7qAO0pFBi6yBCXhyM="
       }
     },
     "WorkflowRole": {
@@ -995,7 +995,7 @@
         "SubscriptionHandlerLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1701242215363": {
+    "ApiGatewayDeployment1701792785979": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -1277,6 +1277,23 @@
             }
           }
         ]
+      },
+      "Metadata": {
+        "slicWatch": {
+          "alarms": {
+            "UserErrors": {
+              "Threshold": 20
+            }
+          },
+          "dashboard": {
+            "ReadThrottleEvents": {
+              "yAxis": "right"
+            },
+            "WriteThrottleEvents": {
+              "yAxis": "right"
+            }
+          }
+        }
       }
     },
     "regularQueue": {
@@ -1359,8 +1376,8 @@
         "RequiresCompatibilities": [
           "FARGATE"
         ],
-        "Cpu": 256,
-        "Memory": 512,
+        "Cpu": "256",
+        "Memory": "512",
         "ContainerDefinitions": [
           {
             "Name": "busybox",
@@ -1413,7 +1430,7 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersioncvZrQjYr4FdYsM3CaTj5TKuOJmUjyL07tfIDVXBSw4"
+        "Ref": "HelloLambdaVersionf42jv6Soivw25tYtUcrbFwOQEe9r1Gm34YtgGMrPRgk"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-HelloLambdaFunctionQualifiedArn"
@@ -1422,7 +1439,7 @@
     "PingLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "PingLambdaVersionSQcuddhSFqI0xKYCyuQTTJMvwrlKCB77CNQ16xyQ"
+        "Ref": "PingLambdaVersionQn5C3FCwaJxuyEFz1PB1TbidW97srv2gHaU7DXZns"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-PingLambdaFunctionQualifiedArn"
@@ -1431,7 +1448,7 @@
     "ThrottlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ThrottlerLambdaVersion0UeWLgxZYywcyV3gGiutpyCQJEbO6Gk8zSSOP7dMEps"
+        "Ref": "ThrottlerLambdaVersiontRCTuOU8MbmZc930qzPjGs9fBwa7TSeXpdGX5TEBl4"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-ThrottlerLambdaFunctionQualifiedArn"
@@ -1440,7 +1457,7 @@
     "DriveStreamLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DriveStreamLambdaVersionsWkqlV7IV7mJdqIqQToVljMizTzZoDCso7qMazjI"
+        "Ref": "DriveStreamLambdaVersionP4u4hk59XD9172r9elN9B3yQAKgOqsVMcEqn33HWk"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-DriveStreamLambdaFunctionQualifiedArn"
@@ -1449,7 +1466,7 @@
     "DriveQueueLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DriveQueueLambdaVersionTmzx8HCxfunJ3etrLOOYLg8zG05MzRauykeVpZFz8WY"
+        "Ref": "DriveQueueLambdaVersionO9yL7x2X7on8V1vfBzVj8OmtJsaRIkID1qjEuFRNI"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-DriveQueueLambdaFunctionQualifiedArn"
@@ -1458,7 +1475,7 @@
     "DriveTableLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DriveTableLambdaVersionkqI0DCnUasgza04mnCpqj0q5vePTOojYtyi4hxfE3ME"
+        "Ref": "DriveTableLambdaVersionCeL14112extLbZpU9IBiLCw0gjivyaXaSf664bPnc"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-DriveTableLambdaFunctionQualifiedArn"
@@ -1467,7 +1484,7 @@
     "StreamProcessorLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "StreamProcessorLambdaVersion24Kwch4oq5ogXKcIDJuLGB1qAJWt8aqgW43aCjKI"
+        "Ref": "StreamProcessorLambdaVersionVV0TLuhlwFPLxKh4EkN9lxAkgiMhMGAQYjd59YkRg4"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-StreamProcessorLambdaFunctionQualifiedArn"
@@ -1476,7 +1493,7 @@
     "HttpGetterLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HttpGetterLambdaVersionvK2ALwc1DFqBccIyulxoBU3GveALO98nQc2xP94J8"
+        "Ref": "HttpGetterLambdaVersionXJnLiB6AgdCzJn6ySnDV3jZfZFbgvZRNWY853JOnws"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-HttpGetterLambdaFunctionQualifiedArn"
@@ -1485,7 +1502,7 @@
     "SubscriptionHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SubscriptionHandlerLambdaVersion4kKEYaIgWsMN0XYzRQn4VAailfQcZ23kdSSOKepfB4A"
+        "Ref": "SubscriptionHandlerLambdaVersionRV0txVJkRLsjV5coDIOXnNx4aRSCVyx5VOtiMOYugQ"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-SubscriptionHandlerLambdaFunctionQualifiedArn"
@@ -1494,7 +1511,7 @@
     "EventsRuleLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "EventsRuleLambdaVersionxBuN447jfeozyKD2CEV3oCIHhShTUOVe5XKOkBlbchQ"
+        "Ref": "EventsRuleLambdaVersioneJD8sIr8CoIFP1PPQEJI0gOwr9VlQOhSPmtxEJmpcA"
       },
       "Export": {
         "Name": "sls-serverless-test-project-dev-EventsRuleLambdaFunctionQualifiedArn"

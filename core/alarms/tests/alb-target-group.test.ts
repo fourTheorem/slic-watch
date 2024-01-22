@@ -1,5 +1,7 @@
 import { test } from 'tap'
 
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+
 import createAlbTargetAlarms, { findLoadBalancersForTargetGroup } from '../alb-target-group'
 import { defaultConfig } from '../../inputs/default-config'
 import {
@@ -188,7 +190,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
 })
 
 test('ALB Target Group alarms are created', (t) => {
-  const AlarmPropertiesTargetGroup = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -210,13 +212,12 @@ test('ALB Target Group alarms are created', (t) => {
         }
       }
     }
-
   )
 
-  const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
+  const albAlarmConfig = testConfig.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
 
-  const targetGroupAlarmResources: ResourceType = createAlbTargetAlarms(albAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const targetGroupAlarmResources: ResourceType = createAlbTargetAlarms(albAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   const expectedTypesTargetGroup = {
     LoadBalancer_HTTPCodeTarget5XXCountAlarm: 'HTTPCode_Target_5XX_Count',
@@ -227,13 +228,13 @@ test('ALB Target Group alarms are created', (t) => {
 
   t.equal(Object.keys(targetGroupAlarmResources).length, Object.keys(expectedTypesTargetGroup).length)
   for (const alarmResource of Object.values(targetGroupAlarmResources)) {
-    const al = alarmResource.Properties
+    const al = alarmResource.Properties as AlarmProperties
     assertCommonAlarmProperties(t, al)
     const alarmType = alarmNameToType(al?.AlarmName)
     const expectedMetric = expectedTypesTargetGroup[alarmType]
     t.equal(al?.MetricName, expectedMetric)
     t.ok(al?.Statistic)
-    t.equal(al?.Threshold, albAlarmProperties[expectedMetric].Threshold)
+    t.equal(al?.Threshold, albAlarmConfig[expectedMetric].Threshold)
     t.equal(al?.EvaluationPeriods, 2)
     t.equal(al?.TreatMissingData, 'breaching')
     t.equal(al?.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -266,8 +267,45 @@ test('ALB Target Group alarms are created', (t) => {
   t.end()
 })
 
+test('ALB resource configuration overrides take precedence', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template = createTestCloudFormationTemplate(albCfTemplate);
+  (template.Resources as ResourceType).AlbEventAlbTargetGrouphttpListener.Metadata = {
+    slicWatch: {
+      alarms: {
+        Period: 900,
+        HTTPCode_Target_5XX_Count: {
+          Threshold: 55
+        },
+        UnHealthyHostCount: {
+          Threshold: 56
+        },
+        LambdaInternalError: {
+          Threshold: 57
+        },
+        LambdaUserError: {
+          Threshold: 58,
+          enabled: false
+        }
+      }
+    }
+  }
+
+  const targetGroupAlarmResources = createAlbTargetAlarms(testConfig.ApplicationELBTarget, testAlarmActionsConfig, template)
+  t.same(Object.keys(targetGroupAlarmResources).length, 3)
+
+  const code5xxAlarm = Object.values(targetGroupAlarmResources).filter(a => a?.Properties?.MetricName === 'HTTPCode_Target_5XX_Count')[0]
+  const unHealthyHostCountAlarm = Object.values(targetGroupAlarmResources).filter(a => a?.Properties?.MetricName === 'UnHealthyHostCount')[0]
+  const lambdaInternalErrorAlarm = Object.values(targetGroupAlarmResources).filter(a => a?.Properties?.MetricName === 'LambdaInternalError')[0]
+
+  t.equal(code5xxAlarm?.Properties?.Threshold, 55)
+  t.equal(unHealthyHostCountAlarm?.Properties?.Threshold, 56)
+  t.equal(lambdaInternalErrorAlarm?.Properties?.Threshold, 57)
+  t.end()
+})
+
 test('ALB alarms are not created when disabled globally', (t) => {
-  const AlarmPropertiesTargetGroup = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       ApplicationELBTarget: {
@@ -289,9 +327,9 @@ test('ALB alarms are not created when disabled globally', (t) => {
     }
   )
 
-  const albAlarmProperties = AlarmPropertiesTargetGroup.ApplicationELBTarget
+  const albAlarmConfig = testConfig.ApplicationELBTarget
   const compiledTemplate = createTestCloudFormationTemplate(albCfTemplate)
-  const targetGroupAlarmResources = createAlbTargetAlarms(albAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const targetGroupAlarmResources = createAlbTargetAlarms(albAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   t.same({}, targetGroupAlarmResources)
   t.end()

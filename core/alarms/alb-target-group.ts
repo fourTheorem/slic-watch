@@ -2,12 +2,13 @@ import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
 import type { ResourceType } from '../cf-template'
-import { getResourcesByType } from '../cf-template'
+import { getResourceAlarmConfigurationsByType, getResourcesByType } from '../cf-template'
+import { ConfigType } from '../inputs/config-types'
 
-export interface SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchAlbTargetAlarmsConfig<T extends InputOutput> = T & {
   HTTPCode_Target_5XX_Count: T
   UnHealthyHostCount: T
   LambdaInternalError: T
@@ -128,15 +129,16 @@ function createAlbTargetCfAlarm (
 export default function createAlbTargetAlarms (
   albTargetAlarmsConfig: SlicWatchAlbTargetAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
-  const targetGroupResources = getResourcesByType('AWS::ElasticLoadBalancingV2::TargetGroup', compiledTemplate)
+  const resourceConfigs = getResourceAlarmConfigurationsByType(ConfigType.ApplicationELBTarget, compiledTemplate, albTargetAlarmsConfig)
   const resources: CloudFormationResources = {}
-  for (const [targetGroupResourceName, targetGroupResource] of Object.entries(targetGroupResources)) {
-    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupResourceName, compiledTemplate)
-    Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetrics, loadBalancerLogicalIds, albTargetAlarmsConfig, alarmActionsConfig))
+  for (const [targetGroupLogicalId, targetGroupResource] of Object.entries(resourceConfigs.resources)) {
+    const mergedConfig = resourceConfigs.alarmConfigurations[targetGroupLogicalId]
+    const loadBalancerLogicalIds = findLoadBalancersForTargetGroup(targetGroupLogicalId, compiledTemplate)
+    Object.assign(resources, createAlbTargetCfAlarm(targetGroupLogicalId, executionMetrics, loadBalancerLogicalIds, mergedConfig, alarmActionsConfig))
 
     if (targetGroupResource.Properties?.TargetType === 'lambda') {
       // Create additional alarms for Lambda-specific ALB metrics
-      Object.assign(resources, createAlbTargetCfAlarm(targetGroupResourceName, executionMetricsLambda, loadBalancerLogicalIds, albTargetAlarmsConfig, alarmActionsConfig))
+      Object.assign(resources, createAlbTargetCfAlarm(targetGroupLogicalId, executionMetricsLambda, loadBalancerLogicalIds, mergedConfig, alarmActionsConfig))
     }
   }
   return resources

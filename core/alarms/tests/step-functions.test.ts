@@ -1,9 +1,12 @@
 import { test } from 'tap'
 
+import type { AlarmProperties } from 'cloudform-types/types/cloudWatch/alarm'
+
 import createStatesAlarms from '../step-functions'
 import { getResourcesByType } from '../../cf-template'
 import type { ResourceType } from '../../cf-template'
 import defaultConfig from '../../inputs/default-config'
+
 import {
   assertCommonAlarmProperties,
   alarmNameToType,
@@ -13,7 +16,7 @@ import {
 } from '../../tests/testing-utils'
 
 test('Step Function alarms are created', (t) => {
-  const AlarmProperties = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       Period: 120,
@@ -34,16 +37,16 @@ test('Step Function alarms are created', (t) => {
       }
     }
   )
-  const sfAlarmProperties = AlarmProperties.States
+  const sfAlarmConfig = testConfig.States
   const compiledTemplate = createTestCloudFormationTemplate()
-  const alarmResources: ResourceType = createStatesAlarms(sfAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  const alarmResources: ResourceType = createStatesAlarms(sfAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   const alarmsByType = {}
   t.equal(Object.keys(alarmResources).length, 6)
   for (const [resourceName, alarmResource] of Object.entries(alarmResources)) {
     // Just test the standard workflow alarms
     if (!resourceName.endsWith('ExpressWorkflow')) {
-      const al = alarmResource.Properties
+      const al = alarmResource.Properties as AlarmProperties
       assertCommonAlarmProperties(t, al)
       const alarmType = alarmNameToType(al?.AlarmName)
       alarmsByType[alarmType] = alarmsByType[alarmType] ?? new Set()
@@ -64,7 +67,7 @@ test('Step Function alarms are created', (t) => {
     for (const al of alarmsByType[type]) {
       t.equal(al.Statistic, 'Sum')
       const metric = type.split('_')[1].replace(/Alarm$/g, '')
-      t.equal(al.Threshold, sfAlarmProperties[metric].Threshold)
+      t.equal(al.Threshold, sfAlarmConfig[metric].Threshold)
       t.equal(al.EvaluationPeriods, 2)
       t.equal(al.TreatMissingData, 'breaching')
       t.equal(al.ComparisonOperator, 'GreaterThanOrEqualToThreshold')
@@ -85,8 +88,42 @@ test('Step Function alarms are created', (t) => {
   t.end()
 })
 
+test('step function resource configuration overrides take precedence', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template = createTestCloudFormationTemplate();
+
+  (template.Resources as ResourceType).Workflow.Metadata = {
+    slicWatch: {
+      alarms: {
+        Period: 900,
+        ExecutionThrottled: {
+          Threshold: 1
+        },
+        ExecutionsFailed: {
+          Threshold: 2,
+          enabled: false
+        },
+        ExecutionsTimedOut: {
+          Threshold: 3
+        }
+      }
+    }
+  }
+
+  const alarmResources: ResourceType = createStatesAlarms(testConfig.States, testAlarmActionsConfig, template)
+  t.same(Object.keys(alarmResources).length, 5) // Two for standard workflow, three for the express workflow
+
+  const throttledAlarm = Object.entries(alarmResources).filter(([key, value]) => !key.includes('xpress') && value?.Properties?.MetricName === 'ExecutionThrottled')[0][1]
+  const timedOutAlarm = Object.entries(alarmResources).filter(([key, value]) => !key.includes('xpress') && value?.Properties?.MetricName === 'ExecutionsTimedOut')[0][1]
+  t.equal(throttledAlarm?.Properties?.Threshold, 1)
+  t.equal(throttledAlarm?.Properties?.Period, 900)
+  t.equal(timedOutAlarm?.Properties?.Threshold, 3)
+  t.equal(timedOutAlarm?.Properties?.Period, 900)
+
+  t.end()
+})
 test('Step function alarms are not created when disabled globally', (t) => {
-  const AlarmProperties = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       States: {
@@ -104,9 +141,9 @@ test('Step function alarms are not created when disabled globally', (t) => {
       }
     }
   )
-  const sfAlarmProperties = AlarmProperties.States
+  const sfAlarmConfig = testConfig.States
   const compiledTemplate = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  createStatesAlarms(sfAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 
@@ -115,7 +152,7 @@ test('Step function alarms are not created when disabled globally', (t) => {
 })
 
 test('Step function alarms are not created when disabled individually', (t) => {
-  const AlarmProperties = createTestConfig(
+  const testConfig = createTestConfig(
     defaultConfig.alarms,
     {
       States: {
@@ -136,9 +173,9 @@ test('Step function alarms are not created when disabled individually', (t) => {
       }
     }
   )
-  const sfAlarmProperties = AlarmProperties.States
+  const sfAlarmConfig = testConfig.States
   const compiledTemplate = createTestCloudFormationTemplate()
-  createStatesAlarms(sfAlarmProperties, testAlarmActionsConfig, compiledTemplate)
+  createStatesAlarms(sfAlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   const alarmResources = getResourcesByType('AWS::CloudWatch::Alarm', compiledTemplate)
 

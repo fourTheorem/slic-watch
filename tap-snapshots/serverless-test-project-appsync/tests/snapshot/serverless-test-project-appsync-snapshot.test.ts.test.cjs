@@ -524,7 +524,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "AppSync 5XXError Sum for awesome-appsync breaches 0",
         "AlarmName": "AppSync_5XXErrorAlarm_awesome-appsync",
@@ -555,7 +555,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": "AppSync Latency Average for awesome-appsync breaches 0",
         "AlarmName": "AppSync_LatencyAlarm_awesome-appsync",
@@ -598,7 +598,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "TableName",
                       "\${BooksTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -618,20 +619,12 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                   "metrics": [
                     [
                       "AWS/DynamoDB",
-                      "ReadThrottleEvents",
-                      "TableName",
-                      "\${BooksTable}",
-                      {
-                        "stat": "Sum"
-                      }
-                    ],
-                    [
-                      "AWS/DynamoDB",
                       "WriteThrottleEvents",
                       "TableName",
                       "\${BooksTable}",
                       {
-                        "stat": "Sum"
+                        "stat": "Sum",
+                        "yAxis": "left"
                       }
                     ]
                   ],
@@ -775,7 +768,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -813,7 +806,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -851,7 +844,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [
@@ -889,7 +882,7 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
-          "test-topic"
+          "\${env:ALARM_TOPIC}"
         ],
         "AlarmDescription": {
           "Fn::Sub": [

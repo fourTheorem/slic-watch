@@ -3,6 +3,7 @@ import type { Template } from 'cloudform'
 import type { DashboardProperties } from 'cloudform-types/types/cloudWatch/dashboard'
 import { type ResourceType } from 'slic-watch-core/cf-template'
 import { type Test } from 'tap'
+
 /**
  * node-tap snapshots are usually persisted in tcompare format. We replace this with JSON
  * so we can clean them and deal with JSON-within-JSON cases.
@@ -19,10 +20,9 @@ export function formatSnapshot (template: Template): string {
  */
 export function sortObject (obj: object): object {
   const sortedObj: Record<string, any> = {}
-  for (const [key, value] of Object.entries(obj).toSorted(([a], [b]) => (a as string).localeCompare(b as string))) {
+  for (const [key, value] of Object.entries(obj).sort(([a], [b]) => (a).localeCompare(b))) {
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      const obj = value as any
-      sortedObj[key] = sortObject(typeof obj.toJSON === 'function' ? obj.toJSON() : obj)
+      sortedObj[key] = sortObject(typeof value.toJSON === 'function' ? value.toJSON() : value)
     } else {
       sortedObj[key] = value
     }

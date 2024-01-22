@@ -1,6 +1,7 @@
-import type FunctionProperties from 'cloudform-types/types/lambda/function'
+import type { Widget } from 'cloudwatch-dashboard-types'
+import { type ConfigType } from '../inputs/config-types'
 
-export type YAxis = 'left' | 'right'
+export type YAxisPos = 'left' | 'right'
 
 interface TimeRange {
   start: string
@@ -10,171 +11,131 @@ interface TimeRange {
 export interface MetricDefs {
   namespace: string
   metric: string
-  dimensions: object
+  dimensions: Record<string, string>
   stat: string
-  yAxis?: YAxis
-}
-export interface Properties {
-  metrics: any[][]
-  title: string
-  view: string
-  region: string
-  period?: number
-  yAxis?: YAxis
+  yAxis?: YAxisPos
 }
 
-export interface CreateMetricWidget {
-  type: string
-  properties: Properties
+export interface WidgetWithSize extends Omit<Widget, 'width' | 'height'> {
   width: number
   height: number
-  yAxis?: YAxis
 }
 
-export interface Widgets {
-  enabled?: boolean
-  metricPeriod?: number
-  width?: number
-  height?: number
-  yAxis?: YAxis
-  Statistic?: string[]
-  Lambda?: LambdaDashboardBodyProperties
-  ApiGateway?: ApiGwDashboardBodyProperties
-  States?: SfDashboardBodyProperties
-  DynamoDB?: DynamoDbDashboardBodyProperties
-  Kinesis?: KinesisDashboardBodyProperties
-  SQS?: SqsDashboardBodyProperties
-  ECS?: EcsDashboardBodyProperties
-  SNS?: SnsDashboardBodyProperties
-  Events?: RuleDashboardBodyProperties
-  ApplicationELB?: AlbDashboardBodyProperties
-  ApplicationELBTarget?: AlbTargetDashboardBodyProperties
-  AppSync?: AppSyncDashboardBodyProperties
+export interface WidgetMetricProperties {
+  enabled: boolean
+  metricPeriod: number
+  width: number
+  height: number
+  yAxis: YAxisPos
+  Statistic: string[]
 }
 
-export interface SlicWatchDashboardConfig {
-  enabled?: boolean
-  timeRange?: TimeRange
+export interface Widgets extends WidgetMetricProperties {
+  [ConfigType.Lambda]: LambdaDashboardProperties
+  [ConfigType.ApiGateway]: ApiGwDashboardProperties
+  [ConfigType.States]: SfDashboardProperties
+  [ConfigType.DynamoDB]: DynamoDbDashboardProperties
+  [ConfigType.Kinesis]: KinesisDashboardProperties
+  [ConfigType.SQS]: SqsDashboardProperties
+  [ConfigType.ECS]: EcsDashboardProperties
+  [ConfigType.SNS]: SnsDashboardProperties
+  [ConfigType.Events]: RuleDashboardProperties
+  [ConfigType.ApplicationELB]: AlbDashboardProperties
+  [ConfigType.ApplicationELBTarget]: AlbTargetDashboardProperties
+  [ConfigType.AppSync]: AppSyncDashboardProperties
+}
+
+type NestedPartial<T> = {
+  [K in keyof T]?: T[K] extends Array<infer R> ? Array<NestedPartial<R>> : NestedPartial<T[K]>
+}
+
+export interface SlicWatchDashboardConfig extends WidgetMetricProperties {
+  timeRange: TimeRange
   widgets: Widgets
 }
 
-export interface DashboardBodyProperties {
-  enabled?: boolean
-  metricPeriod?: number
-  width?: number
-  height?: number
-  yAxis?: YAxis
-  Statistic?: string[]
+export type SlicWatchInputDashboardConfig = NestedPartial<SlicWatchDashboardConfig>
+
+export interface LambdaDashboardProperties extends WidgetMetricProperties {
+  Errors: WidgetMetricProperties
+  Throttles: WidgetMetricProperties
+  Duration: WidgetMetricProperties
+  Invocations: WidgetMetricProperties
+  ConcurrentExecutions: WidgetMetricProperties
+  IteratorAge: WidgetMetricProperties
 }
 
-export interface ServiceDashConfig {
-  DashboardBodyProperties?: DashboardBodyProperties
-  widgets?: Widgets
+export interface ApiGwDashboardProperties extends WidgetMetricProperties {
+  '5XXError': WidgetMetricProperties
+  '4XXError': WidgetMetricProperties
+  Latency: WidgetMetricProperties
+  Count: WidgetMetricProperties
 }
 
-export interface LambdaDashboardBodyProperties {
-  Errors: DashboardBodyProperties
-  Throttles: DashboardBodyProperties
-  Duration: DashboardBodyProperties
-  Invocations: DashboardBodyProperties
-  ConcurrentExecutions: DashboardBodyProperties
-  IteratorAge: DashboardBodyProperties
+export interface SfDashboardProperties extends WidgetMetricProperties {
+  ExecutionsFailed: WidgetMetricProperties
+  ExecutionThrottled: WidgetMetricProperties
+  ExecutionsTimedOut: WidgetMetricProperties
 }
 
-export interface ApiGwDashboardBodyProperties {
-  '5XXError': DashboardBodyProperties
-  '4XXError': DashboardBodyProperties
-  Latency: DashboardBodyProperties
-  Count: DashboardBodyProperties
+export interface DynamoDbDashboardProperties extends WidgetMetricProperties {
+  ReadThrottleEvents: WidgetMetricProperties
+  WriteThrottleEvents: WidgetMetricProperties
 }
 
-export interface SfDashboardBodyProperties {
-  ExecutionsFailed: DashboardBodyProperties
-  ExecutionThrottled: DashboardBodyProperties
-  ExecutionsTimedOut: DashboardBodyProperties
+export interface KinesisDashboardProperties extends WidgetMetricProperties {
+  'GetRecords.IteratorAgeMilliseconds': WidgetMetricProperties
+  ReadProvisionedThroughputExceeded: WidgetMetricProperties
+  WriteProvisionedThroughputExceeded: WidgetMetricProperties
+  'PutRecord.Success': WidgetMetricProperties
+  'PutRecords.Success': WidgetMetricProperties
+  'GetRecords.Success': WidgetMetricProperties
 }
 
-export interface DynamoDbDashboardBodyProperties {
-  ReadThrottleEvents: DashboardBodyProperties
-  WriteThrottleEvents: DashboardBodyProperties
+export interface SqsDashboardProperties extends WidgetMetricProperties {
+  NumberOfMessagesSent: WidgetMetricProperties
+  NumberOfMessagesReceived: WidgetMetricProperties
+  NumberOfMessagesDeleted: WidgetMetricProperties
+  ApproximateAgeOfOldestMessage: WidgetMetricProperties
+  ApproximateNumberOfMessagesVisible: WidgetMetricProperties
 }
 
-export interface KinesisDashboardBodyProperties {
-  'GetRecords.IteratorAgeMilliseconds': DashboardBodyProperties
-  ReadProvisionedThroughputExceeded: DashboardBodyProperties
-  WriteProvisionedThroughputExceeded: DashboardBodyProperties
-  'PutRecord.Success': DashboardBodyProperties
-  'PutRecords.Success': DashboardBodyProperties
-  'GetRecords.Success': DashboardBodyProperties
+export interface EcsDashboardProperties extends WidgetMetricProperties {
+  MemoryUtilization: WidgetMetricProperties
+  CPUUtilization: WidgetMetricProperties
 }
 
-export interface SqsDashboardBodyProperties {
-  NumberOfMessagesSent: DashboardBodyProperties
-  NumberOfMessagesReceived: DashboardBodyProperties
-  NumberOfMessagesDeleted: DashboardBodyProperties
-  ApproximateAgeOfOldestMessage: DashboardBodyProperties
-  ApproximateNumberOfMessagesVisible: DashboardBodyProperties
+export interface SnsDashboardProperties extends WidgetMetricProperties {
+  'NumberOfNotificationsFilteredOut-InvalidAttributes': WidgetMetricProperties
+  NumberOfNotificationsFailed: WidgetMetricProperties
 }
 
-export interface EcsDashboardBodyProperties {
-  enabled?: boolean
-  MemoryUtilization: DashboardBodyProperties
-  CPUUtilization: DashboardBodyProperties
+export interface RuleDashboardProperties extends WidgetMetricProperties {
+  FailedInvocations: WidgetMetricProperties
+  ThrottledRules: WidgetMetricProperties
+  Invocations: WidgetMetricProperties
 }
 
-export interface SnsDashboardBodyProperties {
-  'NumberOfNotificationsFilteredOut-InvalidAttributes': DashboardBodyProperties
-  NumberOfNotificationsFailed: DashboardBodyProperties
+export interface AlbDashboardProperties extends WidgetMetricProperties {
+  HTTPCode_ELB_5XX_Count: WidgetMetricProperties
+  RejectedConnectionCount: WidgetMetricProperties
 }
 
-export interface RuleDashboardBodyProperties {
-  FailedInvocations: DashboardBodyProperties
-  ThrottledRules: DashboardBodyProperties
-  Invocations: DashboardBodyProperties
+export interface AlbTargetDashboardProperties extends WidgetMetricProperties {
+  HTTPCode_Target_5XX_Count: WidgetMetricProperties
+  UnHealthyHostCount: WidgetMetricProperties
+  LambdaInternalError: WidgetMetricProperties
+  LambdaUserError: WidgetMetricProperties
 }
 
-export interface AlbDashboardBodyProperties {
-  HTTPCode_ELB_5XX_Count: DashboardBodyProperties
-  RejectedConnectionCount: DashboardBodyProperties
-}
-
-export interface AlbTargetDashboardBodyProperties {
-  HTTPCode_Target_5XX_Count: DashboardBodyProperties
-  UnHealthyHostCount: DashboardBodyProperties
-  LambdaInternalError: DashboardBodyProperties
-  LambdaUserError: DashboardBodyProperties
-}
-
-export interface AppSyncDashboardBodyProperties {
-  '5XXError': DashboardBodyProperties
-  '4XXError': DashboardBodyProperties
-  Latency: DashboardBodyProperties
-  Requests: DashboardBodyProperties
-  ConnectServerError: DashboardBodyProperties
-  DisconnectServerError: DashboardBodyProperties
-  SubscribeServerError: DashboardBodyProperties
-  UnsubscribeServerError: DashboardBodyProperties
-  PublishDataMessageServerError: DashboardBodyProperties
-}
-
-// Lambda resources
-
-export interface FunctionResources {
-  Type: string
-  Properties: FunctionProperties
-  DependsOn: string[]
-}
-
-export interface FunctionDashboardConfigs {
-  HelloLambdaFunction?: FunctionResources
-  PingLambdaFunction?: FunctionResources
-  ThrottlerLambdaFunction?: FunctionResources
-  DriveStreamLambdaFunction?: FunctionResources
-  DriveQueueLambdaFunction?: FunctionResources
-  DriveTableLambdaFunction?: FunctionResources
-  StreamProcessorLambdaFunction?: FunctionResources
-  HttpGetterLambdaFunction?: FunctionResources
-  SubscriptionHandlerLambdaFunction?: FunctionResources
-  EventsRuleLambdaFunction?: FunctionResources
-  AlbEventLambdaFunction?: FunctionResources
+export interface AppSyncDashboardProperties extends WidgetMetricProperties {
+  '5XXError': WidgetMetricProperties
+  '4XXError': WidgetMetricProperties
+  Latency: WidgetMetricProperties
+  Requests: WidgetMetricProperties
+  ConnectServerError: WidgetMetricProperties
+  DisconnectServerError: WidgetMetricProperties
+  SubscribeServerError: WidgetMetricProperties
+  UnsubscribeServerError: WidgetMetricProperties
+  PublishDataMessageServerError: WidgetMetricProperties
 }

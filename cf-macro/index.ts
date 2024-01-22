@@ -1,10 +1,9 @@
-import _ from 'lodash'
+import { type Template } from 'cloudform-types'
 import pino from 'pino'
 
-import { addAlarms, addDashboard, getResourcesByType } from '../core/index'
+import { addAlarms, addDashboard } from 'slic-watch-core/index'
 import { setLogger } from 'slic-watch-core/logging'
 import { type SlicWatchConfig, resolveSlicWatchConfig } from 'slic-watch-core/inputs/general-config'
-import { type Template } from 'cloudform-types'
 
 const logger = pino({ name: 'macroHandler', level: process.env.DEBUG_LEVEL ?? 'debug' })
 
@@ -38,23 +37,11 @@ export async function handler (event: Event): Promise<MacroResponse> {
 
     const config = resolveSlicWatchConfig(slicWatchConfig)
 
-    const functionAlarmConfigs = {}
-    const functionDashboardConfigs = {}
-
-    const lambdaResources = getResourcesByType('AWS::Lambda::Function', transformedTemplate)
-
-    for (const [funcResourceName, funcResource] of Object.entries(lambdaResources)) {
-      const funcConfig = funcResource.Metadata?.slicWatch ?? {}
-      functionAlarmConfigs[funcResourceName] = funcConfig.alarms ?? {}
-      functionDashboardConfigs[funcResourceName] = funcConfig.dashboard
-    }
-
-    _.merge(transformedTemplate)
-    addAlarms(config.alarms, functionAlarmConfigs, config.alarmActionsConfig, transformedTemplate)
-    addDashboard(config.dashboard, functionDashboardConfigs, transformedTemplate)
+    addAlarms(config.alarms, config.alarmActionsConfig, transformedTemplate)
+    addDashboard(config.dashboard, transformedTemplate)
     outputFragment = transformedTemplate
   } catch (err) {
-    logger.error(err)
+    logger.error({ err })
     errorMessage = (err as Error).message
     status = 'fail'
   }

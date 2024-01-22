@@ -1,13 +1,14 @@
 import { test } from 'tap'
 import _ from 'lodash'
-import type Template from 'cloudform-types/types/template'
+import type { Template } from 'cloudform-types'
+import type Resource from 'cloudform-types/types/resource'
 
 import { handler } from '../index'
 import _template from './event.json'
 
 const template = _template as Template
 
-const event = { fragment: template }
+const event = { fragment: template, requestId: 'test' }
 
 test('macro returns success', async t => {
   const result = await handler(event)
@@ -37,7 +38,7 @@ test('macro uses topicArn if specified', async t => {
   const result = await handler(eventWithTopic)
   t.equal(result.status, 'success')
   t.notOk(result.errorMessage)
-  t.same(result.fragment.Resources.slicWatchLambdaDurationAlarmHelloLambdaFunction.Properties.AlarmActions, [topicArn])
+  t.same(result?.fragment?.Resources?.slicWatchLambdaDurationAlarmHelloLambdaFunction?.Properties?.AlarmActions, [topicArn])
   t.end()
 })
 
@@ -51,21 +52,23 @@ test('Macro skips SLIC Watch if top-level enabled==false', async t => {
 })
 
 test('Macro adds dashboard and alarms if no function configuration is provided', async t => {
+  const functionResource: Resource = {
+    ...event.fragment.Resources?.HelloLambdaFunction,
+    Metadata: {}
+  } as unknown as Resource
+
   const testEvent = {
     ...event,
     fragment: {
       ...event.fragment,
       Resources: {
         ...event.fragment.Resources,
-        HelloLambdaFunction: {
-          ...event.fragment.Resources?.HelloLambdaFunction,
-          Metadata: {}
-        }
+        HelloLambdaFunction: functionResource
       }
     }
   }
   const compiledTemplate = (await handler(testEvent)).fragment
-  t.same(compiledTemplate.Resources.Properties, template.Resources?.Properties)
+  t.same(compiledTemplate?.Resources?.Properties, template.Resources?.Properties)
   t.end()
 })
 

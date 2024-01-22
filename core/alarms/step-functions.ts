@@ -1,10 +1,11 @@
 import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createCfAlarms } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
-export interface SlicWatchSfAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchSfAlarmsConfig<T extends InputOutput> = T & {
   ExecutionThrottled: T
   ExecutionsFailed: T
   ExecutionsTimedOut: T
@@ -43,7 +44,7 @@ export default function createStatesAlarms (
   sfAlarmProperties: SlicWatchSfAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   return createCfAlarms(
-    'AWS::StepFunctions::StateMachine',
+    ConfigType.States,
     'States',
     executionMetrics,
     sfAlarmProperties,

@@ -3,11 +3,12 @@ import type Template from 'cloudform-types/types/template'
 import { Fn } from 'cloudform'
 import { pascal } from 'case'
 
-import { getResourcesByType } from '../cf-template'
-import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchAlarmConfig, SlicWatchMergedConfig } from './alarm-types'
+import { getResourceAlarmConfigurationsByType } from '../cf-template'
+import type { AlarmActionsConfig, CloudFormationResources, InputOutput, SlicWatchMergedConfig } from './alarm-types'
 import { createAlarm, getStatisticName, makeAlarmLogicalId } from './alarm-utils'
+import { ConfigType } from '../inputs/config-types'
 
-export interface SlicWatchKinesisAlarmsConfig<T extends InputOutput> extends SlicWatchAlarmConfig {
+export type SlicWatchKinesisAlarmsConfig<T extends InputOutput> = T & {
   'GetRecords.IteratorAgeMilliseconds': T
   ReadProvisionedThroughputExceeded: T
   WriteProvisionedThroughputExceeded: T
@@ -39,13 +40,13 @@ export default function createKinesisAlarms (
   kinesisAlarmsConfig: SlicWatchKinesisAlarmsConfig<SlicWatchMergedConfig>, alarmActionsConfig: AlarmActionsConfig, compiledTemplate: Template
 ): CloudFormationResources {
   const resources: CloudFormationResources = {}
-  const streamResources = getResourcesByType('AWS::Kinesis::Stream', compiledTemplate)
+  const configuredResources = getResourceAlarmConfigurationsByType(ConfigType.Kinesis, compiledTemplate, kinesisAlarmsConfig)
 
-  for (const [streamLogicalId] of Object.entries(streamResources)) {
+  for (const [streamLogicalId] of Object.entries(configuredResources.resources)) {
     for (const [type, metric] of Object.entries(kinesisAlarmTypes)) {
-      const config: SlicWatchMergedConfig = kinesisAlarmsConfig[metric]
-      if (config.enabled) {
-        const { enabled, ...rest } = config
+      const config: SlicWatchMergedConfig = configuredResources.alarmConfigurations[streamLogicalId][metric]
+      const { enabled, ...rest } = config
+      if (enabled) {
         const kinesisAlarmProperties: AlarmProperties = {
           AlarmName: Fn.Sub(`Kinesis_${type}_\${${streamLogicalId}}`, {}),
           AlarmDescription: Fn.Sub(`Kinesis ${getStatisticName(config)} ${metric} for \${${streamLogicalId}} breaches ${config.Threshold} milliseconds`, {}),

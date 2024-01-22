@@ -92,10 +92,8 @@
    "Metadata": {
     "slicWatch": {
      "alarms": {
-      "Lambda": {
-       "Invocations": {
-        "Threshold": 4
-       }
+      "Invocations": {
+       "Threshold": 4
       }
      }
     }
@@ -230,7 +228,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11P0UoDQQz8lr7nolaQvtpCoaAgp+Djke6lbbp7u6XZq8iy/+7etoIIgZnJhEwyx8UT3s/oSxvT28bJFtN7JGOhtLqkXjF9hJMYWO18JRkcDdueMK1Hb6IEP1m/PIPQgKkNjqd2xbfgxHxP8soy6GNHqhwVnycoGpejsRyXpAwa+bS77dMuklrFl5q58Zdg/w1g+iSJsCZxsDoEMQzlgcivZA7i6xV/dc7QsobxXOZqeDH34vf12puRwYee8ah3l4cFlprPjirSnEcfZWBsr/gDsE52pTwBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11OTWvCQBD9Ld4n01RBeq2CUGihJEKPYdyMOibZFWeilGX/e8lqofT0voZ5b44vSyxndNPCtV3Ryw5jbeQ6oJs2Ub1i3IazOFjvfSYJehp2LWHcjN6ZBD9FvzyB0ICxCj1PdsbP0Iv7nuSdJdBFQ6psiq8TgC5wNbqObUXKoMbn/eOfNkbaKb7nzjd/Dd2/A4xfJAYbkh7WxyCOoTYy/iB3FJ9X/NUpQcUaxotjyOW10UH8Ia99BAl8aBlP+nSdl/hcYjk7qUhxGb3JwFjd8QcjaneZPAEAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "CdkSFNStackTest-Europe/CDKMetadata/Default"

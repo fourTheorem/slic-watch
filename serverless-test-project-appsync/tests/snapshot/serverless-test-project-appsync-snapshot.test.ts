@@ -1,4 +1,7 @@
 import { test } from 'tap'
+import path from 'node:path'
+import { readFileSync } from 'node:fs'
+import { parse } from 'yaml'
 import { type Template } from 'cloudform-types'
 
 import ServerlessPlugin from 'serverless-slic-watch-plugin/serverless-plugin'
@@ -13,7 +16,8 @@ const pluginUtils = { log: logger }
 
 test('the plugin adds SLIC Watch dashboards and alarms to a serverless-generated CloudFormation template with AppSync resources', (t) => {
   setUpSnapshotDefaults(t)
-  const mockServerless = createMockServerless(inputTemplate as unknown as Template)
+  const slsConfig = readFileSync(path.join(__dirname, '..', '..', 'serverless.yml')).toString()
+  const mockServerless = createMockServerless(inputTemplate as unknown as Template, parse(slsConfig))
   const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
   plugin.createSlicWatchResources()
   const generatedTemplate = mockServerless.service.provider.compiledCloudFormationTemplate

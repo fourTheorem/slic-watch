@@ -5,7 +5,7 @@ import pino from 'pino'
 const extras = ['levels', 'silent', 'onChild', 'trace', 'debug', 'info', 'warn', 'error', 'fatal']
 const pinoLogger = pino()
 export const dummyLogger = Object.fromEntries(
-  Object.entries(pinoLogger).filter(([key]) => !extras.includes(key as string))
+  Object.entries(pinoLogger).filter(([key]) => !extras.includes(key))
 )
 
 export const pluginUtils = { log: dummyLogger }
@@ -28,7 +28,7 @@ export const slsYaml: SlsYaml = {
   }
 }
 
-export function createMockServerless (compiledTemplate: Template) {
+export function createMockServerless (compiledTemplate: Template, slsConfig = slsYaml) {
   return {
     cli: {
       log: () => { '' }
@@ -46,14 +46,9 @@ export function createMockServerless (compiledTemplate: Template) {
         name: 'aws',
         compiledCloudFormationTemplate: compiledTemplate
       },
-      custom: {
-        slicWatch: {
-          enabled: true,
-          topicArn: 'test-topic'
-        }
-      },
-      getAllFunctions: () => Object.keys(slsYaml.functions),
-      getFunction: (funcRef) => slsYaml.functions[funcRef]
+      custom: slsConfig.custom,
+      getAllFunctions: () => Object.keys(slsConfig.functions ?? {}),
+      getFunction: (funcRef) => slsConfig.functions[funcRef]
     }
   }
 }

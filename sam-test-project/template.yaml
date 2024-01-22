@@ -1,16 +1,16 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: >-
-  sam-test-project
-
+Description: sam-test-project
 Transform:
   - AWS::Serverless-2016-10-31
-
+  - SlicWatch-v3
 Metadata:
   slicWatch:
     enabled: true
     alarmActionsConfig:
-      alarmActions: [!Ref MonitoringTopic]
-      okActions: [!Ref MonitoringTopic]
+      alarmActions:
+        - !Ref MonitoringTopic
+      okActions:
+        - !Ref MonitoringTopic
       actionsEnabled: true
     alarms:
       Lambda:
@@ -24,14 +24,12 @@ Metadata:
           Threshold: 60
         InFlightMessagesPc:
           Statistic: Maximum
-          Threshold: 1 # 1% = 1200 for regular queues or 180 for FIFO queues
-
+          Threshold: 1
 Resources:
   MonitoringTopic:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: SS-Alarm-Topic3
-
   hello:
     Type: AWS::Serverless::Function
     Properties:
@@ -40,10 +38,8 @@ Resources:
     Metadata:
       slicWatch:
         alarms:
-          Lambda:
-            Invocations:
-              Threshold: 2
-
+          Invocations:
+            Threshold: 2
   ping:
     Type: AWS::Serverless::Function
     Properties:
@@ -53,32 +49,27 @@ Resources:
       slicWatch:
         dashboard:
           enabled: false
-
   throttler:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
       Runtime: nodejs18.x
       ReservedConcurrentExecutions: 0
-
   driveStream:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stream-test-handler.handleDrive
       Runtime: nodejs18.x
-
   driveQueue:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
       Runtime: nodejs18.x
-
   driveTable:
     Type: AWS::Serverless::Function
     Properties:
       Handler: basic-handler.hello
       Runtime: nodejs18.x
-
   streamProcessor:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,7 +82,6 @@ Resources:
             Stream: !GetAtt stream.Arn
             MaximumRetryAttempts: 0
             StartingPosition: LATEST
-
   httpGetter:
     Type: AWS::Serverless::Function
     Properties:
@@ -102,9 +92,8 @@ Resources:
         HttpApiEvent:
           Type: HttpApi
           Properties:
-            Path: "item"
+            Path: item
             Method: GET
-
   eventsRule:
     Type: AWS::Serverless::Function
     Properties:
@@ -123,13 +112,10 @@ Resources:
     Metadata:
       slicWatch:
         alarms:
-          Lambda:
-            enabled: false
-
+          enabled: false
   TestStateMachine:
     Type: AWS::Serverless::StateMachine
     Properties:
-      DefinitionUri: statemachine/test.asl.json
       DefinitionSubstitutions:
         HelloArn: !GetAtt hello.Arn
         AnotherHelloArn: !GetAtt hello.Arn
@@ -138,42 +124,47 @@ Resources:
             FunctionName: !Ref hello
         - LambdaInvokePolicy:
             FunctionName: !Ref hello
-
+      DefinitionUri: statemachine/test.asl.json
   stream:
     Type: AWS::Kinesis::Stream
     Properties:
       ShardCount: 1
-
   regularQueue:
-    Type: "AWS::SQS::Queue"
+    Type: AWS::SQS::Queue
+    Metadata:
+      slicWatch:
+        alarms:
+          InFlightMessagesPc:
+            Threshold: 95
+        dashboard:
+          ApproximateAgeOfOldestMessage:
+            yAxis: right
+          NumberOfMessagesReceived:
+            enabled: false
 
   fifoQueue:
-    Type: "AWS::SQS::Queue"
+    Type: AWS::SQS::Queue
     Properties:
       FifoQueue: true
-
   vpc:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
-
   subnet:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select
         - 0
-        - Fn::GetAZs: !Ref "AWS::Region"
+        - !GetAZs
+          Ref: AWS::Region
       CidrBlock: 10.0.16.0/20
       VpcId: !Ref vpc
-
   ecsCluster:
     Type: AWS::ECS::Cluster
-
   ecsService:
     Type: AWS::ECS::Service
     Properties:
-      Cluster:
-        Ref: ecsCluster
+      Cluster: !Ref ecsCluster
       DesiredCount: 0
       LaunchType: FARGATE
       TaskDefinition: !Ref taskDef
@@ -183,7 +174,6 @@ Resources:
           SecurityGroups: []
           Subnets:
             - !Ref subnet
-
   taskDef:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -192,18 +182,17 @@ Resources:
       Cpu: 256
       Memory: 512
       ContainerDefinitions:
-        - Name: "busybox"
-          Image: "busybox"
+        - Name: busybox
+          Image: busybox
           Cpu: 256
           EntryPoint:
-            - "sh"
-            - "-c"
+            - sh
+            - '-c'
           Memory: 512
           Command:
-            - '/bin/sh -c "while true; do echo Hello; sleep 10; done"'
+            - /bin/sh -c "while true; do echo Hello; sleep 10; done"
           Essential: true
       NetworkMode: awsvpc
-
   dataTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Delete
@@ -221,7 +210,7 @@ Resources:
         - AttributeName: gsi1sk
           AttributeType: S
         - AttributeName: timestamp
-          AttributeType: N
+          AttributeType: 'N'
       KeySchema:
         - AttributeName: pk
           KeyType: HASH

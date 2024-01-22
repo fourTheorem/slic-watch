@@ -1,6 +1,6 @@
 {
   "name": "slic-watch",
-  "version": "3.1.0",
+  "version": "3.2.0-rc2",
   "description": "Root project for SLIC Watch",
   "main": "index.js",
   "type": "module",
@@ -24,11 +24,11 @@
     "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
-    "test:packages": "DEBUG_LEVEL=info tap --include='**/tests/**/*.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
+    "test:packages": "DEBUG_LEVEL=info tap --include='**/tests/**/*.ts' --exclude='**/tests/**/*snapshot.test.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
     "test:snapshots": "DEBUG_LEVEL=info tap --include='**/tests/**/*snapshot.test.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
     "test:snapshots:generate": "TAP_SNAPSHOT=1 npm run test:snapshots",
     "test:report": "tap report html",
-    "test": "npm run lint && npm run test:packages",
+    "test": "npm run lint && npm run test:packages && npm run test:snapshots",
     "prepare": "test ! -d '.git' || is-ci || husky install",
     "version": "npm version $npm_package_version --workspaces && ./scripts/sync-macro-version.cjs && git add **/package.json cf-macro/template.yaml"
   },
@@ -62,7 +62,7 @@
     "is-ci": "^3.0.1",
     "lint-staged": "^13.1.2",
     "regenerator-runtime": "^0.13.11",
-    "tap": "^18.5.3",
+    "tap": "^18.6.1",
     "ts-node": "^10.9.1",
     "type-fest": "^3.6.1",
     "typescript": "^4.9.5"
