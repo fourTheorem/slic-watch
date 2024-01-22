@@ -12,7 +12,7 @@
     "test:packages": "tap --no-check-coverage --no-coverage-report --test-regex='tests\\/.*(test.ts)'",
     "test:coverage": "tap --check-coverage --coverage-report=html --no-browser --branches=95 --lines=99 --statements=99 --functions=99",
     "test": "npm run test:packages && npm run test:coverage",
-    "build": "esbuild **/*.ts index.ts --outdir=dist/ --platform=node --format=esm --packages=external --bundle --sourcemap"
+    "build": "esbuild **/*.ts index.ts --outdir=dist/ --platform=node --format=cjs --packages=external --bundle --sourcemap"
   },
   "tap": {
     "node-arg": [
