@@ -71,9 +71,11 @@ class ServerlessPlugin {
         const funcConfig = func.slicWatch ?? {}
         const functionLogicalId = awsProvider.naming.getLambdaLogicalId(funcName)
         const templateResources = compiledTemplate.Resources as Record<string, Resource>
-        templateResources[functionLogicalId].Metadata = {
-          ...templateResources[functionLogicalId].Metadata ?? {},
-          slicWatch: funcConfig
+        if (typeof templateResources[functionLogicalId] !== 'undefined') {
+          templateResources[functionLogicalId].Metadata = {
+            ...templateResources[functionLogicalId].Metadata ?? {},
+            slicWatch: funcConfig
+          }
         }
       }
 
