@@ -13,73 +13,47 @@ SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, S
 Supported tools include:
  * ⚡️ **Serverless Framework** v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
  * 🐿 **AWS SAM**, 📦 **AWS CDK**  and ☁️ **CloudFormation** using the [_CloudFormation Macro_](#getting-started-with-aws-sam-cdk-or-cloudformation), published in the Serverless Application Repository (SAR).
+* 💻 **SLIC Watch CLI** You can run SLIC Watch to transform CloudFormation templates directly using [the CLI](#getting-started-with-the-cli).
 
 ## Contents
-- [slic-watch](#slic-watch)
-  - [Contents](#contents)
-  - [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
-  - [Getting Started with AWS SAM, CDK or CloudFormation](#getting-started-with-aws-sam-cdk-or-cloudformation)
-    - [Deploying the SLIC Watch Macro](#deploying-the-slic-watch-macro)
-    - [Adding the SLIC Watch Transform to SAM or CloudFormation templates](#adding-the-slic-watch-transform-to-sam-or-cloudformation-templates)
-    - [Adding the SLIC Watch Transform to CDK Apps](#adding-the-slic-watch-transform-to-cdk-apps)
-  - [Features](#features)
-    - [Lambda Functions](#lambda-functions)
-    - [API Gateway](#api-gateway)
-    - [DynamoDB](#dynamodb)
-    - [Kinesis Data Streams](#kinesis-data-streams)
-    - [SQS Queues](#sqs-queues)
-    - [Step Functions](#step-functions)
-    - [ECS / Fargate](#ecs--fargate)
-    - [SNS](#sns)
-    - [EventBridge](#eventbridge)
-    - [Application Load Balancer](#application-load-balancer)
-    - [AppSync](#appsync)
-  - [Configuration](#configuration)
-    - [Top-level configuration](#top-level-configuration)
-    - [Resource-level configuration](#resource-level-configuration)
-      - [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
-      - [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
-      - [CDK function-level configuration](#cdk-function-level-configuration)
-  - [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
-  - [References](#references)
-    - [Other Projects](#other-projects)
-    - [Reading](#reading)
-  - [LICENSE](#license)
-## Getting Started with Serverless Framework
 
-_If you are using AWS SAM or CloudFormation, skip to the section below._
+<!-- toc -->
 
-1. 📦 Install the plugin:
-```bash
-npm install serverless-slic-watch-plugin --save-dev
-```
-2. 🖋️ Add the plugin to the `plugins` section of `serverless.yml`:
-```yaml
-plugins:
-  - serverless-slic-watch-plugin
-```
-3. 🪛 _Optionally_, add some configuration for the plugin to the `custom -> slicWatch` section of `serverless.yml`.
-Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
-so you can receive alarm notifications via email, Slack, etc.
+- [Getting Started with AWS SAM, CDK or CloudFormation](#getting-started-with-aws-sam-cdk-or-cloudformation)
+  * [Deploying the SLIC Watch Macro](#deploying-the-slic-watch-macro)
+  * [Adding the SLIC Watch Transform to SAM or CloudFormation templates](#adding-the-slic-watch-transform-to-sam-or-cloudformation-templates)
+  * [Adding the SLIC Watch Transform to CDK Apps](#adding-the-slic-watch-transform-to-cdk-apps)
+- [Getting Started with Serverless Framework](#getting-started-with-serverless-framework)
+- [Getting Started with the CLI](#getting-started-with-the-cli)
+- [Features](#features)
+  * [Lambda Functions](#lambda-functions)
+  * [API Gateway](#api-gateway)
+  * [DynamoDB](#dynamodb)
+  * [Kinesis Data Streams](#kinesis-data-streams)
+  * [SQS Queues](#sqs-queues)
+  * [Step Functions](#step-functions)
+  * [ECS / Fargate](#ecs--fargate)
+  * [SNS](#sns)
+  * [EventBridge](#eventbridge)
+  * [Application Load Balancer](#application-load-balancer)
+  * [AppSync](#appsync)
+- [Configuration](#configuration)
+  * [Top-level configuration](#top-level-configuration)
+  * [Resource-level configuration](#resource-level-configuration)
+    + [Serverless Framework function-level configuration](#serverless-framework-function-level-configuration)
+    + [SAM/CloudFormation function-level configuration](#samcloudformation-function-level-configuration)
+    + [CDK function-level configuration](#cdk-function-level-configuration)
+- [A note on CloudWatch cost](#a-note-on-cloudwatch-cost)
+- [References](#references)
+  * [Other Projects](#other-projects)
+  * [Reading](#reading)
+- [LICENSE](#license)
 
-```yaml
-custom:
-  slicWatch:
-    alarmActionsConfig: {
-      alarmActions: [{'Fn::Ref': myTopic}]
-    }
-```
-See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
-
-
-4. 🚢 Deploy your application in the usual way, for example:
-```
-sls deploy
-```
-5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
-
+<!-- tocstop -->
 
 ## Getting Started with AWS SAM, CDK or CloudFormation
+
+_If you are using The Serverless Framework, skip to the section below._
 
 ℹ️ **IMPORTANT**: If you are using AWS SAM, CDK, or just plain CloudFormation, the most important thing to know is that your AWS account/region should have the **SLIC Watch Macro** deployed before you do anything. Once that's done, it is very simple to add this macro as a transform to your SAM or CloudFormation template.
 
@@ -178,6 +152,63 @@ this.templateOptions.metadata = {
   }
 }
 ```
+
+## Getting Started with Serverless Framework
+
+1. 📦 Install the plugin:
+```bash
+npm install serverless-slic-watch-plugin --save-dev
+```
+2. 🖋️ Add the plugin to the `plugins` section of `serverless.yml`:
+```yaml
+plugins:
+  - serverless-slic-watch-plugin
+```
+3. 🪛 _Optionally_, add some configuration for the plugin to the `custom -> slicWatch` section of `serverless.yml`.
+Here, you can specify a reference to the SNS topic for alarms. This is optional, but it's usually something you want
+so you can receive alarm notifications via email, Slack, etc.
+
+```yaml
+custom:
+  slicWatch:
+    alarmActionsConfig: {
+      alarmActions: [{'Fn::Ref': myTopic}]
+    }
+```
+See the [Configuration](#configuration) section below for more detailed instructions on fine tuning SLIC Watch to your needs.
+
+
+4. 🚢 Deploy your application in the usual way, for example:
+```
+sls deploy
+```
+5. 👀 Head to the CloudWatch section of the AWS Console to check out your new dashboards 📊 and alarms ⏰ !
+
+## Getting Started with the CLI
+
+SLIC Watch can be run as a standalone CLI, allowing you to transform a CloudFormation template YAML or JSON, creating a new template with alarms and dashboards added. The CLI is useful for:
+
+- Exploring and troubleshooting SLIC Watch in development
+- In CI/CD environments where you deploy CloudFormation templates and do not wish to use the Macro as a `Transform`.
+
+SLIC Watch configuration is done using `Metadata` in the input template. See [this section](#adding-the-slic-watch-transform-to-sam-or-cloudformation-templates) to see how.
+
+```sh
+npm install slic-watch --global
+```
+
+The CLI can generate YAML or JSON based on the extension of the output file you provide:
+
+```sh
+slic-watch cf-template.json transformed-template.json
+```
+
+_or_
+
+```sh
+slic-watch cf-template.yml transformed-template.yml
+```
+
 
 ## Features
 

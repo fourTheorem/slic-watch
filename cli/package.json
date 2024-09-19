@@ -1,0 +1,21 @@
+{
+  "name": "slic-watch-cli",
+  "version": "3.2.1",
+  "description": "CLI for SLIC Watch transformation",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
+  "scripts": {
+    "test": "tap --include='**/tests/**/*.ts' --coverage-report=lcovonly --allow-incomplete-coverage",
+    "build": "esbuild index.ts --outdir=dist --bundle --format=cjs --platform=node --sourcemap",
+    "watch": "npm run build -- --watch"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cli-color": "^2.0.4",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "tmp": "^0.2.3"
+  }
+}
