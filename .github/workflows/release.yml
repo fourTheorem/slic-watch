@@ -31,7 +31,7 @@ jobs:
         run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.8"
       - uses: aws-actions/setup-sam@v2
@@ -44,7 +44,7 @@ jobs:
       - name: NPM security audit
         run: npm run audit
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
