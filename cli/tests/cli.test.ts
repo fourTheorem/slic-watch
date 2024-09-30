@@ -22,7 +22,7 @@ interface ExecFileError {
 
 async function runCli (cliArgs: string[] = []): Promise<RunResult> {
   try {
-    const { stderr, stdout } = await execFile('ts-node', [cliPath, ...cliArgs])
+    const { stderr, stdout } = await execFile('tsx', [cliPath, ...cliArgs])
 
     return {
       stdout: stdout.trim(),

@@ -67,7 +67,7 @@
     "markdown-toc": "^1.2.0",
     "regenerator-runtime": "^0.13.11",
     "tap": "^21.0.1",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.19.1",
     "type-fest": "^3.6.1",
     "typescript": "^4.9.5"
   },
