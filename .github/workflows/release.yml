@@ -57,6 +57,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: SAR publish
+        if: ${{ github.event.release.prerelease == false }}
         run: |
           sam build --base-dir . --template-file cf-macro/template.yaml
           sam package --output-template-file packaged.yaml --s3-bucket ${SAR_BUCKET_NAME}
