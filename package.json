@@ -22,7 +22,7 @@
     "cli"
   ],
   "scripts": {
-    "audit": "npm audit --omit dev fix && npm audit --workspaces --omit dev",
+    "audit": "npm audit --omit dev && npm audit --workspaces --omit dev",
     "build": "npm run build -w core && npm run build -w cf-macro && npm run build -w serverless-plugin && npm run build -w cli",
     "lint": "eslint .",
     "lintfix": "eslint --cache --fix .",
