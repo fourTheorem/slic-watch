@@ -1,6 +1,6 @@
 {
   "name": "slic-watch-core",
-  "version": "3.3.1-rc2",
+  "version": "3.3.1-rc3",
   "description": "SLIC Watch core library for adding alarms and dashboards to CloudFormation",
   "main": "dist/index.js",
   "repository": {
