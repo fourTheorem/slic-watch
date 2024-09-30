@@ -1,6 +1,6 @@
 {
   "name": "slic-watch-cli",
-  "version": "3.3.0",
+  "version": "3.3.1-rc1",
   "description": "CLI for SLIC Watch transformation",
   "main": "dist/index.js",
   "bin": "dist/index.js",
