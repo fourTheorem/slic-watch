@@ -259,5 +259,5 @@ lerna-debug*
 
 samconfig.toml
 packaged.yaml
-.tgz
+*.tgz
 *.tar.gz

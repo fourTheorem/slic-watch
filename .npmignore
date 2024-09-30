@@ -1,0 +1,13 @@
+*.ipynb
+*-test-project/
+*-test-project-*/
+.tap/
+cdk.out/
+docs/
+*.ts
+tests/
+coverage/
+.cache/
+.idea/
+.github/
+*.tgz
