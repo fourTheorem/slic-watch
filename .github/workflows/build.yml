@@ -11,7 +11,10 @@ on:
 jobs:
   build:
     # runs-on: ubuntu-latest
-    runs-on: codebuild-ft-gha-cb-dev2-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on:
+      - codebuild-ft-gha-cb-dev2-${{ github.run_id }}-${{ github.run_attempt }}
+      - image:linux-lambda-nodejs20
+      - instance-size:10GB
 
     strategy:
       matrix:
