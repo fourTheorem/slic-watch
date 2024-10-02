@@ -14,8 +14,6 @@ jobs:
     runs-on:
       - codebuild-ft-gha-cb-dev2-${{ github.run_id }}-${{ github.run_attempt }}
       - instance-size:large
-      # - image:linux-lambda-nodejs20
-      # - instance-size:10GB
 
     strategy:
       matrix:
