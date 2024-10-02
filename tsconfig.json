@@ -28,6 +28,7 @@
     "cf-macro/coverage/lcov-report/*"
   ],
   "include": [
+    "cli",
     "core",
     "serverless-plugin",
     "cf-macro",

@@ -31,7 +31,7 @@ jobs:
         run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.8"
       - uses: aws-actions/setup-sam@v2
@@ -44,7 +44,7 @@ jobs:
       - name: NPM security audit
         run: npm run audit
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
@@ -53,10 +53,11 @@ jobs:
         run: |
           cp README.md serverless-plugin
           [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
-          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
+          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin --include-workspace-root
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: SAR publish
+        if: ${{ github.event.release.prerelease == false }}
         run: |
           sam build --base-dir . --template-file cf-macro/template.yaml
           sam package --output-template-file packaged.yaml --s3-bucket ${SAR_BUCKET_NAME}

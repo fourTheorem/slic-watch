@@ -23,7 +23,7 @@ interface MacroResponse {
 
 /**
  * CloudFormation Macro implementation. Accepts the CloudFormation fragment to be transformed
- * and generates the transformed teamplte with alarms and dashboard
+ * and generates the transformed template with alarms and dashboard
  */
 export async function handler (event: Event): Promise<MacroResponse> {
   let status = 'success'

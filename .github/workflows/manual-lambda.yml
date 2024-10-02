@@ -1,0 +1,12 @@
+name: Manual Lambda
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on:
+      - codebuild-ft-gha-cb-dev2-lambda-${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+      - name: sleep
+        run: sleep 60
