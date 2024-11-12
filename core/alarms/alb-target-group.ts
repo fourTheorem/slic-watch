@@ -55,7 +55,7 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
   for (const [listenerRuleLogicalId, listenerRule] of Object.entries(listenerRuleResources)) {
     for (const action of listenerRule.Properties?.Actions ?? []) {
       const targetGroupArn = action.TargetGroupArn
-      if (targetGroupArn.Ref === targetGroupLogicalId) {
+      if (typeof targetGroupArn === 'object' && targetGroupArn.Ref === targetGroupLogicalId) {
         allListenerRules[listenerRuleLogicalId] = listenerRule
         break
       }

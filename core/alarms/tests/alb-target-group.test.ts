@@ -79,6 +79,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
     t.equal(loadBalancerLogicalIds.length, 0)
     t.end()
   })
+
   test('finds load balancers through listener rule target groups', (t) => {
     const compiledTemplate = {
       Resources: {
@@ -186,6 +187,29 @@ test('findLoadBalancersForTargetGroup', (t) => {
     t.end()
   })
 
+  t.end()
+})
+
+test('handles actions without a target group', (t) => {
+  const compiledTemplate = {
+    Resources: {
+      listenerRuleA: {
+        Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+        Properties: {
+          Actions: [{ AuthenticateOidcConfig: {} }],
+          ListenerArn: { Ref: 'listener' }
+        }
+      },
+      listener: {
+        Type: 'AWS::ElasticLoadBalancingV2::Listener',
+        Properties: {
+          LoadBalancerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188'
+        }
+      }
+    }
+  }
+  const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate)
+  t.equal(loadBalancerLogicalIds.length, 0)
   t.end()
 })
 
