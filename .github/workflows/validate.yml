@@ -1,0 +1,31 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # runs-on: ubuntu-latest
+    runs-on:
+      - codebuild-ft-gha-cb-dev2-lambda-${{ github.run_id }}-${{ github.run_attempt }}
+
+    strategy:
+      matrix:
+        node-version: [18, 20]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}.x
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+        name: Run unit tests
+      - name: Build TypeScript
+        run: npm run build
