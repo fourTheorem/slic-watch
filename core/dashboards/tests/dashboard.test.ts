@@ -32,7 +32,7 @@ test('A dashboard includes metrics', (t) => {
 })
 
 test('No dashboard is created if all widgets are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync', 'S3']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     (dashConfig.widgets as Widgets)[service].enabled = false
@@ -45,7 +45,7 @@ test('No dashboard is created if all widgets are disabled', (t) => {
 })
 
 test('No dashboard is created if all metrics are disabled', (t) => {
-  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync']
+  const services = ['Lambda', 'ApiGateway', 'States', 'DynamoDB', 'SQS', 'Kinesis', 'ECS', 'SNS', 'Events', 'ApplicationELB', 'ApplicationELBTarget', 'AppSync', 'S3']
   const dashConfig = _.cloneDeep(defaultConfig.dashboard)
   for (const service of services) {
     (dashConfig.widgets as Widgets)[service].enabled = false

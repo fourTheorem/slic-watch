@@ -11,7 +11,7 @@ import {
   assertCommonAlarmProperties,
   createTestConfig,
   createTestCloudFormationTemplate,
-  testAlarmActionsConfig,
+  testAlarmActionsConfig
 } from '../../tests/testing-utils'
 
 test('S3 bucket alarms are created', (t) => {
@@ -38,10 +38,12 @@ test('S3 bucket alarms are created', (t) => {
   const alarmResources: ResourceType = createS3Alarms(s3AlarmConfig, testAlarmActionsConfig, compiledTemplate)
 
   // Get all bucket logical IDs from the ALB CloudFormation template
-  const bucketLogicalIds = Object.keys(compiledTemplate.Resources || {}).filter(
-    key => compiledTemplate.Resources![key].Type === 'AWS::S3::Bucket'
+  const resources = compiledTemplate.Resources ?? {}
+
+  const bucketLogicalIds = Object.keys(resources).filter(
+    key => resources[key].Type === 'AWS::S3::Bucket'
   )
-  
+
   t.equal(bucketLogicalIds.length, 2, 'Should have 2 buckets in the template')
   t.ok(bucketLogicalIds.includes('ServerlessDeploymentBucket'), 'Should have ServerlessDeploymentBucket')
   t.ok(bucketLogicalIds.includes('bucket'), 'Should have bucket')
@@ -91,16 +93,16 @@ test('S3 bucket alarms are created', (t) => {
       // Get the bucket logical ID from the alarm dimensions
       const bucketNameDimension = al.Dimensions?.[0]
       const filterIdDimension = al.Dimensions?.[1]
-      
+
       // Check BucketName dimension
       t.equal(bucketNameDimension?.Name, 'BucketName')
       const bucketId = bucketNameDimension?.Value?.payload
-      
+
       // Validate that it's one of the expected bucket IDs
       t.ok(bucketId, 'Should have a bucket ID')
-      t.ok(['ServerlessDeploymentBucket', 'bucket'].includes(bucketId), 
+      t.ok(['ServerlessDeploymentBucket', 'bucket'].includes(bucketId),
            `Bucket ID should be either ServerlessDeploymentBucket or bucket, got ${bucketId}`)
-      
+
       // Check FilterId dimension
       t.equal(filterIdDimension?.Name, 'FilterId')
       t.equal(filterIdDimension?.Value, 'EntireBucket')

@@ -16,7 +16,7 @@ test('Alarms create all service alarms', (t) => {
       namespaces.add(resource.Properties.Namespace)
     }
   }
-  t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApiGateway', 'AWS/States', 'AWS/DynamoDB', 'AWS/Kinesis', 'AWS/SQS', 'AWS/ECS', 'AWS/SNS', 'AWS/Events']))
+  t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApiGateway', 'AWS/States', 'AWS/DynamoDB', 'AWS/Kinesis', 'AWS/SQS', 'AWS/ECS', 'AWS/SNS', 'AWS/Events', 'AWS/S3']))
   t.end()
 })
 
@@ -31,7 +31,7 @@ test('Alarms create all ALB service alarms', (t) => {
       namespaces.add(resource.Properties.Namespace)
     }
   }
-  t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApplicationELB']))
+  t.same(namespaces, new Set(['AWS/Lambda', 'AWS/ApplicationELB', 'AWS/S3']))
   t.end()
 })
 

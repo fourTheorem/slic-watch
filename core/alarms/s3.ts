@@ -27,7 +27,7 @@ const executionMetrics = ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxE
 function createS3BucketAlarmCfProperties (metric: string, s3LogicalId: string, config: SlicWatchMergedConfig) {
   return {
     Namespace: 'AWS/S3',
-      Dimensions: [
+    Dimensions: [
       { Name: 'BucketName', Value: Fn.Ref(s3LogicalId) },
       { Name: 'FilterId', Value: 'EntireBucket' }
     ],

@@ -14,7 +14,7 @@ import type { SlicWatchEventsAlarmsConfig } from './eventbridge'
 import type { SlicWatchAlbAlarmsConfig } from './alb'
 import type { SlicWatchAlbTargetAlarmsConfig } from './alb-target-group'
 import type { SlicWatchAppSyncAlarmsConfig } from './appsync'
-import { SlicWatchS3AlarmsConfig } from './s3'
+import type { SlicWatchS3AlarmsConfig } from './s3'
 
 export type OptionalAlarmProps = 'EvaluationPeriods' | 'ComparisonOperator'
 

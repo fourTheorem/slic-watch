@@ -9,8 +9,10 @@ import defaultConfig from '../../inputs/default-config'
 import { createTestCloudFormationTemplate, defaultCfTemplate, getDashboardFromTemplate } from '../../tests/testing-utils'
 
 // Helper function to get all widgets with S3 in the title
-function getS3Widgets(dashboard: any) {
-  const allWidgets = dashboard.widgets || []
+function getS3Widgets (dashboard: any) {
+  const allWidgets = Array.isArray(dashboard.widgets)
+    ? dashboard.widgets
+    : []
   return allWidgets.filter((widget: any) => {
     const props = widget.properties as MetricWidgetProperties
     return typeof props?.title === 'string' && props.title.includes('S3')
@@ -18,11 +20,13 @@ function getS3Widgets(dashboard: any) {
 }
 
 // Helper function to get widgets for a specific bucket by checking the dimensions
-function getWidgetsForBucket(widgets: any[], bucketLogicalId: string) {
+function getWidgetsForBucket (widgets: any[], bucketLogicalId: string) {
   return widgets.filter((widget: any) => {
     const props = widget.properties as MetricWidgetProperties
-    const metrics = props.metrics || []
-    
+    const metrics = Array.isArray(props.metrics)
+      ? props.metrics
+      : []
+
     return metrics.some((metric: any) => {
       // Check if this metric includes the bucket in its dimensions
       if (Array.isArray(metric)) {
@@ -50,7 +54,7 @@ test('dashboard contains configured S3 resources', (t) => {
     const bucketWidgets = getWidgetsForBucket(s3Widgets, 'bucket')
     t.ok(bucketWidgets.length > 0, 'Should have widgets for bucket resource')
 
-    // Since there are multiple widgets (one per metric per statistic), 
+    // Since there are multiple widgets (one per metric per statistic),
     // we need to check that all expected metrics are present
     const expectedMetrics = [
       { name: 'FirstByteLatency', stat: 'p99' },
@@ -65,22 +69,22 @@ test('dashboard contains configured S3 resources', (t) => {
     for (const expectedMetric of expectedMetrics) {
       const matchingWidget = bucketWidgets.find((widget: any) => {
         const props = widget.properties as MetricWidgetProperties
-        return props.metrics?.some((metric: any) => 
+        return props.metrics?.some((metric: any) =>
           Array.isArray(metric) &&
-          metric[0] === 'AWS/S3' && 
-          metric[1] === expectedMetric.name && 
+          metric[0] === 'AWS/S3' &&
+          metric[1] === expectedMetric.name &&
           metric[6]?.stat === expectedMetric.stat
         )
       })
       t.ok(matchingWidget, `Should have widget for ${expectedMetric.name} with ${expectedMetric.stat}`)
-      
-      if (matchingWidget) {
+
+      if (matchingWidget !== undefined) {
         const props = matchingWidget.properties as MetricWidgetProperties
         // Find the metric for our bucket
-        const metric = props.metrics?.find((m: any) => 
-          Array.isArray(m) && 
-          m[0] === 'AWS/S3' && 
-          m[1] === expectedMetric.name && 
+        const metric = props.metrics?.find((m: any) =>
+          Array.isArray(m) &&
+          m[0] === 'AWS/S3' &&
+          m[1] === expectedMetric.name &&
           m[3] === '${bucket}'
         )
         t.same(metric, [
@@ -128,21 +132,21 @@ test('dashboard contains configured S3 resources', (t) => {
     // Find the FirstByteLatency widget with Average statistic
     const firstByteWidget = bucketWidgets.find((widget: any) => {
       const props = widget.properties as MetricWidgetProperties
-      return props.metrics?.some((metric: any) => 
+      return props.metrics?.some((metric: any) =>
         Array.isArray(metric) &&
-        metric[0] === 'AWS/S3' && 
-        metric[1] === 'FirstByteLatency' && 
+        metric[0] === 'AWS/S3' &&
+        metric[1] === 'FirstByteLatency' &&
         metric[6]?.stat === 'Average'
       )
     })
-    
+
     t.ok(firstByteWidget, 'Should have FirstByteLatency widget with Average statistic')
-    if (firstByteWidget) {
+    if (firstByteWidget !== undefined) {
       const props = firstByteWidget.properties as MetricWidgetProperties
-      const metric = props.metrics?.find((m: any) => 
-        Array.isArray(m) && 
-        m[0] === 'AWS/S3' && 
-        m[1] === 'FirstByteLatency' && 
+      const metric = props.metrics?.find((m: any) =>
+        Array.isArray(m) &&
+        m[0] === 'AWS/S3' &&
+        m[1] === 'FirstByteLatency' &&
         m[3] === '${bucket}'
       )
       t.same(metric, [
@@ -159,20 +163,20 @@ test('dashboard contains configured S3 resources', (t) => {
     // Find the HeadRequests widget
     const headRequestsWidget = bucketWidgets.find((widget: any) => {
       const props = widget.properties as MetricWidgetProperties
-      return props.metrics?.some((metric: any) => 
+      return props.metrics?.some((metric: any) =>
         Array.isArray(metric) &&
-        metric[0] === 'AWS/S3' && 
+        metric[0] === 'AWS/S3' &&
         metric[1] === 'HeadRequests'
       )
     })
-    
+
     t.ok(headRequestsWidget, 'Should have HeadRequests widget')
-    if (headRequestsWidget) {
+    if (headRequestsWidget !== undefined) {
       const props = headRequestsWidget.properties as MetricWidgetProperties
-      const metric = props.metrics?.find((m: any) => 
-        Array.isArray(m) && 
-        m[0] === 'AWS/S3' && 
-        m[1] === 'HeadRequests' && 
+      const metric = props.metrics?.find((m: any) =>
+        Array.isArray(m) &&
+        m[0] === 'AWS/S3' &&
+        m[1] === 'HeadRequests' &&
         m[3] === '${bucket}'
       )
       t.same(metric, [
@@ -217,9 +221,9 @@ test('dashboard contains configured S3 resources', (t) => {
     // FirstByteLatency should be disabled
     const firstByteWidget = bucketWidgets.find((widget: any) => {
       const props = widget.properties as MetricWidgetProperties
-      return props.metrics?.some((metric: any) => 
+      return props.metrics?.some((metric: any) =>
         Array.isArray(metric) &&
-        metric[0] === 'AWS/S3' && 
+        metric[0] === 'AWS/S3' &&
         metric[1] === 'FirstByteLatency'
       )
     })
@@ -228,20 +232,20 @@ test('dashboard contains configured S3 resources', (t) => {
     // HeadRequests should have custom config
     const headRequestsWidget = bucketWidgets.find((widget: any) => {
       const props = widget.properties as MetricWidgetProperties
-      return props.metrics?.some((metric: any) => 
+      return props.metrics?.some((metric: any) =>
         Array.isArray(metric) &&
-        metric[0] === 'AWS/S3' && 
+        metric[0] === 'AWS/S3' &&
         metric[1] === 'HeadRequests'
       )
     })
-    
+
     t.ok(headRequestsWidget, 'Should have HeadRequests widget')
-    if (headRequestsWidget) {
+    if (headRequestsWidget !== undefined) {
       const props = headRequestsWidget.properties as MetricWidgetProperties
-      const metric = props.metrics?.find((m: any) => 
-        Array.isArray(m) && 
-        m[0] === 'AWS/S3' && 
-        m[1] === 'HeadRequests' && 
+      const metric = props.metrics?.find((m: any) =>
+        Array.isArray(m) &&
+        m[0] === 'AWS/S3' &&
+        m[1] === 'HeadRequests' &&
         m[3] === '${bucket}'
       )
       t.same(metric, [
@@ -257,20 +261,20 @@ test('dashboard contains configured S3 resources', (t) => {
 
     const errors5xxWidget = bucketWidgets.find((widget: any) => {
       const props = widget.properties as MetricWidgetProperties
-      return props.metrics?.some((metric: any) => 
+      return props.metrics?.some((metric: any) =>
         Array.isArray(metric) &&
-        metric[0] === 'AWS/S3' && 
+        metric[0] === 'AWS/S3' &&
         metric[1] === '5xxErrors'
       )
     })
-    
+
     t.ok(errors5xxWidget, 'Should have 5xxErrors widget')
-    if (errors5xxWidget) {
+    if (errors5xxWidget !== undefined) {
       const props = errors5xxWidget.properties as MetricWidgetProperties
-      const metric = props.metrics?.find((m: any) => 
-        Array.isArray(m) && 
-        m[0] === 'AWS/S3' && 
-        m[1] === '5xxErrors' && 
+      const metric = props.metrics?.find((m: any) =>
+        Array.isArray(m) &&
+        m[0] === 'AWS/S3' &&
+        m[1] === '5xxErrors' &&
         m[3] === '${bucket}'
       )
       t.same(metric, [

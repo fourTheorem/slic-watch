@@ -203,7 +203,7 @@ export const defaultConfig: DefaultConfig = {
       // S3 Buckets
       FirstByteLatency: {
         ExtendedStatistic: 'p99',
-        Threshold: 5000  // 5000 ms = 5 seconds for 99th percentile of first byte latency
+        Threshold: 5000 // 5000 ms = 5 seconds for 99th percentile of first byte latency
       },
       HeadRequests: {
         Statistic: 'Sum',

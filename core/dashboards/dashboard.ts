@@ -694,72 +694,71 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    *
    * Object of S3 Bucket resources by resource name
    */
-function createS3Widgets (): WidgetWithSize[] {
-  const configuredResources = getResourceDashboardConfigurationsByType(
-    ConfigType.S3,
-    compiledTemplate,
-    s3DashConfig
-  )
+  function createS3Widgets (): WidgetWithSize[] {
+    const configuredResources = getResourceDashboardConfigurationsByType(
+      ConfigType.S3,
+      compiledTemplate,
+      s3DashConfig
+    )
 
-  const s3Widgets: WidgetWithSize[] = []
+    const s3Widgets: WidgetWithSize[] = []
 
-  const s3Metrics = [
-    'FirstByteLatency',
-    'HeadRequests',
-    '5xxErrors',
-    '4xxErrors',
-    'TotalRequestLatency',
-    'AllRequests'
-  ]
+    const s3Metrics = [
+      'FirstByteLatency',
+      'HeadRequests',
+      '5xxErrors',
+      '4xxErrors',
+      'TotalRequestLatency',
+      'AllRequests'
+    ]
 
-  if (Object.keys(configuredResources.resources).length === 0) {
-    return s3Widgets
-  }
-
-  for (const metric of s3Metrics) {
-    // Pull metric config from *any* bucket 
-    const firstBucketId = Object.keys(configuredResources.resources)[0]
-    const metricConfig = configuredResources.dashConfigurations[firstBucketId]?.[metric]
-
-    if (metricConfig?.enabled === false) {
-      continue
+    if (Object.keys(configuredResources.resources).length === 0) {
+      return s3Widgets
     }
 
-    for (const stat of metricConfig.Statistic) {
-      const metricDefs: MetricDefs[] = []
+    for (const metric of s3Metrics) {
+    // Pull metric config from *any* bucket
+      const firstBucketId = Object.keys(configuredResources.resources)[0]
+      const metricConfig = configuredResources.dashConfigurations[firstBucketId]?.[metric]
 
-      for (const bucketLogicalId of Object.keys(configuredResources.resources)) {
-        const bucketConfig = configuredResources.dashConfigurations[bucketLogicalId]
-        const bucketMetricConfig = bucketConfig?.[metric]
-
-        if (bucketMetricConfig?.enabled !== false) {
-          metricDefs.push({
-            namespace: 'AWS/S3',
-            metric,
-             dimensions: {
-              BucketName: `\${${bucketLogicalId}}`,
-              FilterId: 'EntireBucket'
-            },
-            stat: stat as Statistic,
-            yAxis: bucketMetricConfig.yAxis
-          })
-        }
+      if (metricConfig?.enabled === false) {
+        continue
       }
 
-      if (metricDefs.length > 0) {
-        const widget = createMetricWidget(
+      for (const stat of metricConfig.Statistic) {
+        const metricDefs: MetricDefs[] = []
+
+        for (const bucketLogicalId of Object.keys(configuredResources.resources)) {
+          const bucketConfig = configuredResources.dashConfigurations[bucketLogicalId]
+          const bucketMetricConfig = bucketConfig?.[metric]
+
+          if (bucketMetricConfig?.enabled !== false) {
+            metricDefs.push({
+              namespace: 'AWS/S3',
+              metric,
+              dimensions: {
+                BucketName: `\${${bucketLogicalId}}`,
+                FilterId: 'EntireBucket'
+              },
+              stat: stat as Statistic,
+              yAxis: bucketMetricConfig.yAxis
+            })
+          }
+        }
+
+        if (metricDefs.length > 0) {
+          const widget = createMetricWidget(
           `S3 ${metric} ${stat} per Bucket`,
           metricDefs,
           metricConfig
-        )
-        s3Widgets.push(widget)
+          )
+          s3Widgets.push(widget)
+        }
       }
     }
+
+    return s3Widgets
   }
-
-  return s3Widgets
-}
-
 
   /**
    * Set the location and dimension properties of each provided widget
