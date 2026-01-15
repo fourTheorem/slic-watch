@@ -10,7 +10,8 @@ export enum ConfigType {
   Events = 'Events',
   ApplicationELB = 'ApplicationELB',
   ApplicationELBTarget = 'ApplicationELBTarget',
-  AppSync = 'AppSync'
+  AppSync = 'AppSync',
+  S3 = 'S3'
 }
 
 export const cfTypeByConfigType = {
@@ -25,7 +26,8 @@ export const cfTypeByConfigType = {
   [ConfigType.Events]: 'AWS::Events::Rule',
   [ConfigType.ApplicationELB]: 'AWS::ElasticLoadBalancingV2::LoadBalancer',
   [ConfigType.ApplicationELBTarget]: 'AWS::ElasticLoadBalancingV2::TargetGroup',
-  [ConfigType.AppSync]: 'AWS::AppSync::GraphQLApi'
+  [ConfigType.AppSync]: 'AWS::AppSync::GraphQLApi',
+  [ConfigType.S3]: 'AWS::S3::Bucket'
 }
 
 export const configTypesByCfType = Object.fromEntries(Object.entries(cfTypeByConfigType).map(

@@ -198,6 +198,33 @@ export const defaultConfig: DefaultConfig = {
         Statistic: 'Average',
         Threshold: 0
       }
+    },
+    S3: {
+      // S3 Buckets
+      FirstByteLatency: {
+        ExtendedStatistic: 'p99',
+        Threshold: 5000  // 5000 ms = 5 seconds for 99th percentile of first byte latency
+      },
+      HeadRequests: {
+        Statistic: 'Sum',
+        Threshold: 200 // triggers if more than 200 HEAD requests per minute
+      },
+      '5xxErrors': {
+        Statistic: 'Sum',
+        Threshold: 0
+      },
+      '4xxErrors': {
+        Statistic: 'Sum',
+        Threshold: 0
+      },
+      TotalRequestLatency: {
+        ExtendedStatistic: 'p99',
+        Threshold: 5000 // triggers if 99th percentile latency exceeds 5 seconds
+      },
+      AllRequests: {
+        Statistic: 'Sum',
+        Threshold: 1000 // triggers if more than 1000 total requests per minute
+      }
     }
   },
   dashboard: {
@@ -386,6 +413,27 @@ export const defaultConfig: DefaultConfig = {
           Statistic: ['Sum']
         },
         PublishDataMessageServerError: {
+          Statistic: ['Sum']
+        }
+      },
+      S3: {
+        // S3 Buckets
+        FirstByteLatency: {
+          Statistic: ['Average', 'p99']
+        },
+        HeadRequests: {
+          Statistic: ['Sum']
+        },
+        '5xxErrors': {
+          Statistic: ['Sum']
+        },
+        '4xxErrors': {
+          Statistic: ['Sum']
+        },
+        TotalRequestLatency: {
+          Statistic: ['Average', 'p99']
+        },
+        AllRequests: {
           Statistic: ['Sum']
         }
       }
