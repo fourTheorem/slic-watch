@@ -8,7 +8,7 @@
 
 Automatic, best-practice CloudWatch **Dashboards** and **Alarms** for your SAM, CloudFormation, CDK and Serverless Framework applications.
 
-SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge, Application Load Balancer and AppSync._  
+SLIC Watch supports: _AWS Lambda, API Gateway, DynamoDB, Kinesis Data Streams, SQS Queues, Step Functions, ECS (Fargate or EC2), SNS, EventBridge, Application Load Balancer, AppSync, and S3._  
 
 Supported tools include:
  * ⚡️ **Serverless Framework** v3 via the [_SLIC Watch Serverless Plugin_](#getting-started-with-serverless-framework)
@@ -34,6 +34,7 @@ Supported tools include:
     - [EventBridge](#eventbridge)
     - [Application Load Balancer](#application-load-balancer)
     - [AppSync](#appsync)
+    - [S3](#S3)
   - [Configuration](#configuration)
     - [Top-level configuration](#top-level-configuration)
     - [Resource-level configuration](#resource-level-configuration)
@@ -329,6 +330,24 @@ AppSync dashboard widgets show:
 |![API Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncAPI.png)|
 |**Connect Server Error**, **Disconnect Server Error**, **Subscribe Server Error**, **Unsubscribe Server Error**,**PublishDataMessageServerError**|
 |![Real-time Subscriptions Widget](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/appsyncRealTimeSubscriptions.png)|
+
+### S3
+S3 alarms created for:
+1. FirstByteLatency
+2. HeadRequests
+3. 5xxErrors
+4. 4xxErrors
+5. TotalRequestLatency
+6. AllRequests
+
+S3 dashboard widgets show:
+
+|First Byte Latency Average, P99|Head Requests|5XX Errors|
+|--|--|--|
+|![First Byte Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatency.png)|![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |
+|**4XX Errors**|**Total Request Latency Average, P99**|**All Requests**|
+|![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatency.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |
+
 ## Configuration
 
 Configuration is entirely optional - SLIC Watch provides defaults that work out of the box.

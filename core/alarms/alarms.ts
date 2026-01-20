@@ -20,6 +20,7 @@ import createRuleAlarms from './eventbridge'
 import createAlbAlarms from './alb'
 import createAlbTargetAlarms from './alb-target-group'
 import createAppSyncAlarms from './appsync'
+import createS3Alarms from './s3'
 import { addResource } from '../cf-template'
 
 /**
@@ -48,6 +49,7 @@ export default function addAlarms (
     ApplicationELB: albConfig,
     ApplicationELBTarget: albTargetConfig,
     AppSync: appSyncConfig,
+    S3: s3Config,
     enabled
   } = cascade(alarmProperties) as SlicWatchCascadedAlarmsConfig<SlicWatchMergedConfig>
 
@@ -63,7 +65,8 @@ export default function addAlarms (
     { config: albConfig, alarmFunc: createAlbAlarms },
     { config: albTargetConfig, alarmFunc: createAlbTargetAlarms },
     { config: appSyncConfig, alarmFunc: createAppSyncAlarms },
-    { config: lambdaConfig, alarmFunc: createLambdaAlarms }
+    { config: lambdaConfig, alarmFunc: createLambdaAlarms },
+    { config: s3Config, alarmFunc: createS3Alarms }
   ]
   const resources = {}
 

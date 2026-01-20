@@ -9,6 +9,26 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub 'slic-watch-test-project-bucket-${AWS::AccountId}-${AWS::Region}'
+      # Enable access logging to the log bucket
+      LoggingConfiguration:
+        DestinationBucketName: !Ref bucketLogs
+        LogFilePrefix: 's3-access-logs/'
+      MetricsConfigurations:
+        - Id: AllObjects
+      LifecycleConfiguration:
+        Rules:
+          - Id: LogExpirationRule
+            Status: Enabled
+            ExpirationInDays: 7  # Keep logs for 7 days
+            Prefix: s3-access-logs/
+
+  # New S3 bucket for access logs
+  bucketLogs:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'slic-watch-test-project-bucket-logs-${AWS::AccountId}-${AWS::Region}'
+      # Add bucket policy to allow S3 to write logs
+      AccessControl: LogDeliveryWrite
 
   dataTable:
     Type: AWS::DynamoDB::Table

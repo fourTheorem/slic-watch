@@ -14,6 +14,7 @@ import type { SlicWatchEventsAlarmsConfig } from './eventbridge'
 import type { SlicWatchAlbAlarmsConfig } from './alb'
 import type { SlicWatchAlbTargetAlarmsConfig } from './alb-target-group'
 import type { SlicWatchAppSyncAlarmsConfig } from './appsync'
+import type { SlicWatchS3AlarmsConfig } from './s3'
 
 export type OptionalAlarmProps = 'EvaluationPeriods' | 'ComparisonOperator'
 
@@ -61,6 +62,7 @@ export type SlicWatchCascadedAlarmsConfig<T extends InputOutput> = T & {
   ApplicationELB: SlicWatchAlbAlarmsConfig<T>
   ApplicationELBTarget: SlicWatchAlbTargetAlarmsConfig<T>
   AppSync: SlicWatchAppSyncAlarmsConfig<T>
+  S3: SlicWatchS3AlarmsConfig<T>
 }
 
 export type CloudFormationResources = Record<string, Resource>

@@ -43,6 +43,7 @@ export interface Widgets extends WidgetMetricProperties {
   [ConfigType.ApplicationELB]: AlbDashboardProperties
   [ConfigType.ApplicationELBTarget]: AlbTargetDashboardProperties
   [ConfigType.AppSync]: AppSyncDashboardProperties
+  [ConfigType.S3]: S3DashboardProperties
 }
 
 type NestedPartial<T> = {
@@ -138,4 +139,13 @@ export interface AppSyncDashboardProperties extends WidgetMetricProperties {
   SubscribeServerError: WidgetMetricProperties
   UnsubscribeServerError: WidgetMetricProperties
   PublishDataMessageServerError: WidgetMetricProperties
+}
+
+export interface S3DashboardProperties extends WidgetMetricProperties {
+  FirstByteLatency: WidgetMetricProperties
+  HeadRequests: WidgetMetricProperties
+  '5xxErrors': WidgetMetricProperties
+  '4xxErrors': WidgetMetricProperties
+  TotalRequestLatency: WidgetMetricProperties
+  AllRequests: WidgetMetricProperties
 }

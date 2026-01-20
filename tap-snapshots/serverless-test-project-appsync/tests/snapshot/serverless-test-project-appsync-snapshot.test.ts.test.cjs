@@ -757,12 +757,828 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                 "height": 6,
                 "x": 0,
                 "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "FirstByteLatency",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Average",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "FirstByteLatency",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Average",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 FirstByteLatency Average per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "FirstByteLatency",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "p99",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "FirstByteLatency",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "p99",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 FirstByteLatency p99 per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 6
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "HeadRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "HeadRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 HeadRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "5xxErrors",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "5xxErrors",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 5xxErrors Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "4xxErrors",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "4xxErrors",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 4xxErrors Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 12
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "TotalRequestLatency",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Average",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "TotalRequestLatency",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Average",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 TotalRequestLatency Average per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "TotalRequestLatency",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "p99",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "TotalRequestLatency",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "p99",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 TotalRequestLatency p99 per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "AllRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "AllRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left"
+                      }
+                    ]
+                  ],
+                  "title": "S3 AllRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 18
               }
             ]
           }
         }
       },
       "Type": "AWS::CloudWatch::Dashboard"
+    },
+    "slicWatchS34xxErrorsAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 4xxErrors for \${bucket} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_4xxErrors_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "4xxErrors",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS34xxErrorsAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 4xxErrors for \${ServerlessDeploymentBucket} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_4xxErrors_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "4xxErrors",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS35xxErrorsAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 5xxErrors for \${bucket} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_5xxErrors_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "5xxErrors",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS35xxErrorsAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 5xxErrors for \${ServerlessDeploymentBucket} breaches 0",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_5xxErrors_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "5xxErrors",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 0,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3AllRequestsAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 AllRequests for \${bucket} breaches 1000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_AllRequests_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "AllRequests",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3AllRequestsAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 AllRequests for \${ServerlessDeploymentBucket} breaches 1000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_AllRequests_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "AllRequests",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3FirstByteLatencyAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 FirstByteLatency for \${bucket} breaches 5000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_FirstByteLatency_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "ExtendedStatistic": "p99",
+        "MetricName": "FirstByteLatency",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Threshold": 5000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3FirstByteLatencyAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 FirstByteLatency for \${ServerlessDeploymentBucket} breaches 5000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_FirstByteLatency_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "ExtendedStatistic": "p99",
+        "MetricName": "FirstByteLatency",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Threshold": 5000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3HeadRequestsAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 HeadRequests for \${bucket} breaches 200",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_HeadRequests_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "HeadRequests",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 200,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3HeadRequestsAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 HeadRequests for \${ServerlessDeploymentBucket} breaches 200",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_HeadRequests_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "HeadRequests",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 200,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3TotalRequestLatencyAlarmBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 TotalRequestLatency for \${bucket} breaches 5000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_TotalRequestLatency_Alarm_\${bucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "bucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "ExtendedStatistic": "p99",
+        "MetricName": "TotalRequestLatency",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Threshold": 5000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
+    },
+    "slicWatchS3TotalRequestLatencyAlarmServerlessDeploymentBucket": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          "\${env:ALARM_TOPIC}"
+        ],
+        "AlarmDescription": {
+          "Fn::Sub": [
+            "S3 TotalRequestLatency for \${ServerlessDeploymentBucket} breaches 5000",
+            {}
+          ]
+        },
+        "AlarmName": {
+          "Fn::Sub": [
+            "S3_TotalRequestLatency_Alarm_\${ServerlessDeploymentBucket}",
+            {}
+          ]
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "BucketName",
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          {
+            "Name": "FilterId",
+            "Value": "EntireBucket"
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "ExtendedStatistic": "p99",
+        "MetricName": "TotalRequestLatency",
+        "Namespace": "AWS/S3",
+        "OKActions": [],
+        "Period": 60,
+        "Threshold": 5000,
+        "TreatMissingData": "notBreaching"
+      },
+      "Type": "AWS::CloudWatch::Alarm"
     },
     "slicWatchTableReadThrottleEventsAlarmBooksTable": {
       "Properties": {

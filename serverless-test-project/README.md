@@ -46,10 +46,10 @@ functions:
 
 ## Clean up
 
-To destroy the deployed service you can run:
+To remove the deployed service you can run:
 
 ```bash
-ALARM_TOPIC=<your_sns_topic_arn> sls destroy
+ALARM_TOPIC=<your_sns_topic_arn> sls remove
 ```
 
 Remember to also delete your SNS topic.
