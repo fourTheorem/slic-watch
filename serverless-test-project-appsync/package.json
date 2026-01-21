@@ -1,6 +1,6 @@
 {
   "name": "serverless-test-project-appsync",
-  "version": "3.3.1-3rc",
+  "version": "3.3.1-4rc",
   "description": "Test project for SLIC Watch serverless plugin",
   "repository": {
     "type": "git",
