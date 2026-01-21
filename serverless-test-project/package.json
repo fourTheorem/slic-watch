@@ -16,5 +16,8 @@
   },
   "scripts": {
     "test": "ALARM_TOPIC=test sls package"
+  },
+  "dependencies": {
+    "esbuild": "0.27.2"
   }
 }
