@@ -47,7 +47,7 @@ jobs:
         run: |
           cp README.md serverless-plugin
           [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
-          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
+          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin --provenance
       - name: SAR publish
         run: |
           sam build --base-dir . --template-file cf-macro/template.yaml
