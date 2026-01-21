@@ -9,7 +9,7 @@
   },
   "license": "Apache",
   "devDependencies": {
-    "serverless": "^4.31.0",
+    "serverless": "^3.28.1",
     "serverless-appsync-plugin": "^1.14.0",
     "serverless-iam-roles-per-function": "^3.2.0"
   },
