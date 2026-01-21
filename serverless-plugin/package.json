@@ -23,7 +23,7 @@
     ]
   },
   "devDependencies": {
-    "serverless": "^3.28.1",
+    "serverless": "^4.31.0",
     "serverless-hooks-plugin": "^1.1.0"
   },
   "engines": {
@@ -31,7 +31,8 @@
   },
   "license": "Apache",
   "dependencies": {
-    "ajv": "^8.11.0"
+    "ajv": "^8.11.0",
+    "esbuild": "0.27.2"
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae"
 }

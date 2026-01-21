@@ -14,6 +14,9 @@
   },
   "gitHead": "c4300240f9e854c4eb1c5503b839882ff0cd1cae",
   "devDependencies": {
-    "serverless": "^3.28.1"
+    "serverless": "^4.31.0"
+  },
+  "dependencies": {
+    "esbuild": "0.27.2"
   }
 }
