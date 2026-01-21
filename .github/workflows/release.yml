@@ -43,11 +43,34 @@ jobs:
           role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify npm registry config
+        run: |
+          npm config get registry
+          npm config list --json | jq '{registry: .registry, userconfig: .userconfig}'
+      - name: Show workspace package versions
+        run: |
+          jq -r '.name + "@" + .version' slic-watch-core/package.json
+          jq -r '.name + "@" + .version' serverless-slic-watch-plugin/package.json
+
+
       - name: NPM publish packages with OIDC
         run: |
+          set -euxo pipefail
           cp README.md serverless-plugin
-          [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
-          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin --provenance
+
+          if [[ "${{ github.event.release.prerelease }}" = true ]]; then
+            export NPM_PUBLISH_ARGS="--tag next"
+          else
+            export NPM_PUBLISH_ARGS=""
+          fi
+
+          npm publish ${NPM_PUBLISH_ARGS} \
+            --provenance \
+            --loglevel verbose \
+            --workspace slic-watch-core \
+            --workspace serverless-slic-watch-plugin
+
       - name: SAR publish
         run: |
           sam build --base-dir . --template-file cf-macro/template.yaml
