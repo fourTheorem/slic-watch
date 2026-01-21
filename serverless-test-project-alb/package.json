@@ -1,6 +1,6 @@
 {
   "name": "serverless-test-project-alb",
-  "version": "3.3.0-2rc",
+  "version": "3.3.1-3rc",
   "description": "Test project for SLIC Watch serverless plugin",
   "main": "alb-handler.js",
   "repository": {

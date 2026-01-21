@@ -1,6 +1,6 @@
 {
   "name": "cdk-test-project",
-  "version": "3.3.0-2rc",
+  "version": "3.3.1-3rc",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
