@@ -1,7 +1,7 @@
 {
     "name": "test-utils",
     "description": "Common test utilities",
-    "version": "3.3.1-1rc",
+    "version": "3.3.2",
     "repository": {
         "type": "git",
         "url": "https://github.com/fourTheorem/slic-watch.git",
