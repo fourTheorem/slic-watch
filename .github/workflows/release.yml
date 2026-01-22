@@ -48,11 +48,6 @@ jobs:
         run: |
           npm config get registry
           npm config list --json | jq '{registry: .registry, userconfig: .userconfig}'
-      - name: Show workspace package versions
-        run: |
-          jq -r '.name + "@" + .version' slic-watch-core/package.json
-          jq -r '.name + "@" + .version' serverless-slic-watch-plugin/package.json
-
 
       - name: NPM publish packages with OIDC
         run: |
