@@ -20,17 +20,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Node.js
+      - name: Set up Node.js with OIDC
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
           registry-url: "https://registry.npmjs.org"
-      - name: Use npm 8
-        run: npm install -g npm@^8
-      - name: Test NPM login
-        run: npm whoami
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: actions/setup-python@v3
         with:
           python-version: "3.8"
@@ -49,13 +43,11 @@ jobs:
           role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
           aws-region: ${{ env.AWS_REGION }}
-      - name: NPM publish
+      - name: NPM publish packages with OIDC
         run: |
           cp README.md serverless-plugin
           [[ "${{ github.event.release.prerelease }}" = true ]] && export NPM_PUBLISH_ARGS="--tag next" || export NPM_PUBLISH_ARGS=""
-          npm publish ${NPM_PUBLISH_ARGS} --workspace slic-watch-core --workspace serverless-slic-watch-plugin
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish ${NPM_PUBLISH_ARGS} --provenance --workspace slic-watch-core --workspace serverless-slic-watch-plugin
       - name: SAR publish
         run: |
           sam build --base-dir . --template-file cf-macro/template.yaml
