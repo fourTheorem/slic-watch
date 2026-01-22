@@ -7,7 +7,7 @@
     "url": "https://github.com/fourTheorem/slic-watch.git",
     "directory": "cf-macro"
   },
-  "version": "3.3.1-7rc",
+  "version": "3.3.1-8rc",
   "private": true,
   "scripts": {
     "test": "tap --coverage-report=html --no-browser --no-check-coverage tests/**/*.test.ts",
