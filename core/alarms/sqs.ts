@@ -36,12 +36,19 @@ export default function createSQSAlarms (
 
     const inFlightMessagesPcConfig = mergedConfig.InFlightMessagesPc
     if (inFlightMessagesPcConfig.enabled) {
+      if (inFlightMessagesPcConfig.Threshold == null) {
+        throw new Error('SQS InFlightMessagesPc alarm is enabled but `Threshold` is not specified. Please specify a threshold or disable the alarm.')
+      }
+      if (typeof inFlightMessagesPcConfig.Threshold !== 'number') {
+        throw new Error('SQS InFlightMessagesPc alarm requires a numeric `Threshold` because the configured percentage is converted to the SQS hard limit.')
+      }
       const { enabled, ...rest } = inFlightMessagesPcConfig
       const hardLimit = (queueResource.Properties?.FifoQueue != null) ? 20000 : 120000
-      const thresholdValue = Math.floor(hardLimit * (inFlightMessagesPcConfig.Threshold as any) / 100)
+      const thresholdPercentage = inFlightMessagesPcConfig.Threshold
+      const thresholdValue = Math.floor(hardLimit * thresholdPercentage / 100)
       const sqsAlarmProperties: AlarmProperties = {
         AlarmName: Fn.Sub(`SQS_ApproximateNumberOfMessagesNotVisible_\${${queueLogicalId}.QueueName}`, {}),
-        AlarmDescription: Fn.Sub(`SQS in-flight messages for \${${queueLogicalId}.QueueName} breaches ${thresholdValue} (${inFlightMessagesPcConfig.Threshold}% of the hard limit of ${hardLimit})`, {}),
+        AlarmDescription: Fn.Sub(`SQS in-flight messages for \${${queueLogicalId}.QueueName} breaches ${thresholdValue} (${thresholdPercentage}% of the hard limit of ${hardLimit})`, {}),
         MetricName: 'ApproximateNumberOfMessagesNotVisible',
         Namespace: 'AWS/SQS',
         Dimensions: [{ Name: 'QueueName', Value: Fn.GetAtt(`${queueLogicalId}`, 'QueueName') }],

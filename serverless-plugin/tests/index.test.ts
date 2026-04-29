@@ -5,7 +5,7 @@ import type Template from 'cloudform-types/types/template'
 
 import ServerlessPlugin from '../serverless-plugin'
 import { getLogger } from 'slic-watch-core/logging'
-import { type SlsYaml, createMockServerless, dummyLogger, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
+import { type SlsYaml, createMockServerless, dummyLogger, getMockLambdaLogicalId, pluginUtils, slsYaml } from '../../test-utils/sls-test-utils'
 import { type ResourceType } from 'slic-watch-core'
 import { getDashboardFromTemplate, getDashboardWidgetsByTitle } from 'slic-watch-core/tests/testing-utils'
 import { type MetricWidgetProperties } from 'cloudwatch-dashboard-types'
@@ -29,7 +29,7 @@ const mockServerless = createMockServerless({
 test('index', t => {
   t.test('plugin uses v3 logger', t => {
     // Since v3, Serverless Framework provides a logger that we must use to log output
-    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
+    const plugin = new ServerlessPlugin(mockServerless, {}, pluginUtils)
     t.same(getLogger(), dummyLogger)
     t.ok(plugin)
     t.end()
@@ -42,12 +42,12 @@ test('index', t => {
         ...mockServerless.service,
         provider: { name: 'azure' }
       }
-    }, null, pluginUtils))
+    }, {}, pluginUtils))
     t.end()
   })
 
   t.test('createSlicWatchResources adds dashboard and alarms', t => {
-    const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
+    const plugin = new ServerlessPlugin(mockServerless, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -96,7 +96,7 @@ test('index', t => {
 
     t.test('Plugin succeeds without function-level overrides', t => {
       const sls = createMockServerless(compiledTemplate, slsConfig)
-      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      const plugin = new ServerlessPlugin(sls, {}, pluginUtils)
       plugin.createSlicWatchResources()
       const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
       t.equal(invocationAlarmProperties?.Threshold, 10)
@@ -128,7 +128,7 @@ test('index', t => {
       })
 
       const sls = createMockServerless(compiledTemplate, modifiedSlsConfig)
-      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      const plugin = new ServerlessPlugin(sls, {}, pluginUtils)
       plugin.createSlicWatchResources()
       const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
       t.equal(invocationAlarmProperties?.Threshold, 3)
@@ -163,7 +163,7 @@ test('index', t => {
       })
 
       const sls = createMockServerless(compiledTemplate, modifiedSlsConfig)
-      const plugin = new ServerlessPlugin(sls, null, pluginUtils)
+      const plugin = new ServerlessPlugin(sls, {}, pluginUtils)
       plugin.createSlicWatchResources()
       const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType).slicWatchLambdaInvocationsAlarmHelloLambdaFunction.Properties
       t.equal(invocationAlarmProperties?.Threshold, 4)
@@ -187,7 +187,7 @@ test('index', t => {
         ...mockServerless.service,
         custom: undefined
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -205,8 +205,64 @@ test('index', t => {
           testData.functionSchema = schema
         }
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     t.equal(typeof testData.schema, 'object')
+    t.end()
+  })
+
+  t.test('Plugin applies function-level overrides for hyphenated function names', t => {
+    const functionName = 'get-user-order'
+    const functionLogicalId = getMockLambdaLogicalId(functionName)
+    const compiledTemplate: Template = {
+      Resources: {
+        [functionLogicalId]: {
+          Type: 'AWS::Lambda::Function',
+          Properties: {
+            FunctionName: `serverless-test-project-dev-${functionName}`
+          }
+        }
+      }
+    }
+    const slsConfig: SlsYaml = {
+      custom: {
+        slicWatch: {
+          alarms: {
+            Lambda: {
+              Invocations: {
+                enabled: true,
+                Threshold: 10
+              }
+            }
+          }
+        }
+      },
+      functions: {
+        [functionName]: {
+          slicWatch: {
+            alarms: {
+              Invocations: {
+                Threshold: 3,
+                enabled: true
+              }
+            }
+          }
+        }
+      }
+    }
+
+    const sls = createMockServerless(compiledTemplate, slsConfig)
+    const plugin = new ServerlessPlugin(sls, {}, pluginUtils)
+    plugin.createSlicWatchResources()
+
+    const invocationAlarmProperties = (compiledTemplate.Resources as ResourceType)[`slicWatchLambdaInvocationsAlarm${functionLogicalId}`].Properties
+    t.equal(invocationAlarmProperties?.Threshold, 3)
+
+    const { dashboard } = getDashboardFromTemplate(compiledTemplate)
+    const widgets = getDashboardWidgetsByTitle(dashboard, /Lambda Invocations/)
+    t.equal(widgets.length, 1)
+    t.match((widgets[0].properties as MetricWidgetProperties).metrics, [
+      ['AWS/Lambda', 'Invocations', 'FunctionName', `\${${functionLogicalId}}`, { stat: 'Sum', yAxis: 'left' }]
+    ])
     t.end()
   })
 
@@ -217,7 +273,7 @@ test('index', t => {
         ...mockServerless.service,
         custom: {}
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -232,7 +288,7 @@ test('index', t => {
         ...mockServerless.service,
         ...serviceYmlWithoutTopic
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -251,7 +307,7 @@ test('index', t => {
           }
         }
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })
@@ -265,7 +321,7 @@ test('index', t => {
         ...mockServerless.service,
         ...serviceYmlWithBadProperty
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     t.throws(() => { plugin.createSlicWatchResources() }, ServerlessError)
     t.end()
   })
@@ -279,7 +335,7 @@ test('index', t => {
         ...mockServerless.service,
         ...serviceYmlWithDisabled
       }
-    }, null, pluginUtils)
+    }, {}, pluginUtils)
     plugin.createSlicWatchResources()
     t.end()
   })

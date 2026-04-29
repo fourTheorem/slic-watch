@@ -50,3 +50,26 @@ test('Configuration includes okActions', (t) => {
 
   t.end()
 })
+
+test('Configuration resolution does not mutate shared defaults', (t) => {
+  const overriddenConfig: SlicWatchConfig = {
+    alarms: {
+      Lambda: {
+        Invocations: {
+          enabled: true,
+          Threshold: 7
+        }
+      }
+    }
+  }
+
+  const overridden = resolveSlicWatchConfig(overriddenConfig)
+  t.equal(overridden.alarms.Lambda.Invocations.Threshold, 7)
+  t.equal(overridden.alarms.Lambda.Invocations.enabled, true)
+
+  const resolvedDefaults = resolveSlicWatchConfig({})
+  t.equal(resolvedDefaults.alarms.Lambda.Invocations.Threshold, undefined)
+  t.equal(resolvedDefaults.alarms.Lambda.Invocations.enabled, false)
+
+  t.end()
+})

@@ -18,7 +18,7 @@ test('the plugin adds SLIC Watch dashboards and alarms to a serverless-generated
   setUpSnapshotDefaults(t)
   const slsConfig = readFileSync(path.join(__dirname, '..', '..', 'serverless.yml')).toString()
   const mockServerless = createMockServerless(inputTemplate as unknown as Template, parse(slsConfig))
-  const plugin = new ServerlessPlugin(mockServerless, null, pluginUtils)
+  const plugin = new ServerlessPlugin(mockServerless, {}, pluginUtils)
   plugin.createSlicWatchResources()
   const generatedTemplate = mockServerless.service.provider.compiledCloudFormationTemplate
   t.matchSnapshot(generatedTemplate, 'serverless-test-project-appsync template')

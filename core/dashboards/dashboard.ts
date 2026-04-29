@@ -136,11 +136,11 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
     const configuredResources = getResourceDashboardConfigurationsByType(ConfigType.Lambda, compiledTemplate, lambdaDashConfig)
     const eventSourceMappingFunctions = getEventSourceMappingFunctions(compiledTemplate)
 
-    const lambdaWidgets: any = []
+    const lambdaWidgets: WidgetWithSize[] = []
 
     if (Object.keys(configuredResources.resources).length > 0) {
       for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(lambdaDashConfig))) {
-        if (metric !== 'IteratorAge' as any) {
+        if (metric !== 'IteratorAge') {
           for (const stat of metricConfig.Statistic) {
             const metricDefs: MetricDefs[] = []
             for (const funcLogicalId of Object.keys(configuredResources.resources)) {
@@ -171,7 +171,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
             // Add IteratorAge alarm if the Lambda function has an EventSourceMapping trigger
             const funcConfig = configuredResources.dashConfigurations[funcLogicalId]
             const functionMetricConfig = funcConfig[metric]
-            if (functionMetricConfig.enabled !== false) {
+            if (functionMetricConfig.enabled) {
               const stats: string[] = []
               metricConfig?.Statistic?.forEach(a => stats.push(a))
               const iteratorAgeWidget = createMetricWidget(
@@ -204,8 +204,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    */
   function getConfiguredMetrics (serviceDashConfig: WidgetMetricProperties): Record<string, WidgetMetricProperties> {
     return Object.fromEntries(Object.entries(serviceDashConfig).filter(
-      ([_, metricConfig]) => typeof metricConfig === 'object')
-    ) as unknown as Record<string, WidgetMetricProperties>
+      (entry): entry is [string, WidgetMetricProperties] => isWidgetMetricConfig(entry[1])
+    ))
+  }
+
+  function isWidgetMetricConfig (metricConfig: unknown): metricConfig is WidgetMetricProperties {
+    return typeof metricConfig === 'object' &&
+      metricConfig !== null &&
+      'Statistic' in metricConfig
   }
 
   /**

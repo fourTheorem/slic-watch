@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22, 24]
+        node-version: [20, 22, 24]
 
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
           path-to-lcov: .tap/report/lcov.info
-        if: ${{ matrix.node-version != 18 }} # Node 18 is reporting inaccurate coverage data, so we ignore its report
+        if: ${{ always() }}
 
   finish:
     needs: build

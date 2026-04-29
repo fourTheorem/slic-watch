@@ -58,7 +58,7 @@ export function resolveSlicWatchConfig (slicWatchConfig: SlicWatchConfig): Resol
     okActions: slicWatchConfig.alarmActionsConfig?.okActions ?? []
   }
 
-  const config = merge(defaultConfig, slicWatchConfig)
+  const config = merge({}, defaultConfig, slicWatchConfig)
   return {
     enabled: slicWatchConfig.enabled ?? true,
     ...config,
