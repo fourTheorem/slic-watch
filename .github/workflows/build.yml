@@ -9,6 +9,7 @@ on:
       - main
 
 env:
+  AWS_REGION : "eu-west-1"
   SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
 
 permissions:
