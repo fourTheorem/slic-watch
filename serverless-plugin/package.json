@@ -23,7 +23,7 @@
     ]
   },
   "devDependencies": {
-    "serverless": "^3.28.1",
+    "serverless": "^4.34.0",
     "serverless-hooks-plugin": "^1.1.0"
   },
   "engines": {

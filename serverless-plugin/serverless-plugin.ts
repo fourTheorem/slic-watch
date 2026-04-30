@@ -1,12 +1,18 @@
 import { merge } from 'lodash'
 import type Serverless from 'serverless'
-import ServerlessError from 'serverless/lib/serverless-error'
 import type Hooks from 'serverless-hooks-plugin'
 import { type Template } from 'cloudform-types'
 import type Resource from 'cloudform-types/types/resource'
 import { addAlarms, addDashboard, pluginConfigSchema, functionConfigSchema } from '../core/index'
 import { resolveSlicWatchConfig, type ResolvedConfiguration, type SlicWatchConfig } from '../core/inputs/general-config'
 import { setLogger } from '../core/logging'
+
+export class ServerlessPluginError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'ServerlessError'
+  }
+}
 
 interface ServerlessPluginUtils {
   log: Record<string, unknown> // The Serverless Framework's logger which may be used by plugins to create output
@@ -21,7 +27,7 @@ class ServerlessPlugin {
   hooks: Hooks
 
   /**
-     * Plugin constructor according to the Serverless Framework v3 plugin signature
+     * Plugin constructor according to the Serverless Framework plugin signature
      *
      * @param {*} serverless The Serverless instance
      */
@@ -29,7 +35,7 @@ class ServerlessPlugin {
     this.serverless = serverless
 
     if (serverless.service.provider.name !== 'aws') {
-      throw new ServerlessError('SLIC Watch only supports AWS')
+      throw new ServerlessPluginError('SLIC Watch only supports AWS')
     }
 
     // Serverless framework provides the logger we must use to output updates and errors
@@ -54,7 +60,7 @@ class ServerlessPlugin {
     try {
       config = resolveSlicWatchConfig(slicWatchConfig)
     } catch (err) {
-      throw new ServerlessError((err as Error).message)
+      throw new ServerlessPluginError((err as Error).message)
     }
 
     if (config.enabled) {

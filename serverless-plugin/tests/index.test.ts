@@ -1,6 +1,5 @@
 import { test } from 'tap'
 import _ from 'lodash'
-import ServerlessError from 'serverless/lib/serverless-error'
 import type Template from 'cloudform-types/types/template'
 
 import ServerlessPlugin from '../serverless-plugin'
@@ -27,8 +26,8 @@ const mockServerless = createMockServerless({
 })
 
 test('index', t => {
-  t.test('plugin uses v3 logger', t => {
-    // Since v3, Serverless Framework provides a logger that we must use to log output
+  t.test('plugin uses framework logger', t => {
+    // Serverless Framework provides the logger we must use to log output
     const plugin = new ServerlessPlugin(mockServerless, {}, pluginUtils)
     t.same(getLogger(), dummyLogger)
     t.ok(plugin)
@@ -322,7 +321,9 @@ test('index', t => {
         ...serviceYmlWithBadProperty
       }
     }, {}, pluginUtils)
-    t.throws(() => { plugin.createSlicWatchResources() }, ServerlessError)
+    const err = t.throws(() => { plugin.createSlicWatchResources() })
+    t.equal(err?.name, 'ServerlessError')
+    t.match(err?.message, /SLIC Watch configuration is invalid/)
     t.end()
   })
 
