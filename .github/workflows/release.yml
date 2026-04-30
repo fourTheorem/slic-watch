@@ -8,6 +8,7 @@ on:
 env:
   SAR_BUCKET_NAME : ${{ secrets.SAR_BUCKET_NAME }}
   AWS_REGION : "eu-west-1"
+  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
 
 permissions:
   id-token: write
