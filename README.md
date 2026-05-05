@@ -398,7 +398,7 @@ slicWatch:
 ```
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)
+A complete set of supported options along with their defaults are shown in [default-config.ts](./core/inputs/default-config.ts)
 
 Example projects are also provided for reference: 
 - [serverless-test-project](./serverless-test-project)

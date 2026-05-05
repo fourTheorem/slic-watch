@@ -8,17 +8,25 @@ on:
     branches:
       - main
 
+env:
+  AWS_REGION : "eu-west-1"
+  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22, 24]
+        node-version: [20, 22, 24]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}.x
           cache: 'npm'
@@ -27,6 +35,12 @@ jobs:
         name: Run unit tests
       - name: Build TypeScript
         run: npm run build
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.SLIC_WATCH_BUILD_ROLE }}
+          role-session-name: github-action-sar-deploy-session
+          aws-region: ${{ env.AWS_REGION }}
       - working-directory: ./serverless-test-project
         run: npm test
         name: Run Serverless Framework packaging test
@@ -37,20 +51,20 @@ jobs:
         name: Run Serverless Framework packaging test for AppSync test project
         run: npm test
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.github_token }}
           flag-name: run-node-${{ matrix.node-version }}
           parallel: true
           path-to-lcov: .tap/report/lcov.info
-        if: ${{ matrix.node-version != 18 }} # Node 18 is reporting inaccurate coverage data, so we ignore its report
+        if: ${{ always() }}
 
   finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.github_token }}
           parallel-finished: true

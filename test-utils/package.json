@@ -8,7 +8,9 @@
         "directory": "test-utils"
     },
     "license": "Apache",
-    "dependencies": {},
+    "dependencies": {
+        "pino": "^8.21.0"
+    },
     "scripts": {
         "test": "echo"
     }

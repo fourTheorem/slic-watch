@@ -1,5 +1,8 @@
 import { type JSONSchema4 } from 'json-schema'
 
+import { ConfigType } from './config-types'
+import { getSupportedMetricNames } from './metric-registry'
+
 /*
  * Source https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L113
  */
@@ -11,37 +14,10 @@ const statisticType: JSONSchema4 = {
   enum: ['Average', 'Maximum', 'Minimum', 'SampleCount', 'Sum']
 }
 
-const supportedAlarms = {
-  Lambda: ['Errors', 'ThrottlesPc', 'DurationPc', 'Invocations', 'IteratorAge'],
-  ApiGateway: ['5XXError', '4XXError', 'Latency'],
-  States: ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
-  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents', 'UserErrors', 'SystemErrors'],
-  Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
-  SQS: ['AgeOfOldestMessage', 'InFlightMessagesPc'],
-  ECS: ['MemoryUtilization', 'CPUUtilization'],
-  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
-  Events: ['FailedInvocations', 'ThrottledRules'],
-  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
-  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
-  AppSync: ['5XXError', 'Latency'],
-  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests']
-}
+const supportedAlarms = getSupportedMetricNames('alarm')
+const supportedWidgets = getSupportedMetricNames('widget')
 
-const supportedWidgets = {
-  Lambda: ['Errors', 'Throttles', 'Duration', 'Invocations', 'ConcurrentExecutions', 'IteratorAge'],
-  ApiGateway: ['5XXError', '4XXError', 'Latency', 'Count'],
-  States: ['ExecutionThrottled', 'ExecutionsFailed', 'ExecutionsTimedOut'],
-  DynamoDB: ['ReadThrottleEvents', 'WriteThrottleEvents'],
-  Kinesis: ['GetRecords.IteratorAgeMilliseconds', 'ReadProvisionedThroughputExceeded', 'WriteProvisionedThroughputExceeded', 'PutRecord.Success', 'PutRecords.Success', 'GetRecords.Success'],
-  SQS: ['NumberOfMessagesSent', 'NumberOfMessagesReceived', 'NumberOfMessagesDeleted', 'ApproximateAgeOfOldestMessage', 'ApproximateNumberOfMessagesVisible'],
-  ECS: ['MemoryUtilization', 'CPUUtilization'],
-  SNS: ['NumberOfNotificationsFilteredOut-InvalidAttributes', 'NumberOfNotificationsFailed'],
-  Events: ['FailedInvocations', 'ThrottledRules', 'Invocations'],
-  ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
-  ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
-  AppSync: ['5XXError', '4XXError', 'Latency', 'Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError'],
-  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests']
-}
+type JSONSchema4Properties = Record<string, JSONSchema4>
 
 const commonAlarmProperties: JSONSchema4Properties = {
   enabled: { type: 'boolean' },
@@ -83,27 +59,29 @@ const commonAlarmProperties: JSONSchema4Properties = {
   }
 }
 
-const alarmSchemas: JSONSchema4 = {
-  Lambda: {}
-}
-for (const service of Object.keys(supportedAlarms)) {
-  alarmSchemas[service] = {
-    type: 'object',
-    properties: {
-      ...commonAlarmProperties
-    },
-    additionalProperties: false
+function createMetricConfigSchema (metricNames: string[], commonProperties: JSONSchema4Properties): JSONSchema4 {
+  const properties: JSONSchema4Properties = {
+    ...commonProperties
   }
-  for (const metricAlarm of supportedAlarms[service]) {
-    alarmSchemas[service].properties[metricAlarm] = {
+  for (const metricName of metricNames) {
+    properties[metricName] = {
       type: 'object',
       properties: {
-        ...commonAlarmProperties
+        ...commonProperties
       },
       additionalProperties: false
     }
   }
+  return {
+    type: 'object',
+    properties,
+    additionalProperties: false
+  }
 }
+
+const alarmSchemas = Object.fromEntries(
+  Object.entries(supportedAlarms).map(([service, metricNames]) => [service, createMetricConfigSchema(metricNames, commonAlarmProperties)])
+) as Record<ConfigType, JSONSchema4>
 
 const alarmsSchema: JSONSchema4 = {
   type: 'object',
@@ -113,8 +91,6 @@ const alarmsSchema: JSONSchema4 = {
   },
   additionalProperties: false
 }
-
-type JSONSchema4Properties = Record<string, JSONSchema4>
 
 const commonWidgetProperties: JSONSchema4Properties = {
   enabled: { type: 'boolean' },
@@ -136,28 +112,9 @@ const commonWidgetProperties: JSONSchema4Properties = {
   }
 }
 
-const widgetSchemas: JSONSchema4 = {
-  Lambda: {}
-}
-
-for (const service of Object.keys(supportedWidgets)) {
-  widgetSchemas[service] = {
-    type: 'object',
-    properties: {
-      ...commonWidgetProperties
-    },
-    additionalProperties: false
-  }
-  for (const metricWidget of supportedWidgets[service]) {
-    widgetSchemas[service].properties[metricWidget] = {
-      type: 'object',
-      properties: {
-        ...commonWidgetProperties
-      },
-      additionalProperties: false
-    }
-  }
-}
+const widgetSchemas = Object.fromEntries(
+  Object.entries(supportedWidgets).map(([service, metricNames]) => [service, createMetricConfigSchema(metricNames, commonWidgetProperties)])
+) as Record<ConfigType, JSONSchema4>
 
 const dashboardSchema: JSONSchema4 = {
   type: 'object',
@@ -243,17 +200,17 @@ const functionConfigSchema: JSONSchema4 = {
       properties: {
         enabled: { type: 'boolean' },
         alarms: {
-          type: 'object',
+          ...createMetricConfigSchema(supportedAlarms[ConfigType.Lambda], commonAlarmProperties),
           properties: {
-            enabled: { type: 'boolean' },
-            Lambda: alarmSchemas.Lambda
+            ...createMetricConfigSchema(supportedAlarms[ConfigType.Lambda], commonAlarmProperties).properties,
+            Lambda: alarmSchemas[ConfigType.Lambda]
           }
         },
         dashboard: {
-          type: 'object',
+          ...createMetricConfigSchema(supportedWidgets[ConfigType.Lambda], commonWidgetProperties),
           properties: {
-            enabled: { type: 'boolean' },
-            Lambda: widgetSchemas.Lambda
+            ...createMetricConfigSchema(supportedWidgets[ConfigType.Lambda], commonWidgetProperties).properties,
+            Lambda: widgetSchemas[ConfigType.Lambda]
           }
         }
       }

@@ -8,10 +8,12 @@ import { getLogger } from './logging'
 import { cascade } from './inputs/cascading-config'
 import { type SlicWatchMergedConfig } from './alarms/alarm-types'
 import { type WidgetMetricProperties } from './dashboards/dashboard-types'
-import { defaultConfig } from './inputs/default-config'
 import { ConfigType, cfTypeByConfigType } from './inputs/config-types'
+import { getSupportedMetricNames } from './inputs/metric-registry'
 
 const logger = getLogger()
+const supportedAlarmMetricNames = getSupportedMetricNames('alarm')
+const supportedWidgetMetricNames = getSupportedMetricNames('widget')
 
 export type ResourceType<T = Resource> = Record<string, T>
 
@@ -54,6 +56,32 @@ export interface ResourceDashboardConfigurations<T extends WidgetMetricPropertie
   dashConfigurations: Record<string, T>
 }
 
+function mergeResourceConfig<T extends Record<string, unknown>> (
+  config: T,
+  resourceConfig: Record<string, unknown> | undefined,
+  metricNames: string[]
+): T {
+  const metricNameSet = new Set(metricNames)
+  const commonOverrides = Object.fromEntries(
+    Object.entries(resourceConfig ?? {}).filter(([key]) => !metricNameSet.has(key))
+  )
+
+  const mergedResourceConfig = merge({}, config, commonOverrides) as Record<string, unknown>
+  for (const metricName of metricNames) {
+    const baseMetricConfig = mergedResourceConfig[metricName]
+    if (typeof baseMetricConfig === 'object' && baseMetricConfig != null) {
+      mergedResourceConfig[metricName] = merge(
+        {},
+        baseMetricConfig,
+        commonOverrides,
+        resourceConfig?.[metricName] ?? {}
+      )
+    }
+  }
+
+  return cascade(mergedResourceConfig) as T
+}
+
 /**
  * Find all resources of a given type and merge any resource-specific SLIC Watch configuration with
  * the global alarm configuration for resources of that type
@@ -76,11 +104,7 @@ export function getResourceAlarmConfigurationsByType<M extends SlicWatchMergedCo
       legacyFallbackResourceConfig = resource?.Metadata?.slicWatch?.alarms?.Lambda
     }
     const resourceConfig = legacyFallbackResourceConfig ?? resource?.Metadata?.slicWatch?.alarms // Resource-specific overrides
-    const defaultResourceConfig = defaultConfig.alarms?.[type] // Default configuration for the type's alarms
-    // Cascade the default resource's configuration into the resource-specific overrides
-    const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}
-    // Lastly, cascade the full SLIC Watch config for any properties not yet set in the widget's config
-    alarmConfigurations[funcLogicalId] = cascade(merge({}, config, cascadedResourceConfig)) as M
+    alarmConfigurations[funcLogicalId] = mergeResourceConfig(config, resourceConfig, supportedAlarmMetricNames[type])
   }
   return {
     resources,
@@ -110,11 +134,7 @@ export function getResourceDashboardConfigurationsByType<T extends WidgetMetricP
       legacyFallbackResourceConfig = resource?.Metadata?.slicWatch?.dashboard?.Lambda
     }
     const resourceConfig = legacyFallbackResourceConfig ?? resource?.Metadata?.slicWatch?.dashboard // Resource-specific overrides
-    const defaultResourceConfig = defaultConfig.dashboard?.widgets?.[type] // Default configuration for the widget
-    // Cascade the default resource's configuration into the resource-specific overrides
-    const cascadedResourceConfig = resourceConfig !== undefined ? cascade(merge({}, defaultResourceConfig, resourceConfig)) : {}
-    // Lastly, cascade the full SLIC Watch config for any properties not yet set in the widget's config
-    dashConfigurations[logicalId] = cascade(merge({}, config, cascadedResourceConfig)) as T
+    dashConfigurations[logicalId] = mergeResourceConfig(config, resourceConfig, supportedWidgetMetricNames[type])
   }
   return {
     resources,

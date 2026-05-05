@@ -15,6 +15,18 @@ export interface SlsYaml {
   functions?
 }
 
+function toPascalCase (value: string): string {
+  return value
+    .split(/[^A-Za-z0-9]+/)
+    .filter(segment => segment.length > 0)
+    .map(segment => segment[0].toUpperCase() + segment.slice(1))
+    .join('')
+}
+
+export function getMockLambdaLogicalId (funcName: string): string {
+  return `${toPascalCase(funcName)}LambdaFunction`
+}
+
 export const slsYaml: SlsYaml = {
   custom: {
     slicWatch: {
@@ -36,9 +48,7 @@ export function createMockServerless (compiledTemplate: Template, slsConfig = sl
     providers: { aws: {} },
     getProvider: () => ({
       naming: {
-        getLambdaLogicalId: (funcName: string) => {
-          return funcName[0].toUpperCase() + funcName.slice(1) + 'LambdaFunction'
-        }
+        getLambdaLogicalId: getMockLambdaLogicalId
       }
     }),
     service: {
