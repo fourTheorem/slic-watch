@@ -20,16 +20,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Node.js with OIDC
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24.x
           registry-url: "https://registry.npmjs.org"
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.8"
-      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/setup-sam@v3
       - name: Install esbuild
         run: npm install esbuild -g
       - name: Install dependencies
@@ -39,7 +39,7 @@ jobs:
       - name: NPM security audit
         run: npm run audit
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.SAR_DEPLOYMENT_IAM_ROLE }}
           role-session-name: github-action-sar-deploy-session
