@@ -11,7 +11,7 @@ export function cascade (node: object, parentNode: object = {}, depth = 0): obje
   if (depth > 10) {
     throw new Error(`Maximum configuration depth of ${MAX_DEPTH} reached`)
   }
-  const childNodes = {}
+  const childNodes: Record<string, object> = {}
   const compiledNode = {}
   for (const [key, value] of Object.entries({ ...parentNode, ...node })) {
     if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
