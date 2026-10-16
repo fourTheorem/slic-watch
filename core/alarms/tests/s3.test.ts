@@ -216,6 +216,62 @@ test('S3 bucket alarms are not created for buckets without an entire-bucket metr
   t.end()
 })
 
+test('S3 alarm creation fails when an alarm is enabled without a threshold', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms, { S3: { GetRequests: { enabled: true } } })
+  const template: Template = { Resources: { bucket: { Type: 'AWS::S3::Bucket' } } }
+
+  t.throws(() => createS3Alarms(testConfig.S3, testAlarmActionsConfig, template), /S3 GetRequests alarm is enabled but `Threshold` is not specified/)
+  t.end()
+})
+
+const requestAndTransferMetrics = ['GetRequests', 'PutRequests', 'DeleteRequests', 'PostRequests', 'ListRequests', 'BytesDownloaded', 'BytesUploaded']
+
+test('S3 request type and data transfer alarms are not created by default', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const compiledTemplate = createTestCloudFormationTemplate()
+
+  const alarmResources: ResourceType = createS3Alarms(testConfig.S3, testAlarmActionsConfig, compiledTemplate)
+
+  const metricNames = Object.values(alarmResources).map(alarm => (alarm.Properties as AlarmProperties).MetricName)
+  for (const metric of requestAndTransferMetrics) {
+    t.notOk(metricNames.includes(metric), `Should have no ${metric} alarms`)
+  }
+  t.end()
+})
+
+test('S3 request type and data transfer alarms are created when enabled with a threshold', (t) => {
+  const testConfig = createTestConfig(
+    defaultConfig.alarms,
+    {
+      S3: Object.fromEntries(requestAndTransferMetrics.map(metric => [metric, { enabled: true, Threshold: 100 }]))
+    }
+  )
+  const template: Template = {
+    Resources: {
+      bucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          MetricsConfigurations: [{ Id: 'AllObjects' }]
+        }
+      }
+    }
+  }
+
+  const alarmResources: ResourceType = createS3Alarms(testConfig.S3, testAlarmActionsConfig, template)
+
+  for (const metric of requestAndTransferMetrics) {
+    const alarm = alarmResources[`slicWatchS3${metric}AlarmBucket`]
+    t.ok(alarm, `Should have a ${metric} alarm`)
+    const al = alarm.Properties as AlarmProperties
+    t.equal(al.MetricName, metric)
+    t.equal(al.Namespace, 'AWS/S3')
+    t.equal(al.Statistic, 'Sum')
+    t.equal(al.Threshold, 100)
+    t.same(al.Dimensions?.[1], { Name: 'FilterId', Value: 'AllObjects' })
+  }
+  t.end()
+})
+
 test('S3 bucket metrics filters default to EntireBucket when no metrics configurations are declared', (t) => {
   const expected = { entireBucket: 'EntireBucket', all: ['EntireBucket'] }
   t.same(getS3BucketMetricsFilters({ Type: 'AWS::S3::Bucket' }), expected)

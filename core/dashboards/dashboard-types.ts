@@ -149,4 +149,11 @@ export interface S3DashboardProperties extends WidgetMetricProperties {
   '4xxErrors': WidgetMetricProperties
   TotalRequestLatency: WidgetMetricProperties
   AllRequests: WidgetMetricProperties
+  GetRequests: WidgetMetricProperties
+  PutRequests: WidgetMetricProperties
+  DeleteRequests: WidgetMetricProperties
+  PostRequests: WidgetMetricProperties
+  ListRequests: WidgetMetricProperties
+  BytesDownloaded: WidgetMetricProperties
+  BytesUploaded: WidgetMetricProperties
 }

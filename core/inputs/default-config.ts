@@ -224,6 +224,36 @@ export const defaultConfig: DefaultConfig = {
       AllRequests: {
         Statistic: 'Sum',
         Threshold: 1000 // triggers if more than 1000 total requests per minute
+      },
+      // No alarms are created by default for request type and data transfer volumes, as normal levels vary by workload.
+      // Note: these require both `enabled: true` and `Threshold: someValue` to be effectively enabled
+      GetRequests: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      PutRequests: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      DeleteRequests: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      PostRequests: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      ListRequests: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      BytesDownloaded: {
+        Statistic: 'Sum',
+        enabled: false
+      },
+      BytesUploaded: {
+        Statistic: 'Sum',
+        enabled: false
       }
     }
   },
@@ -434,6 +464,27 @@ export const defaultConfig: DefaultConfig = {
           Statistic: ['Average', 'p99']
         },
         AllRequests: {
+          Statistic: ['Sum']
+        },
+        GetRequests: {
+          Statistic: ['Sum']
+        },
+        PutRequests: {
+          Statistic: ['Sum']
+        },
+        DeleteRequests: {
+          Statistic: ['Sum']
+        },
+        PostRequests: {
+          Statistic: ['Sum']
+        },
+        ListRequests: {
+          Statistic: ['Sum']
+        },
+        BytesDownloaded: {
+          Statistic: ['Sum']
+        },
+        BytesUploaded: {
           Statistic: ['Sum']
         }
       }

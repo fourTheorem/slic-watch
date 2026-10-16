@@ -16,11 +16,18 @@ export type SlicWatchS3AlarmsConfig<T extends InputOutput> = T & {
   '4xxErrors': T
   TotalRequestLatency: T
   AllRequests: T
+  GetRequests: T
+  PutRequests: T
+  DeleteRequests: T
+  PostRequests: T
+  ListRequests: T
+  BytesDownloaded: T
+  BytesUploaded: T
 }
 
 const logger = getLogger()
 
-const executionMetrics = ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests']
+const executionMetrics = ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests', 'GetRequests', 'PutRequests', 'DeleteRequests', 'PostRequests', 'ListRequests', 'BytesDownloaded', 'BytesUploaded']
 
 /**
  * The FilterId the S3 console uses for request metrics covering the entire bucket
@@ -69,6 +76,9 @@ export function getS3BucketMetricsFilters (bucket: Resource): S3BucketMetricsFil
  * @returns S3-specific CloudFormation Alarm properties
  */
 function createS3BucketAlarmCfProperties (metric: string, s3LogicalId: string, filterId: string, config: SlicWatchMergedConfig) {
+  if (config.Threshold == null) {
+    throw new Error(`S3 ${metric} alarm is enabled but \`Threshold\` is not specified. Please specify a threshold or disable the alarm.`)
+  }
   return {
     Namespace: 'AWS/S3',
     Dimensions: [
@@ -76,7 +86,7 @@ function createS3BucketAlarmCfProperties (metric: string, s3LogicalId: string, f
       { Name: 'FilterId', Value: filterId }
     ],
     AlarmName: Fn.Sub(`S3_${metric.replaceAll(/[-]/g, '')}_Alarm_\${${s3LogicalId}}`, {}),
-    AlarmDescription: Fn.Sub(`S3 ${metric.replaceAll(/[-]/g, '')} for \${${s3LogicalId}} breaches ${config.Threshold}`, {})
+    AlarmDescription: Fn.Sub(`S3 ${metric.replaceAll(/[-]/g, '')} for \${${s3LogicalId}} breaches ${config.Threshold as number}`, {})
   }
 }
 

@@ -340,6 +340,27 @@ S3 alarms created for:
 5. TotalRequestLatency
 6. AllRequests
 
+S3 alarms disabled by default, as normal traffic levels vary by workload. If enabled, a threshold must be specified:
+1. GetRequests
+2. PutRequests
+3. DeleteRequests
+4. PostRequests
+5. ListRequests
+6. BytesDownloaded
+7. BytesUploaded
+
+For example, to enable the GetRequests alarm for a bucket:
+```yaml
+bucket:
+  Type: AWS::S3::Bucket
+  Metadata:
+    slicWatch:
+      alarms:
+        GetRequests:
+          enabled: true
+          Threshold: 10000
+```
+
 These are [S3 request metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-configurations.html), which S3 only publishes for buckets with a request metrics configuration. S3 publishes a separate set of metrics for each entry in the bucket's `MetricsConfigurations`, using the entry's `Id` as the `FilterId` dimension. An entry with no `Prefix`, `TagFilters` or `AccessPointArn` covers the entire bucket:
 
 ```yaml
@@ -364,6 +385,8 @@ S3 dashboard widgets show:
 |![First Byte Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatency.png)|![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |
 |**4XX Errors**|**Total Request Latency Average, P99**|**All Requests**|
 |![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatency.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |
+
+S3 dashboard widgets are also created for the Sum of GetRequests, PutRequests, DeleteRequests, PostRequests, ListRequests, BytesDownloaded and BytesUploaded.
 
 ## Configuration
 

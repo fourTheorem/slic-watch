@@ -62,7 +62,14 @@ test('dashboard contains configured S3 resources', (t) => {
       { name: '5xxErrors', stat: 'Sum' },
       { name: '4xxErrors', stat: 'Sum' },
       { name: 'TotalRequestLatency', stat: 'p99' },
-      { name: 'AllRequests', stat: 'Sum' }
+      { name: 'AllRequests', stat: 'Sum' },
+      { name: 'GetRequests', stat: 'Sum' },
+      { name: 'PutRequests', stat: 'Sum' },
+      { name: 'DeleteRequests', stat: 'Sum' },
+      { name: 'PostRequests', stat: 'Sum' },
+      { name: 'ListRequests', stat: 'Sum' },
+      { name: 'BytesDownloaded', stat: 'Sum' },
+      { name: 'BytesUploaded', stat: 'Sum' }
     ]
 
     // Check each expected metric exists
