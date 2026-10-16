@@ -9,6 +9,7 @@ import type {
 
 import { findLoadBalancersForTargetGroup } from '../alarms/alb-target-group'
 import { resolveRestApiNameForSub } from '../alarms/api-gateway'
+import { getS3BucketMetricsFilters } from '../alarms/s3'
 import {
   resolveEcsClusterNameForSub, resolveGraphQLId,
   resolveLoadBalancerFullNameForSub, resolveTargetGroupFullNameForSub
@@ -103,14 +104,14 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
    */
   function createMetricWidget (title: string, metricDefs: MetricDefs[], config: WidgetMetricProperties): WidgetWithSize {
     const metrics: WidgetMetric[] = metricDefs.map(
-      ({ namespace, metric, dimensions, stat, yAxis }) => [
+      ({ namespace, metric, dimensions, stat, yAxis, label }) => [
         namespace,
         metric,
         ...Object.entries(dimensions).reduce(
           (acc: string[], [name, value]) => [...acc, name, value],
           []
         ),
-        { stat: stat as Statistic, yAxis: yAxis as YAxisPosition }
+        { stat: stat as Statistic, yAxis: yAxis as YAxisPosition, ...(label !== undefined && { label }) }
       ]
     )
     return {
@@ -703,46 +704,43 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
 
     const s3Widgets: WidgetWithSize[] = []
 
-    const s3Metrics = [
-      'FirstByteLatency',
-      'HeadRequests',
-      '5xxErrors',
-      '4xxErrors',
-      'TotalRequestLatency',
-      'AllRequests'
-    ]
+    const filterIds: Record<string, string[]> = {}
+    for (const [bucketLogicalId, bucket] of Object.entries(configuredResources.resources)) {
+      const { all } = getS3BucketMetricsFilters(bucket)
+      if (all.length > 0) {
+        filterIds[bucketLogicalId] = all
+      } else {
+        logger.warn(`S3 bucket ${bucketLogicalId} has no resolvable metrics configurations. No S3 widgets will be created for it.`)
+      }
+    }
+    const bucketLogicalIds = Object.keys(filterIds)
 
-    if (Object.keys(configuredResources.resources).length === 0) {
+    if (bucketLogicalIds.length === 0) {
       return s3Widgets
     }
 
-    for (const metric of s3Metrics) {
-    // Pull metric config from *any* bucket
-      const firstBucketId = Object.keys(configuredResources.resources)[0]
-      const metricConfig = configuredResources.dashConfigurations[firstBucketId]?.[metric]
-
-      if (metricConfig?.enabled === false) {
-        continue
-      }
-
+    for (const [metric, metricConfig] of Object.entries(getConfiguredMetrics(s3DashConfig))) {
       for (const stat of metricConfig.Statistic) {
         const metricDefs: MetricDefs[] = []
 
-        for (const bucketLogicalId of Object.keys(configuredResources.resources)) {
+        for (const bucketLogicalId of bucketLogicalIds) {
           const bucketConfig = configuredResources.dashConfigurations[bucketLogicalId]
           const bucketMetricConfig = bucketConfig?.[metric]
 
           if (bucketMetricConfig?.enabled !== false) {
-            metricDefs.push({
-              namespace: 'AWS/S3',
-              metric,
-              dimensions: {
-                BucketName: `\${${bucketLogicalId}}`,
-                FilterId: 'EntireBucket'
-              },
-              stat: stat as Statistic,
-              yAxis: bucketMetricConfig.yAxis
-            })
+            for (const filterId of filterIds[bucketLogicalId]) {
+              metricDefs.push({
+                namespace: 'AWS/S3',
+                metric,
+                dimensions: {
+                  BucketName: `\${${bucketLogicalId}}`,
+                  FilterId: filterId
+                },
+                stat: stat as Statistic,
+                yAxis: bucketMetricConfig.yAxis,
+                label: `\${${bucketLogicalId}} ${filterId}`
+              })
+            }
           }
         }
 

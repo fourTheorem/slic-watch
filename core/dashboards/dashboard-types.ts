@@ -14,6 +14,7 @@ export interface MetricDefs {
   dimensions: Record<string, string>
   stat: string
   yAxis?: YAxisPos
+  label?: string
 }
 
 export interface WidgetWithSize extends Omit<Widget, 'width' | 'height'> {

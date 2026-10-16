@@ -340,6 +340,23 @@ S3 alarms created for:
 5. TotalRequestLatency
 6. AllRequests
 
+These are [S3 request metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-configurations.html), which S3 only publishes for buckets with a request metrics configuration. S3 publishes a separate set of metrics for each entry in the bucket's `MetricsConfigurations`, using the entry's `Id` as the `FilterId` dimension. An entry with no `Prefix`, `TagFilters` or `AccessPointArn` covers the entire bucket:
+
+```yaml
+bucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    MetricsConfigurations:
+      - Id: AllObjects         # Entire bucket: used for alarms and dashboard widgets
+      - Id: Results
+        Prefix: results/       # Partial: used for dashboard widgets only
+```
+
+- **Alarms** are created for the entire-bucket metrics configuration only. Any errors or latency in a prefix, tag or access point filter are also counted in the entire bucket's metrics.
+- **Dashboard widgets** show a line for every metrics configuration, labelled with the bucket name and `FilterId`, so you can see which part of the bucket is affected.
+- If the bucket declares no `MetricsConfigurations`, request metrics are assumed to be enabled in the S3 console with its default filter name, `EntireBucket`.
+- If `MetricsConfigurations` are declared but none covers the entire bucket, widgets are still created for each one, but no alarms are created for that bucket.
+
 S3 dashboard widgets show:
 
 |First Byte Latency Average, P99|Head Requests|5XX Errors|
@@ -398,7 +415,7 @@ slicWatch:
 ```
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)
+A complete set of supported options along with their defaults are shown in [default-config.ts](./core/inputs/default-config.ts)
 
 Example projects are also provided for reference: 
 - [serverless-test-project](./serverless-test-project)

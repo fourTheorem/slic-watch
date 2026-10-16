@@ -30,7 +30,7 @@ function getWidgetsForBucket (widgets: any[], bucketLogicalId: string) {
     return metrics.some((metric: any) => {
       // Check if this metric includes the bucket in its dimensions
       if (Array.isArray(metric)) {
-        // Metric format: ['AWS/S3', metricName, 'BucketName', bucketRef, 'FilterId', 'EntireBucket', ...options]
+        // Metric format: ['AWS/S3', metricName, 'BucketName', bucketRef, 'FilterId', filterId, ...options]
         if (metric.length >= 6 && metric[0] === 'AWS/S3' && metric[2] === 'BucketName') {
           return metric[3] === `\${${bucketLogicalId}}` || metric[3] === `\${${bucketLogicalId}.BucketName}`
         }
@@ -94,7 +94,7 @@ test('dashboard contains configured S3 resources', (t) => {
           '${bucket}',
           'FilterId',
           'EntireBucket',
-          { stat: expectedMetric.stat, yAxis: 'left' }
+          { stat: expectedMetric.stat, yAxis: 'left', label: '${bucket} EntireBucket' }
         ], `Metric ${expectedMetric.name} should have correct structure`)
       }
     }
@@ -156,7 +156,7 @@ test('dashboard contains configured S3 resources', (t) => {
         '${bucket}',
         'FilterId',
         'EntireBucket',
-        { stat: 'Average', yAxis: 'right' }
+        { stat: 'Average', yAxis: 'right', label: '${bucket} EntireBucket' }
       ], 'FirstByteLatency should use Average statistic and right yAxis from service override')
     }
 
@@ -186,7 +186,7 @@ test('dashboard contains configured S3 resources', (t) => {
         '${bucket}',
         'FilterId',
         'EntireBucket',
-        { stat: 'Sum', yAxis: 'left' }
+        { stat: 'Sum', yAxis: 'left', label: '${bucket} EntireBucket' }
       ], 'HeadRequests should use Sum statistic and left yAxis')
     }
 
@@ -255,7 +255,7 @@ test('dashboard contains configured S3 resources', (t) => {
         '${bucket}',
         'FilterId',
         'EntireBucket',
-        { stat: 'Sum', yAxis: 'right' }
+        { stat: 'Sum', yAxis: 'right', label: '${bucket} EntireBucket' }
       ], 'HeadRequests should use resource override (right yAxis)')
     }
 
@@ -284,9 +284,105 @@ test('dashboard contains configured S3 resources', (t) => {
         '${bucket}',
         'FilterId',
         'EntireBucket',
-        { stat: 'Sum', yAxis: 'left' }
+        { stat: 'Sum', yAxis: 'left', label: '${bucket} EntireBucket' }
       ], '5xxErrors should use default config (left yAxis)')
     }
+
+    t.end()
+  })
+
+  t.test('resource config overrides only apply to that bucket', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    resources.ServerlessDeploymentBucket.Metadata = {
+      slicWatch: { dashboard: { '5xxErrors': { enabled: false } } }
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const s3Widgets = getS3Widgets(dashboard)
+    const has5xxErrors = (bucketLogicalId: string) => getWidgetsForBucket(s3Widgets, bucketLogicalId).some((widget: any) =>
+      (widget.properties as MetricWidgetProperties).metrics?.some((m: any) => m[1] === '5xxErrors')
+    )
+    t.notOk(has5xxErrors('ServerlessDeploymentBucket'), '5xxErrors should be disabled for ServerlessDeploymentBucket')
+    t.ok(has5xxErrors('bucket'), '5xxErrors should still be shown for bucket')
+
+    t.end()
+  })
+
+  t.test('metrics are shown for every metrics configuration with the entire-bucket one first', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    resources.bucket.Properties = {
+      ...resources.bucket.Properties,
+      MetricsConfigurations: [{ Id: 'Results', Prefix: 'results/' }, { Id: 'AllObjects' }]
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const bucketWidgets = getWidgetsForBucket(getS3Widgets(dashboard), 'bucket')
+    t.ok(bucketWidgets.length > 0, 'Should have widgets for bucket resource')
+    for (const widget of bucketWidgets) {
+      const bucketMetrics = ((widget.properties as MetricWidgetProperties).metrics ?? [])
+        .filter((m: any) => Array.isArray(m) && m[3] === '${bucket}') as any[][]
+      t.same(bucketMetrics.map(m => m[5]), ['AllObjects', 'Results'], 'Should have a line per metrics configuration')
+      t.same(bucketMetrics.map(m => m[6].label), ['${bucket} AllObjects', '${bucket} Results'], 'Lines should be labelled by bucket and FilterId')
+    }
+
+    t.end()
+  })
+
+  t.test('metrics are shown for buckets with only partial metrics configurations', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    resources.bucket.Properties = {
+      ...resources.bucket.Properties,
+      MetricsConfigurations: [{ Id: 'Results', Prefix: 'results/' }]
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const bucketMetrics = getWidgetsForBucket(getS3Widgets(dashboard), 'bucket')
+      .flatMap((widget: any) => (widget.properties as MetricWidgetProperties).metrics ?? [])
+      .filter((m: any) => Array.isArray(m) && m[3] === '${bucket}') as any[][]
+    t.ok(bucketMetrics.length > 0, 'Should have metrics for bucket resource')
+    t.ok(bucketMetrics.every(m => m[5] === 'Results'), 'Should use the partial FilterId')
+
+    t.end()
+  })
+
+  t.test('buckets whose metrics configurations cannot be resolved are excluded', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    resources.bucket.Properties = {
+      ...resources.bucket.Properties,
+      MetricsConfigurations: { 'Fn::If': ['IsProd', [{ Id: 'AllObjects' }], { Ref: 'AWS::NoValue' }] }
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const s3Widgets = getS3Widgets(dashboard)
+    t.ok(s3Widgets.length > 0, 'Should still have widgets for other buckets')
+    t.same(getWidgetsForBucket(s3Widgets, 'bucket'), [], 'Should have no widgets for bucket resource')
+
+    t.end()
+  })
+
+  t.test('no S3 widgets are created when no bucket metrics configurations can be resolved', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    for (const bucket of Object.values(resources).filter(r => r.Type === 'AWS::S3::Bucket')) {
+      bucket.Properties = { ...bucket.Properties, MetricsConfigurations: { Ref: 'MetricsConfigurationsParam' } }
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    t.same(getS3Widgets(dashboard), [])
 
     t.end()
   })

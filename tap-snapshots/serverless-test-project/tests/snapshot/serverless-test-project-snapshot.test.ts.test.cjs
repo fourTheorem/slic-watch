@@ -305,7 +305,12 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
       "Properties": {
         "BucketName": {
           "Fn::Sub": "slic-watch-test-project-bucket-\${AWS::AccountId}-\${AWS::Region}"
-        }
+        },
+        "MetricsConfigurations": [
+          {
+            "Id": "AllObjects"
+          }
+        ]
       },
       "Type": "AWS::S3::Bucket"
     },
@@ -2793,7 +2798,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2802,10 +2808,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -2832,7 +2839,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2841,10 +2849,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -2871,7 +2880,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2880,10 +2890,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -2910,7 +2921,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2919,10 +2931,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -2949,7 +2962,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2958,10 +2972,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -2988,7 +3003,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -2997,10 +3013,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -3027,7 +3044,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -3036,10 +3054,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -3066,7 +3085,8 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -3075,10 +3095,11 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "BucketName",
                       "\${bucket}",
                       "FilterId",
-                      "EntireBucket",
+                      "AllObjects",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} AllObjects"
                       }
                     ]
                   ],
@@ -5436,7 +5457,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,
@@ -5524,7 +5545,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,
@@ -5612,7 +5633,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,
@@ -5700,7 +5721,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,
@@ -5788,7 +5809,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,
@@ -5876,7 +5897,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
           },
           {
             "Name": "FilterId",
-            "Value": "EntireBucket"
+            "Value": "AllObjects"
           }
         ],
         "EvaluationPeriods": 1,

@@ -1187,7 +1187,12 @@
       "Properties": {
         "BucketName": {
           "Fn::Sub": "slic-watch-test-project-bucket-${AWS::AccountId}-${AWS::Region}"
-        }
+        },
+        "MetricsConfigurations": [
+          {
+            "Id": "AllObjects"
+          }
+        ]
       }
     },
     "dataTable": {

@@ -787,7 +787,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -799,7 +800,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -826,7 +828,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -838,7 +841,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -865,7 +869,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -877,7 +882,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -904,7 +910,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -916,7 +923,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -943,7 +951,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -955,7 +964,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -982,7 +992,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -994,7 +1005,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -1021,7 +1033,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -1033,7 +1046,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -1060,7 +1074,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -1072,7 +1087,8 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
