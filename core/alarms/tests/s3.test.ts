@@ -306,24 +306,127 @@ test('S3 bucket metrics filters have no entire-bucket FilterId when only partial
   t.end()
 })
 
-test('S3 bucket metrics filters are empty when metrics configurations cannot be resolved', (t) => {
+test('S3 bucket metrics filters default to EntireBucket when metrics configurations cannot be resolved', (t) => {
   const filters = getS3BucketMetricsFilters({
     Type: 'AWS::S3::Bucket',
     Properties: {
       MetricsConfigurations: { 'Fn::If': ['IsProd', [{ Id: 'AllObjects' }], { Ref: 'AWS::NoValue' }] }
     }
   })
-  t.same(filters, { all: [] })
+  t.same(filters, { entireBucket: 'EntireBucket', all: ['EntireBucket'] })
   t.end()
 })
 
-test('S3 bucket metrics filters ignore metrics configurations without a string Id', (t) => {
+test('S3 bucket metrics filters are empty when metrics configurations are an empty list', (t) => {
+  const filters = getS3BucketMetricsFilters({ Type: 'AWS::S3::Bucket', Properties: { MetricsConfigurations: [] } })
+  t.same(filters, { entireBucket: undefined, all: [] })
+  t.end()
+})
+
+test('S3 bucket metrics filters resolve Ref, Fn::GetAtt and Fn::Sub Ids', (t) => {
   const filters = getS3BucketMetricsFilters({
     Type: 'AWS::S3::Bucket',
     Properties: {
-      MetricsConfigurations: [{ Id: { Ref: 'FilterIdParam' } }, { Id: 'Results', Prefix: 'results/' }]
+      MetricsConfigurations: [
+        { Id: { Ref: 'FilterIdParam' }, Prefix: 'ref/' },
+        { Id: { 'Fn::GetAtt': ['Resource', 'Attribute'] }, Prefix: 'getatt-list/' },
+        { Id: { 'Fn::GetAtt': 'Resource.Attribute' }, Prefix: 'getatt-string/' },
+        { Id: { 'Fn::Sub': '${AWS::StackName}-all' } }
+      ]
+    }
+  })
+  t.same(filters, {
+    entireBucket: '${AWS::StackName}-all',
+    all: ['${AWS::StackName}-all', '${FilterIdParam}', '${Resource.Attribute}', '${Resource.Attribute}']
+  })
+  t.end()
+})
+
+test('S3 bucket metrics filters ignore metrics configurations with an unsupported or missing Id', (t) => {
+  const filters = getS3BucketMetricsFilters({
+    Type: 'AWS::S3::Bucket',
+    Properties: {
+      MetricsConfigurations: [
+        { Id: { 'Fn::Join': ['-', ['all', 'objects']] } },
+        { Id: { 'Fn::Sub': ['${Name}-all', { Name: 'x' }] } },
+        { Id: 42 },
+        { Prefix: 'no-id/' },
+        null,
+        { Id: 'Results', Prefix: 'results/' }
+      ]
     }
   })
   t.same(filters, { entireBucket: undefined, all: ['Results'] })
+  t.end()
+})
+
+test('S3 bucket metrics filters treat an empty Prefix or TagFilters as covering the entire bucket', (t) => {
+  t.same(
+    getS3BucketMetricsFilters({ Type: 'AWS::S3::Bucket', Properties: { MetricsConfigurations: [{ Id: 'Results', Prefix: 'results/' }, { Id: 'All', Prefix: '' }] } }),
+    { entireBucket: 'All', all: ['All', 'Results'] }
+  )
+  t.same(
+    getS3BucketMetricsFilters({ Type: 'AWS::S3::Bucket', Properties: { MetricsConfigurations: [{ Id: 'All', TagFilters: [] }] } }),
+    { entireBucket: 'All', all: ['All'] }
+  )
+  t.end()
+})
+
+test('S3 bucket alarms use Fn::Sub for FilterIds resolved from intrinsic functions', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template: Template = {
+    Resources: {
+      bucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          MetricsConfigurations: [{ Id: { 'Fn::Sub': '${AWS::StackName}-all' } }]
+        }
+      }
+    }
+  }
+
+  const alarmResources: ResourceType = createS3Alarms(testConfig.S3, testAlarmActionsConfig, template)
+
+  t.ok(Object.keys(alarmResources).length > 0, 'Should create alarms for the bucket')
+  for (const alarm of Object.values(alarmResources)) {
+    const filterIdDimension = (alarm.Properties as AlarmProperties).Dimensions?.[1]
+    t.equal(filterIdDimension?.Name, 'FilterId')
+    t.same(JSON.parse(JSON.stringify(filterIdDimension?.Value)), { 'Fn::Sub': ['${AWS::StackName}-all', {}] })
+  }
+  t.end()
+})
+
+test('S3 alarm creation fails when an alarm is enabled without a threshold, even for buckets without an entire-bucket metrics configuration', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms, { S3: { GetRequests: { enabled: true } } })
+  const template: Template = {
+    Resources: {
+      bucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: { MetricsConfigurations: [{ Id: 'Results', Prefix: 'results/' }] }
+      }
+    }
+  }
+
+  t.throws(() => createS3Alarms(testConfig.S3, testAlarmActionsConfig, template), /S3 GetRequests alarm is enabled but `Threshold` is not specified/)
+  t.end()
+})
+
+test('S3 alarm creation succeeds when an alarm is enabled with a threshold in the bucket resource configuration', (t) => {
+  const testConfig = createTestConfig(defaultConfig.alarms)
+  const template: Template = {
+    Resources: {
+      bucket: {
+        Type: 'AWS::S3::Bucket',
+        Metadata: { slicWatch: { alarms: { GetRequests: { enabled: true, Threshold: 50 } } } }
+      },
+      otherBucket: {
+        Type: 'AWS::S3::Bucket'
+      }
+    }
+  }
+
+  const alarmResources: ResourceType = createS3Alarms(testConfig.S3, testAlarmActionsConfig, template)
+  t.equal((alarmResources.slicWatchS3GetRequestsAlarmBucket?.Properties as AlarmProperties).Threshold, 50)
+  t.notOk(alarmResources.slicWatchS3GetRequestsAlarmOtherBucket, 'Should not create the alarm for buckets that do not enable it')
   t.end()
 })

@@ -375,7 +375,8 @@ bucket:
 
 - **Alarms** are created for the entire-bucket metrics configuration only. Any errors or latency in a prefix, tag or access point filter are also counted in the entire bucket's metrics.
 - **Dashboard widgets** show a line for every metrics configuration, labelled with the bucket name and `FilterId`, so you can see which part of the bucket is affected.
-- If the bucket declares no `MetricsConfigurations`, request metrics are assumed to be enabled in the S3 console with its default filter name, `EntireBucket`.
+- If the bucket declares no `MetricsConfigurations`, or they cannot be resolved before deployment (for example, `Fn::If`), request metrics are assumed to be enabled in the S3 console with its default filter name, `EntireBucket`.
+- An `Id` can be a literal string, `Ref`, `Fn::GetAtt` or `Fn::Sub` (without a variable map). Entries with an `Id` using any other intrinsic function are ignored.
 - If `MetricsConfigurations` are declared but none covers the entire bucket, widgets are still created for each one, but no alarms are created for that bucket.
 
 S3 dashboard widgets show:

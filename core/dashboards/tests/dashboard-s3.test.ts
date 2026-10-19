@@ -361,7 +361,7 @@ test('dashboard contains configured S3 resources', (t) => {
     t.end()
   })
 
-  t.test('buckets whose metrics configurations cannot be resolved are excluded', (t) => {
+  t.test('buckets whose metrics configurations cannot be resolved use the EntireBucket FilterId', (t) => {
     const template = createTestCloudFormationTemplate(defaultCfTemplate)
     const resources = template.Resources as ResourceType
     resources.bucket.Properties = {
@@ -372,18 +372,41 @@ test('dashboard contains configured S3 resources', (t) => {
     addDashboard(defaultConfig.dashboard, template)
     const { dashboard } = getDashboardFromTemplate(template)
 
-    const s3Widgets = getS3Widgets(dashboard)
-    t.ok(s3Widgets.length > 0, 'Should still have widgets for other buckets')
-    t.same(getWidgetsForBucket(s3Widgets, 'bucket'), [], 'Should have no widgets for bucket resource')
+    const bucketMetrics = getWidgetsForBucket(getS3Widgets(dashboard), 'bucket')
+      .flatMap((widget: any) => (widget.properties as MetricWidgetProperties).metrics ?? [])
+      .filter((m: any) => Array.isArray(m) && m[3] === '${bucket}') as any[][]
+    t.ok(bucketMetrics.length > 0, 'Should have metrics for bucket resource')
+    t.ok(bucketMetrics.every(m => m[5] === 'EntireBucket'), 'Should use the EntireBucket FilterId')
 
     t.end()
   })
 
-  t.test('no S3 widgets are created when no bucket metrics configurations can be resolved', (t) => {
+  t.test('FilterIds resolved from intrinsic functions are used in dimensions and labels', (t) => {
+    const template = createTestCloudFormationTemplate(defaultCfTemplate)
+    const resources = template.Resources as ResourceType
+    resources.bucket.Properties = {
+      ...resources.bucket.Properties,
+      MetricsConfigurations: [{ Id: { 'Fn::Sub': '${AWS::StackName}-all' } }]
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard } = getDashboardFromTemplate(template)
+
+    const bucketMetrics = getWidgetsForBucket(getS3Widgets(dashboard), 'bucket')
+      .flatMap((widget: any) => (widget.properties as MetricWidgetProperties).metrics ?? [])
+      .filter((m: any) => Array.isArray(m) && m[3] === '${bucket}') as any[][]
+    t.ok(bucketMetrics.length > 0, 'Should have metrics for bucket resource')
+    t.ok(bucketMetrics.every(m => m[5] === '${AWS::StackName}-all'), 'Should use the Fn::Sub FilterId')
+    t.ok(bucketMetrics.every(m => m[6].label === '${bucket} ${AWS::StackName}-all'), 'Should label lines with the Fn::Sub FilterId')
+
+    t.end()
+  })
+
+  t.test('no S3 widgets are created when no bucket has metrics configurations', (t) => {
     const template = createTestCloudFormationTemplate(defaultCfTemplate)
     const resources = template.Resources as ResourceType
     for (const bucket of Object.values(resources).filter(r => r.Type === 'AWS::S3::Bucket')) {
-      bucket.Properties = { ...bucket.Properties, MetricsConfigurations: { Ref: 'MetricsConfigurationsParam' } }
+      bucket.Properties = { ...bucket.Properties, MetricsConfigurations: [] }
     }
 
     addDashboard(defaultConfig.dashboard, template)
