@@ -340,7 +340,7 @@ S3 alarms created for:
 5. TotalRequestLatency
 6. AllRequests
 
-S3 alarms disabled by default, as normal traffic levels vary by workload. If enabled, a threshold must be specified:
+These S3 alarms are disabled by default, as normal traffic levels vary by workload. If enabled, a `Threshold` must be specified, otherwise the deployment fails:
 1. GetRequests
 2. PutRequests
 3. DeleteRequests
@@ -380,13 +380,17 @@ bucket:
 
 S3 dashboard widgets show:
 
-|First Byte Latency Average, P99|Head Requests|5XX Errors|
+|First Byte Latency Average|First Byte Latency P99|Head Requests|
 |--|--|--|
-|![First Byte Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatency.png)|![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |
-|**4XX Errors**|**Total Request Latency Average, P99**|**All Requests**|
-|![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatency.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |
-
-S3 dashboard widgets are also created for the Sum of GetRequests, PutRequests, DeleteRequests, PostRequests, ListRequests, BytesDownloaded and BytesUploaded.
+|![First Byte Latency Average](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatencyAverage.png)|![First Byte Latency P99](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatencyP99.png) |![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |
+|**5XX Errors**|**4XX Errors**|**Total Request Latency Average**|
+|![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency Average](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatencyAverage.png) |
+|**Total Request Latency P99**|**All Requests**|**Get Requests**|
+|![Total Request Latency P99](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatencyP99.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |![Get Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3GetRequests.png) |
+|**Put Requests**|**Delete Requests**|**Post Requests**|
+|![Put Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3PutRequests.png) |![Delete Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3DeleteRequests.png) |![Post Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3PostRequests.png) |
+|**List Requests**|**Bytes Downloaded**|**Bytes Uploaded**|
+|![List Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3ListRequests.png) |![Bytes Downloaded](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3BytesDownloaded.png) |![Bytes Uploaded](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3BytesUploaded.png) |
 
 ## Configuration
 
