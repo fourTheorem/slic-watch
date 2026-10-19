@@ -340,13 +340,58 @@ S3 alarms created for:
 5. TotalRequestLatency
 6. AllRequests
 
+These S3 alarms are disabled by default, as normal traffic levels vary by workload. If enabled, a `Threshold` must be specified, otherwise the deployment fails:
+1. GetRequests
+2. PutRequests
+3. DeleteRequests
+4. PostRequests
+5. ListRequests
+6. BytesDownloaded
+7. BytesUploaded
+
+For example, to enable the GetRequests alarm for a bucket:
+```yaml
+bucket:
+  Type: AWS::S3::Bucket
+  Metadata:
+    slicWatch:
+      alarms:
+        GetRequests:
+          enabled: true
+          Threshold: 10000
+```
+
+These are [S3 request metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-configurations.html), which S3 only publishes for buckets with a request metrics configuration. S3 publishes a separate set of metrics for each entry in the bucket's `MetricsConfigurations`, using the entry's `Id` as the `FilterId` dimension. An entry with no `Prefix`, `TagFilters` or `AccessPointArn` covers the entire bucket:
+
+```yaml
+bucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    MetricsConfigurations:
+      - Id: AllObjects         # Entire bucket: used for alarms and dashboard widgets
+      - Id: Results
+        Prefix: results/       # Partial: used for dashboard widgets only
+```
+
+- **Alarms** are created for the entire-bucket metrics configuration only. Any errors or latency in a prefix, tag or access point filter are also counted in the entire bucket's metrics.
+- **Dashboard widgets** show a line for every metrics configuration, labelled with the bucket name and `FilterId`, so you can see which part of the bucket is affected.
+- If the bucket declares no `MetricsConfigurations`, or they cannot be resolved before deployment (for example, `Fn::If`), request metrics are assumed to be enabled in the S3 console with its default filter name, `EntireBucket`.
+- An `Id` can be a literal string, `Ref`, `Fn::GetAtt` or `Fn::Sub` (without a variable map). Entries with an `Id` using any other intrinsic function are ignored.
+- If `MetricsConfigurations` are declared but none covers the entire bucket, widgets are still created for each one, but no alarms are created for that bucket.
+
 S3 dashboard widgets show:
 
-|First Byte Latency Average, P99|Head Requests|5XX Errors|
+|First Byte Latency Average|First Byte Latency P99|Head Requests|
 |--|--|--|
-|![First Byte Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatency.png)|![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |
-|**4XX Errors**|**Total Request Latency Average, P99**|**All Requests**|
-|![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatency.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |
+|![First Byte Latency Average](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatencyAverage.png)|![First Byte Latency P99](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3FirstByteLatencyP99.png) |![Head Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3HeadRequests.png) |
+|**5XX Errors**|**4XX Errors**|**Total Request Latency Average**|
+|![5XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s35XXErrors.png) |![4XX Errors](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s34XXErrors.png) |![Total Request Latency Average](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatencyAverage.png) |
+|**Total Request Latency P99**|**All Requests**|**Get Requests**|
+|![Total Request Latency P99](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3TotalRequestLatencyP99.png) |![All Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3AllRequests.png) |![Get Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3GetRequests.png) |
+|**Put Requests**|**Delete Requests**|**Post Requests**|
+|![Put Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3PutRequests.png) |![Delete Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3DeleteRequests.png) |![Post Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3PostRequests.png) |
+|**List Requests**|**Bytes Downloaded**|**Bytes Uploaded**|
+|![List Requests](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3ListRequests.png) |![Bytes Downloaded](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3BytesDownloaded.png) |![Bytes Uploaded](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/s3BytesUploaded.png) |
 
 ## Configuration
 
@@ -398,7 +443,7 @@ slicWatch:
 ```
 - Alarms or dashboards can be disabled at any level in the configuration by adding `enabled: false`. You can even disable all plugin functionality by specifying `enabled: false` at the top-level plugin configuration.
 
-A complete set of supported options along with their defaults are shown in [default-config.js](./core/default-config.js)
+A complete set of supported options along with their defaults are shown in [default-config.ts](./core/inputs/default-config.ts)
 
 Example projects are also provided for reference: 
 - [serverless-test-project](./serverless-test-project)

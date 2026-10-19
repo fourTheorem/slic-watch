@@ -24,7 +24,7 @@ const supportedAlarms = {
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
   ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
   AppSync: ['5XXError', 'Latency'],
-  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests']
+  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests', 'GetRequests', 'PutRequests', 'DeleteRequests', 'PostRequests', 'ListRequests', 'BytesDownloaded', 'BytesUploaded']
 }
 
 const supportedWidgets = {
@@ -40,7 +40,7 @@ const supportedWidgets = {
   ApplicationELB: ['HTTPCode_ELB_5XX_Count', 'RejectedConnectionCount'],
   ApplicationELBTarget: ['HTTPCode_Target_5XX_Count', 'UnHealthyHostCount', 'LambdaInternalError', 'LambdaUserError'],
   AppSync: ['5XXError', '4XXError', 'Latency', 'Requests', 'ConnectServerError', 'DisconnectServerError', 'SubscribeServerError', 'UnsubscribeServerError', 'PublishDataMessageServerError'],
-  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests']
+  S3: ['FirstByteLatency', 'HeadRequests', '5xxErrors', '4xxErrors', 'TotalRequestLatency', 'AllRequests', 'GetRequests', 'PutRequests', 'DeleteRequests', 'PostRequests', 'ListRequests', 'BytesDownloaded', 'BytesUploaded']
 }
 
 const commonAlarmProperties: JSONSchema4Properties = {

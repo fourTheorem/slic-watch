@@ -14,6 +14,7 @@ export interface MetricDefs {
   dimensions: Record<string, string>
   stat: string
   yAxis?: YAxisPos
+  label?: string
 }
 
 export interface WidgetWithSize extends Omit<Widget, 'width' | 'height'> {
@@ -148,4 +149,11 @@ export interface S3DashboardProperties extends WidgetMetricProperties {
   '4xxErrors': WidgetMetricProperties
   TotalRequestLatency: WidgetMetricProperties
   AllRequests: WidgetMetricProperties
+  GetRequests: WidgetMetricProperties
+  PutRequests: WidgetMetricProperties
+  DeleteRequests: WidgetMetricProperties
+  PostRequests: WidgetMetricProperties
+  ListRequests: WidgetMetricProperties
+  BytesDownloaded: WidgetMetricProperties
+  BytesUploaded: WidgetMetricProperties
 }

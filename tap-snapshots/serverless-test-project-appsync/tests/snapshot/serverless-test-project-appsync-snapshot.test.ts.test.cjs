@@ -771,7 +771,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -783,7 +784,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -810,7 +812,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -822,7 +825,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -849,7 +853,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -861,7 +866,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -888,7 +894,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -900,7 +907,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -927,7 +935,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -939,7 +948,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -966,7 +976,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -978,7 +989,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Average",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -1005,7 +1017,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -1017,7 +1030,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "p99",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -1044,7 +1058,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
                       }
                     ],
                     [
@@ -1056,7 +1071,8 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                       "EntireBucket",
                       {
                         "stat": "Sum",
-                        "yAxis": "left"
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
                       }
                     ]
                   ],
@@ -1069,6 +1085,293 @@ exports[`serverless-test-project-appsync/tests/snapshot/serverless-test-project-
                 "height": 6,
                 "x": 16,
                 "y": 18
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "GetRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "GetRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 GetRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "PutRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "PutRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 PutRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "DeleteRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "DeleteRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 DeleteRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 24
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "PostRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "PostRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 PostRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "ListRequests",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "ListRequests",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 ListRequests Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 8,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "BytesDownloaded",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "BytesDownloaded",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 BytesDownloaded Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 16,
+                "y": 30
+              },
+              {
+                "type": "metric",
+                "properties": {
+                  "metrics": [
+                    [
+                      "AWS/S3",
+                      "BytesUploaded",
+                      "BucketName",
+                      "\${ServerlessDeploymentBucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${ServerlessDeploymentBucket} EntireBucket"
+                      }
+                    ],
+                    [
+                      "AWS/S3",
+                      "BytesUploaded",
+                      "BucketName",
+                      "\${bucket}",
+                      "FilterId",
+                      "EntireBucket",
+                      {
+                        "stat": "Sum",
+                        "yAxis": "left",
+                        "label": "\${bucket} EntireBucket"
+                      }
+                    ]
+                  ],
+                  "title": "S3 BytesUploaded Sum per Bucket",
+                  "view": "timeSeries",
+                  "region": "\${AWS::Region}",
+                  "period": 300
+                },
+                "width": 8,
+                "height": 6,
+                "x": 0,
+                "y": 36
               }
             ]
           }
