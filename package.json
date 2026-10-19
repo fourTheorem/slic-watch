@@ -84,5 +84,10 @@
     "serverless": "4.31.0",
     "serverless-appsync-plugin": "1.0.9",
     "yaml": "^1.10.2"
+  },
+  "overrides": {
+    "lint-staged": {
+      "yaml": "^2.9.1"
+    }
   }
 }
