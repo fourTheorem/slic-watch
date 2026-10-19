@@ -1443,7 +1443,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -1505,7 +1505,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -1567,7 +1567,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -1632,7 +1632,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -2051,7 +2051,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -4690,7 +4690,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -4923,7 +4923,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -4985,7 +4985,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -5047,7 +5047,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -5112,7 +5112,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -5531,7 +5531,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -8170,7 +8170,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },
@@ -8313,7 +8313,7 @@ exports[`cdk-test-project/tests/snapshot/cdk-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x"
+        "Runtime": "nodejs24.x"
       },
       "Type": "AWS::Lambda::Function"
     },

@@ -1,5 +1,4 @@
 'use strict'
-const axios = require('axios').default
 
 module.exports = {
   handleGet,
@@ -40,7 +39,7 @@ async function handleSubscription (event) {
   const result = {}
   try {
     if (eventBody.Type === 'SubscriptionConfirmation') {
-      const res = await axios.get(eventBody.SubscribeURL)
+      const res = await fetch(eventBody.SubscribeURL)
       console.log('Subscription confirmation response', { statusCode: res.status, statusText: res.statusText })
       result.statusCode = res.status
     } else {

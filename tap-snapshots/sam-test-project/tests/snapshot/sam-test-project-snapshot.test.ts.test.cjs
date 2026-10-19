@@ -154,7 +154,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -210,7 +210,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -266,7 +266,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -360,7 +360,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -473,7 +473,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -529,7 +529,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -549,7 +549,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": [
-            "arn:\${AWS::Partition}:execute-api:\${AWS::Region}:\${AWS::AccountId}:\${__ApiId__}/\${__Stage__}/GETitem",
+            "arn:\${AWS::Partition}:execute-api:\${AWS::Region}:\${AWS::AccountId}:\${__ApiId__}/\${__Stage__}/GET/item",
             {
               "__ApiId__": {
                 "Ref": "ServerlessHttpApi"
@@ -621,7 +621,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -693,7 +693,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
           },
           "openapi": "3.0.1",
           "paths": {
-            "item": {
+            "/item": {
               "get": {
                 "responses": {},
                 "x-amazon-apigateway-integration": {
@@ -4894,7 +4894,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -5134,7 +5134,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",

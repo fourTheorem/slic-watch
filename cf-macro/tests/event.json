@@ -17,7 +17,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "handler.hello",
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "FunctionName": "serverless-test-project-dev-hello",
         "MemorySize": 1024,
         "Timeout": 9
@@ -41,7 +41,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "handler.hello",
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "FunctionName": "serverless-test-project-dev-nometadata"
       }
     }

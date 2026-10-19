@@ -296,7 +296,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -357,7 +357,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -413,7 +413,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -470,7 +470,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -526,7 +526,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -582,7 +582,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -638,7 +638,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -711,7 +711,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 30,
         "Tags": [
           {
@@ -761,7 +761,7 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": [
-            "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GETitem",
+            "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GET/item",
             {
               "__ApiId__": {
                 "Ref": "ServerlessHttpApi"
@@ -794,7 +794,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "lambda:createdBy",
@@ -999,7 +999,7 @@
             }
           },
           "paths": {
-            "item": {
+            "/item": {
               "get": {
                 "x-amazon-apigateway-integration": {
                   "httpMethod": "POST",

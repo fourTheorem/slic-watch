@@ -146,7 +146,7 @@ exports[`serverless-test-project-alb/tests/snapshot/serverless-test-project-alb-
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"

@@ -1,7 +1,7 @@
 'use strict'
 
-const Kinesis = require('aws-sdk/clients/kinesis')
-const kin = new Kinesis()
+const { KinesisClient, PutRecordsCommand } = require('@aws-sdk/client-kinesis')
+const kin = new KinesisClient({})
 
 const { STREAM_NAME } = process.env
 
@@ -12,13 +12,13 @@ async function handleDrive (event) {
     createdAt: new Date().toISOString(),
     ...event // Propagate event so the received can behave in required ways
   }))
-  await kin.putRecords({
+  await kin.send(new PutRecordsCommand({
     Records: items.map(item => ({
-      Data: JSON.stringify(item),
+      Data: Buffer.from(JSON.stringify(item)),
       PartitionKey: 'a'
     })),
     StreamName: STREAM_NAME
-  }).promise()
+  }))
   console.log('Sent events')
 }
 

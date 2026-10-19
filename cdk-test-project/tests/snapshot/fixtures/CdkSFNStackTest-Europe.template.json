@@ -84,7 +84,7 @@
      ]
     },
     "Handler": "hello.handler",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "HelloHandlerServiceRole11EF7C63"

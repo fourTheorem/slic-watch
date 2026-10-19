@@ -7,6 +7,7 @@ Resources:
 
   bucket:
     Type: AWS::S3::Bucket
+    DependsOn: bucketLogsPolicy
     Properties:
       BucketName: !Sub 'slic-watch-test-project-bucket-${AWS::AccountId}-${AWS::Region}'
       # Enable access logging to the log bucket
@@ -27,8 +28,22 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub 'slic-watch-test-project-bucket-logs-${AWS::AccountId}-${AWS::Region}'
-      # Add bucket policy to allow S3 to write logs
-      AccessControl: LogDeliveryWrite
+
+  # Bucket policy to allow S3 to write logs (ACLs are disabled on new buckets)
+  bucketLogsPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref bucketLogs
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: logging.s3.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub '${bucketLogs.Arn}/s3-access-logs/*'
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
 
   dataTable:
     Type: AWS::DynamoDB::Table
@@ -121,7 +136,7 @@ Resources:
   subnet:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: ${self:provider.region}a
+      AvailabilityZone: ${aws:region}a
       CidrBlock: 10.0.16.0/20
       VpcId: !Ref vpc
 

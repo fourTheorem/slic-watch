@@ -89,7 +89,7 @@
      ]
     },
     "Handler": "hello.handler",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "HelloHandlerServiceRole11EF7C63"
@@ -154,7 +154,7 @@
      ]
     },
     "Handler": "hello.handler",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "PingHandlerServiceRole46086423"
@@ -218,7 +218,7 @@
     },
     "Handler": "hello.handler",
     "ReservedConcurrentExecutions": 0,
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "ThrottlerHandlerServiceRoleA0481DAF"
@@ -280,7 +280,7 @@
      ]
     },
     "Handler": "stream-test-handler.handleDrive",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "DriveStreamHandlerServiceRoleD2BAFDD4"
@@ -342,7 +342,7 @@
      ]
     },
     "Handler": "hello.handler",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "DriveQueueHandlerServiceRoleD796850A"
@@ -404,7 +404,7 @@
      ]
     },
     "Handler": "hello.handler",
-    "Runtime": "nodejs18.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "DriveTableHandlerServiceRoleDDA3FBE1"

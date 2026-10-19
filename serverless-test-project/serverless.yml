@@ -1,6 +1,6 @@
 service: serverless-test-project
 frameworkVersion: "3"
-configValidationMode: error
+configValidationMode: warn
 variablesResolutionMode: 20210219
 
 plugins:
@@ -31,7 +31,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs24.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
   stage: dev

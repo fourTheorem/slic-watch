@@ -443,7 +443,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -494,7 +494,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -538,7 +538,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -659,7 +659,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -840,7 +840,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -884,7 +884,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 30
       },
       "Type": "AWS::Lambda::Function"
@@ -1064,7 +1064,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -6958,7 +6958,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
@@ -7012,7 +7012,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 30
       },
       "Type": "AWS::Lambda::Function"
@@ -7133,7 +7133,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 6
       },
       "Type": "AWS::Lambda::Function"
