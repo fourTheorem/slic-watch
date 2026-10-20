@@ -25,10 +25,9 @@ jobs:
         with:
           node-version: 24.x
           registry-url: "https://registry.npmjs.org"
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.8"
       - uses: aws-actions/setup-sam@v3
+        with:
+          use-installer: true
       - name: Install esbuild
         run: npm install esbuild -g
       - name: Install dependencies
