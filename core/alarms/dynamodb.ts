@@ -65,7 +65,7 @@ export default function createDynamoDbAlarms (
             AlarmDescription: Fn.Sub(`DynamoDB ${config.Statistic} for ${gsiIdentifierSub} breaches ${config.Threshold}`, {}),
             MetricName: metric,
             Namespace: 'AWS/DynamoDB',
-            Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndex', Value: gsiName }],
+            Dimensions: [{ Name: 'TableName', Value: Fn.Ref(tableLogicalId) }, { Name: 'GlobalSecondaryIndexName', Value: gsiName }],
             ...rest
           }
           const alarmLogicalId = makeAlarmLogicalId('GSI', `${tableLogicalId}${gsiName}`, metric)

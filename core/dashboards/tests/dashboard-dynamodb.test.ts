@@ -33,13 +33,13 @@ test('dashboard contains configured DynamoDB resources', (t) => {
       ['AWS/DynamoDB', 'ReadThrottleEvents', 'TableName', '${dataTable}', { stat: 'Sum', yAxis: 'left' }]
     ])
     t.match((readThrottlesGsiWidget.properties as MetricWidgetProperties).metrics, [
-      ['AWS/DynamoDB', 'ReadThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndex', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
+      ['AWS/DynamoDB', 'ReadThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndexName', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
     ])
     t.match((writeThrottlesWidget.properties as MetricWidgetProperties).metrics, [
       ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', { stat: 'Sum', yAxis: 'left' }]
     ])
     t.match((writeThrottlesGsiWidget.properties as MetricWidgetProperties).metrics, [
-      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndex', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
+      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndexName', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
     ])
 
     for (const widget of widgets) {
@@ -118,7 +118,7 @@ test('dashboard contains configured DynamoDB resources', (t) => {
       ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', { stat: 'ts80', yAxis: 'right' }]
     ])
     t.match((writeThrottlesGsiWidget.properties as MetricWidgetProperties).metrics, [
-      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndex', 'GSI1', { stat: 'ts80', yAxis: 'right' }]
+      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndexName', 'GSI1', { stat: 'ts80', yAxis: 'right' }]
     ])
 
     for (const widget of widgets.filter(w => Boolean(w))) {
@@ -176,7 +176,7 @@ test('dashboard contains configured DynamoDB resources', (t) => {
       ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', { stat: 'Sum', yAxis: 'left' }]
     ])
     t.match((writeThrottlesGsiWidget.properties as MetricWidgetProperties).metrics, [
-      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndex', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
+      ['AWS/DynamoDB', 'WriteThrottleEvents', 'TableName', '${dataTable}', 'GlobalSecondaryIndexName', 'GSI1', { stat: 'Sum', yAxis: 'left' }]
     ])
     const throttledPutRecordProps = throttledPutRecordWidget.properties as MetricWidgetProperties
     t.equal(throttledPutRecordProps.period, 300)
@@ -187,7 +187,7 @@ test('dashboard contains configured DynamoDB resources', (t) => {
     const throttledPutRecordGsiProps = throttledPutRecordGsiWidget.properties as MetricWidgetProperties
     t.equal(throttledPutRecordGsiProps.period, 300)
     t.match(throttledPutRecordGsiProps.metrics, [
-      ['AWS/DynamoDB', 'ThrottledPutRecordCount', 'TableName', '${dataTable}', 'GlobalSecondaryIndex', 'GSI1', { stat: 'Average', yAxis: 'right' }]
+      ['AWS/DynamoDB', 'ThrottledPutRecordCount', 'TableName', '${dataTable}', 'GlobalSecondaryIndexName', 'GSI1', { stat: 'Average', yAxis: 'right' }]
     ])
     t.end()
   })

@@ -330,7 +330,7 @@ export default function addDashboard (dashboardConfig: SlicWatchInputDashboardCo
                 metric,
                 dimensions: {
                   TableName: `\${${logicalId}}`,
-                  GlobalSecondaryIndex: gsiName
+                  GlobalSecondaryIndexName: gsiName
                 },
                 stat,
                 yAxis: metricConfig.yAxis

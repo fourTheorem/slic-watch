@@ -89,7 +89,7 @@ const dynamoDbAlarmConfig = testConfig.DynamoDB
         t.ok(al.Dimensions[0].Value)
         if (al.Dimensions.length > 1) {
           t.same(al.Dimensions[1], {
-            Name: 'GlobalSecondaryIndex',
+            Name: 'GlobalSecondaryIndexName',
             Value: 'GSI1'
           })
         }
