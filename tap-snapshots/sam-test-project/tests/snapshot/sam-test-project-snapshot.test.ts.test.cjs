@@ -815,7 +815,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "ReadThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      "GlobalSecondaryIndex",
+                      "GlobalSecondaryIndexName",
                       "GSI1",
                       {
                         "stat": "Sum",
@@ -867,7 +867,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      "GlobalSecondaryIndex",
+                      "GlobalSecondaryIndexName",
                       "GSI1",
                       {
                         "stat": "Sum",
@@ -2208,7 +2208,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             }
           },
           {
-            "Name": "GlobalSecondaryIndex",
+            "Name": "GlobalSecondaryIndexName",
             "Value": "GSI1"
           }
         ],
@@ -2256,7 +2256,7 @@ exports[`sam-test-project/tests/snapshot/sam-test-project-snapshot.test.ts > TAP
             }
           },
           {
-            "Name": "GlobalSecondaryIndex",
+            "Name": "GlobalSecondaryIndexName",
             "Value": "GSI1"
           }
         ],

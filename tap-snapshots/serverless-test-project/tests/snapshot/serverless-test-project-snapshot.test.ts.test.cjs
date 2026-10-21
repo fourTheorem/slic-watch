@@ -1541,7 +1541,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "ReadThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      "GlobalSecondaryIndex",
+                      "GlobalSecondaryIndexName",
                       "GSI1",
                       {
                         "stat": "Sum",
@@ -1593,7 +1593,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
                       "WriteThrottleEvents",
                       "TableName",
                       "\${dataTable}",
-                      "GlobalSecondaryIndex",
+                      "GlobalSecondaryIndexName",
                       "GSI1",
                       {
                         "stat": "Sum",
@@ -3611,7 +3611,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             }
           },
           {
-            "Name": "GlobalSecondaryIndex",
+            "Name": "GlobalSecondaryIndexName",
             "Value": "GSI1"
           }
         ],
@@ -3655,7 +3655,7 @@ exports[`serverless-test-project/tests/snapshot/serverless-test-project-snapshot
             }
           },
           {
-            "Name": "GlobalSecondaryIndex",
+            "Name": "GlobalSecondaryIndexName",
             "Value": "GSI1"
           }
         ],
