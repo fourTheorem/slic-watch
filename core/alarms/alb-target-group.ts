@@ -30,10 +30,10 @@ const executionMetricsLambda = ['LambdaInternalError', 'LambdaUserError']
  * @param targetGroupLogicalId The CloudFormation Logical ID of the ALB Target Group
  * @param compiledTemplate A CloudFormation template objec
  *
- * @returns A list of load balancer Logical IDs relating to the target group
+ * @returns A list of in-stack load balancer Logical IDs relating to the target group
  */
 export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, compiledTemplate: Template): string[] {
-  const allLoadBalancerLogicalIds: any = new Set()
+  const allLoadBalancerLogicalIds = new Set<string>()
   const listenerResources = getResourcesByType('AWS::ElasticLoadBalancingV2::Listener', compiledTemplate)
 
   // First, find Listeners with _default actions_ referencing the target group
@@ -72,7 +72,11 @@ export function findLoadBalancersForTargetGroup (targetGroupLogicalId: string, c
       }
     }
   }
-  return [...allLoadBalancerLogicalIds]
+  // A Ref can name a parameter (including an SSM parameter), rather than a resource.
+  // Only local load balancers support the GetAtt/Sub attributes used by alarms and widgets.
+  return [...allLoadBalancerLogicalIds].filter(logicalId =>
+    compiledTemplate.Resources?.[logicalId]?.Type === 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+  )
 }
 
 /**

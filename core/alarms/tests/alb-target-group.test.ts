@@ -14,6 +14,46 @@ import {
 } from '../../tests/testing-utils'
 import type { ResourceType } from '../../cf-template'
 
+test('skips target group alarms for load balancers outside the stack', (t) => {
+  for (const useDefaultAction of [true, false]) {
+    for (const loadBalancerArn of [
+      { Ref: 'SharedAlbArn' },
+      { Ref: 'MissingAlb' },
+      { Ref: 'OtherResource' },
+      { 'Fn::ImportValue': 'SharedAlbArn' },
+      '{{resolve:ssm:/ingress/alb-arn}}'
+    ]) {
+      const template = {
+        Parameters: {
+          SharedAlbArn: { Type: 'AWS::SSM::Parameter::Value<String>', Default: '/ingress/alb-arn' }
+        },
+        Resources: {
+          tg: { Type: 'AWS::ElasticLoadBalancingV2::TargetGroup', Properties: { TargetType: 'lambda' } },
+          OtherResource: { Type: 'AWS::SSM::Parameter' },
+          listener: {
+            Type: 'AWS::ElasticLoadBalancingV2::Listener',
+            Properties: {
+              LoadBalancerArn: loadBalancerArn,
+              DefaultActions: useDefaultAction ? [{ TargetGroupArn: { Ref: 'tg' } }] : []
+            }
+          },
+          rule: {
+            Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+            Properties: {
+              ListenerArn: { Ref: 'listener' },
+              Actions: useDefaultAction ? [] : [{ TargetGroupArn: { Ref: 'tg' } }]
+            }
+          }
+        }
+      }
+      const context = `${useDefaultAction ? 'default action' : 'listener rule'}: ${JSON.stringify(loadBalancerArn)}`
+      t.same(findLoadBalancersForTargetGroup('tg', template), [], context)
+      t.same(createAlbTargetAlarms(createTestConfig(defaultConfig.alarms).ApplicationELBTarget, testAlarmActionsConfig, template), {}, context)
+    }
+  }
+  t.end()
+})
+
 test('findLoadBalancersForTargetGroup', (t) => {
   test('finds the associated Load Balancer if it exists in the CloudFormation template for the Target Group', (t) => {
     const targetGroupLogicalId = 'AlbEventAlbTargetGrouphttpListener'
@@ -45,7 +85,7 @@ test('findLoadBalancersForTargetGroup', (t) => {
         tg: {
           Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
         },
-        alb: { Type: '' }
+        alb: { Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer' }
       }
     }
 
@@ -102,7 +142,8 @@ test('findLoadBalancersForTargetGroup', (t) => {
           Properties: {
             LoadBalancerArn: { Ref: 'alb' }
           }
-        }
+        },
+        alb: { Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer' }
       }
     }
     const loadBalancerLogicalIds = findLoadBalancersForTargetGroup('tgA', compiledTemplate)

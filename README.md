@@ -302,6 +302,8 @@ EventBridge Rule dashboard widgets show:
 |![FailedInvocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeFailedInvocations.png)|![Invocations](https://raw.githubusercontent.com/fourtheorem/slic-watch/main/docs/eventBridgeInvocations.png)|
 
 ### Application Load Balancer
+Target group alarms and dashboard widgets are generated only when the associated load balancer is a resource in the same template. Target groups using an external load balancer, including one referenced through an SSM parameter, are skipped.
+
 Application Load Balancer alarms are created for:
 1. HTTP Code ELB 5XX Count
 2. Rejected Connection Count
