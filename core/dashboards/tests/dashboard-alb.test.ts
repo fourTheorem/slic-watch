@@ -8,6 +8,36 @@ import defaultConfig from '../../inputs/default-config'
 
 import { albCfTemplate, createTestCloudFormationTemplate, getDashboardFromTemplate, getDashboardWidgetsByTitle } from '../../tests/testing-utils'
 
+test('dashboard skips target groups whose load balancer is an SSM parameter', (t) => {
+  for (const useDefaultAction of [true, false]) {
+    const template = createTestCloudFormationTemplate(albCfTemplate)
+    template.Parameters = {
+      ...template.Parameters,
+      SharedAlbArn: { Type: 'AWS::SSM::Parameter::Value<String>', Default: '/ingress/alb-arn' }
+    }
+    for (const resource of Object.values(template.Resources ?? {})) {
+      if (resource.Type === 'AWS::ElasticLoadBalancingV2::Listener') {
+        resource.Properties = {
+          ...resource.Properties,
+          LoadBalancerArn: { Ref: 'SharedAlbArn' },
+          DefaultActions: useDefaultAction ? [{ TargetGroupArn: { Ref: 'AlbEventAlbTargetGrouphttpListener' } }] : []
+        }
+      }
+      if (useDefaultAction && resource.Type === 'AWS::ElasticLoadBalancingV2::ListenerRule') {
+        resource.Properties = { ...resource.Properties, Actions: [] }
+      }
+    }
+
+    addDashboard(defaultConfig.dashboard, template)
+    const { dashboard, dashProperties } = getDashboardFromTemplate(template)
+    const [albWidget, targetGroupWidget] = getDashboardWidgetsByTitle(dashboard, /ALB/, /Target Group/)
+    t.ok(albWidget, 'continues monitoring local ALB resources')
+    t.notOk(targetGroupWidget, 'omits target group widgets for the external ALB')
+    t.notMatch(JSON.stringify(dashProperties), /SharedAlbArn\./, 'does not generate attributes on a parameter')
+  }
+  t.end()
+})
+
 test('dashboard contains configured ALB resources', (t) => {
   t.test('dashboards includes ALB metrics', (t) => {
     const template = createTestCloudFormationTemplate(albCfTemplate)
